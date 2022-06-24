@@ -1,0 +1,13 @@
+type Study {
+  fullName: String!
+  shortName: String!
+  description: String!
+#   timeline: [Timepoint!]!
+  rawDatasets: [RawDataset!]! @relationship(type: "HAS_RAW_DATASET", direction: OUT)
+}
+
+# type Timepoint {
+#   label: String!
+#   year: Int!
+#   week: Int!
+# }

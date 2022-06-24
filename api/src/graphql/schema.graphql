@@ -1,0 +1,66 @@
+
+# TYPES FROM PROTOTYPE THAT STILL NEED TO BE REFACTORED
+
+
+# type Subject {
+#   # id: ID!
+#   subjectId: String
+#   sample: [Sample!]! @relation(name: "has_sample", direction: OUT)
+# }
+
+# type Sample {
+#   # id: ID!
+#   sampleId: String
+#   sampleDatum: SampleDatum! @relation(name: "has_sample", direction: IN)
+#   sampleDatumName: String!
+#   @cypher(
+#     statement: """
+#     MATCH (this)<-[:has_sample]-(sd:SampleDatum) RETURN sd.sampleDatumName
+#     """
+#   )
+#   sampleValue: String
+#   subject: Subject @relation(name: "has_sample", direction: IN)
+#   sampleGroup: SampleGroup @relation(name: "has_sample", direction: IN)
+# }
+
+# type SampleDatum {
+#   # id: ID!
+#   sampleDatumName: String!
+#   sampleDatumType: String
+#   sampleGroup: SampleGroup @relation(name: "has_datum", direction: IN)
+#   sample: [Sample] @relation(name: "has_sample", direction: OUT)
+# }
+
+# type SampleGroup {
+#   # id: ID!
+#   sampleGroupName: String!
+#   sampleData: [SampleDatum!]! @relation(name: "has_datum", direction: OUT)
+#   samples: [Sample] @relation(name: "has_sample", direction: OUT)
+# }
+
+
+# type Basic {
+#  studies: [Study!]!
+# }
+
+# type Study {
+#   name: String!
+#   timepoints: [Timepoint!]!
+# }
+
+# type Timepoint {
+#   name: String!
+#   categories: [Category!]!
+# }
+
+# type Category {
+#   name: String!
+#   datafiles: [DataFile!]!
+# }
+
+# type DataFile {
+#   fileName: String
+#   name: String
+#   etag: String
+#   presignedUrl: String!
+# }

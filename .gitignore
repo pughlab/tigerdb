@@ -1,0 +1,8 @@
+node_modules
+ui/dist
+api/build
+keycloak/keycloak-db
+
+.env
+ui/.env
+package-lock.json

@@ -1,0 +1,60 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Launch Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${file}"
+        },
+        {
+            "type": "pwa-node",
+            "request": "attach",
+            "name": "Docker: Attach to Node: api",
+            "remoteRoot": "/usr/src/service",
+            "port": 9231,
+            "address": "localhost",
+            "localRoot": "${workspaceFolder}",
+            // "protocol": "inspector",
+            // "sourceMaps": true,
+            "restart": true,
+            "sourceMapPathOverrides": {
+                "/usr/src/service/*": "${workspaceFolder}/*"
+              },
+            "skipFiles": [
+                "${workspaceFolder}/node_modules/**/*.js",
+                "<node_internals>/**/*.js"
+              ]
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Launch Chrome against localhost",
+            "url": "https://localhost:3001",
+            "webRoot": "${workspaceFolder}/",
+            // "runtimeArgs": ["--auto-open-devtools-for-tabs",
+            //                 "--remote-debugging-port=9222"],
+            "port": 9222,
+            "skipFiles": [
+                "${workspaceFolder}/node_modules/**/*.js",
+                "${workspaceFolder}/node_modules/**/*.ts",
+                "<node_internals>/**/*.js"
+            ]
+        },
+    ],
+    "compounds": [
+        {
+            "name": "Launch All",
+            "configurations": [
+                "Docker: Attach to Node: api",
+                "Launch Chrome against localhost"
+            ]
+        }
+    ]
+}

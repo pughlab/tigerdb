@@ -1,0 +1,26 @@
+# Types used for multi-part forms uploading files
+scalar Upload
+type File @exclude {
+  filename: String!
+  mimetype: String!
+  encoding: String!
+}
+
+enum MinioUploadType {
+  CODEBOOK
+  RAW
+}
+
+# Type used for keeping track of what MinioObjects exist
+type MinioUpload {
+  bucketName: ID!
+  objectName: ID! @id
+  filename: String!
+  presignedURL: String @ignore
+  minioUploadType: MinioUploadType!
+}
+
+type Mutation {
+  # Example usage (should be generalized)
+  minioUpload(bucketName: String!, file: Upload!): MinioUpload!
+}
