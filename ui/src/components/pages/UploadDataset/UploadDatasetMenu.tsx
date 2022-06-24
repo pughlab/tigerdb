@@ -12,7 +12,7 @@ export default function UploadDatasetMenu ({}) {
   const routes = [
     {path: 'submit', icon: 'upload', label: 'Submit raw dataset'},
     {path: 'raw', icon: 'list', label: 'View raw datasets'},
-    {path: 'studies', icon: 'map', label: 'Manage studies'},
+    // {path: 'studies', icon: 'map', label: 'Manage studies'}, //commenting out manage studies portion on upload dataset 
   ]
   // console.log(location.pathname, matchPath(, location.pathname))
   // console.log(location.pathname)

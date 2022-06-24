@@ -25,13 +25,14 @@ import ManageStudies from './pages/ManageStudies/ManageStudies'
 
 import keycloak from '../keycloak/keycloak'
 
+
 function Layout ({}) {
   const navigate = useNavigate()
   const location = useLocation()
   const routes = [
     {path: '/', icon: 'home'},
     // {path: '/database', icon: 'database'}, //removing database icon from top nav bar
-    {path: '/upload', icon: 'upload'},
+    // {path: '/upload', icon: 'upload'},
     // {path: '/settings', icon: 'settings'}, // removing settings icon from top nav bar
   ]
   // Doesnt work for nested
@@ -66,6 +67,8 @@ function Layout ({}) {
                    </button>
                  )}
                </div>
+
+               
         </Menu.Menu>
         <Menu.Menu position='right'>
           {routes.map(
@@ -88,7 +91,7 @@ function Layout ({}) {
   )
 }
 
-export default function Portal () {
+export default function PublicPortal () {
   const [meMutationState] = useKeycloakMeMutation()
 
   return (

@@ -3,7 +3,8 @@ import {useState, useEffect, useRef} from 'react'
 
 import {Segment, Card, Image, Icon} from 'semantic-ui-react'
 
-import logo from '../imic_logo.png'
+// import logo from '../imic_logo.png'
+import logo from '../uhnpicture.png'
 
 export function Logo ({
 

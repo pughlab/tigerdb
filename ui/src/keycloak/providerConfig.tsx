@@ -1,5 +1,5 @@
 const eventLogger = (event: any, error: any) => {
-  // console.log('onKeycloakEvent', event, error)
+  console.log('onKeycloakEvent', event, error)
 }
 
 const tokenLogger = (tokens: any) => {
@@ -10,6 +10,8 @@ const tokenLogger = (tokens: any) => {
 
 const initOptions = { 
   onLoad: "login-required",
+  checkLoginIframe: false,
+  enableLogging: true
 }
 
 export {

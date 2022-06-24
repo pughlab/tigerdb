@@ -6,3 +6,4 @@ keycloak/keycloak-db
 .env
 ui/.env
 package-lock.json
+ui/.DS_Store
