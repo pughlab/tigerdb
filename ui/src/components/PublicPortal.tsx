@@ -18,6 +18,7 @@ import RawDatasetDetails from './pages/RawDatasets/RawDatasetDetails'
 import TimelineOntologies from './pages/Ontologies/Timelines'
 import MetadataOntology from './pages/Ontologies/Metadata'
 import TaxonomyOntologies from './pages/Ontologies/Taxonomy'
+import KeycloakAuthentication from './helpers/KeycloakAuthentication'
 
 // import logo from '../imic_logo.png'
 import logo from '../uhnpicture.png'
@@ -31,6 +32,7 @@ function Layout ({}) {
   const location = useLocation()
   const routes = [
     {path: '/', icon: 'home'},
+    {path: '/login', icon: 'user'},
     // {path: '/database', icon: 'database'}, //removing database icon from top nav bar
     // {path: '/upload', icon: 'upload'},
     // {path: '/settings', icon: 'settings'}, // removing settings icon from top nav bar
@@ -44,36 +46,13 @@ function Layout ({}) {
         <Menu.Menu position='left'>
           <Image size='small' src={logo} />
         </Menu.Menu>
-        <Menu.Menu position='right'>
-        {/* Keycloak Authentication with Login/Logout button */}
-        <div>
-                 {!keycloak.authenticated && (
-                   <button
-                     type="button"
-                     className="text-blue-800"
-                     onClick={() => keycloak.login()}
-                   >
-                     Login
-                   </button>
-                 )}
 
-                 {!!keycloak.authenticated && (
-                   <button
-                     type="button"
-                     className="text-blue-800"
-                     onClick={() => keycloak.logout()}
-                   >
-                     Logout ({keycloak.tokenParsed.preferred_username})
-                   </button>
-                 )}
-               </div>
-
-               
-        </Menu.Menu>
         <Menu.Menu position='right'>
           {routes.map(
             ({path, icon}) => <Menu.Item key={path} {...{header: true, icon, active: isActive(path), onClick: (e, d) => navigate(path)}} />
           )}
+
+          
           <LoginModal />
 
 
@@ -133,6 +112,8 @@ export default function PublicPortal () {
           <Route path='studies' element={<ManageStudies />} />          
         </Route>
         <Route path='settings/*' element={<UserSettings />} />
+        <Route path='login/*' element={<KeycloakAuthentication />} />
+
         <Route path="*" element={<SegmentPlaceholder text='Not found!' icon='meh outline' />} />
       </Route>
 
