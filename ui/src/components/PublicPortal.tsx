@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Sticky, Menu, Image, Divider, Container } from 'semantic-ui-react'
+import { Sticky, Menu, Icon, Header, Image, Divider, Container } from 'semantic-ui-react'
 
 import useKeycloakMeMutation from '../hooks/useKeycloakMeMutation'
 import {Routes, Route, Outlet, useNavigate, useLocation, matchPath, Link} from 'react-router-dom'
@@ -21,7 +21,7 @@ import TaxonomyOntologies from './pages/Ontologies/Taxonomy'
 import KeycloakAuthentication from './helpers/KeycloakAuthentication'
 
 // import logo from '../imic_logo.png'
-import logo from '../uhnpicture.png'
+import logo from '../UHN-removebg.png'
 import ManageStudies from './pages/ManageStudies/ManageStudies'
 
 import keycloak from '../keycloak/keycloak'
@@ -44,7 +44,7 @@ function Layout ({}) {
     <Sticky>
       <Menu inverted color='blue' style={{margin: 0, borderRadius: 0}}>
         <Menu.Menu position='left'>
-          <Image size='small' src={logo} />
+           <Image size="medium" src={logo} />
         </Menu.Menu>
 
         <Menu.Menu position='right'>
