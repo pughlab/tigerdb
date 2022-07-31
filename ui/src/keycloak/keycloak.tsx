@@ -15,8 +15,8 @@ console.log('process.env', process.env)
 // Pass initialization options as required or leave blank to load from 'keycloak.json'
 const keycloak = Keycloak({
   url: `https://${keycloakhost}:${keycloakport}/auth`,
-  realm: "imic",
-  clientId: 'imic-app'
+  realm: "plbr",
+  clientId: 'plbr-app'
 });
 
 export default keycloak
