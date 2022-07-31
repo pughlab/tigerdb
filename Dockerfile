@@ -5,6 +5,8 @@ FROM node:16-alpine as build-deps
 WORKDIR /usr/src/app
 COPY package.json .
 COPY package-lock.json .
+RUN npm install graphql-ws
+# RUN npm i --force
 RUN npm ci
 
 COPY . .
@@ -15,6 +17,8 @@ FROM nginx:alpine
 WORKDIR /usr/src/app
 COPY --from=build-deps /usr/src/app/ui/dist ./dist
 
-RUN apk add --no-cache bash
+# RUN sed -i 's/https/http/' /etc/apk/repositories
+# RUN apk add bash
 
-ENTRYPOINT ["/bin/bash", "-c", "nginx -g \"daemon off;\""]
+# ENTRYPOINT ["/bin/bash", "-c", "nginx -g \"daemon off;\""]
+CMD ["nginx", "-g", "daemon off;"]
