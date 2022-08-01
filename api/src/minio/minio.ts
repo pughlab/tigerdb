@@ -23,6 +23,18 @@ const minio = require('minio')
 export const minioClient: Client = new minio.Client(minioConfig)
 minioClient.setRequestOptions({rejectUnauthorized: false})
 
+export const makeBucket = async (minioClient: Client, bucketName: string) => {
+  try {
+    if (! await minioClient.bucketExists(bucketName)) {
+      console.log(`creating bucket ${bucketName}`)
+      await minioClient.makeBucket(bucketName, 'us-east-1')
+    }
+  } catch (error) {
+    console.error(error)
+    throw new Error('minio.createBucket: ' + error)
+  }
+}
+
 export const listBucketObjects = async (minioClient: Client, bucketName: string): Promise<BucketItem[]> => {
   try {
     const exists = await minioClient.bucketExists(`${bucketName}`)

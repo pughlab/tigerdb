@@ -6,18 +6,17 @@ type File @exclude {
   encoding: String!
 }
 
-enum MinioUploadType {
-  CODEBOOK
-  RAW
-}
-
 # Type used for keeping track of what MinioObjects exist
 type MinioUpload {
   bucketName: ID!
   objectName: ID! @id
   filename: String!
   presignedURL: String @ignore
-  minioUploadType: MinioUploadType!
+}
+
+type MinioBucket {
+  bucketName: ID!
+  minioObjects: [MinioUpload!]! @relationship(type: "HAS_MINIO_OBJECT", direction: OUT)
 }
 
 type Mutation {

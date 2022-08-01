@@ -2,22 +2,19 @@ type RawDataset {
     rawDatasetID: ID! @id
     name: String!
     description: String!
-    rawDataFile: MinioUpload! @relationship(type: "HAS_RAW_DATA", direction: OUT)
-    # codebookFile: MinioUpload! @relationship(type: "HAS_CODEBOOK", direction: OUT)
+    minioBucket: MinioBucket! @relationship(type: "HAS_MINIO_BUCKET", direction: OUT)
 
     # custom createRawDatasetWithUploads makes adding timestamps difficult for autogeneration
     # createdAt: DateTime! @timestamp(operations: [CREATE])
     # updatedAt: DateTime! @timestamp(operations: [UPDATE])
 
-    generatedCuratedDataset: CuratedDataset @relationship(type: "GENERATED_CURATED_DATASET", direction: OUT)
+    # generatedCuratedDataset: CuratedDataset @relationship(type: "GENERATED_CURATED_DATASET", direction: OUT)
 }
 
 type Mutation {
     # Custom resolver for uploading files and creating nodes to account for them
-    createRawDatasetWithUploads(
+    createRawDatasetWithMinioBucket(
         name: String!
         description: String!
-        rawDataFile: Upload!
-        # codebookFile: Upload!
-    ): Boolean!
+    ): RawDataset!
 }
