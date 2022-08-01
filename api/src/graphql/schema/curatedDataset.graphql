@@ -7,6 +7,10 @@ scalar JSON
 
 type DataVariable {
     dataVariableID: ID! @id
+    chromosome: String
+    start: Int
+    end: Int
+    datavalue: Float
     # Define fields you want to search over here, transformation script must map to this shape
 
     # title: String!
@@ -43,5 +47,10 @@ type CuratedDataset {
 }
 
 type Mutation {
-    createCuratedDatasetFromRawDataset(rawDatasetID: ID!): CuratedDataset
+    # createCuratedDatasetFromRawDataset(,rawDatasetID: ID!): CuratedDataset
+    createCuratedDatasetFromRawDataset(
+        name: String!
+        description: String!
+        rawDatasetID: ID!
+    ): CuratedDataset!
 }
