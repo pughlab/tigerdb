@@ -154,6 +154,7 @@ const MyReactTable = ({
             />
           </span>{' '}
           <select
+            defaultValue={10}
             value={pageSize}
             onChange={e => {
               setPageSize(Number(e.target.value))

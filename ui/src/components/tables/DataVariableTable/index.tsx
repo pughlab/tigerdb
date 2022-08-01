@@ -402,7 +402,7 @@ function FullTable({ columns, data, updateMyData, skipReset }) {
         />
         </Label>
     </div>
-      <pre>
+      {/* <pre>
         <code>
           {JSON.stringify(
             {
@@ -421,7 +421,7 @@ function FullTable({ columns, data, updateMyData, skipReset }) {
             2
           )}
         </code>
-      </pre>
+      </pre> */}
     </Segment>
     <Table {...getTableProps()} as={Segment} attached='bottom'>
         <Table.Header>
@@ -532,80 +532,96 @@ const IndeterminateCheckbox = React.forwardRef(
   }
 )
 
-export default function DataVariableTable() {
+export default function DataVariableTable({data}) {
   const columns = React.useMemo(
     () => [
       {
-        Header: 'Name',
-        columns: [
-          {
-            Header: 'First Name',
-            accessor: 'firstName',
-            // Use a two-stage aggregator here to first
-            // count the total rows being aggregated,
-            // then sum any of those counts if they are
-            // aggregated further
-            aggregate: 'count',
-            Aggregated: ({ value }) => `${value} Names`,
-          },
-          {
-            Header: 'Last Name',
-            accessor: 'lastName',
-            // Use our custom `fuzzyText` filter on this column
-            filter: 'fuzzyText',
-            // Use another two-stage aggregator here to
-            // first count the UNIQUE values from the rows
-            // being aggregated, then sum those counts if
-            // they are aggregated further
-            aggregate: 'uniqueCount',
-            Aggregated: ({ value }) => `${value} Unique Names`,
-          },
-        ],
+        Header: 'Chromosome',
+        accessor: 'chromosome',
       },
       {
-        Header: 'Info',
-        columns: [
-          {
-            Header: 'Age',
-            accessor: 'age',
-            Filter: SliderColumnFilter,
-            filter: 'equals',
-            // Aggregate the average age of visitors
-            aggregate: 'average',
-            Aggregated: ({ value }) => `${value} (avg)`,
-          },
-          {
-            Header: 'Visits',
-            accessor: 'visits',
-            Filter: NumberRangeColumnFilter,
-            filter: 'between',
-            // Aggregate the sum of all visits
-            aggregate: 'sum',
-            Aggregated: ({ value }) => `${value} (total)`,
-          },
-          {
-            Header: 'Status',
-            accessor: 'status',
-            Filter: SelectColumnFilter,
-            filter: 'includes',
-          },
-          {
-            Header: 'Profile Progress',
-            accessor: 'progress',
-            Filter: SliderColumnFilter,
-            filter: filterGreaterThan,
-            // Use our custom roundedMedian aggregator
-            aggregate: roundedMedian,
-            Aggregated: ({ value }) => `${value} (med)`,
-          },
-        ],
+        Header: 'Start',
+        accessor: 'start',
       },
-    ],
-    []
+      {
+        Header: 'End',
+        accessor: 'end',
+      }
+    ], []
   )
+  // const columns = React.useMemo(
+  //   () => [
+  //     {
+  //       Header: 'Name',
+  //       columns: [
+  //         {
+  //           Header: 'First Name',
+  //           accessor: 'firstName',
+  //           // Use a two-stage aggregator here to first
+  //           // count the total rows being aggregated,
+  //           // then sum any of those counts if they are
+  //           // aggregated further
+  //           aggregate: 'count',
+  //           Aggregated: ({ value }) => `${value} Names`,
+  //         },
+  //         {
+  //           Header: 'Last Name',
+  //           accessor: 'lastName',
+  //           // Use our custom `fuzzyText` filter on this column
+  //           filter: 'fuzzyText',
+  //           // Use another two-stage aggregator here to
+  //           // first count the UNIQUE values from the rows
+  //           // being aggregated, then sum those counts if
+  //           // they are aggregated further
+  //           aggregate: 'uniqueCount',
+  //           Aggregated: ({ value }) => `${value} Unique Names`,
+  //         },
+  //       ],
+  //     },
+  //     {
+  //       Header: 'Info',
+  //       columns: [
+  //         {
+  //           Header: 'Age',
+  //           accessor: 'age',
+  //           Filter: SliderColumnFilter,
+  //           filter: 'equals',
+  //           // Aggregate the average age of visitors
+  //           aggregate: 'average',
+  //           Aggregated: ({ value }) => `${value} (avg)`,
+  //         },
+  //         {
+  //           Header: 'Visits',
+  //           accessor: 'visits',
+  //           Filter: NumberRangeColumnFilter,
+  //           filter: 'between',
+  //           // Aggregate the sum of all visits
+  //           aggregate: 'sum',
+  //           Aggregated: ({ value }) => `${value} (total)`,
+  //         },
+  //         {
+  //           Header: 'Status',
+  //           accessor: 'status',
+  //           Filter: SelectColumnFilter,
+  //           filter: 'includes',
+  //         },
+  //         {
+  //           Header: 'Profile Progress',
+  //           accessor: 'progress',
+  //           Filter: SliderColumnFilter,
+  //           filter: filterGreaterThan,
+  //           // Use our custom roundedMedian aggregator
+  //           aggregate: roundedMedian,
+  //           Aggregated: ({ value }) => `${value} (med)`,
+  //         },
+  //       ],
+  //     },
+  //   ],
+  //   []
+  // )
 
-  const [data, setData] = React.useState(() => makeData(10000))
-  const [originalData] = React.useState(data)
+  // const [data, setData] = React.useState(() => makeData(10000))
+  // const [originalData] = React.useState(data)
 
   // We need to keep the table from resetting the pageIndex when we
   // Update data. So we can keep track of that flag with a ref.
@@ -617,17 +633,17 @@ export default function DataVariableTable() {
   const updateMyData = (rowIndex, columnId, value) => {
     // We also turn on the flag to not reset the page
     skipResetRef.current = true
-    setData(old =>
-      old.map((row, index) => {
-        if (index === rowIndex) {
-          return {
-            ...row,
-            [columnId]: value,
-          }
-        }
-        return row
-      })
-    )
+    // setData(old =>
+    //   old.map((row, index) => {
+    //     if (index === rowIndex) {
+    //       return {
+    //         ...row,
+    //         [columnId]: value,
+    //       }
+    //     }
+    //     return row
+    //   })
+    // )
   }
 
   // After data changes, we turn the flag back off
@@ -642,12 +658,12 @@ export default function DataVariableTable() {
   const resetData = () => {
     // Don't reset the page when we do this
     skipResetRef.current = true
-    setData(originalData)
+    // setData(originalData)
   }
 
   return (
     <Styles>
-      <button onClick={resetData}>Reset Data</button>
+      {/* <button onClick={resetData}>Reset Data</button> */}
       <FullTable
         columns={columns}
         data={data}

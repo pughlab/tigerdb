@@ -1,8 +1,48 @@
-import React from 'react'
-import { Message, Divider, List, Container, Input, Segment, Form } from 'semantic-ui-react'
+import React, { useState } from 'react'
+import { Message, Divider, List, Container, Input, Segment, Form, Button } from 'semantic-ui-react'
 import DataVariableTable from '../../tables/DataVariableTable'
 
+import {gql, useQuery} from '@apollo/client'
+import { CSVLink } from "react-csv";
+
+
+
+
+function DownloadDataVariables ({data}) {
+    console.log(data)
+    // Can combine with react-table headers
+    const headers = [
+        {label: 'chromosome', key: 'chromosome'},
+        {label: 'start', key: 'start'},
+        {label: 'end', key: 'end'},
+      ]
+    return (
+        <CSVLink data={data} headers={headers} filename={"plbr_export.csv"}>
+            <Button fluid content={`Download ${data.length} variables`} />
+        </CSVLink>
+    )
+}
+
 export default function Explore () {
+    const [searchText, setSearchText] = useState('')
+    const [start, setStart] = useState(0)
+    const [end, setEnd] = useState(1000)
+    const {data, loading, error} = useQuery(gql`
+        query DataVariablesSearch($searchText: String!, $start: Int!, $end: Int!) {
+            dataVariables(where: {
+                chromosome_CONTAINS: $searchText
+                start_GTE: $start
+                end_LTE: $end 
+            }) {
+                dataVariableID
+                chromosome
+                start
+                end
+            }
+        }`,
+        {variables: {searchText, start, end}})
+    console.log(data)
+
     return (
         <>
             <Message content='Explore variables' >
@@ -12,15 +52,44 @@ export default function Explore () {
           </Message>
               
             <Form as={Segment} attached='top'>
-           
-                <Form.Field
-                    control={Input}
-                    label='Search data variable definition description      Search by ontology'
-                    placeholder='Enter some terms of interest'
-                />
+                <Form.Group widths={3}>
+                    <Form.Field
+                        control={Input}
+                        label='Chromosome'
+                        placeholder='Enter chromosome of interest'
+                        value={searchText}
+                        onChange={(e, {value}) => setSearchText(value)}
+                    />
+                    <Form.Field
+                        control={Input}
+                        type='number'
+                        defaultValue={0}
+                        label='Start'
+                        placeholder='Integer'
+                        value={start}
+                        onChange={(e, {value}) => setStart(Math.max(0, parseInt(value)))}
+                    />
+                    <Form.Field
+                        control={Input}
+                        type='number'
+                        defaultValue={1000}
+                        label='End'
+                        placeholder='Enter some terms of interest'
+                        value={end}
+                        onChange={(e, {value}) => setEnd(Math.max(0, parseInt(value)))}
+                    />
+                </Form.Group>
             </Form>
-          <Segment attached='bottom'>
-              <DataVariableTable />
+          <Segment attached='bottom' loading={loading}>
+            {
+                !!data?.dataVariables && (
+                    <>
+                        <DownloadDataVariables data={data.dataVariables} />
+                        <DataVariableTable data={data.dataVariables} />
+                    </>
+                )
+                
+            }
           </Segment>
         </>
     )

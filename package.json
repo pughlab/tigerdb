@@ -63,6 +63,7 @@
         "ramda": "^0.27.1",
         "ramda-adjunct": "^2.32.0",
         "react": "^17.0.1",
+        "react-csv": "^2.2.2",
         "react-dom": "^17.0.1",
         "react-dropzone": "^11.3.2",
         "react-flow-renderer": "^9.7.4",
