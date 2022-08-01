@@ -114,6 +114,36 @@ export const resolvers = {
       }
     },
 
+    createCuratedDatasetFromRawDataset: async ({}, {rawDatasetID}, {driver, ogm, minioClient}) => {
+      try {
+        // Create model and add a curated dataset node to db
+        const CuratedDatasetModel = ogm.model("CuratedDataset")
+        const bucketName = `raw-dataset-${rawDatasetID}`
+        
+        // const {curatedDatasets: [curatedDataset]} = await CuratedDatasetModel.create({ input: [{name, description}]})
+        // const {curatedDatasetID} = curatedDataset
+
+        // await CuratedDatasetModel.update({
+        //   where: {curatedDatasetID},
+        //   update: {
+        //     dataVariables: {
+        //       connectOrCreate: {
+        //         // 
+        //       }
+        //     }
+        //   }
+        // })
+        
+
+        // With the newly created curated dataset node, transform minio bucket into data variables that connect to newly made curated dataset
+
+        // Return curated dataset after linking it to its data variables
+      } catch (error) {
+        console.log(error)
+        throw new Error(error)
+      }
+    }
+
 
     // generateCuratedDataset: async (obj, {rawDatasetID}, {driver, ogm, minioClient}) => {
     //   try {

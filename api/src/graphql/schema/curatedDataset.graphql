@@ -1,51 +1,47 @@
 scalar JSON
 
-type Subject {
-    subjectID: ID! @id
-    childID: ID!
-}
+# type Subject {
+#     subjectID: ID! @id
+#     childID: ID!
+# }
 
 type DataVariable {
     dataVariableID: ID! @id
+    # Define fields you want to search over here, transformation script must map to this shape
+
     # title: String!
-    hasSamples: [DataVariableSample!]! @relationship(type: "HAS_SAMPLE", direction: OUT)
-    currentDefinition: DataVariableDefinition! @relationship(type: "HAS_DEFINITION", direction: OUT)
-    previousDefinitions: [DataVariableDefinition!]! @relationship(type: "HAS_DEFINITION", direction: OUT)
+    # hasSamples: [DataVariableSample!]! @relationship(type: "HAS_SAMPLE", direction: OUT)
+    # currentDefinition: DataVariableDefinition! @relationship(type: "HAS_DEFINITION", direction: OUT)
+    # previousDefinitions: [DataVariableDefinition!]! @relationship(type: "HAS_DEFINITION", direction: OUT)
 }
 
-type DataVariableDefinition {
-    dataVariable: DataVariable! @relationship(type: "HAS_DEFINITION", direction: IN)
-    dataVariableDefinitionID: ID! @id
-    label: String!
-}
+# type DataVariableDefinition {
+#     dataVariable: DataVariable! @relationship(type: "HAS_DEFINITION", direction: IN)
+#     dataVariableDefinitionID: ID! @id
+#     label: String!
+# }
 
-type DataVariableSample {
-    dataVariableSampleID: ID! @id
-    # value: JSON
-    currentValueState: DataVariableSampleState! @relationship(type: "HAS_DEFINITION", direction: IN)
-    previousValueStates: [DataVariableSampleState!]! @relationship(type: "HAS_DEFINITION", direction: IN)
-}
+# type DataVariableSample {
+#     dataVariableSampleID: ID! @id
+#     # value: JSON
+#     currentValueState: DataVariableSampleState! @relationship(type: "HAS_DEFINITION", direction: IN)
+#     previousValueStates: [DataVariableSampleState!]! @relationship(type: "HAS_DEFINITION", direction: IN)
+# }
 
-# For time versioning
-type DataVariableSampleState {
-    value: JSON
-}
+# # For time versioning
+# type DataVariableSampleState {
+#     value: JSON
+# }
 
 type CuratedDataset {
     curatedDatasetID: ID! @id
-    createdAt: DateTime! @timestamp(operations: [CREATE])
-    updatedAt: DateTime! @timestamp(operations: [UPDATE])
+    # createdAt: DateTime! @timestamp(operations: [CREATE])
+    # updatedAt: DateTime! @timestamp(operations: [UPDATE])
     name: String!
     description: String!
     dataVariables: [DataVariable!]! @relationship(type: "HAS_DATA_VARIABLE", direction: OUT)
-    # rawDataFile: MinioUpload! @relationship(type: "HAS_RAW_DATA", direction: OUT)
-    # codebookFile: MinioUpload! @relationship(type: "HAS_CODEBOOK", direction: OUT)
-
-    # custom createRawDatasetWithUploads makes adding timestamps difficult for autogeneration
-    # createdAt: DateTime! @timestamp(operations: [CREATE])
-    # updatedAt: DateTime! @timestamp(operations: [UPDATE])
 }
 
 type Mutation {
-    generateCuratedDataset(rawDatasetID: ID!): CuratedDataset
+    createCuratedDatasetFromRawDataset(rawDatasetID: ID!): CuratedDataset
 }
