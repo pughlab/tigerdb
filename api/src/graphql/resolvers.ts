@@ -68,7 +68,8 @@ export const resolvers = {
 
     createRawDatasetWithUploads: async (
       parent,
-      {name, description, rawDataFile, codebookFile},
+      // {name, description, rawDataFile, codebookFile},
+      {name, description, rawDataFile},
       {driver, ogm, minioClient}
     ) => {
       try {
@@ -88,12 +89,13 @@ export const resolvers = {
         const {rawDatasetID} = rawDataset
 
         const {filename: rawDataFilename, createReadStream: rawDataFileReadStream} = await rawDataFile
-        const {filename: codebookFilename, createReadStream: codebookFileReadStream} = await codebookFile
+        // const {filename: codebookFilename, createReadStream: codebookFileReadStream} = await codebookFile
 
         const bucketName = `raw-dataset-${rawDatasetID}`
         const rawDataFileInput = {bucketName, filename: rawDataFilename, minioUploadType: 'RAW'}
-        const codebookFileInput = {bucketName, filename: codebookFilename, minioUploadType: 'CODEBOOK'}
-        const {minioUploads: [rawDataFileMinioUpload, codebookFileMinioUpload]} = await MinioUploadModel.create({ input: [rawDataFileInput, codebookFileInput]})
+        // const codebookFileInput = {bucketName, filename: codebookFilename, minioUploadType: 'CODEBOOK'}
+        // const {minioUploads: [rawDataFileMinioUpload, codebookFileMinioUpload]} = await MinioUploadModel.create({ input: [rawDataFileInput, codebookFileInput]})
+        const {minioUploads: [rawDataFileMinioUpload]} = await MinioUploadModel.create({ input: [rawDataFileInput]})
 
         await RawDatasetModel.update({
           where: {rawDatasetID},
@@ -104,17 +106,17 @@ export const resolvers = {
                 onCreate: {node: rawDataFileInput}
               }
             },
-            codebookFile: {
-              connectOrCreate: {
-                where: {node: {objectName: codebookFileMinioUpload.objectName}},
-                onCreate: {node: codebookFileInput}
-              }
-            }
+            // codebookFile: {
+            //   connectOrCreate: {
+            //     where: {node: {objectName: codebookFileMinioUpload.objectName}},
+            //     onCreate: {node: codebookFileInput}
+            //   }
+            // }
           }
         })
 
         await putObjectBucket(minioClient, rawDataFile, bucketName, rawDataFileMinioUpload.objectName)
-        await putObjectBucket(minioClient, codebookFile, bucketName, codebookFileMinioUpload.objectName)
+        // await putObjectBucket(minioClient, codebookFile, bucketName, codebookFileMinioUpload.objectName)
         return true        
       } catch (error) {
         console.log(error)
@@ -136,7 +138,7 @@ export const resolvers = {
         console.log(rawDataset)
         const bucketName = `raw-dataset-${rawDatasetID}`
         const [rawMinioUpload] = await MinioUploadModel.find({where: {bucketName, minioUploadType: 'RAW'}})
-        const [codebookMinioUpload] = await MinioUploadModel.find({where: {bucketName, minioUploadType: 'CODEBOOK'}})
+        // const [codebookMinioUpload] = await MinioUploadModel.find({where: {bucketName, minioUploadType: 'CODEBOOK'}})
         // console.log(rawMinioUpload)
         // console.log(codebookMinioUpload)
         const test = await minioClient.getObject(rawMinioUpload.bucketName, rawMinioUpload.objectName)
