@@ -2,7 +2,7 @@ version: '3'
 
 services:
   neo4j:
-    image: neo4j:4.4
+    image: neo4j:4.4.7
     ports:
       - 7474:7474
       - 7687:7687
@@ -12,12 +12,14 @@ services:
       - NEO4J_apoc_import_file_enabled=true
       - NEO4J_apoc_export_file_enabled=true
       - NEO4J_dbms_shell_enabled=true
-      # - NEO4JLABS_PLUGINS=["apoc", "graph-data-science"]
+      - NEO4JLABS_PLUGINS=["apoc", "graph-data-science"]
+      - NEO4J_apoc_import_file_use__neo4j__config=true
     volumes:
       - ../plbr_data:/var/lib/neo4j/import
 
   api:
-    image: node:16
+    image: arm64v8/node:16
+    platform: linux/arm64/v8
     working_dir: /usr/src/service
     command: >
       sh -c "node api/src/proxy_pass minio 9000 &
@@ -44,7 +46,8 @@ services:
       - ../imic_data:/imic_data
 
   ui:
-    image: node:16
+    image: arm64v8/node:16
+    platform: linux/arm64/v8
     working_dir: /usr/src/service
     command: >
       sh -c "npm run start:ui"
@@ -65,6 +68,7 @@ services:
 
   minio:
     image: minio/minio
+    platform: linux/arm64/v8
     ports:
       - ${MINIO_API_PORT}:${MINIO_API_PORT}
       - ${MINIO_CONSOLE_PORT}:${MINIO_CONSOLE_PORT}
