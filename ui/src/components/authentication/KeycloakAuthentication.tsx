@@ -2,14 +2,10 @@ import { gql, useMutation } from '@apollo/client'
 import { useCallback } from 'react'
 import * as React from 'react'
 import { Button, Container, Grid, GridColumn, Segment } from 'semantic-ui-react'
-import { LoadDataButton, DeleteDataButton } from '../upload/DataButtons'
-import SampleData from '../tables/example/SampleData'
 
-import ExploreDatabase from './ExploreDatabase'
-import {useDropzone} from 'react-dropzone'
 import keycloak from '../../keycloak/keycloak'
 
-export default function UserSettings () {
+export default function KeycloakAuthentication () {
   return (
     <Container as={Segment}>
       {/* Keycloak Authentication with Login/Logout button */}

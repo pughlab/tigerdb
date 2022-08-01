@@ -89,56 +89,13 @@ export default function Portal () {
             </Segment>
           </>
         }>
-          <Route index element={<SegmentPlaceholder text='Select a part of the process' />} />
+          <Route index element={<SegmentPlaceholder text='Select a part of the process' icon='info' />} />
           {routes.map(
             ({path, icon, element}) => (
               <Route path={`${path}/*`} element={element} />
             )
           )}
         </Route>
-
-        {/* Put home page nav bar in outlet  */}
-        {/* <Route path='about' element={<About />} /> */}
-        {/* <Route path='database/*' element={<Outlet />} > */}
-          {/* <Route index element={
-            <Container>
-              <SegmentPlaceholder text={<><Link to='ontologies'>Ontologies</Link> or <Link to='raw'>Collected Data</Link></>} icon='compass' />
-            </Container>
-          } /> */}
-          {/* <Route path='ontologies' element={<Outlet />}>
-            <Route index element={
-              <Container>
-                  <SegmentPlaceholder
-                    text={
-                      <><Link to='timeline'>Timelines</Link> or <Link to='metadata'>Metadata</Link> or <Link to='taxnonomy'>Taxonomies</Link> </>
-                    }
-                    icon='compass'
-                  />
-              </Container>
-            } /> */}
-            {/* <Route path='timeline' element={<TimelineOntologies />} />
-            <Route path='metadata' element={<MetadataOntology />} />
-            <Route path='taxonomies' element={<TaxonomyOntologies />} /> */}
-          {/* </Route> */}
-          {/* <Route path="*" element={<SegmentPlaceholder text='Not found!' icon='meh outline' />} /> */}
-        {/* </Route> */}
-        {/* <Route path='upload/*' element={<Outlet />}>
-          <Route index element={
-            <Container>
-                <SegmentPlaceholder text={<><Link to='submit'>Submit a raw dataset</Link> or <Link to='raw'>view existing ones</Link></>} icon='compass' />
-            </Container>
-          } />
-          <Route path='submit' element={<UploadDatasetTables />} />
-          <Route path='raw' element={<RawDatasetsList />} />
-          <Route path='raw/:rawDatasetID' element={<RawDatasetDetails />} />
-          <Route path='studies' element={<ManageStudies />} />          
-        </Route> */}
-        {/* <Route path='settings/*' element={<UserSettings />} /> */}
-
-        {/* Don't need this for now since we have login in landing, may need later for public data access
-            <Route path='login/*' element={<KeycloakAuthentication />} />
-        */}
-
         <Route path="*" element={<SegmentPlaceholder text='Not found!' icon='meh outline' />} />
       </Route>
 
