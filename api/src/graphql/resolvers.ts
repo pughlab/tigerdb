@@ -19,15 +19,15 @@ export const resolvers = {
   },
   Mutation: {
     // TODO: use ogm models instead of session
-    me: async (obj, params, {driver, kauth}, resolveInfo) => {
+    me: async (obj, params, { driver, kauth }, resolveInfo) => {
       try {
-        const {sub: keycloakUserID, email, name, ... kcAuth} = kauth.accessToken.content
+        const { sub: keycloakUserID, email, name, ...kcAuth } = kauth.accessToken.content
         const keycloakUser = { keycloakUserID, email, name }
-  
+
         const session = driver.session()
         const existingUser = await session.run(
           'MATCH (a:User {keycloakUserID: $keycloakUserID}) RETURN a',
-          {keycloakUserID}
+          { keycloakUserID }
         )
         // console.log('match result', existingUser)
         if (R.isEmpty(existingUser.records)) {
@@ -40,37 +40,37 @@ export const resolvers = {
         } else {
           // console.log('existing user props', existingUser.records[0].get(0).properties)
           return keycloakUser
-        } 
+        }
       } catch (error) {
         throw new ApolloError('mutation.me error')
       }
     },
 
-    minioUpload: async (obj, {bucketName, file}, {driver}) => {
+    minioUpload: async (obj, { bucketName, file }, { driver }) => {
       try {
-        const {filename, mimetype, encoding, createReadStream} = await file
+        const { filename, mimetype, encoding, createReadStream } = await file
         const stream = createReadStream()
         const session = driver.session()
         const createMinioUpload = await session.run(
           'CREATE (a:MinioUpload {bucketName: $bucketName, objectName: apoc.create.uuid(), filename: $filename}) RETURN a',
-          {bucketName, filename}
+          { bucketName, filename }
         )
         // console.log(createMinioUpload.records[0].get(0).properties)
         const minioUpload = createMinioUpload.records[0].get(0)
-        const {objectName} = minioUpload.properties 
+        const { objectName } = minioUpload.properties
         await minioClient.putObject(bucketName, objectName, stream)
         return minioUpload.properties
       } catch (error) {
         console.log(error)
         throw new ApolloError('mutation.minioUpload error')
-      } 
+      }
     },
 
     createRawDatasetWithMinioBucket: async (
       parent,
       // {name, description, rawDataFile, codebookFile},
-      {name, description, rawDataFile},
-      {driver, ogm, minioClient}
+      { name, description, rawDataFile },
+      { driver, ogm, minioClient }
     ) => {
       try {
         // const session = driver.session()
@@ -83,9 +83,9 @@ export const resolvers = {
         //   {bucketName, filename}
         // )
         const RawDatasetModel = ogm.model("RawDataset")
-        const {rawDatasets: [rawDataset]} = await RawDatasetModel.create({ input: [{name, description}]})
+        const { rawDatasets: [rawDataset] } = await RawDatasetModel.create({ input: [{ name, description }] })
         // console.log(rawDataset)
-        const {rawDatasetID} = rawDataset
+        const { rawDatasetID } = rawDataset
 
         const bucketName = `raw-dataset-${rawDatasetID}`
         await makeBucket(minioClient, bucketName)
@@ -114,30 +114,67 @@ export const resolvers = {
       }
     },
 
-    createCuratedDatasetFromRawDataset: async ({}, {rawDatasetID}, {driver, ogm, minioClient}) => {
+    createCuratedDatasetFromRawDataset: async (parent, { name, description, rawDatasetID }, { driver, ogm, minioClient }) => {
       try {
         // Create model and add a curated dataset node to db
         const CuratedDatasetModel = ogm.model("CuratedDataset")
         const bucketName = `raw-dataset-${rawDatasetID}`
-        
-        // const {curatedDatasets: [curatedDataset]} = await CuratedDatasetModel.create({ input: [{name, description}]})
-        // const {curatedDatasetID} = curatedDataset
 
-        // await CuratedDatasetModel.update({
-        //   where: {curatedDatasetID},
-        //   update: {
-        //     dataVariables: {
-        //       connectOrCreate: {
-        //         // 
-        //       }
-        //     }
-        //   }
-        // })
-        
+        const { curatedDatasets: [curatedDataset] } = await CuratedDatasetModel.create({ input: [{ name, description }] })
+        const { curatedDatasetID } = curatedDataset
 
-        // With the newly created curated dataset node, transform minio bucket into data variables that connect to newly made curated dataset
+        const bucketItemNames = (await listBucketObjects(minioClient, bucketName)).map(({ name }) => name)
+        console.log(bucketItemNames)
+        const rawDatasetMinioUpload = await minioClient.getObject(bucketName, bucketItemNames[0])
 
-        // Return curated dataset after linking it to its data variables
+        // await ogm.init();
+        async function dataVariableTransformation() {
+          await new Promise((resolve, reject) => {
+            const result = { meta: {}, data: [] };
+
+            papa.parse(rawDatasetMinioUpload, {
+              worker: true,
+              delimiter: " ",
+              complete: async () => {
+                resolve(result);
+
+                for (let i = 0; i < result.data.length; i += 4) {
+
+                  //gathering all chr1, putting into array named 'chromosome'
+                  const chromosome = result.data[i]
+                  const start = result.data[i + 1]
+                  const end = result.data[i + 2]
+
+                  const datavalue = result.data[i + 3]
+
+                  const DataVariableModel = ogm.model("DataVariable");
+
+                  const { dataVariables: [dataVariable] } = await DataVariableModel.create({ input: [{ chromosome: chromosome, start: parseInt(start), end: parseInt(end), datavalue: parseFloat(datavalue) }] })
+                  const { dataVariableID, ...dataVariableRest } = dataVariable
+
+                  await CuratedDatasetModel.update({
+                    where: { curatedDatasetID },
+                    update: {
+                      dataVariables: {
+                        connectOrCreate: {
+                          where: { node: { dataVariableID } },
+                          onCreate: { node: dataVariableRest }
+                        }
+                      }
+                    }
+                  })
+                }
+              },
+
+              error: (err) => {
+                reject(err);
+              },
+            })
+          })
+        }
+        await dataVariableTransformation()
+
+        return curatedDataset
       } catch (error) {
         console.log(error)
         throw new Error(error)
@@ -180,7 +217,7 @@ export const resolvers = {
     //             const fieldInput = {title: field}
     //             let [existingDataVariable] = await DataVariableModel.find({where: fieldInput})
     //             if (!existingDataVariable) {
-                  
+
     //               existingDataVariable = await DataVariableModel.create({
     //                 input: [fieldInput],
     //                 connectOrCreate: {
@@ -215,7 +252,7 @@ export const resolvers = {
     //     //     console.log('finish', data.length);
     //     // });
     //     // test.pipe(parseStream);
-        
+
 
 
 
@@ -243,9 +280,9 @@ export const resolvers = {
 
   RawDataset: {
     minioBucket: async (
-      {rawDatasetID},
-      {},
-      {minioClient}
+      { rawDatasetID },
+      { },
+      { minioClient }
     ) => {
       try {
         return {
@@ -258,15 +295,14 @@ export const resolvers = {
   },
 
   MinioBucket: {
-    minioObjects: async ({bucketName}, {}, {minioClient, ogm, driver}) => {
+    minioObjects: async ({ bucketName }, { }, { minioClient, ogm, driver }) => {
       try {
         const MinioUploadModel = ogm.model("MinioUpload")
-        const bucketItemNames = (await listBucketObjects(minioClient, bucketName)).map(({name}) => name)
+        const bucketItemNames = (await listBucketObjects(minioClient, bucketName)).map(({ name }) => name)
 
-        console.log(bucketItemNames)
         const res = await MinioUploadModel.find({
           where: {
-            objectName: {IN: [bucketItemNames]} 
+            objectName: { IN: [bucketItemNames] }
           }
         })
         console.log(res)
@@ -291,9 +327,9 @@ export const resolvers = {
 
   MinioUpload: {
     presignedURL: async (
-      {bucketName, objectName},
-      {},
-      {driver, ogm, minioClient}
+      { bucketName, objectName },
+      { },
+      { driver, ogm, minioClient }
     ) => {
       try {
         const presignedURL = await minioClient.presignedUrl('GET', bucketName, objectName)
