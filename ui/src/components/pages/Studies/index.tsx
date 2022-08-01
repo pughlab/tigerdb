@@ -81,20 +81,27 @@ function ManageStudiesListItem ({study}: {study: any}) {
   }
   
 
-export default function ManageStudies (
+export default function Studies (
   // {state: {databaseView}, dispatch}: {state: {databaseView: any}, dispatch: any}
 ) {
   return (
     <>
     <Container>
-      <Message content='These are raw datasets' >
-          These are studies that have provided datasets to the consortium.
-          Every study has a timeline of data collection timepoints (e.g. birth).
-          A dataset must come from an existing study in order to be uploaded.
+      <Message content='These are studies' >
+          Some text about studies
 
           <Divider horizontal />
           <AddStudyModal />
       </Message>
+      <Form>
+        <Form.Field
+            control={Input}
+            label='Search'
+            placeholder='Names and descriptions'
+            // value={description}
+            // onChange={(e, {value}) => dispatch({type: 'SET_DESCRIPTION', description: value})}
+        />
+      </Form>
       <List relaxed='very' selection size='large'>
           {
               [{fullName: "Canadian Healthy Infant Longitudinal Development", shortName: "CHILD", description: "A study across four sites from pre-natal to age 11"}].map(

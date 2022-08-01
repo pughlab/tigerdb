@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Container, Segment, Grid, Header, Divider, Icon } from 'semantic-ui-react';
 import { Image } from 'semantic-ui-react';
 // import logo from '../../imic_logo.png';
-import uhn from '../../../src/uhn.png';
-import cbmp from '../../../src/cbmp.png';
-import ccs from '../../../src/ccs.png';
-import pugh from '../../../src/pugh.png';
+import uhn from '../../../../src/uhn.png';
+import cbmp from '../../../../src/cbmp.png';
+import ccs from '../../../../src/ccs.png';
+import pugh from '../../../../src/pugh.png';
 
-export default function UserHome () {
+export default function About () {
   return (
     <Container as={Segment}>
         <Divider horizontal>

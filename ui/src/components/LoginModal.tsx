@@ -16,7 +16,16 @@ const LoginModal = () => {
   const { keycloak, initialized } = useKeycloak()
   const keycloakMe = useAppSelector(currentAppContextKeycloakMe, shallowEqual)
   // console.log(keycloakMe)
-  if (!keycloakMe) {return null}
+  if (!keycloakMe) {
+    return (
+      <Menu.Item
+        header
+        icon='spinner'
+        loading
+        onClick={() => setOpen(!open)}
+      />
+    )
+  }
   // console.log(context)
   // return null
   const {name, email} = keycloakMe
