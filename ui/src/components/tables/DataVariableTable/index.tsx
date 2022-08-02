@@ -512,6 +512,10 @@ export default function DataVariableTable({data}) {
       {
         Header: 'End',
         accessor: 'end',
+      },
+      {
+        Header: 'Data value',
+        accessor: 'datavalue'
       }
     ], []
   )

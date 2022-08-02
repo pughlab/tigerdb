@@ -15,6 +15,7 @@ function DownloadDataVariables ({data}) {
         {label: 'chromosome', key: 'chromosome'},
         {label: 'start', key: 'start'},
         {label: 'end', key: 'end'},
+        {label: 'datavalue', key: 'datavalue'}
       ]
     return (
         <CSVLink data={data} headers={headers} filename={"plbr_export.csv"}>
@@ -38,6 +39,7 @@ export default function Explore () {
                 chromosome
                 start
                 end
+                datavalue
             }
         }`,
         {variables: {searchText, start, end}})
