@@ -1,5 +1,5 @@
 import React from 'react'
-import {Table, Segment, Button, Input, Dropdown, Divider, Label} from 'semantic-ui-react'
+import {Table, Segment, Button, Input, Dropdown, Divider, Label, Form} from 'semantic-ui-react'
 import styled from 'styled-components'
 import {
   useTable,
@@ -350,76 +350,42 @@ function FullTable({ columns, data, updateMyData, skipReset }) {
   return (
     <>
     <Segment attached='top' textAlign='center'>
-    <div>
-        <Label>
-        <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-        {'<<'}
-        </Button>{' '}
-        <Button onClick={() => previousPage()} disabled={!canPreviousPage}>
-        {'<'}
-        </Button>{' '}
-        <Button onClick={() => nextPage()} disabled={!canNextPage}>
-        {'>'}
-        </Button>{' '}
-        <Button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-        {'>>'}
-        </Button>{' '}
-        </Label>
-        
-        <Label>
-        <span>
-            Page{' '}
-        <strong>
-            {pageIndex + 1} of {pageOptions.length}
-        </strong>{' '}
-        </span>
-        </Label>
-        {/* <span> */}
-        {/* | Go to page:{' '} */}
-        <Label>
-            Go to page:
-            <Label.Detail>
-                <Input
-            type="number"
-            defaultValue={pageIndex + 1}
-            onChange={e => {
-            const page = e.target.value ? Number(e.target.value) - 1 : 0
-            gotoPage(page)
-            }}
-            style={{ width: '100px' }}
-            />
-            </Label.Detail>
-        </Label>
+      <Form>
+        <Form.Group widths={3}>
+          <Form.Field>
+            <Button.Group fluid>
+              <Button onClick={() => gotoPage(0)} disabled={!canPreviousPage} icon='left double angle' />
+              <Button onClick={() => previousPage()} disabled={!canPreviousPage} icon='left angle' />
+              <Button onClick={() => nextPage()} disabled={!canNextPage} icon='right angle' />
+              <Button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage} icon='right double angle' />
+            </Button.Group>
+          </Form.Field>
 
-        {/* </span> */}
-        {/* {` `} */}
-        <Label>
-        <Dropdown
-            selection
-            value={pageSize}
-            onChange={e => {setPageSize(Number(e.target.value))}}
-            options={[10, 20, 30, 40, 50].map(pageSize => ({text: `Show ${pageSize}`, value: pageSize}))}
-        />
-        </Label>
-    </div>
+          <Form.Field>
+            <Input fluid
+              label={`Page ${pageIndex+1} of ${pageOptions.length} | Go to page: `}
+              type="number"
+              defaultValue={pageIndex + 1}
+              onChange={e => {
+                const page = e.target.value ? Number(e.target.value) - 1 : 0
+                gotoPage(page)
+              }}
+            />
+          </Form.Field>
+
+          <Form.Field>
+            <Dropdown fluid
+              selection
+              value={pageSize}
+              onChange={e => {setPageSize(Number(e.target.value))}}
+              options={[10, 20, 30, 40, 50].map(pageSize => ({text: `Show ${pageSize}`, value: pageSize}))}
+            />
+          </Form.Field>
+        </Form.Group>
+      </Form>
       {/* <pre>
         <code>
-          {JSON.stringify(
-            {
-              pageIndex,
-              pageSize,
-              pageCount,
-              canNextPage,
-              canPreviousPage,
-              sortBy,
-              groupBy,
-              expanded: expanded,
-              filters,
-              selectedRowIds: selectedRowIds,
-            },
-            null,
-            2
-          )}
+          {JSON.stringify({ pageIndex, pageSize, pageCount, canNextPage, canPreviousPage, sortBy, groupBy, expanded: expanded, filters, selectedRowIds: selectedRowIds},null,2)}
         </code>
       </pre> */}
     </Segment>
