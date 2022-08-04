@@ -5,6 +5,8 @@ import DataVariableTable from '../../tables/DataVariableTable'
 import {gql, useQuery} from '@apollo/client'
 import { CSVLink } from "react-csv";
 
+import SunburstVisualization from '../../visualizations/sunburst/SunburstVisualization';
+import TreemapVisualization from '../../visualizations/treemap/TreemapVisualization'
 
 
 
@@ -47,13 +49,13 @@ export default function Explore () {
 
     return (
         <>
-            <Message content='Explore variables' >
+            <Message>
             Some text about data variables and searching to create visualizations
 
             <Divider horizontal />
           </Message>
               
-            <Form as={Segment} attached='top'>
+            {/* <Form as={Segment} attached='top'>
                 <Form.Group widths={3}>
                     <Form.Field
                         control={Input}
@@ -81,9 +83,10 @@ export default function Explore () {
                         onChange={(e, {value}) => setEnd(Math.max(0, parseInt(value)))}
                     />
                 </Form.Group>
-            </Form>
+            </Form> */}
           <Segment attached='bottom' loading={loading}>
-            {
+              
+            {/* {
                 !!data?.dataVariables && (
                     <>
                         <DownloadDataVariables data={data.dataVariables} />
@@ -91,7 +94,7 @@ export default function Explore () {
                     </>
                 )
                 
-            }
+            } */}
           </Segment>
         </>
     )

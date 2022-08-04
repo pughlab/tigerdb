@@ -2,6 +2,12 @@ import React from 'react'
 import { Route, Routes, useParams } from 'react-router-dom'
 import { Message, Divider, Container, List, Input, Segment, Form, Button } from 'semantic-ui-react'
 import useRouter from '../../../hooks/useRouter'
+import GeographyVisualization from '../../visualizations/geography/GeographyVisualization'
+
+import SunburstVisualization from '../../visualizations/sunburst/SunburstVisualization'
+import TreemapVisualization from '../../visualizations/treemap/TreemapVisualization'
+import PieVisualization from '../../visualizations/pie/PieVisualization'
+import BarVisualization from '../../visualizations/bar/BarVisualization'
 
 function DataExportDetails () {
     const {exportID} = useParams()
@@ -16,7 +22,11 @@ function DataExportDetails () {
             List of data variables here
         </Segment>
         <Divider horizontal />
-        Visualizations here (create and save)
+        <SunburstVisualization />
+        <TreemapVisualization />
+        <GeographyVisualization />
+        <PieVisualization />
+        <BarVisualization />
         </>
     )
 }

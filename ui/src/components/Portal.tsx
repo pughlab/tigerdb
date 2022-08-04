@@ -27,6 +27,7 @@ import Studies from './pages/Studies'
 import Datasets from './pages/Datasets'
 import Explore from './pages/Explore'
 import DataExports from './pages/DataExports'
+import Metadata from './pages/Metadata'
 
 function Layout ({}) {
   const {navigate, location, isActivePath} = useRouter()
@@ -67,7 +68,7 @@ export default function Portal () {
     {path: 'datasets', icon: 'database', element: <Datasets />},
     {path: 'explore', icon: 'search', element: <Explore />},
     {path: 'export', icon: 'download', element: <DataExports />},
-    {path: 'metadata', icon: 'search plus', element: <>search</>},
+    {path: 'metadata', icon: 'search plus', element: <Metadata />},
   ]
   return (
     <Routes>
