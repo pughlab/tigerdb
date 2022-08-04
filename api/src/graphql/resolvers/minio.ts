@@ -1,5 +1,6 @@
 import { minioClient, listBucketObjects } from '../../minio/minio'
 import { ApolloError } from 'apollo-server'
+import  zlib  from 'zlib';
 
 export const resolvers = {
   Query: {
@@ -10,6 +11,8 @@ export const resolvers = {
       try {
         const { filename, mimetype, encoding, createReadStream } = await file
         const stream = createReadStream()
+        const compressedFileStream = createReadStream().pipe(zlib.createGzip());
+
         const session = driver.session()
         const createMinioUpload = await session.run(
           'CREATE (a:MinioUpload {bucketName: $bucketName, objectName: apoc.create.uuid(), filename: $filename}) RETURN a',
@@ -18,7 +21,7 @@ export const resolvers = {
         // console.log(createMinioUpload.records[0].get(0).properties)
         const minioUpload = createMinioUpload.records[0].get(0)
         const { objectName } = minioUpload.properties
-        await minioClient.putObject(bucketName, objectName, stream)
+        await minioClient.putObject(bucketName, objectName, compressedFileStream)
         return minioUpload.properties
       } catch (error) {
         console.log(error)

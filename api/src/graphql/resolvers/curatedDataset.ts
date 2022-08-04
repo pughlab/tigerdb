@@ -1,6 +1,7 @@
 import { listBucketObjects } from '../../minio/minio'
 import papa from 'papaparse'
 import { ApolloError } from 'apollo-server'
+import zlib from 'zlib'
 
 
 export const resolvers = {
@@ -19,13 +20,43 @@ export const resolvers = {
 
         const bucketItemNames = (await listBucketObjects(minioClient, bucketName)).map(({ name }) => name)
         console.log(bucketItemNames)
-        const rawDatasetMinioUpload = await minioClient.getObject(bucketName, bucketItemNames[0])
+        
+        // get last uploaded item in bucket (slice[-1][0]) and return stream 
+        const stream = await minioClient.getObject(bucketName, bucketItemNames.slice(-1)[0])
+        // gunzip stream
+        const compressedFileStream = stream.pipe(zlib.createGunzip())
 
-        // await ogm.init();
+        // async function dataVariableCreateAndUpdateNode(result) {
+        //   const chromosome = result.data[0]
+        //   const start = result.data[1]
+        //   const end = result.data[2]
+
+        //   const datavalue = result.data[3]
+        //   // console.log(result.data[0])
+
+        //   const DataVariableModel = ogm.model("DataVariable");
+
+        //   const { dataVariables: [dataVariable] } = await DataVariableModel.create({ input: [{ chromosome: chromosome, start: parseInt(start), end: parseInt(end), datavalue: parseFloat(datavalue) }] })
+        //   const { dataVariableID, ...dataVariableRest } = dataVariable
+        
+
+        //   await CuratedDatasetModel.update({
+        //     where: { curatedDatasetID },
+        //     update: {
+        //       dataVariables: {
+        //         connectOrCreate: {
+        //           where: { node: { dataVariableID } },
+        //           onCreate: { node: dataVariableRest }
+        //         }
+        //       }
+        //     }
+        //   })
+        // }
+
         async function dataVariableTransformation() {
           let result = { meta: {}, data: [] };
           await new Promise((resolve, reject) => {
-            papa.parse(rawDatasetMinioUpload, {
+            papa.parse(compressedFileStream, {
               worker: true,
               delimiter: " ",
               step: (results) => {
@@ -33,6 +64,8 @@ export const resolvers = {
                 result.data.push(results.data[1]);
                 result.data.push(results.data[2]);
                 result.data.push(results.data[3]);
+                // dataVariableCreateAndUpdateNode(results)
+                
               },
               complete: () => {
                 resolve(result);
