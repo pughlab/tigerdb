@@ -70,12 +70,15 @@ function StudiesListItem ({study}) {
 		// const navigate = useNavigate()
 		return (
 			<>
-			<List.Item as={Segment}>
+			<List.Item as={Segment} onClick={() => {}}>
 				<List.Content floated='right' as={Segment} basic>
 	
 				</List.Content>
 				<List.Content>
-					<List.Header as={Header} content={`${fullName}`} subheader={shortName} />
+					<List.Header as={Header}>
+						{`${fullName}`}
+						<Header.Subheader content={shortName} />
+					</List.Header>
 					
 					<List.Description content={description} />
 					<List.List>
