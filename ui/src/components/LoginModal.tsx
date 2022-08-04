@@ -20,8 +20,7 @@ const LoginModal = () => {
     return (
       <Menu.Item
         header
-        icon='spinner'
-        loading
+        icon={<Icon name='spinner' loading />}
         onClick={() => setOpen(!open)}
       />
     )
