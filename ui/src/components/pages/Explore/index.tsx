@@ -36,6 +36,12 @@ export default function Explore() {
                 chromosome_CONTAINS: $searchText
                 start_GTE: $start
                 end_LTE: $end 
+            }, options: {
+                sort: [
+                    {
+                        start: ASC
+                    }
+                ]
             }) {
                 dataVariableID
                 chromosome
