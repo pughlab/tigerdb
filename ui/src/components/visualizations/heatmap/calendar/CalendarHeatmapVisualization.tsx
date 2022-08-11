@@ -28,11 +28,12 @@ export default function CalendarHeatmapVisualization() {
         count: getRandomInt(1, 3),
       };
     });
+    console.log(randomValues[randomValues.length-1])
     return (
       <div>
         <CalendarHeatmap
           startDate={shiftDate(today, -150)}
-          endDate={today}
+          endDate={shiftDate(today, -1)}
           values={randomValues}
           classForValue={value => {
             if (!value) {
@@ -42,9 +43,7 @@ export default function CalendarHeatmapVisualization() {
           }}
           tooltipDataAttrs={value => {
             return {
-              'data-tip': `${value.date.toISOString().slice(0, 10)} has count: ${
-                value.count
-              }`,
+              'data-tip': `${value.date.toISOString().slice(0, 10)} has count: ${value.count}`,
             };
           }}
           showWeekdayLabels={true}
