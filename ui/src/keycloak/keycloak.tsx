@@ -1,7 +1,7 @@
 import Keycloak from 'keycloak-js';
 
 const keycloakhost = process.env.KEYCLOAK_SERVER_HOST || '0.0.0.0'
-const keycloakport = process.env.KEYCLOAK_SERVER_PORT || '8080'
+const keycloakport = process.env.KEYCLOAK_SERVER_PORT || '8085'
 const keycloakrealm = process.env.KEYCLOAK_SERVER_REALM || 'pibu'
 const keycloakclient = process.env.KEYCLOAK_SERVER_CLIENT || 'pibu-app'
 
