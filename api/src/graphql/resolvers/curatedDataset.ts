@@ -1,6 +1,7 @@
 import { listBucketObjects } from '../../minio/minio'
 import papa from 'papaparse'
 import { ApolloError } from 'apollo-server'
+import zlib from 'zlib'
 
 
 export const resolvers = {
@@ -19,20 +20,26 @@ export const resolvers = {
 
         const bucketItemNames = (await listBucketObjects(minioClient, bucketName)).map(({ name }) => name)
         console.log(bucketItemNames)
-        const rawDatasetMinioUpload = await minioClient.getObject(bucketName, bucketItemNames[0])
 
-        // await ogm.init();
+        // get last uploaded item in bucket (slice[-1][0]) and return stream 
+        const stream = await minioClient.getObject(bucketName, bucketItemNames.slice(-1)[0])
+        // gunzip stream
+        const compressedFileStream = stream.pipe(zlib.createGunzip())
+
         async function dataVariableTransformation() {
           let result = { meta: {}, data: [] };
+          // let result = []
           await new Promise((resolve, reject) => {
-            papa.parse(rawDatasetMinioUpload, {
+            papa.parse(compressedFileStream, {
               worker: true,
               delimiter: " ",
               step: (results) => {
-                result.data.push(results.data[0]);
-                result.data.push(results.data[1]);
-                result.data.push(results.data[2]);
-                result.data.push(results.data[3]);
+                // result.data.push(results.data[0]);
+                // result.data.push(results.data[1]);
+                // result.data.push(results.data[2]);
+                // result.data.push(results.data[3]);
+                result.data.push(results.data)
+                
               },
               complete: () => {
                 resolve(result);
@@ -42,14 +49,28 @@ export const resolvers = {
               },
             })
           })
-          for (let i = 0; i < result.data.length; i += 4) {
+          const chunkSize = 1000;
+          console.log(result.data.length)
+          // var i = 0, len = result.data.length
+          // while (i < len) {
+          
+          for (let i = 0; i < result.data.length; i += chunkSize) {
+          const chunk = result.data.slice(i, i + chunkSize);
+          console.log("NOW PROCESSING CHUNK: "+i)
+          // console.log(chunk)
+
+        
+          await Promise.all(chunk.map(async (result) => {
+
+                
+          // for (let i = 0; i < result.data.length; i += 4) {
 
             //gathering all chr1, putting into array named 'chromosome'
-            const chromosome = result.data[i]
-            const start = result.data[i + 1]
-            const end = result.data[i + 2]
+            const chromosome = result[0]
+            const start = result[1]
+            const end = result[2]
 
-            const datavalue = result.data[i + 3]
+            const datavalue = result[3]
 
             const DataVariableModel = ogm.model("DataVariable");
 
@@ -67,9 +88,12 @@ export const resolvers = {
                 }
               }
             })
-          }
-        }
-        await dataVariableTransformation()
+
+          }))
+          // i+=chunkSize
+          console.log("done neo4j transformation")
+        }}
+        dataVariableTransformation()
         return curatedDataset
       } catch (error) {
         console.log(error)
