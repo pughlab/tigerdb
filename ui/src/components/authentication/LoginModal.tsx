@@ -7,6 +7,7 @@ import { useAppSelector } from '../../state/hooks';
 import { currentAppContextKeycloakMe } from '../../state/appContext';
 import { shallowEqual } from 'react-redux';
 import {Logo} from '../logos'
+import {LOGIN_MENU_ELEMENT_ID} from '../intros/PortalNavBarIntro'
 
 export default function LoginModal ({}) {
   console.log('test')
@@ -33,6 +34,7 @@ export default function LoginModal ({}) {
     <Popup size='large' flowing wide='very'
       trigger={
         <Menu.Item
+          id={LOGIN_MENU_ELEMENT_ID}     
           header
           icon='user'
           onClick={() => setOpen(!open)}

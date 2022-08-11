@@ -4,6 +4,7 @@ import App from './App';
 
 import './index.css'
 import 'semantic-ui-css/semantic.min.css'
+import 'intro.js/introjs.css';
 
 import { createRoot } from 'react-dom/client';
 

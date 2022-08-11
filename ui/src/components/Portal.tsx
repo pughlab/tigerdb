@@ -16,14 +16,17 @@ import Explore from './pages/Explore'
 import DataExports from './pages/DataExports'
 import Metadata from './pages/Metadata'
 
+import PortalNavBarIntro, {HOME_MENU_ELEMENT_ID, DATA_MENU_ELEMENT_ID} from './intros/PortalNavBarIntro'
+
 function Layout ({}) {
   const {navigate, location, isActivePath} = useRouter()
   const routes = [
-    {path: '/', icon: 'info circle'},
-    {path: '/home', icon: 'database'},
+    {path: '/', icon: 'info circle', introID: HOME_MENU_ELEMENT_ID},
+    {path: '/home', icon: 'database', introID: DATA_MENU_ELEMENT_ID},
   ]
   return (
     <>
+    
     <Sticky>
       <Menu inverted color='blue' style={{margin: 0, borderRadius: 0}}>
         <Menu.Menu position='left'>
@@ -32,11 +35,13 @@ function Layout ({}) {
         
         <Menu.Menu position='right'>
           {routes.map(
-            ({path, icon}) => <Menu.Item key={path} {...{header: true, icon, active: isActivePath(path), onClick: (e, d) => navigate(path)}} />
+            ({path, icon, introID}) => <Menu.Item id={introID} key={path} {...{header: true, icon, active: isActivePath(path), onClick: (e, d) => navigate(path)}} />
           )}
           <LoginModal />
+          <PortalNavBarIntro />
         </Menu.Menu>
       </Menu>
+      
     </Sticky>
     <Divider horizontal />
     <div style={{padding: '1em'}}>
