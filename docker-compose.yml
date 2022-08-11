@@ -15,11 +15,13 @@ services:
       - NEO4JLABS_PLUGINS=["apoc", "graph-data-science"]
       - NEO4J_apoc_import_file_use__neo4j__config=true
     volumes:
-      - ../plbr_data:/var/lib/neo4j/import
+      - pibu_neo4j_volume:/var/lib/neo4j/data
 
   api:
+    # For non-M1 machines: comment out arm64v8 and platform field
     image: arm64v8/node:16
     platform: linux/arm64/v8
+    # image: node:16
     working_dir: /usr/src/service
     command: >
       sh -c "node api/src/proxy_pass minio 9000 &
@@ -41,11 +43,14 @@ services:
       - neo4j
       - minio
       - keycloak
+    
     volumes:
       - .:/usr/src/service
-      - ../imic_data:/imic_data
+      - pibu_api_volume:/pibu_data
 
   ui:
+    # For non-M1 machines: comment out arm64v8 and platform field
+    # image: node:16
     image: arm64v8/node:16
     platform: linux/arm64/v8
     working_dir: /usr/src/service
@@ -68,12 +73,11 @@ services:
 
   minio:
     image: minio/minio
-    platform: linux/arm64/v8
     ports:
       - ${MINIO_API_PORT}:${MINIO_API_PORT}
       - ${MINIO_CONSOLE_PORT}:${MINIO_CONSOLE_PORT}
     volumes:
-      - plbr_minio_volume:/data
+      - pibu_minio_volume:/data
       - /etc/localtime:/etc/localtime:ro
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
@@ -81,6 +85,7 @@ services:
     command: server /data --console-address ":${MINIO_CONSOLE_PORT}"
 
   keycloak:
+    # For non-M1 machines: use keycloak 11
     # image: jboss/keycloak:11.0.1
     image: wizzn/keycloak:12
     container_name: keycloak
@@ -91,7 +96,7 @@ services:
       - "8080:8080"
     volumes:
       - ./keycloak/realm-export.json:/opt/jboss/keycloak/realm-export.json
-      - plbr_keycloak_volume:/opt/jboss/keycloak/standalone/data
+      - pibu_keycloak_volume:/opt/jboss/keycloak/standalone/data
       - ./nginx/certs/bundle.crt:/etc/x509/https/tls.crt
       - ./nginx/certs/bundle.key:/etc/x509/https/tls.key
     environment:
@@ -122,7 +127,11 @@ services:
       
 
 volumes:
-  plbr_minio_volume:
+  pibu_minio_volume:
     external: true
-  plbr_keycloak_volume:
+  pibu_keycloak_volume:
+    external: true
+  pibu_api_volume:
+    external: true
+  pibu_neo4j_volume:
     external: true
