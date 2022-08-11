@@ -14,14 +14,14 @@ export function AboutPortal ({}) {
       <Container>
         <Divider horizontal>
           <Header as='h1'>
-            <Icon name='tint' color='red' size='big' />
+            {/* <Icon name='tint' color='red' size='big' /> */}
             <Header.Content>
               Portal
               <Header.Subheader>Description</Header.Subheader>
             </Header.Content>
           </Header>
         </Divider>
-        <Segment color='blue' size='big'>
+        <Segment color='black' size='big'>
           <Divider horizontal>
             <Header as='h2' content='About Us' />
           </Divider>
