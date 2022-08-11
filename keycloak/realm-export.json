@@ -1,6 +1,6 @@
 {
-  "id": "plbr",
-  "realm": "plbr",
+  "id": "pibu",
+  "realm": "pibu",
   "notBefore": 0,
   "revokeRefreshToken": false,
   "refreshTokenMaxReuse": 0,
@@ -47,7 +47,7 @@
         "name": "developer",
         "composite": false,
         "clientRole": false,
-        "containerId": "plbr",
+        "containerId": "pibu",
         "attributes": {}
       },
       {
@@ -56,7 +56,7 @@
         "description": "${role_offline-access}",
         "composite": false,
         "clientRole": false,
-        "containerId": "plbr",
+        "containerId": "pibu",
         "attributes": {}
       },
       {
@@ -65,7 +65,7 @@
         "description": "${role_uma_authorization}",
         "composite": false,
         "clientRole": false,
-        "containerId": "plbr",
+        "containerId": "pibu",
         "attributes": {}
       },
       {
@@ -73,12 +73,12 @@
         "name": "admin",
         "composite": false,
         "clientRole": false,
-        "containerId": "plbr",
+        "containerId": "pibu",
         "attributes": {}
       }
     ],
     "client": {
-      "plbr-app": [
+      "pibu-app": [
         {
           "id": "cabd5267-ccca-467c-b0d4-83d7c34b3343",
           "name": "developer",
@@ -532,7 +532,7 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/plbr/account/",
+      "baseUrl": "/realms/pibu/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
@@ -543,7 +543,7 @@
         "view-profile"
       ],
       "redirectUris": [
-        "/realms/plbr/account/*"
+        "/realms/pibu/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -967,7 +967,7 @@
     },
     {
       "id": "9e4ad964-80b3-4daf-8917-7801f892ceef",
-      "clientId": "plbr-app",
+      "clientId": "pibu-app",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
@@ -1104,7 +1104,7 @@
           "protocolMapper": "oidc-audience-mapper",
           "consentRequired": false,
           "config": {
-            "included.client.audience": "plbr-app",
+            "included.client.audience": "pibu-app",
             "id.token.claim": "false",
             "access.token.claim": "true",
             "userinfo.token.claim": "false"
@@ -1664,14 +1664,14 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/plbr/console/",
+      "baseUrl": "/admin/pibu/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "/admin/plbr/console/*"
+        "/admin/pibu/console/*"
       ],
       "webOrigins": [
         "+"
