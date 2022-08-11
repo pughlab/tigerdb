@@ -1,4 +1,3 @@
-import * as R from 'ramda'
 import dotenv from 'dotenv'
 import { Client, BucketItem } from 'minio'
 
@@ -43,7 +42,7 @@ export const listBucketObjects = async (minioClient: Client, bucketName: string)
         (resolve, reject) => {
           let objects: BucketItem[] = []
           const stream = minioClient.listObjectsV2(`${bucketName}`, '', true)
-          stream.on('data', (obj: BucketItem) => objects = R.append(obj, objects)),
+          stream.on('data', (obj: BucketItem) => objects.push(obj)),
           stream.on('end', () => resolve(objects))
           stream.on('error', (err: Error) => reject(err))
         }
