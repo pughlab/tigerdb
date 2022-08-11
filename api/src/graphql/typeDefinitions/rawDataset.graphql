@@ -5,7 +5,7 @@ type RawDataset {
     minioBucket: MinioBucket! @relationship(type: "HAS_MINIO_BUCKET", direction: OUT)
 
     # custom createRawDatasetWithUploads makes adding timestamps difficult for autogeneration
-    # createdAt: DateTime! @timestamp(operations: [CREATE])
+    createdAt: DateTime! @timestamp(operations: [CREATE])
     # updatedAt: DateTime! @timestamp(operations: [UPDATE])
 
     # generatedCuratedDataset: CuratedDataset @relationship(type: "GENERATED_CURATED_DATASET", direction: OUT)
