@@ -37,10 +37,10 @@ export const createApolloServer = () => {
   const apolloServer = new ApolloServer({
     context: async ({req, res}) => {
       const token = req.headers.authorization || '';
-      console.log(`Req Bearer Token: ${token}`);
+      // console.log(`Req Bearer Token: ${token}`);
       const kauth = new KeycloakContext({req}, keycloak)
   
-      console.log(`kauth: ${kauth.accessToken}`);
+      // console.log(`kauth: ${kauth.accessToken}`);
       
       const ogm = new OGM({typeDefs, driver})
       return {
