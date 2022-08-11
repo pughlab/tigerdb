@@ -20,7 +20,7 @@ function DownloadDataVariables({ data }) {
         { label: 'datavalue', key: 'datavalue' }
     ]
     return (
-        <CSVLink data={data} headers={headers} filename={"plbr_export.csv"}>
+        <CSVLink data={data} headers={headers} filename={"pibu_export.csv"}>
             <Button fluid content={`Download ${data.length} variables`} />
         </CSVLink>
     )
