@@ -1,5 +1,3 @@
-scalar JSON
-
 # type Subject {
 #     subjectID: ID! @id
 #     childID: ID!
