@@ -28,7 +28,7 @@ function Layout ({}) {
     <>
     
     <Sticky>
-      <Menu inverted color='blue' style={{margin: 0, borderRadius: 0}}>
+      <Menu style={{margin: 0, borderRadius: 0}}>
         <Menu.Menu position='left'>
           <Logo size='small' />
         </Menu.Menu>
