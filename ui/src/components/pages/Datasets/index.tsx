@@ -120,22 +120,40 @@ function DatasetDetails () {
 			</Message>
 		</Grid.Column>
 		<Grid.Column>
-			<MinioBucket bucketName={`raw-dataset-${rawDatasetID}`} />
+			History/membership here
 		</Grid.Column>
 		</Grid>
-		<Form as={Segment}>
-		<Form.Field
-			control={Input}
-			label='Transformation'
-			placeholder='Select transformation for the raw dataset minio bucket'
-		/>
-		<Form.Field
-			control={Button}
-			label='Submit'
-			fluid
-			content='Submit transformation job to convert to data variables'
-		/>
+    <Segment>
+    <Form>
+      <Form.Group>
+      <Form.Field width={12}
+        control={Input}
+        label='Transformation'
+        placeholder='Select transformation for the raw dataset minio bucket'
+      />
+      <Form.Field width={4}
+        control={Button}
+        label='Convert to portal data variables'
+        fluid
+        content='Submit'
+      />
+      </Form.Group>
 		</Form>
+
+      <Grid columns={2}>
+        <Grid.Column>
+          <Divider horizontal content='Dataset Files' />
+          <MinioBucket bucketName={`raw-dataset-${rawDatasetID}`} />
+        </Grid.Column>
+        <Grid.Column>
+          <Divider horizontal content='Transformation requirements' />
+          <Segment>
+
+          </Segment>
+        </Grid.Column>
+      </Grid>
+    </Segment>
+
 		<Divider horizontal content='If transformation is successful...' />
 		<Segment>
 		Table goes here
