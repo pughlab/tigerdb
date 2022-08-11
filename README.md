@@ -19,3 +19,4 @@ KEYCLOAK_SERVER_HOST=your_local_machine_ip_from_internet_settings
 KEYCLOAK_SERVER_PUBLIC_KEY=key_from_keycloak_admin_console
 ```
 
+You may also need to change some Docker options to give your containers (specifically `api`) enough memory to run (~4gb). 
