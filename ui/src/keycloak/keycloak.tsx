@@ -2,6 +2,8 @@ import Keycloak from 'keycloak-js';
 
 const keycloakhost = process.env.KEYCLOAK_SERVER_HOST || '0.0.0.0'
 const keycloakport = process.env.KEYCLOAK_SERVER_PORT || '8080'
+const keycloakrealm = process.env.KEYCLOAK_SERVER_REALM || 'pibu'
+const keycloakclient = process.env.KEYCLOAK_SERVER_CLIENT || 'pibu-app'
 
 console.log('keycloakhost', keycloakhost)
 console.log('keycloakport', keycloakport)
@@ -15,8 +17,8 @@ console.log('process.env', process.env)
 // Pass initialization options as required or leave blank to load from 'keycloak.json'
 const keycloak = Keycloak({
   url: `https://${keycloakhost}:${keycloakport}/auth`,
-  realm: "plbr",
-  clientId: 'plbr-app'
+  realm: keycloakrealm,
+  clientId: keycloakclient
 });
 
 export default keycloak
