@@ -3,12 +3,12 @@ import React, {useState, useEffect} from 'react';
 import {Embed, Header, Segment, Button, Grid, Modal, Label, Divider, Icon, Image, Popup, Message, Menu} from 'semantic-ui-react'
 
 import { useKeycloak } from '@react-keycloak/web'
-import { useAppSelector } from '../state/hooks';
-import { currentAppContextKeycloakMe } from '../state/appContext';
+import { useAppSelector } from '../../state/hooks';
+import { currentAppContextKeycloakMe } from '../../state/appContext';
 import { shallowEqual } from 'react-redux';
-import Logo from '../imic_logo.png'
+import {Logo} from '../logos'
 
-const LoginModal = () => {
+export default function LoginModal ({}) {
   console.log('test')
   // const {keycloakUser} = state
   // const {name, email} = keycloakUser
@@ -52,7 +52,7 @@ const LoginModal = () => {
       {/* put logout here */}
         <Segment.Group>
           <Segment>
-            <Image centered size='small' src={Logo}/>
+            <Logo />
           </Segment>
           <Segment>
           {
@@ -75,5 +75,3 @@ const LoginModal = () => {
     </>
   )
 }
-
-export default LoginModal

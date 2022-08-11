@@ -1,19 +1,15 @@
 import * as React from 'react'
-import {useState, useEffect, useRef} from 'react'
 
 import {Segment, Card, Image, Icon} from 'semantic-ui-react'
+import { Logo } from '../logos'
 
-// import logo from '../imic_logo.png'
-import logo from '../UHN-removebg.png'
 
-export function Logo ({
-
-}) {
-  return (
+export default function LoadingAuthentication ({}) {
+    return (
     <Segment basic textAlign='center'>
       <Card.Group centered>
     <Card>
-      <Image src={logo} centered size='medium' ui={false} wrapped />
+      <Logo />
       <Card.Content extra textAlign='center'>
         <a>
           <Icon name='key' />
@@ -24,5 +20,5 @@ export function Logo ({
     </Card>
     </Card.Group>
     </Segment>
-  )
+    )
 }

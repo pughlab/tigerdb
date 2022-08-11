@@ -1,7 +1,7 @@
 {
-    "name": "imic",
+    "name": "pibu",
     "version": "0.0.1",
-    "description": "imic",
+    "description": "pibu",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "start:api": "NODE_TLS_REJECT_UNAUTHORIZED=0 cross-env DEBUG=neo4j-graphql-js TS_NODE_PROJECT=tsconfig.api.json ./node_modules/.bin/nodemon --config nodemon.api.json --inspect=0.0.0.0:9231 -L api/src/index.ts",

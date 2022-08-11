@@ -1,28 +1,15 @@
 import * as React from 'react'
 import { Sticky, Menu, Image, Divider, Container, Segment, Step } from 'semantic-ui-react'
-
 import useKeycloakMeMutation from '../hooks/useKeycloakMeMutation'
 import {Routes, Route, Outlet, useNavigate, useLocation, matchPath, Link} from 'react-router-dom'
 
-
 import SegmentPlaceholder from './common/SegmentPlaceholder'
 
-import UploadDatasetMenu from './pages/UploadDataset/UploadDatasetMenu'
-import UploadDatasetTables from './pages/UploadDataset/UploadDatasetTables'
-import RawDatasetsList from './pages/Datasets/RawDatasetsList'
-import RawDatasetDetails from './pages/Datasets/RawDatasetDetails'
-
-import TimelineOntologies from './pages/Ontologies/Timelines'
-import MetadataOntology from './pages/Ontologies/Metadata'
-import TaxonomyOntologies from './pages/Ontologies/Taxonomy'
-
-// import logo from '../imic_logo.png'
-import logo from '../UHN-removebg.png'
-
+import {Logo} from './logos'
 
 import useRouter from '../hooks/useRouter'
 import About from './pages/About'
-import LoginModal from './LoginModal'
+import LoginModal from './authentication/LoginModal'
 import Studies from './pages/Studies'
 import Datasets from './pages/Datasets'
 import Explore from './pages/Explore'
@@ -40,7 +27,7 @@ function Layout ({}) {
     <Sticky>
       <Menu inverted color='blue' style={{margin: 0, borderRadius: 0}}>
         <Menu.Menu position='left'>
-          <Image size='medium' src={logo} />
+          <Logo size='small' />
         </Menu.Menu>
         
         <Menu.Menu position='right'>

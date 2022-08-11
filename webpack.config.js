@@ -19,7 +19,7 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, outputDir),
-    filename: 'imic.bundle.js?t=' + new Date().getTime(),
+    filename: 'pibu.bundle.js?t=' + new Date().getTime(),
     publicPath: '/',
   },
   module: {

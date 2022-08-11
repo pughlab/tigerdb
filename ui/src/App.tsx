@@ -6,7 +6,6 @@ import {store as reduxStore} from './state/store'
 import { Provider as ReduxProvider } from 'react-redux'
 
 import Portal from './components/Portal'
-import PublicPortal from './components/PublicPortal'
 
 import { ReactKeycloakProvider } from '@react-keycloak/web'
 import keycloak from './keycloak/keycloak'
@@ -16,11 +15,10 @@ import {
   initOptions as keycloakInitOptions
 } from './keycloak/providerConfig'
 
-import { Logo } from './components/Logo'
-
 import {BrowserRouter, Route, Routes} from 'react-router-dom'
 
 import RenderOnAuthenticated from './components/authentication/RenderOnAuthenticated'
+import LoadingAuthentication from './components/authentication/LoadingAuthentication'
 
 const App = () => {
   
@@ -31,7 +29,7 @@ const App = () => {
           onEvent={keycloakEventLogger}
           onTokens={keycloakTokenLogger}
           initOptions={keycloakInitOptions}
-          LoadingComponent={<Logo />}
+          LoadingComponent={<LoadingAuthentication />}
         >
         <ReduxProvider {...{store: reduxStore}}>
           <ApolloProvider {...{client: apolloClient}}>

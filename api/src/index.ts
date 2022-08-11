@@ -1,7 +1,7 @@
 import { createApolloServer } from './graphql/graphqlServer'
 import { readFileSync } from 'fs'
 import { createServer } from 'https'
-
+import runOnLoad from './runOnLoad'
 const {apolloServer, app, wssListenConfig} = createApolloServer()
 
 const sslOptions = {
@@ -13,6 +13,5 @@ const sslOptions = {
 const wss = createServer(sslOptions, app);
 apolloServer.installSubscriptionHandlers(wss);
 wss.listen(wssListenConfig, () => {
-  const { host: graphqlHost, port: graphqlPort, path: graphqlPath } = wssListenConfig
-  console.log(`GraphQL server ready at http://${graphqlHost}:${graphqlPort}${graphqlPath}`)
+  runOnLoad({wssListenConfig})
 });

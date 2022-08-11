@@ -1,7 +1,5 @@
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { useReducer, useCallback, useState, useEffect } from "react"
-import { useAppDispatch } from "../state/hooks";
-import { setKeycloakMe } from "../state/appContext";
 
 export default function useRawDatasetsQuery(): [any, boolean] {
     const [rawDatasets, setRawDatsets] = useState()
