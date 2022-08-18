@@ -1,25 +1,21 @@
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { useReducer, useCallback, useState, useEffect } from "react"
+import { gql, useMutation, useQuery } from '@apollo/client'
+import { useCallback, useState } from 'react'
 
-export default function useRawDatasetsQuery(): [any, boolean] {
-    const [rawDatasets, setRawDatsets] = useState()
-    const {loading, data, error} = useQuery(gql`
-        query RawDatasetsList {
-            rawDatasets {
-                rawDatasetID
-                name   
-                description
-            }
-        }
-    `, {
-        onCompleted: (data) => {
-            if (!!data) {
-                setRawDatsets(data?.rawDatasets)
-            }
-        }
-    })
-    console.log(rawDatasets)
-    return [rawDatasets, loading]
+export default function useRawDatasetsQuery({ }) {
+  const [searchText, setSearchText] = useState('')
+  const { data, loading, error } = useQuery(gql`
+  query RawDatasets($searchText: String!) {
+    rawDatasets (
+      where: {OR :[{name_CONTAINS: $searchText}, {description_CONTAINS: $searchText}]}
+    ) {
+      rawDatasetID
+      name
+      description
+      fromStudy {
+        studyID
+        shortName
+      }
+    }
+  }`, { variables: { searchText }, fetchPolicy: 'network-only' })
+  return { data, loading, error, searchText, setSearchText }
 }
-  
-  
