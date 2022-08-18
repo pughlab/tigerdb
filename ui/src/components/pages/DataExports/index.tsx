@@ -2,7 +2,6 @@ import React from 'react'
 import { Route, Routes, useParams } from 'react-router-dom'
 import { Message, Divider, Container, List, Input, Segment, Form, Button } from 'semantic-ui-react'
 import useRouter from '../../../hooks/useRouter'
-import GeographyVisualization from '../../visualizations/geography/GeographyVisualization'
 
 import SunburstVisualization from '../../visualizations/sunburst/SunburstVisualization'
 import TreemapVisualization from '../../visualizations/treemap/TreemapVisualization'
@@ -24,7 +23,6 @@ function DataExportDetails () {
         <Divider horizontal />
         <SunburstVisualization />
         <TreemapVisualization />
-        <GeographyVisualization />
         <PieVisualization />
         <BarVisualization />
         </>
