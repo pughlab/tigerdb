@@ -14,7 +14,9 @@
     "outDir": "./dist",
     "typeRoots": ["node_modules/@types", "api/src/types"],
     "lib": ["dom", "dom.iterable", "esnext"],
-    "jsx": "react"
+    "jsx": "react",
+
+    "resolveJsonModule": true
   },
   "include": ["api/src/**/*.ts"],
   "exclude": ["node_modues"]
