@@ -17,13 +17,17 @@ export default function DatasetDetails() {
           studyID
           shortName
         }
+        studySite {
+          city
+          country
+        }
 			}
 		}`,
     { variables: { rawDatasetID: datasetID } })
   if (!data?.rawDatasets) {
     return null
   }
-  const [{ rawDatasetID, name, description, fromStudy }] = data.rawDatasets
+  const [{ rawDatasetID, name, description, fromStudy, studySite }] = data.rawDatasets
   return (
     <>
       <Grid>
@@ -32,7 +36,13 @@ export default function DatasetDetails() {
             <Divider horizontal content='Dataset Details' />
             <Header content={name} subheader={description} />
             <Divider horizontal />
-            <Label content='Study' detail={fromStudy.shortName} />
+            <Label>
+              Study
+              <Label.Detail content={fromStudy.shortName} />
+              {/* TODO: every raw dataset can be assumed to have study site, remove this check? */}
+              {!!studySite && <Label.Detail content={`${studySite.city} (${studySite.country})`} />}
+              
+            </Label>
           </Message>
         </Grid.Column>
         <Grid.Row divided>

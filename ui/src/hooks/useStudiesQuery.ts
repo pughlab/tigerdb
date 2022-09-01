@@ -10,6 +10,7 @@ export default function useStudiesQuery({ }) {
 				shortName
 				description
 				studySites {
+					cityID
 					city
 					country
 					latitude

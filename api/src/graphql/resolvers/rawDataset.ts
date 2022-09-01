@@ -8,7 +8,7 @@ export const resolvers = {
   Mutation: {
     createRawDatasetWithMinioBucket: async (
       parent,
-      {studyID, name, description},
+      {studyID, studySiteID, name, description},
       { driver, ogm, minioClient }
     ) => {
       try {
@@ -22,6 +22,12 @@ export const resolvers = {
         const {studies: [study]} = await StudyModel.update({
           where: {studyID},
           connect: {rawDatasets: {where: {node: {rawDatasetID}}}}
+        })
+
+        const GeographyCityModel = ogm.model('GeographyCity')
+        await RawDatasetModel.update({
+          where: {rawDatasetID},
+          connect: {studySite: {where: {node: {cityID: studySiteID}}}}
         })
         return rawDataset
       } catch (error) {

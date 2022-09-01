@@ -1,5 +1,5 @@
 type GeographyCity {
-    # id not required since some non-recorded cities may be queried
+    # id not required with ! since some non-recorded cities may be queried
     id: ID @id
     cityID: ID!
     city: String!
