@@ -62,7 +62,14 @@ export default function Explore() {
             </Message>
 
             <Form as={Segment} attached='top'>
-                <Form.Group widths={3}>
+                <Form.Field
+                        control={Input}
+                        label='Search data variable descriptions'
+                        placeholder='Enter some terms of interest'
+                        value={searchText}
+                        onChange={(e, { value }) => setSearchText(value)}
+                />
+                {/* <Form.Group widths={3}>
                     <Form.Field
                         control={Input}
                         label='Chromosome'
@@ -88,15 +95,25 @@ export default function Explore() {
                         value={end}
                         onChange={(e, { value }) => setEnd(Math.max(0, parseInt(value)))}
                     />
-                </Form.Group>
+                </Form.Group> */}
             </Form>
             <Segment attached='bottom' loading={loading}>
+                {/* List of data variables */}
                 {
                     !!data?.dataVariables && (
-                        <>
-                            <DownloadDataVariables data={data.dataVariables} />
-                            <DataVariableTable data={data.dataVariables} />
-                        </>
+                        <List selection celled divided>
+                        {
+                            data.dataVariables.map(dataVariable => (
+                                <List.Item key={dataVariable.dataVariableID}>
+                                    {JSON.stringify(dataVariable)}
+                                </List.Item>
+                            ))
+                        }
+                        </List>
+                        // <>
+                        //     <DownloadDataVariables data={data.dataVariables} />
+                        //     <DataVariableTable data={data.dataVariables} />
+                        // </>
                     )
 
                 }

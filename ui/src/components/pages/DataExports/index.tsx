@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Routes, useParams } from 'react-router-dom'
-import { Message, Divider, Container, List, Input, Segment, Form, Button } from 'semantic-ui-react'
+import { Message, Divider, Container, List, Input, Segment, Form, Button, Grid } from 'semantic-ui-react'
 import useRouter from '../../../hooks/useRouter'
 
 import SunburstVisualization from '../../visualizations/sunburst/SunburstVisualization'
@@ -13,18 +13,32 @@ function DataExportDetails () {
     return (
         <>
         <Message>
-            Some details about {exportID}
+            Some details (or notes, rich text?) about {exportID}
             <Divider horizontal />
             <Button content='Download data export' />
         </Message>
         <Segment>
-            List of data variables here
+            <Grid>
+                <Grid.Column width={10}>
+                List of selected data variables here
+                </Grid.Column>
+                <Grid.Column width={6}>
+                    <Segment>
+                        Menu to generate visualizations
+                    </Segment>
+                </Grid.Column>
+            </Grid>
         </Segment>
         <Divider horizontal />
-        <SunburstVisualization />
+        <Segment>
+            <Divider horizontal content='Visualizations' />
+            <PieVisualization />
+        </Segment>
+
+        {/* <SunburstVisualization />
         <TreemapVisualization />
         <PieVisualization />
-        <BarVisualization />
+        <BarVisualization /> */}
         </>
     )
 }
