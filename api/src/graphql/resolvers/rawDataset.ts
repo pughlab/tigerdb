@@ -24,7 +24,6 @@ export const resolvers = {
           connect: {rawDatasets: {where: {node: {rawDatasetID}}}}
         })
 
-        const GeographyCityModel = ogm.model('GeographyCity')
         await RawDatasetModel.update({
           where: {rawDatasetID},
           connect: {studySite: {where: {node: {cityID: studySiteID}}}}
