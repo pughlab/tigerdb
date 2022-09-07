@@ -46,7 +46,7 @@ export default function MinioBucket({ bucketName }) {
                 filename
             }
         }`,
-        { variables: { bucketName } })
+        { variables: { bucketName }, fetchPolicy: 'network-only' })
     if (!data?.minioUploads) {
         return null
     }
