@@ -501,22 +501,22 @@ const IndeterminateCheckbox = React.forwardRef(
 export default function DataVariableTable({data}) {
   const columns = React.useMemo(
     () => [
-      {
-        Header: 'Chromosome',
-        accessor: 'chromosome',
-      },
-      {
-        Header: 'Start',
-        accessor: 'start',
-      },
-      {
-        Header: 'End',
-        accessor: 'end',
-      },
-      {
-        Header: 'Data value',
-        accessor: 'datavalue'
-      }
+      // {
+      //   Header: 'Chromosome',
+      //   accessor: 'chromosome',
+      // },
+      // {
+      //   Header: 'Start',
+      //   accessor: 'start',
+      // },
+      // {
+      //   Header: 'End',
+      //   accessor: 'end',
+      // },
+      // {
+      //   Header: 'Data value',
+      //   accessor: 'datavalue'
+      // }
     ], []
   )
   // const columns = React.useMemo(

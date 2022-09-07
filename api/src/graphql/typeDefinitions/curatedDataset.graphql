@@ -3,19 +3,7 @@
 #     childID: ID!
 # }
 
-type DataVariable {
-    dataVariableID: ID! @id
-    chromosome: String
-    start: Int
-    end: Int
-    datavalue: Float
-    # Define fields you want to search over here, transformation script must map to this shape
 
-    # title: String!
-    # hasSamples: [DataVariableSample!]! @relationship(type: "HAS_SAMPLE", direction: OUT)
-    # currentDefinition: DataVariableDefinition! @relationship(type: "HAS_DEFINITION", direction: OUT)
-    # previousDefinitions: [DataVariableDefinition!]! @relationship(type: "HAS_DEFINITION", direction: OUT)
-}
 
 # type DataVariableDefinition {
 #     dataVariable: DataVariable! @relationship(type: "HAS_DEFINITION", direction: IN)
@@ -45,7 +33,7 @@ type CuratedDataset {
 }
 
 type Mutation {
-    # createCuratedDatasetFromRawDataset(,rawDatasetID: ID!): CuratedDataset
+    createCuratedDatasetFromCSVCodebook(rawDatasetID: ID!): Boolean!
     createCuratedDatasetFromRawDataset(
         name: String!
         description: String!

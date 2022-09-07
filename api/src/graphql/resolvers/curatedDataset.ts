@@ -34,12 +34,7 @@ export const resolvers = {
               worker: true,
               delimiter: " ",
               step: (results) => {
-                // result.data.push(results.data[0]);
-                // result.data.push(results.data[1]);
-                // result.data.push(results.data[2]);
-                // result.data.push(results.data[3]);
                 result.data.push(results.data)
-                
               },
               complete: () => {
                 resolve(result);
@@ -58,13 +53,8 @@ export const resolvers = {
           const chunk = result.data.slice(i, i + chunkSize);
           console.log("NOW PROCESSING CHUNK: "+i)
           // console.log(chunk)
-
-        
           await Promise.all(chunk.map(async (result) => {
-
-                
           // for (let i = 0; i < result.data.length; i += 4) {
-
             //gathering all chr1, putting into array named 'chromosome'
             const chromosome = result[0]
             const start = result[1]
