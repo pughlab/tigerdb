@@ -15,6 +15,7 @@ import Datasets from './pages/Datasets'
 import Explore from './pages/Explore'
 import DataExports from './pages/DataExports'
 import Metadata from './pages/Metadata'
+import Heatmap from './pages/Heatmap'
 
 import PortalNavBarIntro, {HOME_MENU_ELEMENT_ID, DATA_MENU_ELEMENT_ID} from './intros/PortalNavBarIntro'
 
@@ -61,6 +62,7 @@ export default function Portal () {
     {path: 'explore', icon: 'search', element: <Explore />},
     {path: 'export', icon: 'download', element: <DataExports />},
     {path: 'metadata', icon: 'search plus', element: <Metadata />},
+    {path: 'heatmap', icon: 'search plus', element: <Heatmap/>},
   ]
   return (
     <Routes>
