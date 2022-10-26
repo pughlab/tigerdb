@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import HierarchicalGraphVisualization from '../../visualizations/graph/hierarchical/HierarchicalGraphVisualization'
-import { Message, Divider, Form, Container, List, Segment, Input, Grid } from 'semantic-ui-react'
+import { Message, Divider, Form, Container, List, Segment, Input, Grid, Modal, Label, Button, Dropdown, Header } from 'semantic-ui-react'
 import { Routes, Route } from 'react-router-dom'
 import useRouter from '../../../hooks/useRouter'
 import { gql, useQuery } from '@apollo/client'
+
+import * as R from 'remeda'
 
 function useOntologyQuery({ }) {
     const [ontology, setOntology] = useState()
@@ -57,20 +59,88 @@ function OntologyGraphVisualization ({}) {
 }
 
 function OntologyDetails({ }) {
+    const {ontology, loading} = useOntologyQuery({})
+    const [focusNode, setFocusNode] = useState()
     return (
         <Grid>
             <Grid.Column width={16}>
                 <Segment>
-                    Ontology details
+                    This is the main portal data variable ontology describing available data.
                 </Segment>
             </Grid.Column>
             <Grid.Column width={5}>
                 <Segment>
-                    Search and query of ontology (and actions)
+                    {
+                        !!ontology && (
+                            <>
+                            <Label content='Nodes' detail={ontology.nodes.length} />
+                            <Label content='Edges' detail={ontology.edges.length} />
+                            </>
+                        )
+                    }
                 </Segment>
-                <Segment>
-                    Hierarchical view of ontology (minimap view?)
+                <Segment loading={loading}>
+                    {
+                        !!ontology && (
+                            <>
+                            <Dropdown
+                                fluid
+                                selection
+                                search
+                                placeholder='Search over nodes and relations of ontology'
+                                options={ontology.nodes.map(({id, label}) => ({value: id, text: label}))}
+                            />
+                            <Divider horizontal />
+                            <List selection celled divided>
+                                {ontology.nodes.map(({id, label}) => {
+                                    return (
+                                        <List.Item key={id}
+                                            onClick={() => setFocusNode(id)}
+                                        >
+                                            {label}
+                                        </List.Item>
+                                    )
+                                })}
+                            </List>
+                            </>
+                        )
+                    }
                 </Segment>
+                {
+                    (() => {
+                        if (R.isNil(focusNode)) {
+                            return
+                        }
+                        const filterIfSource = R.filter(({source}) => R.equals(focusNode, source))
+                        const filterIfTarget = R.filter(({target}) => R.equals(focusNode, target))
+                        const mapEdgeComponents = R.map(edge => {
+                            return (
+                                <List.Item key={edge.id}>
+                                    {edge.label}
+                                </List.Item>
+                            )
+                        })
+                        return (
+                            <Segment>
+                            <Header content={focusNode} />
+                            <Divider horizontal content='OUT edges' />
+                            {
+                                R.pipe(
+                                    ontology.edges,
+                                    filterIfSource, mapEdgeComponents
+                                )
+                            }
+                            <Divider horizontal content='IN edges' />
+                            {
+                                R.pipe(
+                                    ontology.edges,
+                                    filterIfTarget, mapEdgeComponents
+                                )
+                            }
+                            </Segment>
+                        )
+                    })()
+                }
             </Grid.Column>
             <Grid.Column width={11}>
                 <Segment>
@@ -91,6 +161,15 @@ export default function Metadata({ }) {
                         <Message>
                             Ontologies and metadata
                             <Divider horizontal />
+                            <Modal
+                                trigger={<Button content='Add a new metadata ontology' />}
+                                content={
+                                    <Input fluid type='text' label='Ontology name' />
+                                }
+                                actions={
+                                    <Button content='Create' />
+                                }
+                            />
                         </Message>
 
                         <Form as={Segment}>

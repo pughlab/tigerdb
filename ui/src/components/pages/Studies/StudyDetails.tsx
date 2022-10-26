@@ -11,6 +11,59 @@ import useStudyDetailsQuery from '../../../hooks/useStudyDetailsQuery'
 import useSearchGeographyCitiesQuery from '../../../hooks/useSearchGeographyCitiesQuery'
 import useUpdateGeographyCityToStudy from '../../../hooks/useUpdateGeographyCityToStudy'
 
+function AddStudySiteModal () {
+	return (
+		<Modal
+			size='large'
+			trigger={
+				<Button size='tiny' content='If a study site does not yet exist in the database, click here to add' />
+			}
+		>
+			<Modal.Content>
+				<Form>
+					<Form.Group widths={2}>
+					<Form.Field
+						control={Input}
+						label='Country'
+						placeholder='Country name'
+						// value={fullName}
+						// onChange={(e, { value }) => setFullName(value)}
+					/>
+					<Form.Field
+						control={Input}
+						label='City'
+						placeholder='City name'
+						// value={shortName}
+						// onChange={(e, { value }) => setShortName(value)}
+					/>
+					</Form.Group>
+					<Form.Group widths={2}>
+					<Form.Field
+						control={Input}
+						label='Latitude'
+						placeholder='Latitude of city'
+						// value={description}
+						// onChange={(e, { value }) => setDescription(value)}
+					/>
+					<Form.Field
+						control={Input}
+						label='Longitude'
+						placeholder='Longitude of city'
+						// value={description}
+						// onChange={(e, { value }) => setDescription(value)}
+					/>
+					</Form.Group>
+				</Form>
+			</Modal.Content>
+			<Modal.Actions>
+				<Button content='Cancel' />
+				<Button content='Add study site' />
+			</Modal.Actions>
+		</Modal>
+	)
+}
+
+
 export default function StudyDetails() {
 	const { studyID } = useParams()
 	const { study, loading: detailsLoading, error } = useStudyDetailsQuery({ studyID })
@@ -39,8 +92,15 @@ export default function StudyDetails() {
 					</Label.Group>
 				</Message>
 				<Divider horizontal />
+				<Message>
+					A study must have at least one study site in order to start uploading datasets.
+					<Divider horizontal />
+					<AddStudySiteModal />
+				</Message>
 				<Form as={Segment} loading={searchLoading || detailsLoading || addCityLoading}>
-					<Divider horizontal content='Add a study site' />
+					<Divider horizontal>
+						Add a site to this study						
+					</Divider>
 					<Form.Field
 						control={Input}
 						// label='Search study site cities'

@@ -329,14 +329,14 @@ function FullTable({ columns, data, updateMyData, skipReset }) {
             // to render a checkbox
             Header: ({ getToggleAllRowsSelectedProps }) => (
               <div>
-                <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+                {/* <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} /> */}
               </div>
             ),
             // The cell can use the individual row's getToggleRowSelectedProps method
             // to the render a checkbox
             Cell: ({ row }) => (
               <div>
-                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+                {/* <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} /> */}
               </div>
             ),
           },
@@ -398,10 +398,13 @@ function FullTable({ columns, data, updateMyData, skipReset }) {
                   <div>
                     {column.canGroupBy ? (
                       // If the column can be grouped, let's add a toggle
-                      <span {...column.getGroupByToggleProps()}>
-                        {column.isGrouped ? '🛑 ' : '👊 '}
-                      </span>
+                      // <span {...column.getGroupByToggleProps()}>
+                      //   {/* {column.isGrouped ? '🛑 ' : '👊 '} */}
+                      //   {/* <IndeterminateCheckbox /> */}
+                      // </span>
+                      null
                     ) : null}
+                    <input type="checkbox"/>
                     <span {...column.getSortByToggleProps()}>
                       {column.render('Header')}
                       {/* Add a sort direction indicator */}
@@ -426,9 +429,9 @@ function FullTable({ columns, data, updateMyData, skipReset }) {
                       {cell.isGrouped ? (
                         // If it's a grouped cell, add an expander and row count
                         <>
-                          <span {...row.getToggleRowExpandedProps()}>
+                          {/* <span {...row.getToggleRowExpandedProps()}>
                             {row.isExpanded ? '👇' : '👉'}
-                          </span>{' '}
+                          </span>{' '} */}
                           {cell.render('Cell', { editable: false })} (
                           {row.subRows.length})
                         </>
@@ -499,24 +502,31 @@ const IndeterminateCheckbox = React.forwardRef(
 )
 
 export default function DataVariableTable({data}) {
+  let harddata = [
+    {refID: 0, dv1: 2, dv2: 2},
+    {refID: 1, dv1: 2, dv2: 0},
+    {refID: 2, dv1: 2, dv2: 1},
+    {refID: 3, dv1: 2, dv2: 0},
+    {refID: 4, dv1: 2, dv2: 1},
+    {refID: 5, dv1: 2, dv2: 1},
+    {refID: 6, dv1: 2, dv2: 0},
+    {refID: 7, dv1: 2, dv2: 0},
+    {refID: 8, dv1: 2, dv2: 0},
+  ]
   const columns = React.useMemo(
     () => [
-      // {
-      //   Header: 'Chromosome',
-      //   accessor: 'chromosome',
-      // },
-      // {
-      //   Header: 'Start',
-      //   accessor: 'start',
-      // },
-      // {
-      //   Header: 'End',
-      //   accessor: 'end',
-      // },
-      // {
-      //   Header: 'Data value',
-      //   accessor: 'datavalue'
-      // }
+      {
+        Header: 'Reference ID',
+        accessor: 'refID',
+      },
+      {
+        Header: 'HENV18WKQ2a',
+        accessor: 'dv1',
+      },
+      {
+        Header: 'HENV18WKQ2b',
+        accessor: 'dv2',
+      },
     ], []
   )
   // const columns = React.useMemo(
@@ -636,7 +646,8 @@ export default function DataVariableTable({data}) {
       {/* <button onClick={resetData}>Reset Data</button> */}
       <FullTable
         columns={columns}
-        data={data}
+        // data={data}
+        data={harddata}
         updateMyData={updateMyData}
         skipReset={skipResetRef.current}
       />

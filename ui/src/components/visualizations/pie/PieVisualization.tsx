@@ -9,7 +9,7 @@ import { Segment } from 'semantic-ui-react';
 
 
 const letters: LetterFrequency[] = letterFrequency.slice(0, 4);
-
+console.log(letters)
 // accessor functions
 const frequency = (d: LetterFrequency) => d.frequency;
 
@@ -32,6 +32,7 @@ function PieSVG ({
   height,
   margin = defaultMargin,
   animate = true,
+  data = []
 }: PieProps) {
 
   if (width < 10) return null;
@@ -47,8 +48,8 @@ function PieSVG ({
     <svg width={width} height={height}>
       <Group top={centerY + margin.top} left={centerX + margin.left}>
         <Pie
-          data={letters}
-          pieValue={frequency}
+          data={data}
+          pieValue={d => d.frequency}
           pieSortValues={() => -1}
           outerRadius={radius - donutThickness * 1.3}
         >
@@ -144,10 +145,10 @@ function AnimatedPie<Datum>({
   });
 }
 
-export default function PieVisualization ({}) {
+export default function PieVisualization ({data}) {
     return (
         <ParentSize>
-            {({ width, height }) => <PieSVG width={600} height={800} />}
+            {({ width, height }) => <PieSVG width={600} height={800} data={data} />}
         </ParentSize>
     )
 }
