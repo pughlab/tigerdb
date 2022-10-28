@@ -1,12 +1,14 @@
 import React, {useState, useReducer} from 'react'
 import { Route, Routes, useParams } from 'react-router-dom'
-import { Message, Divider, Label, Container, Header, List, Dropdown, Input, Segment, Form, Button, Grid, Checkbox } from 'semantic-ui-react'
+import { Message, Divider, Label, Container, Header, List, Dropdown, Input, Segment, Form, Button, Grid, Checkbox, Menu } from 'semantic-ui-react'
 import useRouter from '../../../hooks/useRouter'
 
 import SunburstVisualization from '../../visualizations/sunburst/SunburstVisualization'
 import TreemapVisualization from '../../visualizations/treemap/TreemapVisualization'
 import PieVisualization from '../../visualizations/pie/PieVisualization'
 import BarVisualization from '../../visualizations/bar/BarVisualization'
+import ViolinVisualization from '../../visualizations/violin/ViolinVisualization'
+import HeatmapVisualization from '../../visualizations/heatmap/regular/HeatmapVisualization'
 
 import * as R from 'remeda'
 
@@ -174,7 +176,8 @@ function DataExportDetails () {
         </Segment>
         <Divider horizontal />
         <Segment>
-            <Divider horizontal content='Visualizations' />
+            <Divider horizontal content='Visualizations and Snapshots' />
+            <Menu fluid />
             {
                 R.map.indexed([... state.snapshots], (snapshot, i) => {
                     return (
@@ -184,6 +187,13 @@ function DataExportDetails () {
                     )
                 })
             }
+            <Segment>
+                <ViolinVisualization width={600} height={500} />
+            </Segment>
+
+            <Segment>
+                <HeatmapVisualization width={600} height={500} />
+            </Segment>
             {/* <Segment basic>
                 <Header content={'HENV18WKQ2a'} />
             <PieVisualization data={dv1Pie} />
@@ -193,11 +203,6 @@ function DataExportDetails () {
             <PieVisualization data={dv2Pie} />
             </Segment> */}
         </Segment>
-
-        {/* <SunburstVisualization />
-        <TreemapVisualization />
-        <PieVisualization />
-        <BarVisualization /> */}
         </>
     )
 }

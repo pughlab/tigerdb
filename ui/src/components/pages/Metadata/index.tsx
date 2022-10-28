@@ -69,7 +69,10 @@ function OntologyDetails({ }) {
                 </Segment>
             </Grid.Column>
             <Grid.Column width={5}>
-                <Segment>
+                {
+                    !!ontology && <Button fluid content='Edit nodes and/or edges' />
+                }
+                <Segment loading={loading}>
                     {
                         !!ontology && (
                             <>
@@ -78,8 +81,7 @@ function OntologyDetails({ }) {
                             </>
                         )
                     }
-                </Segment>
-                <Segment loading={loading}>
+                    <Divider horizontal />
                     {
                         !!ontology && (
                             <>
@@ -89,12 +91,13 @@ function OntologyDetails({ }) {
                                 search
                                 placeholder='Search over nodes and relations of ontology'
                                 options={ontology.nodes.map(({id, label}) => ({value: id, text: label}))}
+                                onChange={(e, {value}) => setFocusNode(value)}
                             />
                             <Divider horizontal />
                             <List selection celled divided>
                                 {ontology.nodes.map(({id, label}) => {
                                     return (
-                                        <List.Item key={id}
+                                        <List.Item key={id} active={R.equals(focusNode, id)}
                                             onClick={() => setFocusNode(id)}
                                         >
                                             {label}
@@ -113,13 +116,6 @@ function OntologyDetails({ }) {
                         }
                         const filterIfSource = R.filter(({source}) => R.equals(focusNode, source))
                         const filterIfTarget = R.filter(({target}) => R.equals(focusNode, target))
-                        const mapEdgeComponents = R.map(edge => {
-                            return (
-                                <List.Item key={edge.id}>
-                                    {edge.label}
-                                </List.Item>
-                            )
-                        })
                         return (
                             <Segment>
                             <Header content={focusNode} />
@@ -127,14 +123,30 @@ function OntologyDetails({ }) {
                             {
                                 R.pipe(
                                     ontology.edges,
-                                    filterIfSource, mapEdgeComponents
+                                    filterIfSource,
+                                    R.map(edge => (
+                                        <List.Item key={edge.id}>
+                                            <Label>
+                                                {edge.label}
+                                                <Label.Detail content={edge.target} />
+                                            </Label>
+                                        </List.Item>
+                                    ))
                                 )
                             }
                             <Divider horizontal content='IN edges' />
                             {
                                 R.pipe(
                                     ontology.edges,
-                                    filterIfTarget, mapEdgeComponents
+                                    filterIfTarget,
+                                    R.map(edge => (
+                                        <List.Item key={edge.id}>
+                                            <Label>
+                                                <Label.Detail content={edge.source} />
+                                                {edge.label}
+                                            </Label>
+                                        </List.Item>
+                                    ))
                                 )
                             }
                             </Segment>
