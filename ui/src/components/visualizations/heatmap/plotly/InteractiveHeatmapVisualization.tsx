@@ -6,13 +6,9 @@ import Plot from 'react-plotly.js';
 import * as R from 'remeda'
 
 //this code assumes all samples (y-axis) have the same bins: 'start' (x-axis)
-export default function Explore() {
-    const [searchText, setSearchText] = useState('')
-    const [start, setStart] = useState(0)
-    const [end, setEnd] = useState(1000)
-
+export default function InteractiveHeatmapVisualization() {
     const { data, loading, error } = useQuery(gql`
-        query MyTestQuery{
+        query HeatmapDataVariables{
             curatedDatasets {
                 curatedDatasetID
                 name
@@ -26,20 +22,24 @@ export default function Explore() {
                 }
             }
         }`,
-        { variables: { searchText, start, end } })
-    // console.log(data)
+        {})
     if (!data) {return}
 
     //array declarations for data
     let dataVariableDisplay : any[] = [];
-        // TODO: this is an alternative way to get the same thing, not clear how accessor creates hovertip from it
-        // const dataVariableDisplay = R.pipe(
-        //     data.curatedDatasets,
-        //     R.map(R.prop('dataVariables')),
-        //     R.map(R.map(R.prop('dataVariableID')))
-        // )
-        console.log(dataVariableDisplay)
-    const chromosomeBins = {}
+    // TODO: this is an alternative way to get the same thing, not clear how accessor creates hovertip from it
+    // const dataVariableDisplay = R.pipe(
+    //     data.curatedDatasets,
+    //     R.map(R.prop('dataVariables')),
+    //     R.map(R.map(R.prop('dataVariableID')))
+    // )
+    // console.log(dataVariableDisplay)
+
+    // has structure {[chromosome]: [... bin start values]}
+    type ChromosomeBinsType = {
+        chromosome: any[]
+    }
+    const chromosomeBins = {} as ChromosomeBinsType
 
     //initial array loop (Curated Datasets)
     for(let i = 0; i < data.curatedDatasets.length; i+=1){
@@ -111,7 +111,7 @@ export default function Explore() {
         const yz_array: any[] = []
         console.log(Object.keys(chromosomeBins))
         for (const chr of Object.keys(chromosomeBins)) {
-            console.log(chromosomeBins[chr])
+            // console.log(chromosomeBins[chr])
             for (const start of uniqAndSort(chromosomeBins[chr])) {
                 yz_array.push(R.pathOr(yz, [chr, start], null))
             }
@@ -119,7 +119,6 @@ export default function Explore() {
         return yz_array
     }
     Z_global = R.map(Z_global, fill_yz)
-    console.log(Z_global)    
 
     //heatmap values
     const hoverOptions = {
@@ -144,21 +143,17 @@ export default function Explore() {
     
     return (
         <>
-            <Message>
-                Some text about data variables and searching to create visualizations
-                <Divider horizontal />
-            </Message>
-            <Plot
-                config={{ showTips: false }}
-                data={[trace1]}
-                layout={{
-                    width: 1000, height: 800, title: 'Heatmap Visualization', 
-                    //x-axis starts at 0, ticks appear incrementally every 10000 bins
-                    xaxis: {rangemode: 'tozero', autorange: true, tickmode: "linear", tick0: 0, dtick: 10000, tickangle: 40, tickfont: {size: 11,}, title: 'Bins',},
-                    yaxis: {automargin: true, tickangle: 40, tickfont: {size: 14,}, title: 'Samples',},
-                    showlegend: false,
-                }}
-            />
+        <Plot
+            config={{ showTips: false }}
+            data={[trace1]}
+            layout={{
+                width: 1000, height: 800, title: 'Heatmap Visualization', 
+                //x-axis starts at 0, ticks appear incrementally every 10000 bins
+                xaxis: {rangemode: 'tozero', autorange: true, tickmode: "linear", tick0: 0, dtick: 10000, tickangle: 40, tickfont: {size: 11,}, title: 'Bins',},
+                yaxis: {automargin: true, tickangle: 40, tickfont: {size: 14,}, title: 'Samples',},
+                showlegend: false,
+            }}
+        />
         </>
     )
 }

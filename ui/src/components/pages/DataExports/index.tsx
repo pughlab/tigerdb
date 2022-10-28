@@ -8,7 +8,7 @@ import TreemapVisualization from '../../visualizations/treemap/TreemapVisualizat
 import PieVisualization from '../../visualizations/pie/PieVisualization'
 import BarVisualization from '../../visualizations/bar/BarVisualization'
 import ViolinVisualization from '../../visualizations/violin/ViolinVisualization'
-import HeatmapVisualization from '../../visualizations/heatmap/regular/HeatmapVisualization'
+import HeatmapVisualization from '../../visualizations/heatmap/visx/HeatmapVisualization'
 
 import * as R from 'remeda'
 
