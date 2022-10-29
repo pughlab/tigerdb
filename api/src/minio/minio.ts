@@ -71,3 +71,13 @@ export async function putObjectBucket (minioClient: Client, file: any, bucketNam
     throw new Error('minio.putObjectTemporaryBucket')
   }
 }
+
+export async function makePresignedURL (minioClient: Client, bucketName: string, objectName: string) {
+  try {
+    const presignedUrl = await minioClient.presignedUrl('GET', bucketName, objectName, 24*60*60)
+    return presignedUrl
+  } catch (error) {
+    console.error(error)
+    throw new Error('minio.presignedURL: ' +error)
+  }
+}
