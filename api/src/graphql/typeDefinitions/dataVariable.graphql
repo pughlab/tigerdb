@@ -15,9 +15,10 @@ type DataVariable {
 
 type DataVariableField {
     dataVariable: DataVariable! @relationship(type: "HAS_DEFINITION", direction: IN)
-    code: String!
-    description: String!
-    jsonSchema: JSON!
+    name: String!
+    # code: String!
+    # description: String!
+    # jsonSchema: JSON!
     value: JSON!
 }
 
