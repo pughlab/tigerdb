@@ -1,6 +1,8 @@
 import { minioClient, listBucketObjects } from '../../minio/minio'
 import { ApolloError } from 'apollo-server'
 import  zlib  from 'zlib';
+import { extname } from 'path'
+
 
 export const resolvers = {
   Query: {
@@ -10,18 +12,30 @@ export const resolvers = {
     minioUpload: async (obj, { bucketName, file }, { driver }) => {
       try {
         const { filename, mimetype, encoding, createReadStream } = await file
-        const stream = createReadStream()
-        const compressedFileStream = createReadStream().pipe(zlib.createGzip());
+        
+        let filenameExt = filename
+        let stream = createReadStream()
+
+        if (extname(filename) != ".gz") {
+          stream = createReadStream().pipe(zlib.createGzip())
+          filenameExt = filename.concat(".gz") 
+        }
+        
+        // assume file is already gzipped:
+        // const stream = createReadStream()
+
+        // to gzip the file:
+        // const compressedFileStream = createReadStream().pipe(zlib.createGzip());
 
         const session = driver.session()
         const createMinioUpload = await session.run(
-          'CREATE (a:MinioUpload {bucketName: $bucketName, objectName: apoc.create.uuid(), filename: $filename}) RETURN a',
-          { bucketName, filename }
+          'CREATE (a:MinioUpload {bucketName: $bucketName, objectName: apoc.create.uuid(), filename: $filenameExt}) RETURN a',
+          { bucketName, filenameExt }
         )
         // console.log(createMinioUpload.records[0].get(0).properties)
         const minioUpload = createMinioUpload.records[0].get(0)
         const { objectName } = minioUpload.properties
-        await minioClient.putObject(bucketName, objectName, compressedFileStream)
+        await minioClient.putObject(bucketName, objectName, stream)
         return minioUpload.properties
       } catch (error) {
         console.log(error)
