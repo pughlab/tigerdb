@@ -1,46 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useReducer } from 'react'
 import { Message, Divider, List, Container, Input, Segment, Form, Button } from 'semantic-ui-react'
 
 import { gql, useQuery } from '@apollo/client'
 import Plot from 'react-plotly.js';
 import * as R from 'remeda'
 
-import {faker} from '@faker-js/faker'
-
 //this code assumes all samples (y-axis) have the same bins: 'start' (x-axis)
-export default function InteractiveHeatmapVisualization() {
-    // const { data, loading, error } = useQuery(gql`
-    //     query HeatmapDataVariables{
-    //         curatedDatasets {
-    //             curatedDatasetID
-    //             name
-    //             dataVariables(options: {sort: [ {chromosome: ASC},{ start: ASC } ]})
-    //             {
-    //                 dataVariableID
-    //                 chromosome
-    //                 start
-    //                 end
-    //                 datavalue
-    //             }
-    //         }
-    //     }`,
-    //     {})
-    const fakeData = () => {
-        let curatedDatasets = []
-        for (const i of R.range(0, 3)) {
-            curatedDatasets[i] = {
-                curatedDatasetID: faker.datatype.uuid(),
-                name: faker.datatype.uuid(),
-                dataVariables: R.pipe(
-                    R.range(0, 10),
-                    R.map(i => ({dataVariableID: faker.datatype.uuid(), chromosome: i, start: i*20, end: 20+i*20, datavalue: faker.datatype.number(100)}))
-                )
-            }
-        }
-        return {curatedDatasets}
-    }
-    const data = fakeData()
-    console.log(data)
+// data is the result of a gql query onto curatedDatasets with dataVariable fields
+export default function InteractiveHeatmapVisualization({data} : {data: any}) {
     if (!data) {return}
 
     //array declarations for data
@@ -88,11 +55,11 @@ export default function InteractiveHeatmapVisualization() {
         const chr_starts = R.map(uniqAndSort(chromosomeBins[chr]), start => `${chr}_${start}`)
         X_global = [... X_global, ... chr_starts]
     }
-    console.log(X_global)
+    // console.log(X_global)
 
     //extracting curatedDatasetID from all datasets 
     const Y_global: any[] = R.map(data.curatedDatasets, R.prop('curatedDatasetID'))
-    console.log(Y_global)
+    // console.log(Y_global)
 
     // Loop over each set of datavariables to construct z_global subarrays
     let Z_global : any[] = []
@@ -127,7 +94,7 @@ export default function InteractiveHeatmapVisualization() {
             }
         }
         const yz_array: any[] = []
-        console.log(Object.keys(chromosomeBins))
+        // console.log(Object.keys(chromosomeBins))
         for (const chr of Object.keys(chromosomeBins)) {
             // console.log(chromosomeBins[chr])
             for (const start of uniqAndSort(chromosomeBins[chr])) {

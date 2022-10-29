@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useReducer, useMemo } from 'react'
 import { Message, Divider, List, Container, Input, Segment, Form, Button, Dropdown, Modal } from 'semantic-ui-react'
-import DataVariableTable from '../../tables/DataVariableTable'
+import DataVariableTable from '../../visualizations/tables/DataVariableTable'
 
 import { gql, useQuery } from '@apollo/client'
 import { CSVLink } from "react-csv";
+
+import {useMachine} from '@xstate/react'
+import { createQueryMachine } from '../../../machines/queryMachine';
+import * as R from 'remeda'
 
 import InteractiveHeatmapVisualization from '../../visualizations/heatmap/plotly/InteractiveHeatmapVisualization';
 
@@ -23,8 +27,52 @@ function DownloadDataVariables({ data }) {
     )
 }
 
+function useSnapshotQueryVariables() {
+    // const [formState, formDispatch] = useReducer((state: any, action: any) => {
+    //     const {type, payload} = action
+    //     switch (type) {
+    //         case 'setSearchText':
+    //             const {searchText} = payload
+    //             return {... state, searchText}
+    //         case 'setStudyIDs':
+    //             const {studyIDs} = payload
+    //             return {... state, studyIDs}
+    //         case 'setStudyIDs':
+    //             const {} = payload
+    //             return {... state, studyIDs}
+    //         default:
+    //             return state
+    //     }
+    // }, {
+    //     searchText: '',
+    //     studyIDs: [],
+    //     datasetIDs: [],
+    //     fieldSearches: []
+    // })
+    const [state, dispatch] = useReducer((state: any, action: any) => {
+        const {type, payload} = action
+        switch (type) {
+            case 'setSnapshotType':
+                const {snapshotType} = payload
+                return {... state, snapshotType}
+            default:
+                return state
+        }
+    }, {
+        snapshotType: 'table',
+        dataVariableIDs: []
+    })
+    return {state, dispatch}
+}
+
+
+
 export default function Explore() {
-    const [searchText, setSearchText] = useState('')
+    const {state, dispatch} = useSnapshotQueryVariables()
+    const queryMachine = useMemo(() => createQueryMachine(), [])
+    const [current, send] = useMachine(queryMachine)
+
+
     const [start, setStart] = useState(0)
     const [end, setEnd] = useState(1000)
     // const { data, loading, error } = useQuery(gql`
@@ -35,15 +83,23 @@ export default function Explore() {
     //     }`,
     //     { variables: { searchText, start, end } })
     // console.log(data)
+    const {searchText, snapshotType} = state
+    const snapshotIs = R.equals(snapshotType)
 
+    console.log(current.context)
 
+    if (!current.matches('loaded')) {return}
+
+    const data = current.context.data
     return (
-        <>
-            <InteractiveHeatmapVisualization />
+        <>        
             <Message>
                 Some text about data variables and searching to create visualizations
-
                 <Divider horizontal />
+                <Button.Group>
+                    <Button content='Table' onClick={() => dispatch({type: 'setSnapshotType', payload: {snapshotType: 'table'}})} />
+                    <Button content='Heatmap' onClick={() => dispatch({type: 'setSnapshotType', payload: {snapshotType: 'heatmap'}})} />
+                </Button.Group>
             </Message>
 
             <Form as={Segment} attached='top'>
@@ -52,18 +108,9 @@ export default function Explore() {
                         label='Search data variable descriptions'
                         placeholder='Enter some terms of interest'
                         value={searchText}
-                        onChange={(e, { value }) => setSearchText(value)}
+                        onChange={(e, { value }) => dispatch({type: 'setSearchText', payload: {searchText: value}})}
                 />
                 <Form.Group widths={3}>
-                    <Form.Field
-                        control={Dropdown}
-                        selection
-                        label='Data variable type'
-                        placeholder='Select all data variable types of interest'
-                        value={null}
-                        options={[{key: 'raw', text: 'Raw/collected'}, {key: 'derived', text: 'Derived'}, {key: 'ref', text: 'Reference'}]}
-                        onChange={(e, { value }) => setSearchText(value)}
-                    />
                     {/* <Form.Field
                         control={Input}
                         type='number'
@@ -84,7 +131,8 @@ export default function Explore() {
                     /> */}
                 </Form.Group>
             </Form>
-            <Segment>
+
+            <Segment attached >
                 <Modal
                     trigger={<Button fluid content='Create data export' />}
                     content={
@@ -111,10 +159,18 @@ export default function Explore() {
                     ]}
                 />
             </Segment>
+
+
             <Segment attached='bottom'
                 // loading={loading}
             >
-                <DataVariableTable data={[]} />
+            {
+                snapshotIs('table') && <DataVariableTable data={data} />
+            }
+            {
+                snapshotIs('heatmap') && <InteractiveHeatmapVisualization data={data} />
+            }
+
             </Segment>
         </>
     )
