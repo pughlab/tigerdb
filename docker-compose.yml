@@ -107,23 +107,23 @@ services:
       - KEYCLOAK_IMPORT=/opt/jboss/keycloak/realm-export.json
       - DB_VENDOR=h2
 
-  nginx:
-    restart: ${RESTART}
-    build:
-      context: .
-    environment:
-      - NODE_ENV=production
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - api
-      - minio
-      - neo4j
-      - keycloak
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/certs:/etc/nginx/certs
+  # nginx:
+  #   restart: ${RESTART}
+  #   build:
+  #     context: .
+  #   environment:
+  #     - NODE_ENV=production
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   depends_on:
+  #     - api
+  #     - minio
+  #     - neo4j
+  #     - keycloak
+  #   volumes:
+  #     - ./nginx/conf.d:/etc/nginx/conf.d
+  #     - ./nginx/certs:/etc/nginx/certs
     # entrypoint: >
     #   sh -c "while true; do sleep 1000; done"
       

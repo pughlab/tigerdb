@@ -5,24 +5,42 @@ import { gql, useQuery } from '@apollo/client'
 import Plot from 'react-plotly.js';
 import * as R from 'remeda'
 
+import {faker} from '@faker-js/faker'
+
 //this code assumes all samples (y-axis) have the same bins: 'start' (x-axis)
 export default function InteractiveHeatmapVisualization() {
-    const { data, loading, error } = useQuery(gql`
-        query HeatmapDataVariables{
-            curatedDatasets {
-                curatedDatasetID
-                name
-                dataVariables(options: {sort: [ {chromosome: ASC},{ start: ASC } ]})
-                {
-                    dataVariableID
-                    chromosome
-                    start
-                    end
-                    datavalue
-                }
+    // const { data, loading, error } = useQuery(gql`
+    //     query HeatmapDataVariables{
+    //         curatedDatasets {
+    //             curatedDatasetID
+    //             name
+    //             dataVariables(options: {sort: [ {chromosome: ASC},{ start: ASC } ]})
+    //             {
+    //                 dataVariableID
+    //                 chromosome
+    //                 start
+    //                 end
+    //                 datavalue
+    //             }
+    //         }
+    //     }`,
+    //     {})
+    const fakeData = () => {
+        let curatedDatasets = []
+        for (const i of R.range(0, 3)) {
+            curatedDatasets[i] = {
+                curatedDatasetID: faker.datatype.uuid(),
+                name: faker.datatype.uuid(),
+                dataVariables: R.pipe(
+                    R.range(0, 10),
+                    R.map(i => ({dataVariableID: faker.datatype.uuid(), chromosome: i, start: i*20, end: 20+i*20, datavalue: faker.datatype.number(100)}))
+                )
             }
-        }`,
-        {})
+        }
+        return {curatedDatasets}
+    }
+    const data = fakeData()
+    console.log(data)
     if (!data) {return}
 
     //array declarations for data

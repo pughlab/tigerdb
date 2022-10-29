@@ -5,10 +5,7 @@ import DataVariableTable from '../../tables/DataVariableTable'
 import { gql, useQuery } from '@apollo/client'
 import { CSVLink } from "react-csv";
 
-import SunburstVisualization from '../../visualizations/sunburst/SunburstVisualization';
-import TreemapVisualization from '../../visualizations/treemap/TreemapVisualization'
-
-
+import InteractiveHeatmapVisualization from '../../visualizations/heatmap/plotly/InteractiveHeatmapVisualization';
 
 function DownloadDataVariables({ data }) {
     console.log(data)
@@ -39,12 +36,10 @@ export default function Explore() {
     //     { variables: { searchText, start, end } })
     // console.log(data)
 
-    const harddata = [
-        {}
-    ]
 
     return (
         <>
+            <InteractiveHeatmapVisualization />
             <Message>
                 Some text about data variables and searching to create visualizations
 

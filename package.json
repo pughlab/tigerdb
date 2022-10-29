@@ -114,6 +114,7 @@
         "@babel/preset-react": "^7.9.4",
         "@babel/preset-typescript": "^7.9.0",
         "@babel/runtime-corejs3": "^7.9.2",
+        "@faker-js/faker": "^7.6.0",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
         "@types/apollo-upload-client": "^14.1.0",
         "@types/graphql-upload": "^8.0.10",
