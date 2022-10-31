@@ -19,14 +19,11 @@ export const FILTER_EVENTS = {
     RESET: 'reset'
 }
 
-export const createDataVariableFilterMachine = () => {
+export const createStudiesDatasetsFilterMachine = () => {
     const machine = createMachine({
         id: 'snapshot',
         initial: FILTER_STATES.IDLE,
-        context: {
-            searchText: '',
-            studiesWithDatasets: {}
-        } as FilterMachineContext,
+        context: {searchText: '', studiesWithDatasets: {}} as FilterMachineContext,
         states: {
             [FILTER_STATES.IDLE]: {
                 on: {
@@ -39,8 +36,8 @@ export const createDataVariableFilterMachine = () => {
                     [FILTER_EVENTS.CHANGE_STUDIES_WITH_DATASETS]: {
                         target: FILTER_STATES.IDLE,
                         actions: assign({
-                            studiesWithDatasets: (context: FilterMachineContext, event: any) => {
-                                return {}
+                            studiesWithDatasets: (context: FilterMachineContext, event: any) : object => {
+                                return context.studiesWithDatasets
                             },
                         })
                     },

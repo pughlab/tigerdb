@@ -3,12 +3,11 @@ import { gql, useQuery } from '@apollo/client'
 
 import {useMachine} from '@xstate/react'
 import { createQueryMachine, QUERY_EVENTS } from '../../machines/queryMachine';
-import {createDataVariableFilterMachine as createDVFilterMachine, FILTER_EVENTS} from '../../machines/dataVariableFilterMachine'
 
 import * as R from 'remeda'
 import apolloClient from '../../apolloClient';
 
-export default function useStudiesDatasetsFilterMachine () {
+export default function useExplorePageQueryMachine () {
     const GET_DATA_VARIABLES = gql`
         query DataVariables {
             curatedDatasets {
@@ -60,11 +59,8 @@ export default function useStudiesDatasetsFilterMachine () {
     }
     const queryMachine = useMemo(() => createQueryMachine({srcInvoker}), [])
     const [currentQuery, sendQuery] = useMachine(queryMachine)
-    const filterMachine = useMemo(() => createDVFilterMachine(), [])
-    const [currentFilter, sendFilter] = useMachine(filterMachine)
     return {
         query: {state: currentQuery, send: sendQuery},
-        filter: {state: currentFilter, send: sendFilter},
     }
 
 

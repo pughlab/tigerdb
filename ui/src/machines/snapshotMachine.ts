@@ -1,9 +1,11 @@
 import { createMachine, assign } from 'xstate'
+import {useMachine} from '@xstate/react'
+import { useMemo } from 'react'
 import { gql } from '@apollo/client'
 import apolloClient from '../apolloClient'
 import * as R from 'remeda'
 
-import {faker} from '@faker-js/faker'
+
 
 export const SNAPSHOT_STATES = {
     IDLE: 'idle',
@@ -50,4 +52,10 @@ export const createSnapshotMachine = () => {
     })
 
     return machine
+}
+
+export function useSnapshotMachine () {
+    const snapshotMachine = useMemo(() => createSnapshotMachine(), [])
+    const [currentSnapshot, sendSnapshot] = useMachine(snapshotMachine)
+    return {snapshot: {state: currentSnapshot, send: sendSnapshot}}
 }
