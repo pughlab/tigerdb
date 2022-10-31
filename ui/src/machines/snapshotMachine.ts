@@ -15,7 +15,7 @@ export const SNAPSHOT_EVENTS = {
     CHANGE_DATA_VARIABLES: 'change_data_variables'
 }
 
-export const createQueryMachine = () => {
+export const createSnapshotMachine = () => {
     const machine = createMachine({
         id: 'snapshot',
         initial: SNAPSHOT_STATES.IDLE,

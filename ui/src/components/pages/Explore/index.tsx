@@ -52,10 +52,10 @@ function ExploreFilterFormGroup ({filterMachine, data}) {
     // )
     console.log(data)
     const {curatedDatasets} = data
-    const studiesOptions = R.pipe(
-        curatedDatasets,
-        
-    )
+    // const studiesOptions = R.pipe(
+    //     curatedDatasets,
+
+    // )
     const {studiesWithDatasets, searchText} = filterMachine.state.context.studiesWithDatasets
     return (
         <Form>

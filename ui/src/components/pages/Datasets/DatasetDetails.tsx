@@ -4,7 +4,7 @@ import * as React from 'react'
 import { Button, Form, Header, Label, Input, Segment, Container, Message, List, Divider, Modal, Grid, Dropdown } from 'semantic-ui-react'
 import { Route, Routes, useParams } from 'react-router-dom'
 import MinioBucket from '../../common/minio'
-import DataVariableTable from '../../visualizations/tables/DataVariableTable'
+// import DataVariableTable from '../../visualizations/tables/DataVariableTable'
 
 function useRawDatasetDataVariablesQuery({rawDatasetID}) {
   return {}
@@ -77,7 +77,7 @@ export default function DatasetDetails() {
             <Segment>
               <>
                 {/* <DownloadDataVariables data={data.dataVariables} /> */}
-                <DataVariableTable data={[]} />
+                {/* <DataVariableTable data={[]} /> */}
               </>
             </Segment>
           </Segment>

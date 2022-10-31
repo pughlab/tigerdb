@@ -158,30 +158,10 @@ function FullTable({ columns, data, updateMyData, skipReset }) {
     useExpanded,
     usePagination,
     useRowSelect,
-    // Here we will use a plugin to add our selection column
+    // Here we will use a plugin to add our any additional columns
     hooks => {
       hooks.visibleColumns.push(columns => {
         return [
-          // {
-          //   id: 'selection',
-          //   // Make this column a groupByBoundary. This ensures that groupBy columns
-          //   // are placed after it
-          //   groupByBoundary: true,
-          //   // The header can use the table's getToggleAllRowsSelectedProps method
-          //   // to render a checkbox
-          //   Header: ({ getToggleAllRowsSelectedProps }) => (
-          //     <div>
-          //       {/* <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} /> */}
-          //     </div>
-          //   ),
-          //   // The cell can use the individual row's getToggleRowSelectedProps method
-          //   // to the render a checkbox
-          //   Cell: ({ row }) => (
-          //     <div>
-          //       {/* <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} /> */}
-          //     </div>
-          //   ),
-          // },
           ...columns,
         ]
       })
@@ -242,7 +222,7 @@ function FullTable({ columns, data, updateMyData, skipReset }) {
                     <span {...column.getSortByToggleProps()}>
                       {column.render('Header')}
                       {/* Add a sort direction indicator */}
-                      {column.isSorted ? column.isSortedDesc ? <Icon name='arrow down' /> : <Icon name='arrow up' /> : null}
+                      {/* {column.isSorted ? column.isSortedDesc ? <Icon name='arrow down' /> : <Icon name='arrow up' /> : null} */}
                     </span>
                   </div>
                   {/* Render the columns filter UI */}
