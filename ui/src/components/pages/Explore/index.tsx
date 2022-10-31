@@ -5,10 +5,10 @@ import InteractiveHeatmapVisualization from '../../visualizations/heatmap/plotly
 import { CSVLink } from "react-csv";
 
 import {useMachine} from '@xstate/react'
-import {FILTER_EVENTS} from '../../../machines/studiesDatasetsFilterMachine'
+import {useStudiesDatasetsFilterMachine, FILTER_EVENTS} from '../../../machines/studiesDatasetsFilterMachine'
 import {useSnapshotMachine, SNAPSHOT_EVENTS} from '../../../machines/snapshotMachine'
 
-import useExplorePageMachines from '../../../hooks/pages/useExplorePageQueryMachine';
+import useCuratedDatasetsQueryMachine from '../../../hooks/pages/useCuratedDatasetsQueryMachine';
 import * as R from 'remeda'
 
 import ExploreFilterFormGroup from './ExploreFilterFormGroup';
@@ -31,8 +31,9 @@ function DownloadDataVariables({ data }) {
 
 export default function Explore() {
 
-    const {query: queryMachine} = useExplorePageMachines()
+    const {query: queryMachine} = useCuratedDatasetsQueryMachine()
     const {snapshot: snapshotMachine} = useSnapshotMachine()
+    const {filter: filterMachine} = useStudiesDatasetsFilterMachine()
 
     const {snapshotType} = snapshotMachine.state.context
     const snapshotIs = R.equals(snapshotType)
@@ -54,24 +55,31 @@ export default function Explore() {
 
     if (!queryMachine.state.matches('loaded')) {return}
 
-    const data = queryMachine.state.context.data
+    const {curatedDatasets} = queryMachine.state.context.data
+    const {studiesWithDatasets} = filterMachine.state.context
+    // Should move these as accessors for machine
+    const selectedDatasets = R.pipe(
+        R.mapValues(studiesWithDatasets, (datasets, studyID) => R.pickBy(datasets, (datasetSelected, datasetID) => datasetSelected)),
+        R.values,
+        R.map(R.keys),
+        R.flatten()
+    )
+    console.log(selectedDatasets)
+    const data = {curatedDatasets: R.filter(curatedDatasets, ({curatedDatasetID}) => selectedDatasets.includes(curatedDatasetID))}
     return (
         <>        
             <Message>
                 Some text about data variables and searching to create visualizations
                 <Divider horizontal />
                 <Button.Group>
-                    <Button content='Table' onClick={() => 
-                        snapshotMachine.send({type: SNAPSHOT_EVENTS.CHANGE_TYPE, payload: {snapshotType: 'table'}})
-                    } />
-                    <Button content='Heatmap' onClick={() => 
-                        snapshotMachine.send({type: SNAPSHOT_EVENTS.CHANGE_TYPE, payload: {snapshotType: 'heatmap'}})
-                    } />
+                    {/* <Button content='List' onClick={() => snapshotMachine.send({type: SNAPSHOT_EVENTS.CHANGE_TYPE, payload: {snapshotType: 'list'}})} /> */}
+                    <Button content='Table' onClick={() => snapshotMachine.send({type: SNAPSHOT_EVENTS.CHANGE_TYPE, payload: {snapshotType: 'table'}})} />
+                    <Button content='Heatmap' onClick={() => snapshotMachine.send({type: SNAPSHOT_EVENTS.CHANGE_TYPE, payload: {snapshotType: 'heatmap'}})} />
                 </Button.Group>
             </Message>
 
             <Segment attached='top'>
-                {/* <ExploreFilterFormGroup {...{filterMachine, data}} /> */}
+                <ExploreFilterFormGroup {...{filterMachine}} />
             </Segment>
 
             <Segment attached >
@@ -105,12 +113,9 @@ export default function Explore() {
             <Segment attached='bottom'
                 // loading={loading}
             >
-            {
-                snapshotIs('table') && <DataVariableTable data={data} />
-            }
-            {
-                snapshotIs('heatmap') && <InteractiveHeatmapVisualization data={data} />
-            }
+            {/* {snapshotIs('list') && <></>} */}
+            {snapshotIs('table') && <DataVariableTable data={data} />}
+            {snapshotIs('heatmap') && <InteractiveHeatmapVisualization data={data} />}
 
             </Segment>
         </>

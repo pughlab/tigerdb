@@ -4,7 +4,8 @@ import { createMachine, assign } from 'xstate'
 interface QueryMachineContext {
     data: any,
     errors: any,
-    variables: any
+    variables: any,
+    loading: boolean
 }
 
 export const QUERY_STATES = {
@@ -59,7 +60,10 @@ export const createQueryMachine = ({srcInvoker}: {srcInvoker: any}) => {
                 }
             }
         },
-
+    }, {
+        actions: {
+            
+        }
     })
 
     return machine

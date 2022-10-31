@@ -1,11 +1,22 @@
-import React, { useState, useReducer, useMemo } from 'react'
+import React, { useState, useReducer, useMemo, useEffect } from 'react'
 import { Message, Divider, List, Container, Input, Segment, Form, Button, Dropdown, Modal } from 'semantic-ui-react'
 
 import {FILTER_EVENTS} from '../../../machines/studiesDatasetsFilterMachine'
 import {SNAPSHOT_EVENTS} from '../../../machines/snapshotMachine'
 import * as R from 'remeda'
 
-export default function ExploreFilterFormGroup ({filterMachine, data}) {
+import useStudiesDatasetsQueryMachine from '../../../hooks/pages/useStudiesDatasetsQueryMachine'
+
+export default function ExploreFilterFormGroup ({filterMachine}) {
+    const {query: queryMachine} = useStudiesDatasetsQueryMachine()
+    const data = queryMachine.state.context.data
+    console.log(queryMachine.state)
+
+    useEffect(() => {
+        if (!!data) {
+            filterMachine.send({type: FILTER_EVENTS.SET_STUDIES_DATA, payload: {data}})
+        }
+    }, [data])
     if (!data) {return null}
 
     console.log(filterMachine.state.context)
@@ -13,12 +24,39 @@ export default function ExploreFilterFormGroup ({filterMachine, data}) {
     //     data
     // )
     console.log(data)
-    const {curatedDatasets} = data
-    // const studiesOptions = R.pipe(
-    //     curatedDatasets,
-
-    // )
-    const {studiesWithDatasets, searchText} = filterMachine.state.context.studiesWithDatasets
+    const {studies} = data
+    const studiesOptions = R.pipe(
+        studies,
+        R.map(({studyID, fullName}) => ({value: studyID, text: fullName}))
+    )
+    const datasetsOptions = R.pipe(
+        studies,
+        R.map(({shortName: studyName, rawDatasets}) => R.map(rawDatasets,
+            rd => ({
+                    value: rd.generatedCuratedDataset.curatedDatasetID,
+                    text: `${rd.name}`,
+                    label: studyName
+                })
+            )
+        ),
+        R.flatten()
+    )
+    console.log(studiesOptions, datasetsOptions)
+    const {studiesWithDatasets, searchText} = filterMachine.state.context
+    // Select any study that has at least one dataset selected
+    const selectedStudies: string[] = R.pipe(
+        studiesWithDatasets,
+        studies => R.pickBy(studies, (studyDatasets: any[], key) => R.reduce(R.values(studyDatasets), (acc: boolean, x: boolean) => acc || x, false)),
+        R.keys
+    )
+    const selectedDatasets = R.pipe(
+        studiesWithDatasets,
+        studies => R.pick(studies, selectedStudies),
+        R.mapValues(studyDatasets => R.pickBy(studyDatasets, (datasetIsSelected, datasetID) => datasetIsSelected)),
+        R.mapValues(R.keys),
+        R.values,
+        R.flatten
+    )
     return (
         <Form>
             <Form.Field
@@ -28,20 +66,29 @@ export default function ExploreFilterFormGroup ({filterMachine, data}) {
                 value={searchText}
                 onChange={(e, { value }) => filterMachine.send({type: FILTER_EVENTS.CHANGE_SEARCH_TEXT, payload: {searchText: value}})}
             />
-            <Form.Group>
+            <Form.Group widths={2}>
                 <Form.Field control={Dropdown}
                     label='Study'
                     placeholder='Filter datasets by study'
-                    multiple
-                    value={null}
-                    onChange={(e, { value }) => {return}}
+                    fluid
+                    multiple selection
+                    search
+                    value={selectedStudies}
+                    options={studiesOptions}
+                    onChange={(e, { value }) => {
+                        console.log(value)
+                        filterMachine.send({type: FILTER_EVENTS.CHANGE_STUDIES, payload: {selectedStudies: value}})
+                    }}
                 />
                 <Form.Field control={Dropdown}
                     label='Dataset'
                     placeholder='Filter data variables by dataset'
-                    multiple
-                    value={null}
-                    onChange={(e, { value }) => {return}}
+                    fluid
+                    multiple selection
+                    search
+                    value={selectedDatasets}
+                    options={datasetsOptions}
+                    onChange={(e, { value }) => filterMachine.send({type: FILTER_EVENTS.CHANGE_DATASETS, payload: {selectedDatasets: value}})}
                 />
             </Form.Group>
         </Form>

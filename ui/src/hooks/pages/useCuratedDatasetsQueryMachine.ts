@@ -7,7 +7,7 @@ import { createQueryMachine, QUERY_EVENTS } from '../../machines/queryMachine';
 import * as R from 'remeda'
 import apolloClient from '../../apolloClient';
 
-export default function useExplorePageQueryMachine () {
+export default function useCuratedDatasetsQueryMachine () {
     const GET_DATA_VARIABLES = gql`
         query DataVariables {
             curatedDatasets {
