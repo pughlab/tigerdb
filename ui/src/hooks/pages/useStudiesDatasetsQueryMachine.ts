@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useMemo } from 'react'
+import React, { useState, useReducer, useMemo, useEffect } from 'react'
 import { gql, useQuery } from '@apollo/client'
 
 import {useMachine} from '@xstate/react'
@@ -27,7 +27,7 @@ export default function useStudiesDatasetsQueryMachine () {
         }
     `
     const srcInvoker = async (context: any, event: any) => {
-        console.log('event', event)
+        // console.log('event', event)
         try {
             const res = await apolloClient.query({query: STUDIES_DATASETS_QUERY, variables: context.variables})
             return res.data
@@ -35,8 +35,12 @@ export default function useStudiesDatasetsQueryMachine () {
             throw e
         }
     }
-    const queryMachine = useMemo(() => createQueryMachine({srcInvoker}), [])
+    const queryMachine = useMemo(() => createQueryMachine({srcInvoker, initialVariables: {}}), [])
     const [currentQuery, sendQuery] = useMachine(queryMachine)
+
+    useEffect(() => {
+        sendQuery({type: QUERY_EVENTS.REFRESH})
+    }, [])
     return {
         query: {state: currentQuery, send: sendQuery},
     }
