@@ -13,7 +13,9 @@ export const resolvers = {
     ) => {
       try {
         const RawDatasetModel = ogm.model("RawDataset")
-        const { rawDatasets: [rawDataset] } = await RawDatasetModel.create({ input: [{ name, description }] })
+
+        const rawDatasetInput = {name, description, fromStudy: {connect: {where: {node: {studyID}}}}}
+        const { rawDatasets: [rawDataset] } = await RawDatasetModel.create({ input: [rawDatasetInput] })
         const { rawDatasetID } = rawDataset
         const bucketName = `raw-dataset-${rawDatasetID}`
         await makeBucket(minioClient, bucketName)

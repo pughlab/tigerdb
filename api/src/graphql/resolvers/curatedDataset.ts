@@ -15,17 +15,16 @@ export const resolvers = {
         const CuratedDatasetModel = ogm.model("CuratedDataset")
         const bucketName = `raw-dataset-${rawDatasetID}`
 
-        const { curatedDatasets: [curatedDataset] } = await CuratedDatasetModel.create({ input: [{ name, description }] })
+        const curatedDatasetInput = {name, description, generatedByRawDataset: {connect: {where: {node: {rawDatasetID}}}}}
+        const { curatedDatasets: [curatedDataset] } = await CuratedDatasetModel.create({ input: [curatedDatasetInput],  })
         const { curatedDatasetID } = curatedDataset
-
 
         const session = driver.session()
 
         const bucketObjects = (await listBucketObjects(minioClient, bucketName)).map(({ name }) => name)
-        console.log(bucketObjects)
-
+        // console.log(bucketObjects)
         const presignedURL = await makePresignedURL(minioClient, bucketName, bucketObjects.slice(-1)[0])
-        console.log(presignedURL)
+        // console.log(presignedURL)
         
         // original api with datavariables containing chr,start,end,datavalue
         // "CALL apoc.periodic.iterate(\'CALL apoc.load.csv($presignedURL, {sep: \" \", compression: \"GZIP\"}) YIELD list\', \'MATCH (b:CuratedDataset {curatedDatasetID: $curatedDatasetID}) CREATE (a:DataVariable {dataVariableID: apoc.create.uuid(), chromosome: list[0], start: toInteger(list[1]), end: toInteger(list[2]), datavalue: toFloat(list[3]) }), (b)-[:HAS_DATA_VARIABLE]->(a) RETURN a\', { batchSize:10000, iterateList: true, parallel:true, params:{curatedDatasetID: $curatedDatasetID, presignedURL: $presignedURL}})",

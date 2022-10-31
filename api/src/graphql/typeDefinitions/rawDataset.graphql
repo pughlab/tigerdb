@@ -10,7 +10,9 @@ type RawDataset {
 
     fromStudy: Study! @relationship(type: "HAS_RAW_DATASET", direction: IN)
     studySite: GeographyCity! @relationship(type: "FROM_GEOGRAPHY_CITY", direction: OUT)
-    # generatedCuratedDataset: CuratedDataset @relationship(type: "GENERATED_CURATED_DATASET", direction: OUT)
+
+    generatedCuratedDataset: CuratedDataset @relationship(type: "GENERATED_CURATED_DATASET", direction: OUT)
+
 }
 
 type Mutation {

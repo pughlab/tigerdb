@@ -30,6 +30,8 @@ type CuratedDataset {
     name: String!
     description: String!
     dataVariables: [DataVariable!]! @relationship(type: "HAS_DATA_VARIABLE", direction: OUT)
+
+    generatedByRawDataset: RawDataset! @relationship(type: "GENERATED_CURATED_DATASET", direction: IN)
 }
 
 type Mutation {
