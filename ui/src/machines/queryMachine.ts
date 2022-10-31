@@ -19,6 +19,10 @@ const GET_DATA_VARIABLES = gql`
             # dataVariables(options: {sort: [ {chromosome: ASC},{ start: ASC } ]}) {
             dataVariables {
                 dataVariableID
+                fields {
+                    name
+                    value
+                }
             }  
         }
     }
@@ -46,28 +50,38 @@ function getDataVariables(context: any, event: any) {
                 throw res.errors
             } else {
                 console.log(res.data)
-                const fakeData = () => {
-                    let curatedDatasets = []
-                    for (const i of R.range(0, 3)) {
-                        curatedDatasets[i] = {
-                            curatedDatasetID: faker.datatype.uuid(),
-                            name: faker.datatype.uuid(),
-                            dataVariables: R.pipe(
-                                R.range(0, 10),
-                                R.map(i => ({dataVariableID: faker.datatype.uuid(), chromosome: i, start: i*20, end: 20+i*20, datavalue: faker.datatype.number(100)}))
-                            )
-                        }
+                const curatedDatasets: any[] = res.data.curatedDatasets
+                const fieldsToObj = (dataVariable: any): any => {
+                    return {
+                        ... dataVariable,
+                        ... R.pipe(
+                            dataVariable.fields,
+                            R.map((field: any): [string, unknown] => [field.name, field.value]),
+                            R.fromPairs)
                     }
-                    return {curatedDatasets}
                 }
-                // return res.data
-                return fakeData()
+                
+                const test = R.pipe(
+                    curatedDatasets,
+                    R.map(({dataVariables, ...rest}) => {
+                        return ({
+                            ...rest,
+                            dataVariables: R.pipe(
+                                dataVariables,
+                                R.map(fieldsToObj),
+                                (dv) => R.sortBy(dv,  [(x) => x.chromosome, 'asc'], (x) => parseInt(x.start))
+                            )
+                        })
+                    }),
+                )
+                console.log(test)
+                return {curatedDatasets: test}
             }
         }
     )
 }
 
-export const createQueryMachine = () => {
+export const createQueryMachine = (query, invoker) => {
     
 
     const machine = createMachine({
