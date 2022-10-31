@@ -8,9 +8,14 @@ import * as R from 'remeda'
 import apolloClient from '../../apolloClient';
 
 export default function useCuratedDatasetsQueryMachine () {
+    const INITIAL_QUERY_VARIABLES = {
+        curatedDatasetIDs: []
+    }
     const GET_DATA_VARIABLES = gql`
-        query DataVariables {
-            curatedDatasets {
+        query DataVariables($curatedDatasetIDs: [ID!]!) {
+            curatedDatasets(
+                where: {OR: [{curatedDatasetID_IN: $curatedDatasetIDs}]}
+            ) {
                 curatedDatasetID
                 name
                 # dataVariables(options: {sort: [ {chromosome: ASC},{ start: ASC } ]}) {
@@ -57,7 +62,7 @@ export default function useCuratedDatasetsQueryMachine () {
             throw e
         }
     }
-    const queryMachine = useMemo(() => createQueryMachine({srcInvoker}), [])
+    const queryMachine = useMemo(() => createQueryMachine({srcInvoker, initialVariables: INITIAL_QUERY_VARIABLES}), [])
     const [currentQuery, sendQuery] = useMachine(queryMachine)
     return {
         query: {state: currentQuery, send: sendQuery},

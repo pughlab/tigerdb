@@ -10,7 +10,7 @@ import useStudiesDatasetsQueryMachine from '../../../hooks/pages/useStudiesDatas
 export default function ExploreFilterFormGroup ({filterMachine}) {
     const {query: queryMachine} = useStudiesDatasetsQueryMachine()
     const data = queryMachine.state.context.data
-    console.log(queryMachine.state)
+    // console.log(queryMachine.state)
 
     useEffect(() => {
         if (!!data) {
@@ -19,11 +19,11 @@ export default function ExploreFilterFormGroup ({filterMachine}) {
     }, [data])
     if (!data) {return null}
 
-    console.log(filterMachine.state.context)
+    // console.log(filterMachine.state.context)
     // const studiesOptions = R.pipe(
     //     data
     // )
-    console.log(data)
+    // console.log(data)
     const {studies} = data
     const studiesOptions = R.pipe(
         studies,
@@ -41,7 +41,7 @@ export default function ExploreFilterFormGroup ({filterMachine}) {
         ),
         R.flatten()
     )
-    console.log(studiesOptions, datasetsOptions)
+    // console.log(studiesOptions, datasetsOptions)
     const {studiesWithDatasets, searchText} = filterMachine.state.context
     // Select any study that has at least one dataset selected
     const selectedStudies: string[] = R.pipe(
