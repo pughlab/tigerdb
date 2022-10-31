@@ -3,7 +3,10 @@ import { gql } from '@apollo/client'
 import apolloClient from '../apolloClient'
 import * as R from 'remeda'
 
-import {faker} from '@faker-js/faker'
+interface FilterMachineContext {
+    searchText: string,
+    studiesWithDatasets: object
+}
 
 export const FILTER_STATES = {
     IDLE: 'idle',
@@ -21,24 +24,23 @@ export const createDataVariableFilterMachine = () => {
         id: 'snapshot',
         initial: FILTER_STATES.IDLE,
         context: {
-            // searchText, studiesWithDatasets
             searchText: '',
             studiesWithDatasets: {}
-        },
+        } as FilterMachineContext,
         states: {
             [FILTER_STATES.IDLE]: {
                 on: {
                     [FILTER_EVENTS.CHANGE_SEARCH_TEXT]: {
                         target: FILTER_STATES.IDLE,
                         actions: assign({
-                            searchText: (context: Object, event: any) => event.payload.searchText
+                            searchText: (context: FilterMachineContext, event: any) => event.payload.searchText
                         })
                     },
                     [FILTER_EVENTS.CHANGE_STUDIES_WITH_DATASETS]: {
                         target: FILTER_STATES.IDLE,
                         actions: assign({
-                            studiesWithDatasets: (context, event: any) => {
-                                return null
+                            studiesWithDatasets: (context: FilterMachineContext, event: any) => {
+                                return {}
                             },
                         })
                     },

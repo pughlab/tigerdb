@@ -2,16 +2,13 @@ import React, { useState, useReducer, useMemo } from 'react'
 import { Message, Divider, List, Container, Input, Segment, Form, Button, Dropdown, Modal } from 'semantic-ui-react'
 import DataVariableTable from '../../visualizations/tables/DataVariableTable'
 import InteractiveHeatmapVisualization from '../../visualizations/heatmap/plotly/InteractiveHeatmapVisualization';
-import { gql, useQuery } from '@apollo/client'
 import { CSVLink } from "react-csv";
 
-import {useMachine} from '@xstate/react'
-import { createQueryMachine, QUERY_EVENTS } from '../../../machines/queryMachine';
-import {createDataVariableFilterMachine as createDVFilterMachine, FILTER_EVENTS} from '../../../machines/dataVariableFilterMachine'
-import {createSnapshotMachine, SNAPSHOT_EVENTS} from '../../../machines/snapshotMachine'
+import {FILTER_EVENTS} from '../../../machines/dataVariableFilterMachine'
+import {SNAPSHOT_EVENTS} from '../../../machines/snapshotMachine'
 import * as R from 'remeda'
 
-
+import useExplorePageMachines from '../../../hooks/pages/useExplorePageMachines';
 
 function DownloadDataVariables({ data }) {
     console.log(data)
@@ -27,20 +24,6 @@ function DownloadDataVariables({ data }) {
             <Button fluid content={`Download ${data.length} variables`} />
         </CSVLink>
     )
-}
-
-function useExplorePageMachines () {
-    const queryMachine = useMemo(() => createQueryMachine(), [])
-    const [currentQuery, sendQuery] = useMachine(queryMachine)
-    const filterMachine = useMemo(() => createDVFilterMachine(), [])
-    const [currentFilter, sendFilter] = useMachine(filterMachine)
-    const snapshotMachine = useMemo(() => createSnapshotMachine(), [])
-    const [currentSnapshot, sendSnapshot] = useMachine(snapshotMachine)
-    return {
-        query: {state: currentQuery, send: sendQuery},
-        filter: {state: currentFilter, send: sendFilter},
-        snapshot: {state: currentSnapshot, send: sendSnapshot}
-    }
 }
 
 function ExploreFilterFormGroup ({filterMachine, data}) {
@@ -88,7 +71,7 @@ function ExploreFilterFormGroup ({filterMachine, data}) {
 
 export default function Explore() {
     const {query: queryMachine, filter: filterMachine, snapshot: snapshotMachine} = useExplorePageMachines()
-    const {searchText} = filterMachine.state.context
+    
     const {snapshotType} = snapshotMachine.state.context
     const snapshotIs = R.equals(snapshotType)
 

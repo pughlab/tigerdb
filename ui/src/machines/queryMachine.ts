@@ -1,32 +1,11 @@
 import { createMachine, assign } from 'xstate'
-import { gql } from '@apollo/client'
-import apolloClient from '../apolloClient'
-import * as R from 'remeda'
 
-import {faker} from '@faker-js/faker'
-
+// TODO: match types between initial context and state node configs
 interface QueryMachineContext {
     data: any,
     errors: any,
     variables: any
 }
-
-const GET_DATA_VARIABLES = gql`
-    query DataVariables {
-        curatedDatasets {
-            curatedDatasetID
-            name
-            # dataVariables(options: {sort: [ {chromosome: ASC},{ start: ASC } ]}) {
-            dataVariables {
-                dataVariableID
-                fields {
-                    name
-                    value
-                }
-            }  
-        }
-    }
-`
 
 export const QUERY_STATES = {
     IDLE: 'idle',
@@ -42,52 +21,13 @@ export const QUERY_EVENTS = {
     DATA_CHANGED: 'data_changed',
 }
 
-function getDataVariables(context: any, event: any) {
-    console.log('event', event)
-    return apolloClient.query({query: GET_DATA_VARIABLES, variables: context.variables}).then(
-        res => {
-            if (res.errors) {
-                throw res.errors
-            } else {
-                console.log(res.data)
-                const curatedDatasets: any[] = res.data.curatedDatasets
-                const fieldsToObj = (dataVariable: any): any => {
-                    return {
-                        ... dataVariable,
-                        ... R.pipe(
-                            dataVariable.fields,
-                            R.map((field: any): [string, unknown] => [field.name, field.value]),
-                            R.fromPairs)
-                    }
-                }
-                
-                const test = R.pipe(
-                    curatedDatasets,
-                    R.map(({dataVariables, ...rest}) => {
-                        return ({
-                            ...rest,
-                            dataVariables: R.pipe(
-                                dataVariables,
-                                R.map(fieldsToObj),
-                                (dv) => R.sortBy(dv,  [(x) => x.chromosome, 'asc'], (x) => parseInt(x.start))
-                            )
-                        })
-                    }),
-                )
-                console.log(test)
-                return {curatedDatasets: test}
-            }
-        }
-    )
-}
-
-export const createQueryMachine = (query, invoker) => {
+export const createQueryMachine = ({srcInvoker}: {srcInvoker: any}) => {
     
 
     const machine = createMachine({
         id: 'gqlQuery',
         initial: QUERY_STATES.LOADING,
-        context: {},
+        context: {data: null, errors: [], variables: {}} as QueryMachineContext,
         states: {
             [QUERY_STATES.IDLE]: {
                 on: {
@@ -96,11 +36,11 @@ export const createQueryMachine = (query, invoker) => {
             },
             [QUERY_STATES.LOADING]: {
                 invoke: {
-                    src: (context: any, event) => getDataVariables(context, event),
+                    src: (context: QueryMachineContext, event: any) => srcInvoker(context, event),
                     onDone: {
                         target: QUERY_STATES.LOADED,
                         actions: assign({
-                            data: (context, event) => event.data
+                            data: (context: QueryMachineContext, event) => event.data
                         })
                     },
                     onError: {
