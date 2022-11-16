@@ -16,7 +16,13 @@ const neo4jSchema = new Neo4jGraphQL({
     typeDefs: mergeTypeDefs([... autoTypeDefs, KeycloakTypeDefs ]),
     resolvers: mergeResolvers([... customResolvers, {Upload: GraphQLUpload}]),
     schemaDirectives: KeycloakSchemaDirectives,
-    logger: {log: e => console.log(e)}
+    logger: {log: e => console.log(e)},
+    // config: {
+    //     jwt: {
+    //         // rolesPath: "jwt.roles"
+    //         rolesPath: "jwt.realm_access.roles"
+    //     }
+    // }
 })
 
 export const schema = neo4jSchema.schema
