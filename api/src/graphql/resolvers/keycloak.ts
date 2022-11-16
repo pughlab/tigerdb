@@ -17,7 +17,7 @@ export const resolvers = {
           { keycloakUserID }
         )
         // console.log('match result', existingUser)
-        if (!!existingUser.records.length) {
+        if (!existingUser.records.length) {
           const createUser = await session.run(
             'CREATE (a:User {keycloakUserID: $keycloakUserID, name: $name, email: $email}) RETURN a',
             keycloakUser
