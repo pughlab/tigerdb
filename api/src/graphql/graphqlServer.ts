@@ -39,6 +39,8 @@ export const createApolloServer = () => {
       const token = req.headers.authorization || '';
       // console.log(`Req Bearer Token: ${token}`);
       const kauth = new KeycloakContext({req}, keycloak)
+      const jwt = kauth?.accessToken?.content
+      jwt && (jwt.roles = jwt?.realm_access?.roles)
   
       // console.log(`kauth: ${kauth.accessToken}`);
       
@@ -48,7 +50,8 @@ export const createApolloServer = () => {
         neo4jDatabase: process.env.NEO4J_DATABASE,
         minioClient,
         kauth,
-        ogm
+        ogm,
+        jwt
       }
     },
     schema: schema,
