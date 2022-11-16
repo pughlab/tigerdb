@@ -1,8 +1,15 @@
 type Study {
   studyID: ID! @id
-  fullName: String!
+  fullName: String! @auth(rules: [{roles: ["offline_access"]}])
   shortName: String!
   description: String!
   rawDatasets: [RawDataset!]! @relationship(type: "HAS_RAW_DATASET", direction: OUT)
   studySites: [GeographyCity!]! @relationship(type: "HAS_STUDY_SITE", direction: OUT)
 }
+
+extend type Study @auth(
+  rules: [{
+      isAuthenticated: true,
+      # roles: ["admin"]
+    }]
+)
