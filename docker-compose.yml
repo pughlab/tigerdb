@@ -19,9 +19,9 @@ services:
 
   api:
     # For non-M1 machines: comment out arm64v8 and platform field
-    image: arm64v8/node:16
-    platform: linux/arm64/v8
-    # image: node:16
+    # image: arm64v8/node:16
+    # platform: linux/arm64/v8
+    image: node:16
     working_dir: /usr/src/service
     command: >
       sh -c "node api/src/proxy_pass minio 9000 &
@@ -51,9 +51,9 @@ services:
 
   ui:
     # For non-M1 machines: comment out arm64v8 and platform field
-    # image: node:16
-    image: arm64v8/node:16
-    platform: linux/arm64/v8
+    image: node:16
+    # image: arm64v8/node:16
+    # platform: linux/arm64/v8
     working_dir: /usr/src/service
     command: >
       sh -c "npm run start:ui"
@@ -88,8 +88,8 @@ services:
 
   keycloak:
     # For non-M1 machines: use keycloak 11
-    # image: jboss/keycloak:11.0.1
-    image: wizzn/keycloak:12
+    image: jboss/keycloak:11.0.1
+    # image: wizzn/keycloak:12
     container_name: keycloak
     expose: 
       - 8443
