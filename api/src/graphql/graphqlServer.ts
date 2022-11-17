@@ -40,7 +40,6 @@ export const createApolloServer = () => {
       // console.log(`Req Bearer Token: ${token}`);
       const kauth = new KeycloakContext({req}, keycloak)
       const jwt = kauth?.accessToken?.content
-      jwt && (jwt.roles = jwt?.realm_access?.roles)
   
       // console.log(`kauth: ${kauth.accessToken}`);
       
