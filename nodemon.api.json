@@ -3,7 +3,7 @@
   "ignore": [".git", "node_modules/**/node_modules"],
   "verbose": true,
   "execMap": {
-    "ts": "node --require @swc-node/register"
+    "ts": "node --require ts-node/register"
   },
   "watch": [
     "api/src/",
