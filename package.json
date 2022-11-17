@@ -4,7 +4,7 @@
     "description": "pibu",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start:api": "TS_NODE_TRANSPILE_ONLY=true NODE_TLS_REJECT_UNAUTHORIZED=0 cross-env DEBUG=neo4j-graphql-js TS_NODE_PROJECT=tsconfig.api.json ./node_modules/.bin/nodemon --config nodemon.api.json --inspect=0.0.0.0:9231 -L api/src/index.ts",
+        "start:api": "TS_NODE_TRANSPILE_ONLY=true NODE_TLS_REJECT_UNAUTHORIZED=0 cross-env DEBUG=@neo4j/graphql:* TS_NODE_PROJECT=tsconfig.api.json ./node_modules/.bin/nodemon --config nodemon.api.json --inspect=0.0.0.0:9231 -L api/src/index.ts",
         "build:api": "babel --config-file babel.config.api.js api/src --out-dir api/build && shx cp .env api/build/ 2>/dev/null || : && shx cp api/src/schema.graphql api/build/",
         "now-build:api": "babel --config-file babel.config.api.js api/src --out-dir api/build/ && shx cp src/schema.graphql api/build/",
         "start": "npm run build && node build/index.js",
