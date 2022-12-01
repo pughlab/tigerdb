@@ -11,7 +11,7 @@ type MinioUpload {
   bucketName: ID!
   objectName: ID! @id
   filename: String!
-  presignedURL: String @ignore
+  presignedURL: String @customResolver
 }
 
 type MinioBucket {

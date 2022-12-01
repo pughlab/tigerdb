@@ -1,6 +1,6 @@
 import { ApolloServer } from 'apollo-server-express'
 
-import {schema, typeDefs} from './schema'
+import {neo4jSchema, typeDefs, resolvers} from './schema'
 
 import { driver } from './neo4j'
 import {OGM} from '@neo4j/graphql-ogm'
@@ -15,6 +15,7 @@ dotenv.config()
 
 import { configureKeycloak } from './keycloak'
 const { KeycloakContext } = require('keycloak-connect-graphql')
+import { KeycloakSchemaDirectives } from 'keycloak-connect-graphql'
 
 // Specify host, port and path for GraphQL endpoint
 const graphqlPort = process.env.GRAPHQL_SERVER_PORT || 4001
@@ -25,7 +26,7 @@ const voyagerPath = process.env.GRAPHQL_VOYAGER_PATH || '/voyager'
 console.log(graphqlPort, graphqlPath, graphqlHost)
 
 
-export const createApolloServer = () => {
+export const createApolloServer = async () => {
   const app = express()
 
   const { keycloak } = configureKeycloak(app)
@@ -34,6 +35,8 @@ export const createApolloServer = () => {
 
   app.use(voyagerPath, voyagerMiddleware({ endpointUrl: graphqlPath }));
 
+  let schema = await neo4jSchema.getSchema()
+  let config = schema.toConfig()
   const apolloServer = new ApolloServer({
     context: async ({req, res}) => {
       const token = req.headers.authorization || '';
@@ -43,7 +46,8 @@ export const createApolloServer = () => {
   
       // console.log(`kauth: ${kauth.accessToken}`);
       
-      const ogm = new OGM({typeDefs, driver})
+      const ogm = new OGM({typeDefs, driver, resolvers})
+      ogm.init()
       return {
         driver,
         neo4jDatabase: process.env.NEO4J_DATABASE,
@@ -57,6 +61,8 @@ export const createApolloServer = () => {
     introspection: true,
     playground: true,
     uploads: false,
+    schemaDirectives: KeycloakSchemaDirectives,
+    logger: {log: e => console.log(e)},
   })
   apolloServer.applyMiddleware({ app, path: graphqlPath })
 
