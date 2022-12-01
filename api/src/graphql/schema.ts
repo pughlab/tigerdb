@@ -1,5 +1,5 @@
 import { mergeTypeDefs, mergeSchemas, mergeResolvers } from '@graphql-tools/merge'
-import { KeycloakTypeDefs, KeycloakSchemaDirectives } from 'keycloak-connect-graphql'
+import { KeycloakTypeDefs } from 'keycloak-connect-graphql'
 import { loadFilesSync } from '@graphql-tools/load-files'
 import path from 'path'
 import { GraphQLUpload } from 'graphql-upload'
