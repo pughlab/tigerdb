@@ -1,6 +1,7 @@
 type Study {
   studyID: ID! @id
-  fullName: String! @auth(rules: [{roles: ["offline_access"]}])
+  allowedRoles: [String]
+  fullName: String!
   shortName: String!
   description: String!
   rawDatasets: [RawDataset!]! @relationship(type: "HAS_RAW_DATASET", direction: OUT)
@@ -10,6 +11,6 @@ type Study {
 extend type Study @auth(
   rules: [{
       isAuthenticated: true,
-      # roles: ["admin"]
+      where: {allowedRoles: "$jwt.realm_access.roles"}
     }]
 )

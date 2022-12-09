@@ -3,6 +3,8 @@ import { KeycloakTypeDefs } from 'keycloak-connect-graphql'
 import { loadFilesSync } from '@graphql-tools/load-files'
 import path from 'path'
 import { GraphQLUpload } from 'graphql-upload'
+// import {Neo4jGraphQL} from '@neo4j/graphql'
+import { Neo4jGraphQL } from '../neo4jgraphql/packages/graphql/src'
 import { Neo4jGraphQLAuthJWTPlugin } from '@neo4j/graphql-plugin-auth'
 
 // Load type defs and resolvers
