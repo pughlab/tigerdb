@@ -1,10 +1,10 @@
 type DataVariable {
     dataVariableID: ID! @id
     allowedRoles: [String]
-    chromosome: String
-    start: Int
-    end: Int
-    datavalue: Float
+    # chromosome: String
+    # start: Int
+    # end: Int
+    # datavalue: Float
     # Define fields you want to search over here, transformation script must map to this shape
 
     # currentDefinition: DataVariableDefinition! @relationship(type: "HAS_DEFINITION", direction: OUT, properties: "HasDefinition")
@@ -18,32 +18,27 @@ type DataVariable {
 type DataVariableField {
     dataVariableFieldID: ID! @id
     allowedRoles: [String]
-    dataVariable: DataVariable @relationship(type: "HAS_DEFINITION", direction: IN)
+    # dataVariable: DataVariable @relationship(type: "HAS_DEFINITION", direction: IN)
     # name: String!
     code: String!
     description: String!
     jsonSchema: JSON!
-    value: JSON!
+    hasFieldDefinition: DataVariableFieldDefinition! @relationship(type: "HAS_FIELD_DEFINITION", direction: OUT)
 }
 
-# # This is a field
-# type DataVariableDefinition {
-#     dataVariable: DataVariable! @relationship(type: "HAS_DEFINITION", direction: IN)
-#     code: String!
-#     description: String!
-#     samples: DataVariableValue! @relationship(type: "HAS_VALUE", direction: OUT)
-# }
+type DataVariableFieldDefinition {
+    dataVariableFieldDefinitionID: ID! @id
+    xref: ID!
+    description: String!
+    validationSchema: JSON
 
-# type DataVariableValue {
-#     jsonSchema: JSON!
-#     value: JSON!
-# }
+    hasFieldValues: [DataVariableValue!]! @relationship(type: "HAS_FIELD_VALUE", direction: OUT)
+}
 
-# interface HasDefinition @relationshipProperties {
-#     from: Date!
-#     # If 'to' is non-null then this definition has been changed and is not the current one
-#     to: Date
-# }
+type DataVariableValue {
+    value: JSON!
+    fromFieldDefinition: DataVariableFieldDefinition! @relationship(type: "HAS_FIELD_VALUE", direction: IN) 
+}
 
 extend type DataVariable @auth(
   rules: [{

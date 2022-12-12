@@ -14,6 +14,8 @@ export const resolvers = {
                 const RawDatasetModel = ogm.model("RawDataset")
                 const DataVariableModel = ogm.model('DataVariable')
                 const DataVariableFieldModel = ogm.model('DataVariableField')
+                const DataVariableFieldDefinitionModel = ogm.model('DataVariableFieldDefinition')
+                const DataVariableValueModel = ogm.model('DataVariableValue')
                 const CuratedDatasetModel = ogm.model("CuratedDataset")
                 
                 const bucketName = `raw-dataset-${rawDatasetID}`
@@ -48,7 +50,7 @@ export const resolvers = {
                 console.log(bucketItemNames)
                 // From RD a69f105c-005a-46c1-9980-ffae7e2165df
                 const rawCSV = 'rawdata_sample_3.csv.gz'
-                const codebook = 'codebook_sample_2.csv.gz'
+                const codebook = 'codebook_sample_3.csv.gz'
 
                 const rawCSVStream = await minioClient.getObject(bucketName, rawCSV)
                 const codebookStream = await minioClient.getObject(bucketName, codebook)
@@ -92,23 +94,31 @@ export const resolvers = {
                     for (const codeValue of zippedRow) {
                         const [code, value] = codeValue
                         // console.log(zippedRow, codebookMap[code], codebookMap['CHILDid'])
-                        const codemapRef = codebookMap.get('CHILDid')
+                        const codemapRef = codebookMap.get(code)
                         console.log(codemapRef)
                         const field = {
                             allowedRoles: [name],
                             description: codemapRef.description,
                             jsonSchema: codemapRef.jsonSchema,
                             code,
-                            value,
+                            hasFieldDefinition: {create: {node: {
+                                xref: code,
+                                description: codemapRef.description,
+                                validationSchema: codemapRef.jsonSchema,
+                                hasFieldValues: {create: {node: {
+                                    value: value
+                                }}}
+                            }}}
+                            // value,
                         }
                         dataVariableInputFields.push(field)
                     }
                     const { dataVariables: [dataVariable] } = await DataVariableModel.create({ input: [{
                         // fields: dataVariableInputFields,
                         allowedRoles: [name],
-                        chromosome: "chr1",
-                        start: 1,
-                        end: 10,
+                        // chromosome: "chr1",
+                        // start: 1,
+                        // end: 10,
                     }] })
                     console.log(dataVariable)
                     const { dataVariableID, ...dataVariableRest } = dataVariable
@@ -119,7 +129,7 @@ export const resolvers = {
                     for (const dataVariableInputField of dataVariableInputFields) {
                         const dataVariableField = await DataVariableFieldModel.create({
                             input: {
-                                dataVariable: {"connect": {"where": {"node": {"dataVariableID": dataVariableID}}}},
+                                // dataVariable: {"connect": {"where": {"node": {"dataVariableID": dataVariableID}}}},
                                 ...dataVariableInputField
                             }
                         })
