@@ -28,6 +28,7 @@ type DataVariableField {
 
 type DataVariableFieldDefinition {
     dataVariableFieldDefinitionID: ID! @id
+    allowedRoles: [String]
     xref: ID!
     description: String!
     validationSchema: JSON
@@ -37,6 +38,7 @@ type DataVariableFieldDefinition {
 
 type DataVariableValue {
     dataVariableValueID: ID! @id
+    allowedRoles: [String]
     value: JSON!
     fromFieldDefinition: DataVariableFieldDefinition! @relationship(type: "HAS_FIELD_DEFINITION", direction: OUT) 
 }
@@ -49,6 +51,22 @@ extend type DataVariable @auth(
 )
 
 extend type DataVariableField @auth(
+  rules: [{
+      isAuthenticated: true,
+      where: {allowedRoles: "$jwt.realm_access.roles"}
+    }
+    ]
+)
+
+extend type DataVariableFieldDefinition @auth(
+  rules: [{
+      isAuthenticated: true,
+      where: {allowedRoles: "$jwt.realm_access.roles"}
+    }
+    ]
+)
+
+extend type DataVariableValue @auth(
   rules: [{
       isAuthenticated: true,
       where: {allowedRoles: "$jwt.realm_access.roles"}

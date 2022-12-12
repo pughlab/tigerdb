@@ -98,9 +98,11 @@ export const resolvers = {
                         const codemapRef = codebookMap.get(code)
                         console.log(codemapRef)
                         const nodeDataVariableValue = {
+                            allowedRoles: [name],
                             value,
                         }
                         const nodeDataVariableFieldDefinition = {
+                            allowedRoles: [name],
                             xref: code,
                             description: codemapRef.description,
                             validationSchema: codemapRef.jsonSchema,
