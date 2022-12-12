@@ -36,8 +36,9 @@ type DataVariableFieldDefinition {
 }
 
 type DataVariableValue {
+    dataVariableValueID: ID! @id
     value: JSON!
-    fromFieldDefinition: DataVariableFieldDefinition! @relationship(type: "HAS_FIELD_VALUE", direction: IN) 
+    fromFieldDefinition: DataVariableFieldDefinition! @relationship(type: "HAS_FIELD_DEFINITION", direction: OUT) 
 }
 
 extend type DataVariable @auth(

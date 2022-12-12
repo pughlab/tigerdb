@@ -91,27 +91,61 @@ export const resolvers = {
                     const zippedRow = zip(rawCodeHeaders, row)
                     // console.log(zippedRow)
                     let dataVariableInputFields = []
+                    let dataVariableFieldIDs = []
                     for (const codeValue of zippedRow) {
                         const [code, value] = codeValue
                         // console.log(zippedRow, codebookMap[code], codebookMap['CHILDid'])
                         const codemapRef = codebookMap.get(code)
                         console.log(codemapRef)
-                        const field = {
+                        const nodeDataVariableValue = {
+                            value,
+                        }
+                        const nodeDataVariableFieldDefinition = {
+                            xref: code,
+                            description: codemapRef.description,
+                            validationSchema: codemapRef.jsonSchema,
+                        }
+                        const nodeDataVariableField = {
                             allowedRoles: [name],
                             description: codemapRef.description,
                             jsonSchema: codemapRef.jsonSchema,
                             code,
-                            hasFieldDefinition: {create: {node: {
-                                xref: code,
-                                description: codemapRef.description,
-                                validationSchema: codemapRef.jsonSchema,
-                                hasFieldValues: {create: {node: {
-                                    value: value
-                                }}}
-                            }}}
-                            // value,
                         }
-                        dataVariableInputFields.push(field)
+                        const nodeDataVariable = {
+                            allowedRoles: [name],
+                        }
+
+                        const dataVariableFieldDefinition = await DataVariableFieldDefinitionModel.create({input: {
+                            ...nodeDataVariableFieldDefinition
+                        }})
+                        const {dataVariableFieldDefinitionID, ...dataVariableFieldDefinitionRest} = dataVariableFieldDefinition['dataVariableFieldDefinitions'][0]
+                        const dataVariableValue = await DataVariableValueModel.create({
+                            input: {
+                                ...nodeDataVariableValue,
+                                fromFieldDefinition: {connect: { where: { node: { dataVariableFieldDefinitionID }}}}
+                            }
+                        })
+                        const {dataVariableValueID, ...dataVariableValueRest} = dataVariableValue['dataVariableValues'][0]
+                        DataVariableFieldDefinitionModel.update({
+                            where: { dataVariableFieldDefinitionID },
+                            update: {
+                                hasFieldValues: {
+                                    connect: {
+                                        where: {
+                                            node: { dataVariableValueID }
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                            hasFieldValues: {connect: {where: { node: { dataVariableValueID }}}}
+                        const dataVariableField = await DataVariableFieldModel.create({input: {
+                            ...nodeDataVariableField,
+                            hasFieldDefinition: {connect: {where: { node: { dataVariableFieldDefinitionID }}}}
+                        }})
+                        const {dataVariableFieldID, ...dataVariableFieldRest} = dataVariableField['dataVariableFields'][0]
+                        dataVariableFieldIDs.push(dataVariableFieldID)
+                        
                     }
                     const { dataVariables: [dataVariable] } = await DataVariableModel.create({ input: [{
                         // fields: dataVariableInputFields,
@@ -123,19 +157,6 @@ export const resolvers = {
                     console.log(dataVariable)
                     const { dataVariableID, ...dataVariableRest } = dataVariable
                     dataVariableIDs.push(dataVariableID)
-
-                    let dataVariableFieldIDs = []
-
-                    for (const dataVariableInputField of dataVariableInputFields) {
-                        const dataVariableField = await DataVariableFieldModel.create({
-                            input: {
-                                // dataVariable: {"connect": {"where": {"node": {"dataVariableID": dataVariableID}}}},
-                                ...dataVariableInputField
-                            }
-                        })
-                        const {dataVariableFieldID, ...dataVariableFieldRest} = dataVariableField['dataVariableFields'][0]
-                        dataVariableFieldIDs.push(dataVariableFieldID)
-                    }
 
                     await DataVariableModel.update({
                         where: { dataVariableID },
