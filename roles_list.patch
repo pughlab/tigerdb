@@ -1,0 +1,24 @@
+diff --git a/packages/graphql/src/translate/create-auth-and-params.ts b/packages/graphql/src/translate/create-auth-and-params.ts
+index 592272c60..14aec1b8d 100644
+--- a/packages/graphql/src/translate/create-auth-and-params.ts
++++ b/packages/graphql/src/translate/create-auth-and-params.ts
+@@ -503,7 +503,18 @@ function createAuthField({
+     }
+ 
+     const isNotNull = Cypher.isNotNull(fieldPropertyRef);
+-    const equalsToParam = Cypher.eq(fieldPropertyRef, param);
++    // const equalsToParam = Cypher.eq(fieldPropertyRef, param);
++    
++    
++    const equalsToParam = Cypher.in(fieldPropertyRef, param);
++
++    const roleVar = new Cypher.Variable();
++    const rolesList = new Cypher.Literal(param.value);
++    const roleInParamPredicate = isValueInListCypher(roleVar, fieldPropertyRef);
++    const rolesInListComprehension = Cypher.any(roleVar, rolesList, roleInParamPredicate);
++
++    return Cypher.and(isNotNull, rolesInListComprehension);
++
+     return Cypher.and(isNotNull, equalsToParam);
+ }
+ 
