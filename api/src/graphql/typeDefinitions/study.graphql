@@ -1,6 +1,7 @@
 type Study {
   studyID: ID! @id
-  allowedRoles: [String]
+  allowedStudies: [String]
+  allowedSites: [String]
   fullName: String!
   shortName: String!
   description: String!
@@ -11,6 +12,10 @@ type Study {
 extend type Study @auth(
   rules: [{
       isAuthenticated: true,
-      where: {allowedRoles: "$jwt.realm_access.roles"}
+      # where: {allowedRoles: "$jwt.realm_access.roles"}
+      where: {AND: [
+        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
+        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
+        ]}
     }]
 )

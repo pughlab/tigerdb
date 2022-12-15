@@ -14,7 +14,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 import { configureKeycloak } from './keycloak'
-const { KeycloakContext } = require('keycloak-connect-graphql')
+import { KeycloakContext } from 'keycloak-connect-graphql'
 import { KeycloakSchemaDirectives } from 'keycloak-connect-graphql'
 
 // Specify host, port and path for GraphQL endpoint

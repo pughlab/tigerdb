@@ -1,6 +1,7 @@
 type DataVariable {
     dataVariableID: ID! @id
-    allowedRoles: [String]
+    allowedStudies: [String]
+    allowedSites: [String]
     # chromosome: String
     # start: Int
     # end: Int
@@ -17,7 +18,8 @@ type DataVariable {
 
 type DataVariableField {
     dataVariableFieldID: ID! @id
-    allowedRoles: [String]
+    allowedStudies: [String]
+    allowedSites: [String]
     # dataVariable: DataVariable @relationship(type: "HAS_DEFINITION", direction: IN)
     # name: String!
     code: String!
@@ -28,7 +30,8 @@ type DataVariableField {
 
 type DataVariableFieldDefinition {
     dataVariableFieldDefinitionID: ID! @id
-    allowedRoles: [String]
+    allowedStudies: [String]
+    allowedSites: [String]
     xref: ID!
     description: String!
     validationSchema: JSON
@@ -38,7 +41,8 @@ type DataVariableFieldDefinition {
 
 type DataVariableValue {
     dataVariableValueID: ID! @id
-    allowedRoles: [String]
+    allowedStudies: [String]
+    allowedSites: [String]
     value: JSON!
     fromFieldDefinition: DataVariableFieldDefinition! @relationship(type: "HAS_FIELD_DEFINITION", direction: OUT) 
 }
@@ -46,14 +50,20 @@ type DataVariableValue {
 extend type DataVariable @auth(
   rules: [{
       isAuthenticated: true,
-      where: {allowedRoles: "$jwt.realm_access.roles"}
+      where: {AND: [
+        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
+        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
+        ]}
     }]
 )
 
 extend type DataVariableField @auth(
   rules: [{
       isAuthenticated: true,
-      where: {allowedRoles: "$jwt.realm_access.roles"}
+      where: {AND: [
+        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
+        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
+        ]}
     }
     ]
 )
@@ -61,7 +71,10 @@ extend type DataVariableField @auth(
 extend type DataVariableFieldDefinition @auth(
   rules: [{
       isAuthenticated: true,
-      where: {allowedRoles: "$jwt.realm_access.roles"}
+      where: {AND: [
+        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
+        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
+        ]}
     }
     ]
 )
@@ -69,7 +82,10 @@ extend type DataVariableFieldDefinition @auth(
 extend type DataVariableValue @auth(
   rules: [{
       isAuthenticated: true,
-      where: {allowedRoles: "$jwt.realm_access.roles"}
+      where: {AND: [
+        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
+        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
+        ]}
     }
     ]
 )

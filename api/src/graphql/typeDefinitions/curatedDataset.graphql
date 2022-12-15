@@ -27,7 +27,8 @@ type CuratedDataset {
     curatedDatasetID: ID! @id
     # createdAt: DateTime! @timestamp(operations: [CREATE])
     # updatedAt: DateTime! @timestamp(operations: [UPDATE])
-     allowedRoles: [String]
+    allowedStudies: [String]
+    allowedSites: [String]
     name: String!
     description: String!
     dataVariables: [DataVariable!]! @relationship(type: "HAS_DATA_VARIABLE", direction: OUT)
@@ -36,7 +37,10 @@ type CuratedDataset {
 }
 
 type Mutation {
-    createCuratedDatasetFromCSVCodebook(name: String!, rawDatasetID: ID!): Boolean!
+    createCuratedDatasetFromCSVCodebook(name: String!, 
+        allowedStudy: String!
+        allowedSite: String!
+        rawDatasetID: ID!): Boolean!
     createCuratedDatasetFromRawDataset(
         name: String!
         description: String!
@@ -47,6 +51,9 @@ type Mutation {
 extend type CuratedDataset @auth(
   rules: [{
       isAuthenticated: true,
-      where: {allowedRoles: "$jwt.realm_access.roles"}
+      where: {AND: [
+        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
+        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
+        ]}
     }]
 )

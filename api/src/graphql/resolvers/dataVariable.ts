@@ -9,7 +9,7 @@ export const resolvers = {
 
     },
     Mutation: {
-        createCuratedDatasetFromCSVCodebook: async (parent, { name, rawDatasetID }, { driver, ogm, minioClient }) => {
+        createCuratedDatasetFromCSVCodebook: async (parent, { name, allowedStudy, allowedSite, rawDatasetID }, { driver, ogm, minioClient }) => {
             try {
                 const RawDatasetModel = ogm.model("RawDataset")
                 const DataVariableModel = ogm.model('DataVariable')
@@ -23,13 +23,14 @@ export const resolvers = {
                 const rawDataset = await RawDatasetModel.create({input:
                     {
                         name: name,
-                        allowedRoles: [name],
+                        allowedStudies: [allowedStudy],
+                        allowedSites: [allowedSite],
                         description: name,
                         minioBucket: {create: {node: {
                           bucketName: "raw-dataset-7ec33aac-9209-4948-8804-8cc115bc8b20"
                         }}},
                         fromStudy: {connect: {where: {node: {fullName: name}}}},
-                        studySite: {connect: {where: {node: {id: "a63cadaa-1972-48a0-bc2c-3e3f0901eaf0"}}}},
+                        studySite: {connect: {where: {node: {city: "Tokyo"}}}},
                     }
                 })
 
@@ -38,7 +39,8 @@ export const resolvers = {
                 const curatedDataset = await CuratedDatasetModel.create({input:
                     {
                         name: name,
-                        allowedRoles: [name],
+                        allowedStudies: [allowedStudy],
+                        allowedSites: [allowedSite],
                         description: name,
                         generatedByRawDataset: {connect: {where: {node: {rawDatasetID: rawDSID}}}}
                     }
@@ -98,23 +100,27 @@ export const resolvers = {
                         const codemapRef = codebookMap.get(code)
                         console.log(codemapRef)
                         const nodeDataVariableValue = {
-                            allowedRoles: [name],
+                            allowedStudies: [allowedStudy],
+                            allowedSites: [allowedSite],
                             value,
                         }
                         const nodeDataVariableFieldDefinition = {
-                            allowedRoles: [name],
+                            allowedStudies: [allowedStudy],
+                            allowedSites: [allowedSite],
                             xref: code,
                             description: codemapRef.description,
                             validationSchema: codemapRef.jsonSchema,
                         }
                         const nodeDataVariableField = {
-                            allowedRoles: [name],
+                            allowedStudies: [allowedStudy],
+                            allowedSites: [allowedSite],
                             description: codemapRef.description,
                             jsonSchema: codemapRef.jsonSchema,
                             code,
                         }
                         const nodeDataVariable = {
-                            allowedRoles: [name],
+                            allowedStudies: [allowedStudy],
+                            allowedSites: [allowedSite],
                         }
 
                         const dataVariableFieldDefinition = await DataVariableFieldDefinitionModel.create({input: {
@@ -151,7 +157,8 @@ export const resolvers = {
                     }
                     const { dataVariables: [dataVariable] } = await DataVariableModel.create({ input: [{
                         // fields: dataVariableInputFields,
-                        allowedRoles: [name],
+                        allowedStudies: [allowedStudy],
+                        allowedSites: [allowedSite],
                         // chromosome: "chr1",
                         // start: 1,
                         // end: 10,

@@ -1,6 +1,7 @@
 type RawDataset {
     rawDatasetID: ID! @id
-    allowedRoles: [String]
+    allowedStudies: [String]
+    allowedSites: [String]
     name: String!
     description: String!
     minioBucket: MinioBucket! @relationship(type: "HAS_MINIO_BUCKET", direction: OUT)
@@ -29,6 +30,9 @@ type Mutation {
 extend type RawDataset @auth(
   rules: [{
       isAuthenticated: true,
-      where: {allowedRoles: "$jwt.realm_access.roles"}
+      where: {AND: [
+        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
+        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
+        ]}
     }]
 )
