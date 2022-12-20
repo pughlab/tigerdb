@@ -1,0 +1,14 @@
+enum nestedOperations {
+  union
+  subtract
+}
+
+type Mutation {
+  nestedStudyProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
+  nestedRawDatasetProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
+  nestedCuratedDatasetProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
+  nestedDataVariableProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
+  nestedDataVariableFieldProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
+  nestedDataVariableDefinitionProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
+  nestedDataVariableValueProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
+}
