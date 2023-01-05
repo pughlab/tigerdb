@@ -1,0 +1,30 @@
+type ClientRole {
+  id: ID
+  name: String
+}
+
+type ClientUser {
+  id: ID
+  username: String
+  email: String
+}
+
+type Client {
+  id: ID
+  clientId: String
+}
+
+type Query {
+  keycloak_users_find: [ClientUser]
+  keycloak_clients_find: [Client]
+  keycloak_clients_findRole(clientID: ID, roleName: String): ClientRole
+  keycloak_users_listAvailableClientRoleMappings(userID: ID, clientID: ID, roleID: ID, roleName: String): [ClientRole]
+  keycloak_users_listClientRoleMappings(userID: ID, clientID: String): [ClientRole]
+}
+
+type Mutation {
+  keycloak_clients_createRole(clientID: ID, roleName: String): Boolean
+  keycloak_clients_delRole(clientID: ID, roleName: String): Boolean
+  keycloak_users_addClientRoleMappings(userID: ID, clientID: String, roleID: ID, roleName: String): Boolean
+  keycloak_users_delClientRoleMappings(userID: ID, clientID: String, roleID: ID, roleName: String): Boolean
+}

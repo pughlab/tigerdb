@@ -17,14 +17,21 @@ import { configureKeycloak } from './keycloak'
 import { KeycloakContext } from 'keycloak-connect-graphql'
 import { KeycloakSchemaDirectives } from 'keycloak-connect-graphql'
 
+import KcAdminClient from '@keycloak/keycloak-admin-client';
+
 // Specify host, port and path for GraphQL endpoint
 const graphqlPort = process.env.GRAPHQL_SERVER_PORT || 4001
 const graphqlPath = process.env.GRAPHQL_SERVER_PATH || '/graphql'
 const graphqlHost = process.env.GRAPHQL_SERVER_HOST || '0.0.0.0'
 const voyagerPath = process.env.GRAPHQL_VOYAGER_PATH || '/voyager'
 
-console.log(graphqlPort, graphqlPath, graphqlHost)
+const keycloakhost = process.env.KEYCLOAK_SERVER_HOST || '0.0.0.0'
+const keycloakport = process.env.KEYCLOAK_SERVER_PORT || '8085'
+const keycloakrealm = process.env.KEYCLOAK_SERVER_REALM || 'pibu'
+const keycloakclient = process.env.KEYCLOAK_SERVER_CLIENT || 'pibu-app'
+const keycloakpublickey = process.env.KEYCLOAK_SERVER_PUBLIC_KEY || ''
 
+console.log(graphqlPort, graphqlPath, graphqlHost)
 
 export const createApolloServer = async () => {
   const app = express()
@@ -48,13 +55,39 @@ export const createApolloServer = async () => {
       
       const ogm = new OGM({typeDefs, driver, resolvers})
       ogm.init()
+
+      const kcAdminClient = new KcAdminClient(
+        // To configure the client, pass an object to override any of these  options:
+        {
+          baseUrl: `https://${keycloakhost}:${keycloakport}/auth`,
+          // realmName: keycloakrealm,
+          // requestOptions: {
+          //   /* Fetch request options https://developer.mozilla.org/en-US/docs/Web/API/fetch#options */
+          // },
+        }
+      );
+
+      // Authorize with username / password
+      await kcAdminClient.auth({
+        username: 'admin',
+        password: 'admin',
+        grantType: 'password',
+        clientId: 'admin-cli',
+        // totp: '123456', // optional Time-based One-time Password if OTP is required in authentication flow
+      })
+
+      kcAdminClient.setConfig({
+        realmName: keycloakrealm,
+      });
+
       return {
         driver,
         neo4jDatabase: process.env.NEO4J_DATABASE,
         minioClient,
         kauth,
         ogm,
-        jwt
+        jwt,
+        kcAdminClient,
       }
     },
     schema: schema,
