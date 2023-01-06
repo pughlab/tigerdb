@@ -107,6 +107,15 @@ services:
       - KEYCLOAK_IMPORT=/opt/jboss/keycloak/realm-export.json
       - DB_VENDOR=h2
 
+  funnel:
+    image: ohsucompbio/funnel-dind
+    container_name: funnel
+    privileged: true
+    command: funnel server run --Server.HTTPPort 8003 --Server.RPCPort 9093
+    ports:
+      - "8003:8003"
+      - "9093:9093"
+
   # nginx:
   #   restart: ${RESTART}
   #   build:

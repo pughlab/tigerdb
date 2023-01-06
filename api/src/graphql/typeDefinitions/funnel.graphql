@@ -1,0 +1,22 @@
+
+# type Log {
+
+# }
+
+type Task {
+  creationTime: String
+  description: String
+  id: String
+  name: String
+  state: String
+}
+
+type Mutation {
+  submitTask: Task
+  cancelTask(taskId: ID): Task
+}
+
+
+type Query {
+  funnelTasks: [Task]
+}
