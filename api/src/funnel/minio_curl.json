@@ -1,5 +1,5 @@
 {
-  "name": "Hello world",
+  "name": "minio curl",
   "inputs": [{
     "url": "file:///opt/funnel/funnel/download_from_minio.sh",
     "path": "/inputs/download_from_minio.sh"
