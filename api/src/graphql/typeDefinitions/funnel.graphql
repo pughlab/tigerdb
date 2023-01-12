@@ -12,7 +12,12 @@ type Task {
 }
 
 type Mutation {
-  submitTask: Task
+  submitTask(
+    name: String
+    description: String
+    image: String
+    command: String
+    ): Task
   cancelTask(taskId: ID): Task
 }
 

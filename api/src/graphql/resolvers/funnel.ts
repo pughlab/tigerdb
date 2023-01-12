@@ -19,7 +19,11 @@ export const resolvers = {
     },
   },
   Mutation: {
-    submitTask: async (obj, { bucketName, file }, { driver, kcAdminClient }) => {
+    submitTask: async (obj, { name="Hello world",
+                              description="Demonstrates the most basic echo task",
+                              image="alpine",
+                              command="ls -la /",
+                            }, { driver, kcAdminClient }) => {
       try {
         const response = await fetch(
           'http://funnel:8003/v1/tasks?view=BASIC', {
@@ -28,12 +32,12 @@ export const resolvers = {
               "Content-Type": "application/json"
             },
             body: JSON.stringify({
-              "name": "Hello world",
-              "description": "Demonstrates the most basic echo task.",
+              "name": name,
+              "description": description,
               "executors": [
                 {
-                  "image": "alpine",
-                  "command": ["echo", "hello world"]
+                  "image": image,
+                  "command": ["sh", "-c", command]
                   // "command": ["sleep", "9999999"]
                 }
               ]
