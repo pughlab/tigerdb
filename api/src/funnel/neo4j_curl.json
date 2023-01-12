@@ -1,0 +1,8 @@
+{
+  "name": "neo4j curl",
+  "executors": [{
+    "image": "alpine-curl-ssl",
+    "command": ["sh", "-c", "curl -u neo4j:letmein -H \"Content-Type: application/json\" -X POST -d '{\"statements\" : [ {\"statement\" : \"MATCH (n) RETURN n LIMIT 25\"} ]}' http://YOURIP:7474/db/neo4j/tx/commit"],
+    "stdout": "/outputs/hello-out.txt"
+  }]
+}
