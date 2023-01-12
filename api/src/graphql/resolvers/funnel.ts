@@ -53,8 +53,11 @@ export const resolvers = {
     },
     cancelTask: async (obj, { taskId }, { driver, kcAdminClient }) => {
       try {
-        const response = await fetch(`http://funnel:8003/v1/tasks/${taskId}:cancel`)
-        // const text = await response.text()
+        const response = await fetch(
+          `http://funnel:8003/v1/tasks/${taskId}:cancel`, {
+            method: 'POST',
+          }
+          )
         const result = await response.json()
         return result
       } catch (error) {
