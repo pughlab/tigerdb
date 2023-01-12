@@ -1,0 +1,16 @@
+{
+  "name": "Hello world",
+  "inputs": [{
+    "url": "s3://raw-dataset-7ec33aac-9209-4948-8804-8cc115bc8b20/test.txt",
+    "path": "/inputs/hello.txt"
+  }],
+  "outputs": [{
+    "url": "s3://raw-dataset-7ec33aac-9209-4948-8804-8cc115bc8b20/output.txt",
+    "path": "/outputs/hello-out.txt"
+  }],
+  "executors": [{
+    "image": "alpine",
+    "command": ["cat", "/inputs/hello.txt"],
+    "stdout": "/outputs/hello-out.txt"
+  }]
+}

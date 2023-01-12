@@ -111,10 +111,12 @@ services:
     image: ohsucompbio/funnel-dind
     container_name: funnel
     privileged: true
-    command: funnel server run --Server.HTTPPort 8003 --Server.RPCPort 9093
+    command: funnel server run --Server.HTTPPort 8003 --Server.RPCPort 9093 --config /opt/funnel/funnel/funnel_config.yaml
     ports:
       - "8003:8003"
       - "9093:9093"
+    volumes:
+      - ./api/src/funnel:/opt/funnel/funnel
 
   # nginx:
   #   restart: ${RESTART}

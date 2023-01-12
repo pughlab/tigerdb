@@ -1,0 +1,18 @@
+{
+  "name": "Hello world",
+  "inputs": [{
+    "url": "file:///opt/funnel/funnel/download_from_minio.sh",
+    "path": "/inputs/download_from_minio.sh"
+  }],
+  "outputs": [{
+    "url": "file:///opt/funnel/funnel/outputs/out.txt",
+    "path": "/outputs/out.txt"
+  }],
+  "description": "Demonstrates the most basic echo task.",
+  "executors": [
+    {
+      "image": "alpine-curl-ssl",
+      "command": ["sh", "-c", "/inputs/download_from_minio.sh YOURIP:9000 minioadmin minioadmin raw-dataset-7ec33aac-9209-4948-8804-8cc115bc8b20 test.txt /outputs/out.txt"]
+    }
+  ]
+}
