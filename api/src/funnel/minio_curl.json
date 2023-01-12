@@ -11,7 +11,7 @@
   "description": "Demonstrates the most basic echo task.",
   "executors": [
     {
-      "image": "alpine-curl-ssl",
+      "image": "registry.gitlab.com/childdb/imic/alpine-curl-openssl",
       "command": ["sh", "-c", "/inputs/download_from_minio.sh YOURIP:9000 minioadmin minioadmin raw-dataset-7ec33aac-9209-4948-8804-8cc115bc8b20 test.txt /outputs/out.txt"]
     }
   ]
