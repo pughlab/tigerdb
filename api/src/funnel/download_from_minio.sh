@@ -45,7 +45,7 @@ OUT_FILE=$6
 DATE=$(date -R --utc)
 CONTENT_TYPE='application/zstd'
 SIG_STRING="GET\n\n${CONTENT_TYPE}\n${DATE}\n${MINIO_PATH}"
-SIGNATURE=`echo -en ${SIG_STRING} | openssl sha1 -hmac ${PASSWORD} -binary | base64`
+SIGNATURE=`echo -en ${SIG_STRING} | openssl dgst -sha1 -hmac ${PASSWORD} -binary | base64`
 
 
 curl -o "${OUT_FILE}" \
@@ -53,4 +53,4 @@ curl -o "${OUT_FILE}" \
     -H "Date: ${DATE}" \
     -H "Content-Type: ${CONTENT_TYPE}" \
     -H "Authorization: AWS ${USERNAME}:${SIGNATURE}" \
-    https://$URL${MINIO_PATH}
+    http://$URL${MINIO_PATH}

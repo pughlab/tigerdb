@@ -52,4 +52,4 @@ curl --silent -v -X PUT -T "${FILE}" \
     -H "Date: ${DATE}" \
     -H "Content-Type: ${CONTENT_TYPE}" \
     -H "Authorization: AWS ${USERNAME}:${SIGNATURE}" \
-    https://$URL${OBJ_PATH}
+    http://$URL${OBJ_PATH}
