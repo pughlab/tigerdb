@@ -24,4 +24,5 @@ type Mutation {
 
 type Query {
   funnelTasks: [Task]
+  funnelTask(taskId: ID): Task
 }

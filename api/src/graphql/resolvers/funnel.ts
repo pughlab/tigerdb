@@ -17,6 +17,16 @@ export const resolvers = {
         throw new ApolloError('query.funnelTasks error')
       }
     },
+    funnelTask: async (obj, { taskId }, { driver, kcAdminClient }) => {
+      try {
+        const response = await fetch(`http://funnel:8003/v1/tasks/${taskId}?view=BASIC`)
+        const result = await response.json()
+        return result
+      } catch (error) {
+        console.log(error)
+        throw new ApolloError('query.funnelTasks error')
+      }
+    },
   },
   Mutation: {
     submitTask: async (obj, { name="Hello world",
