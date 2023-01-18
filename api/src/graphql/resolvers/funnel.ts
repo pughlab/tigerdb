@@ -19,7 +19,7 @@ export const resolvers = {
     },
     funnelTask: async (obj, { taskId }, { driver, kcAdminClient }) => {
       try {
-        const response = await fetch(`http://funnel:8003/v1/tasks/${taskId}?view=BASIC`)
+        const response = await fetch(`http://funnel:8003/v1/tasks/${taskId}?view=FULL`)
         const result = await response.json()
         return result
       } catch (error) {
