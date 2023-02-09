@@ -22,15 +22,41 @@
             "address": "localhost",
             "localRoot": "${workspaceFolder}",
             // "protocol": "inspector",
-            // "sourceMaps": true,
+            "sourceMaps": true,
             "restart": true,
             "sourceMapPathOverrides": {
                 "/usr/src/service/*": "${workspaceFolder}/*"
               },
             "skipFiles": [
-                "${workspaceFolder}/node_modules/**/*.js",
                 "<node_internals>/**/*.js"
               ]
+        },
+        {
+            "type": "pwa-node",
+            "request": "attach",
+            "name": "Docker: Attach to Node: cmd",
+            "remoteRoot": "/usr/src/service",
+            "port": 9232,
+            "address": "localhost",
+            "localRoot": "${workspaceFolder}",
+            // "protocol": "inspector",
+            "sourceMaps": true,
+            "restart": true,
+            "sourceMapPathOverrides": {
+                "/usr/src/service/*": "${workspaceFolder}/*"
+              },
+            "skipFiles": [
+                "<node_internals>/**/*.js"
+              ]
+        },
+        {
+            "name": "Python: Attach",
+            "type": "python",
+            "request": "attach",
+            "connect": {
+              "host": "localhost",
+              "port": 5678
+            },
         },
         {
             "type": "chrome",
