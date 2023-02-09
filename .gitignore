@@ -6,3 +6,6 @@ keycloak/keycloak-db
 .env
 ui/.env
 ui/.DS_Store
+api/src/cql/Code Book-Table 1.csv
+api/src/cql/Data-Table 1.csv
+zzz.tmp.csv
