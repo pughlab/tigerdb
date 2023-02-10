@@ -1,4 +1,4 @@
-if (process.argv.length !== 5) {
+if (process.argv.length !== 6) {
   console.error(`Expected 3 arguments (got ${process.argv.length - 2})!
   
   e.g. TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/createCuratedDatasetFromRawDataset.ts {rawDatasetID} {rawObjectName} {codebookObjectName}
@@ -22,14 +22,16 @@ import util from 'util'
 (async function () {
 
   const rawDatasetID = process.argv[2]
-  // const rawObjectName = process.argv[3]
-  const rawObjectName = 'Data-Table 1.csv.gz'
+  const rawObjectName = process.argv[3]
+  // const rawObjectName = 'Data-Table 1.csv.gz'
   // const rawObjectName = 'test3m.bedgraph.gz'
-  // const codebookObjectName = process.argv[4]
-  const codebookObjectName = "codebook_sample_3.csv.gz"
+  const codebookObjectName = process.argv[4]
+  // const codebookObjectName = "codebook_sample_3.csv.gz"
 
   // const mode = 'programmatic'
-  const mode = 'neo4j'
+  // const mode = 'neo4j'
+  const mode = process.argv[5]
+
 
   // const limit = 0
   // const limit = 5
