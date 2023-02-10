@@ -7,6 +7,7 @@ import pandas as pd
 from io import StringIO
 import time
 import sys
+from dotenv import dotenv_values
 
 def stream_gzip_decompress(stream):
     dec = zlib.decompressobj(32 + zlib.MAX_WBITS)  # offset 32 to skip the header
@@ -28,15 +29,17 @@ if __name__ == "__main__":
       ''')
       exit(1)
 
-    tic = time.perf_counter()
-    uri = 'bolt://localhost:7687'
-    user = 'neo4j'
-    password = 'letmein'
+    config = dotenv_values()
 
-    minio_host = ''
-    minio_port = 9000
-    minio_access_key = 'minioadmin'
-    minio_secret_key = 'minioadmin'
+    tic = time.perf_counter()
+    uri = config['NEO4J_URI']
+    user = config['NEO4J_USER']
+    password = config['NEO4J_PASSWORD']
+
+    minio_host = config['MINIO_IP']
+    minio_port = config['MINIO_API_PORT']
+    minio_access_key = config['MINIO_ROOT_USER']
+    minio_secret_key = config['MINIO_ROOT_PASSWORD']
 
     driver = GraphDatabase.driver(uri, auth=(user, password))
     curatedDatasetID = "3a79fa0d-b444-42f4-927e-fdc0aaeed3f1"
@@ -60,6 +63,8 @@ if __name__ == "__main__":
     # limit = 10000
     # limit = 100000
 
+    print()
+    print(f'minio_host = {minio_host}')
     print()
     print(f'rawDatasetID = {rawDatasetID}')
     print(f'data_file = {data_file}')
