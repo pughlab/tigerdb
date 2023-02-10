@@ -39,14 +39,14 @@ if __name__ == "__main__":
     mode = 'neo4j'
 
     # limit = 5
-    limit = 1200
+    # limit = 1200
     # limit = 10000
     # limit = 100000
 
     print()
     print(f'data_file = {data_file}')
     print(f'mode = {mode}')
-    print(f'limit = {limit}')
+    # print(f'limit = {limit}')
     print()
 
     time_counter = 0
@@ -103,7 +103,7 @@ if __name__ == "__main__":
         f = StringIO(decompressed.decode())
         df = pd.read_csv(f, low_memory=False)
         print(f'len(df) = {len(df)}')
-        df = df[0:limit]
+        # df = df[0:limit]
         print(f'len(df) = {len(df)}')
         time_counter += 1
         toc = time.perf_counter()
@@ -123,7 +123,7 @@ if __name__ == "__main__":
             MATCH (cd:CuratedDataset {{curatedDatasetID: $curatedDatasetID}})
             MERGE (cd)-[:HAS_FIELD_DEFINITION]->(dvfd: DataVariableFieldDefinition {{ xref: list[0], description: list[1], validationSchema: list[2], rank: lineNo, dataVariableFieldDefinitionID: apoc.create.uuid()}})'''
           # print(query)
-          session.run(query, parameters={'curatedDatasetID': curatedDatasetID, 'presignedCodebookURL': presignedCodebookURL, 'limit': limit})
+          session.run(query, parameters={'curatedDatasetID': curatedDatasetID, 'presignedCodebookURL': presignedCodebookURL})
 
           if mode == 'programmatic':
 
@@ -221,7 +221,7 @@ if __name__ == "__main__":
 
             query = f'''
                 CALL apoc.periodic.iterate('
-                CALL apoc.load.csv($presignedDataURL, {{sep: ",", compression: "GZIP", header: true, limit: toInteger($limit)}}) YIELD map
+                CALL apoc.load.csv($presignedDataURL, {{sep: ",", compression: "GZIP", header: true}}) YIELD map
                 RETURN map
                 '
                 ,
@@ -230,13 +230,13 @@ if __name__ == "__main__":
                 CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {{curatedDatasetID: $curatedDatasetID, dataVariableID: apoc.create.uuid()}})
                 SET dv += map
                 ;',
-                {{batchSize:10000, iterateList:true, parallel:true, params:{{curatedDatasetID: $curatedDatasetID, presignedDataURL: $presignedDataURL, limit: $limit}}}}
+                {{batchSize:10000, iterateList:true, parallel:true, params:{{curatedDatasetID: $curatedDatasetID, presignedDataURL: $presignedDataURL}}}}
                 )
                 YIELD batches, total, timeTaken, operations, updateStatistics
                 RETURN batches, total, timeTaken, operations, updateStatistics;'''
 
             result = session.run(query,
-                {'curatedDatasetID': curatedDatasetID, 'presignedDataURL': presignedURLRaw, 'limit': limit}
+                {'curatedDatasetID': curatedDatasetID, 'presignedDataURL': presignedURLRaw}
               )
 
             # print(query)
