@@ -1,20 +1,12 @@
 from neo4j import GraphDatabase
 from minio import Minio
 # from minio.error import ResponseError
-import zlib
 import gzip
 import pandas as pd
 from io import StringIO
 import time
 import sys
 from dotenv import dotenv_values
-
-def stream_gzip_decompress(stream):
-    dec = zlib.decompressobj(32 + zlib.MAX_WBITS)  # offset 32 to skip the header
-    for chunk in stream:
-        rv = dec.decompress(chunk)
-        if rv:
-            yield rv
 
 if __name__ == "__main__":
 
