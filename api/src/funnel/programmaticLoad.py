@@ -6,6 +6,7 @@ import gzip
 import pandas as pd
 from io import StringIO
 import time
+import sys
 
 def stream_gzip_decompress(stream):
     dec = zlib.decompressobj(32 + zlib.MAX_WBITS)  # offset 32 to skip the header
@@ -15,6 +16,18 @@ def stream_gzip_decompress(stream):
             yield rv
 
 if __name__ == "__main__":
+
+
+    if len(sys.argv) != 5:
+      print(f'''Expected 4 arguments (got {len(sys.argv)})!)
+      
+      e.g. python -m debugpy --wait-for-client --listen 5678 api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "Data-Table 1.csv.gz" "Code Book-Table 1.csv.gz" neo4j
+      
+      e.g. python api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "Data-Table 1.csv.gz" "Code Book-Table 1.csv.gz" neo4j
+
+      ''')
+      exit(1)
+
     tic = time.perf_counter()
     uri = 'bolt://localhost:7687'
     user = 'neo4j'
@@ -27,16 +40,20 @@ if __name__ == "__main__":
 
     driver = GraphDatabase.driver(uri, auth=(user, password))
     curatedDatasetID = "3a79fa0d-b444-42f4-927e-fdc0aaeed3f1"
-    rawDatasetID = '7ec33aac-9209-4948-8804-8cc115bc8b20'
+    rawDatasetID = sys.argv[1]
+    # rawDatasetID = '7ec33aac-9209-4948-8804-8cc115bc8b20'
     bucket = f'raw-dataset-{rawDatasetID}'
 
+    data_file = sys.argv[2]
     # data_file = 'Data-Table 1.csv.gz'
-    data_file = 'test3m.bedgraph.gz'
+    # data_file = 'test3m.bedgraph.gz'
 
+    codebook_file = sys.argv[3]
     codebook_file = "codebook_sample_3.csv.gz"
 
+    mode = sys.argv[4]
     # mode = 'programmatic'
-    mode = 'neo4j'
+    # mode = 'neo4j'
 
     # limit = 5
     # limit = 1200
@@ -44,7 +61,9 @@ if __name__ == "__main__":
     # limit = 100000
 
     print()
+    print(f'rawDatasetID = {rawDatasetID}')
     print(f'data_file = {data_file}')
+    print(f'codebook_file = {codebook_file}')
     print(f'mode = {mode}')
     # print(f'limit = {limit}')
     print()
