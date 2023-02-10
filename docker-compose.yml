@@ -16,7 +16,7 @@ services:
       - NEO4J_apoc_import_file_use__neo4j__config=true
     volumes:
       - pibu_neo4j_volume:/var/lib/neo4j/data
-      - ./api/src/cql/neo4j.conf:/var/lib/neo4j/conf/neo4j.conf
+      # - ./api/src/cql/neo4j.conf:/var/lib/neo4j/conf/neo4j.conf
 
   api:
     # For non-M1 machines: comment out arm64v8 and platform field
