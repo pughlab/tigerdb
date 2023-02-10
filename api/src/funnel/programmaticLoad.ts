@@ -1,5 +1,5 @@
 if (process.argv.length !== 6) {
-  console.error(`Expected 3 arguments (got ${process.argv.length - 2})!
+  console.error(`Expected 4 arguments (got ${process.argv.length - 2})!
   
   e.g. TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/createCuratedDatasetFromRawDataset.ts {rawDatasetID} {rawObjectName} {codebookObjectName}
 
