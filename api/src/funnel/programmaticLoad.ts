@@ -31,8 +31,9 @@ import util from 'util'
   // const mode = 'programmatic'
   const mode = 'neo4j'
 
+  // const limit = 0
   // const limit = 5
-  const limit = 1200
+  // const limit = 1200
   // const limit = 1000
   // const limit = 10000
   // const limit = 100000
@@ -44,7 +45,7 @@ import util from 'util'
   console.log(`data_file = ${rawObjectName}`)
   console.log(`codebook_file = ${codebookObjectName}`)
   console.log(`mode = ${mode}`)
-  console.log(`limit = ${limit}`)
+  // console.log(`limit = ${limit}`)
   console.log(``)
 
   const ogm = new OGM({typeDefs, driver, resolvers})
@@ -100,7 +101,7 @@ import util from 'util'
     CALL apoc.load.csv($presignedCodebookURL, {sep: ",", compression: "GZIP", header: false}) YIELD lineNo, list, map
     MATCH (cd:CuratedDataset {curatedDatasetID: $curatedDatasetID})
     MERGE (cd)-[:HAS_FIELD_DEFINITION]->(dvfd: DataVariableFieldDefinition { xref: list[0], description: list[1], validationSchema: list[2], rank: lineNo, dataVariableFieldDefinitionID: apoc.create.uuid()});`,
-    {curatedDatasetID: curatedDatasetID, presignedCodebookURL: presignedURLCodebook, limit: limit}
+    {curatedDatasetID: curatedDatasetID, presignedCodebookURL: presignedURLCodebook}
   )
 
   console.timeEnd('4')
@@ -136,7 +137,7 @@ import util from 'util'
       })
       const chunkSize = 1000;
       console.log(result.data.length)
-      result.data = result.data.slice(0, limit);
+      // result.data = result.data.slice(0, limit);
       console.log(result.data.length)
       
       for (let i = 0; i < result.data.length; i += chunkSize) {
@@ -211,7 +212,7 @@ import util from 'util'
     const createDataValues = await session.run(
         `
         CALL apoc.periodic.iterate('
-        CALL apoc.load.csv($presignedDataURL, {sep: ",", compression: "GZIP", header: true, limit: toInteger($limit)}) YIELD map
+        CALL apoc.load.csv($presignedDataURL, {sep: ",", compression: "GZIP", header: true}) YIELD map
     RETURN map
     '
     ,
@@ -220,11 +221,11 @@ import util from 'util'
     CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {curatedDatasetID: $curatedDatasetID, dataVariableID: apoc.create.uuid()})
     SET dv += map
     ;',
-    {batchSize:10000, iterateList:true, parallel:true, params:{curatedDatasetID: $curatedDatasetID, presignedDataURL: $presignedDataURL, limit: $limit}}
+    {batchSize:10000, iterateList:true, parallel:true, params:{curatedDatasetID: $curatedDatasetID, presignedDataURL: $presignedDataURL}}
     )
     YIELD batches, total, timeTaken, operations, updateStatistics
     RETURN batches, total, timeTaken, operations, updateStatistics;`,
-        {curatedDatasetID: curatedDatasetID, presignedDataURL: presignedURLRaw, limit: limit}
+        {curatedDatasetID: curatedDatasetID, presignedDataURL: presignedURLRaw}
       )
     
 
