@@ -1,0 +1,4 @@
+[submodule "api/src/neo4jgraphql"]
+	path = api/src/neo4jgraphql
+	url = https://gitlab.com/CHILDdb/neo4jgraphql
+	branch = imic
