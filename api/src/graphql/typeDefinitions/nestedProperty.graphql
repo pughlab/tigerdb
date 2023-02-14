@@ -11,4 +11,6 @@ type Mutation {
   nestedDataVariableFieldProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
   nestedDataVariableDefinitionProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
   nestedDataVariableValueProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
+
+  nestedCuratedDatasetPermissions(id: ID, operation: nestedOperations, property: String, value: String): Boolean
 }

@@ -149,5 +149,25 @@ export const resolvers = {
         throw new ApolloError('nestedDataVariableValueProperty', error )
       }
     },
+
+
+    nestedCuratedDatasetPermissions: async (parent, { id, operation, property, value }, { driver, ogm, minioClient }) => {
+      try {
+        const session = driver.session();
+        const query = `
+        match (j:CuratedDataset)-[:HAS_DATA_VARIABLE|:HAS_FIELD_DEFINITION]-(k)
+        where j.curatedDatasetID = "40bb621b-b7c6-4a8a-a246-97eec3d1c967"
+        set j.\`${property}\` = apoc.coll.${operation}(j.\`${property}\`, ["${value}"])
+        set k.\`${property}\` = apoc.coll.${operation}(k.\`${property}\`, ["${value}"])
+        return j
+        `
+
+        const result = await session.run(query)
+        return true
+      } catch (error) {
+        console.log(error)
+        throw new ApolloError('nestedCuratedDatasetPermissions', error )
+      }
+    }
   },
 }
