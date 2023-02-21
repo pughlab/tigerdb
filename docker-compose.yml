@@ -45,7 +45,7 @@ services:
       - neo4j
       - minio
       - keycloak
-    
+
     volumes:
       - .:/usr/src/service
       - pibu_api_volume:/pibu_data
@@ -123,25 +123,25 @@ services:
       - ./api/src/funnel:/opt/funnel/funnel
       - .:/opt/funnel/service
 
-  # nginx:
-  #   restart: ${RESTART}
-  #   build:
-  #     context: .
-  #   environment:
-  #     - NODE_ENV=production
-  #   ports:
-  #     - "80:80"
-  #     - "443:443"
-  #   depends_on:
-  #     - api
-  #     - minio
-  #     - neo4j
-  #     - keycloak
-  #   volumes:
-  #     - ./nginx/conf.d:/etc/nginx/conf.d
-  #     - ./nginx/certs:/etc/nginx/certs
-    # entrypoint: >
-    #   sh -c "while true; do sleep 1000; done"
+  nginx:
+    restart: ${RESTART}
+    build:
+      context: .
+    environment:
+      - NODE_ENV=production
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api
+      - minio
+      - neo4j
+      - keycloak
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/certs:/etc/nginx/certs
+    entrypoint: >
+      sh -c "while true; do sleep 1000; done"
       
 
 volumes:

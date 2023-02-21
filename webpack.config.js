@@ -20,7 +20,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, outputDir),
     filename: 'pibu.bundle.js?t=' + new Date().getTime(),
-    publicPath: '/',
+    publicPath: '',
   },
   module: {
     rules: [
