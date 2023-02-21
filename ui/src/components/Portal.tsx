@@ -30,7 +30,10 @@ function Layout ({}) {
     <Sticky>
       <Menu style={{margin: 0, borderRadius: 0}}>
         <Menu.Menu position='left'>
+          <div>
           <Logo size='small' />
+          {process.env.NODE_ENV !== 'production' ? process.env.NODE_ENV : ''}
+          </div>
         </Menu.Menu>
         
         <Menu.Menu position='right'>
