@@ -67,9 +67,8 @@
             // "runtimeArgs": ["--auto-open-devtools-for-tabs",
             //                 "--remote-debugging-port=9222"],
             "port": 9222,
+            "sourceMaps": true,
             "skipFiles": [
-                "${workspaceFolder}/node_modules/**/*.js",
-                "${workspaceFolder}/node_modules/**/*.ts",
                 "<node_internals>/**/*.js"
             ]
         },
