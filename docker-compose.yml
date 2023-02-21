@@ -107,6 +107,9 @@ services:
       - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
       - KEYCLOAK_IMPORT=/opt/jboss/keycloak/realm-export.json
       - DB_VENDOR=h2
+      - PROXY_ADDRESS_FORWARDING=true
+      - REDIRECT_SOCKET="proxy-https"
+      - KEYCLOAK_FRONTEND_URL=https://${KEYCLOAK_SERVER_HOST_AND_PORT}/auth
 
   funnel:
     image: ohsucompbio/funnel-dind

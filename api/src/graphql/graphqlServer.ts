@@ -26,7 +26,8 @@ const graphqlHost = process.env.GRAPHQL_SERVER_HOST || '0.0.0.0'
 const voyagerPath = process.env.GRAPHQL_VOYAGER_PATH || '/voyager'
 
 const keycloakhost = process.env.KEYCLOAK_SERVER_HOST || '0.0.0.0'
-const keycloakport = process.env.KEYCLOAK_SERVER_PORT || '8085'
+const keycloakport = process.env.KEYCLOAK_SERVER_PORT
+const keycloakhostandport = process.env.KEYCLOAK_SERVER_HOST_AND_PORT
 const keycloakrealm = process.env.KEYCLOAK_SERVER_REALM || 'pibu'
 const keycloakclient = process.env.KEYCLOAK_SERVER_CLIENT || 'pibu-app'
 const keycloakpublickey = process.env.KEYCLOAK_SERVER_PUBLIC_KEY || ''
@@ -59,7 +60,7 @@ export const createApolloServer = async () => {
       const kcAdminClient = new KcAdminClient(
         // To configure the client, pass an object to override any of these  options:
         {
-          baseUrl: `https://${keycloakhost}:${keycloakport}/auth`,
+          baseUrl: `https://${keycloakhostandport}/auth`,
           // realmName: keycloakrealm,
           // requestOptions: {
           //   /* Fetch request options https://developer.mozilla.org/en-US/docs/Web/API/fetch#options */

@@ -7,12 +7,13 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 const keycloakhost = process.env.KEYCLOAK_SERVER_HOST || '0.0.0.0'
-const keycloakport = process.env.KEYCLOAK_SERVER_PORT || '8085'
+const keycloakport = process.env.KEYCLOAK_SERVER_PORT
+const keycloakhostandport = process.env.KEYCLOAK_SERVER_HOST_AND_PORT
 const keycloakrealm = process.env.KEYCLOAK_SERVER_REALM || 'pibu'
 const keycloakclient = process.env.KEYCLOAK_SERVER_CLIENT || 'pibu-app'
 const keycloakpublickey = process.env.KEYCLOAK_SERVER_PUBLIC_KEY || ''
 
-const auth_server_url = `https://${keycloakhost}:${keycloakport}/auth`
+const auth_server_url = `https://${keycloakhostandport}/auth`
 
 console.log('auth_server_url', auth_server_url)
 
