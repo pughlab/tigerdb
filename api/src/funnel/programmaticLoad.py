@@ -7,16 +7,17 @@ from io import StringIO
 import time
 import sys
 from dotenv import dotenv_values
+import uuid
 
 if __name__ == "__main__":
 
 
-    if len(sys.argv) != 5:
-      print(f'''Expected 4 arguments (got {len(sys.argv)})!)
+    if len(sys.argv) != 7:
+      print(f'''Expected 6 arguments (got {len(sys.argv)})!)
       
-      e.g. python -m debugpy --wait-for-client --listen 5678 api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "Data-Table 1.csv.gz" "Code Book-Table 1.csv.gz" neo4j
+      e.g. python -m debugpy --wait-for-client --listen 5678 api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "Data-Table 1.csv.gz" "Code Book-Table 1.csv.gz" neo4j 111222,111222,111333 111aaa,111bbb,333aaa
       
-      e.g. python api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "Data-Table 1.csv.gz" "Code Book-Table 1.csv.gz" neo4j
+      e.g. python api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "Data-Table 1.csv.gz" "Code Book-Table 1.csv.gz" neo4j 111222,111222,111333 111aaa,111bbb,333aaa
 
       ''')
       exit(1)
@@ -34,21 +35,45 @@ if __name__ == "__main__":
     minio_secret_key = config['MINIO_ROOT_PASSWORD']
 
     driver = GraphDatabase.driver(uri, auth=(user, password))
-    curatedDatasetID = "3a79fa0d-b444-42f4-927e-fdc0aaeed3f1"
+    curatedDatasetID = uuid.uuid4().hex
     rawDatasetID = sys.argv[1]
     # rawDatasetID = '7ec33aac-9209-4948-8804-8cc115bc8b20'
     bucket = f'raw-dataset-{rawDatasetID}'
 
     data_file = sys.argv[2]
+    # data_file = 'rawdata_sample_4.csv.gz'
     # data_file = 'Data-Table 1.csv.gz'
     # data_file = 'test3m.bedgraph.gz'
 
+    # codebook_file = "codebook_sample_3.csv.gz"
     codebook_file = sys.argv[3]
-    codebook_file = "codebook_sample_3.csv.gz"
 
     mode = sys.argv[4]
     # mode = 'programmatic'
     # mode = 'neo4j'
+
+    properties = sys.argv[5]
+    # properties = '111222,111222,111333'
+    values = sys.argv[6]
+    # values = '111aaa,111bbb,333aaa'
+
+    properties_split = properties.split(',')
+    values_split = values.split(',')
+
+    if len(properties_split) != len(values_split):
+      print(f'''
+      Arguments 5 and 6 must be comma separated strings that are the same length.
+      ''')
+      exit(1)
+
+
+    permissions_map = {}
+    for prop, val in zip(properties_split, values_split):
+      if prop == '':
+        continue
+      if prop not in permissions_map:
+        permissions_map[prop] = []
+      permissions_map[prop].append(val)
 
     # limit = 5
     # limit = 1200
@@ -100,7 +125,10 @@ if __name__ == "__main__":
       print(f'{time_counter} in {toc - tic:0.4f} seconds')
       tic = time.perf_counter()
 
-      result = session.run(f'''CREATE (n:CuratedDataset {{curatedDatasetID: "{curatedDatasetID}"}});''')
+      result = session.run(f'''
+                            CREATE (n:CuratedDataset {{curatedDatasetID: "{curatedDatasetID}"}})
+                            SET n += $permissions_map;
+                            ''', parameters={'permissions_map': permissions_map})
       # print(result.single())
       time_counter += 1
       toc = time.perf_counter()
@@ -137,9 +165,11 @@ if __name__ == "__main__":
           query = f'''
             CALL apoc.load.csv($presignedCodebookURL, {{sep: ",", compression: "GZIP", header: false}}) YIELD lineNo, list, map
             MATCH (cd:CuratedDataset {{curatedDatasetID: $curatedDatasetID}})
-            MERGE (cd)-[:HAS_FIELD_DEFINITION]->(dvfd: DataVariableFieldDefinition {{ xref: list[0], description: list[1], validationSchema: list[2], rank: lineNo, dataVariableFieldDefinitionID: apoc.create.uuid()}})'''
+            MERGE (cd)-[:HAS_FIELD_DEFINITION]->(dvfd: DataVariableFieldDefinition {{ xref: list[0], description: list[1], validationSchema: list[2], rank: lineNo, dataVariableFieldDefinitionID: apoc.create.uuid()}})
+            SET dvfd += $permissions_map;
+            '''
           # print(query)
-          session.run(query, parameters={'curatedDatasetID': curatedDatasetID, 'presignedCodebookURL': presignedCodebookURL})
+          session.run(query, parameters={'curatedDatasetID': curatedDatasetID, 'presignedCodebookURL': presignedCodebookURL, 'permissions_map': permissions_map})
 
           if mode == 'programmatic':
 
@@ -168,11 +198,12 @@ if __name__ == "__main__":
                     MATCH (cd: CuratedDataset {{curatedDatasetID: "{curatedDatasetID}"}})
                     CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {{curatedDatasetID: "{curatedDatasetID}", dataVariableID: apoc.create.uuid()}})
                     SET dv += $argsToUpdate
+                    SET dv += $permissions_map
                     ;
                     '''
                   # print(i)
                   # print(query)
-                  result = nestSession.run(query, parameters={'argsToUpdate': row_dict})
+                  result = nestSession.run(query, parameters={'argsToUpdate': row_dict, 'permissions_map': permissions_map})
                 
               results = Parallel(n_jobs=chunk_size, prefer='threads')(delayed(process)(i, row_dict) for i, row_dict in enumerate(chunk_df_dict))
 
@@ -188,10 +219,11 @@ if __name__ == "__main__":
               #     MATCH (cd: CuratedDataset {{curatedDatasetID: "{curatedDatasetID}"}})
               #     CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {{curatedDatasetID: "{curatedDatasetID}", dataVariableID: apoc.create.uuid()}})
               #     SET dv += $argsToUpdate
+              #     SET dv += $permissions_map
               #     ;
               #     '''
               #   # print(query)
-              #   result = session.run(query, parameters={'argsToUpdate': row_dict})
+              #   result = session.run(query, parameters={'argsToUpdate': row_dict, 'permissions_map': permissions_map})
 
 
 
@@ -201,10 +233,11 @@ if __name__ == "__main__":
               #   UNWIND $argsToUpdate AS args
               #   CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {{curatedDatasetID: "{curatedDatasetID}", dataVariableID: apoc.create.uuid()}})
               #   SET dv += args
+              #   SET dv += $permissions_map
               #   ;
               #   '''
               # # print(query)
-              # result = session.run(query, parameters={'argsToUpdate': chunk_df_dict})
+              # result = session.run(query, parameters={'argsToUpdate': chunk_df_dict, 'permissions_map': permissions_map})
 
 
 
@@ -220,13 +253,14 @@ if __name__ == "__main__":
               #   MATCH (cd: CuratedDataset {{curatedDatasetID: "{curatedDatasetID}"}})
               #   CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {{curatedDatasetID: "{curatedDatasetID}", dataVariableID: apoc.create.uuid()}})
               #   SET dv += args
+              #   SET dv += $permissions_map
               #   ',
-              #   {{batchSize:10000, iterateList:true, parallel:true, params:{{argsToUpdate: $argsToUpdate}}}}
+              #   {{batchSize:10000, iterateList:true, parallel:true, params:{{argsToUpdate: $argsToUpdate, permissions_map: $permissions_map}}}}
               #   )
               #   YIELD batches, total, timeTaken, operations, updateStatistics
               #   RETURN batches, total, timeTaken, operations, updateStatistics;'''
               # print(query)
-              # result = session.run(query, parameters={'argsToUpdate': chunk_df_dict})
+              # result = session.run(query, parameters={'argsToUpdate': chunk_df_dict, 'permissions_map': permissions_map})
 
 
               
@@ -245,14 +279,15 @@ if __name__ == "__main__":
                 MATCH (cd: CuratedDataset {{curatedDatasetID: $curatedDatasetID}})
                 CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {{curatedDatasetID: $curatedDatasetID, dataVariableID: apoc.create.uuid()}})
                 SET dv += map
+                SET dv += $permissions_map
                 ;',
-                {{batchSize:10000, iterateList:true, parallel:true, params:{{curatedDatasetID: $curatedDatasetID, presignedDataURL: $presignedDataURL}}}}
+                {{batchSize:10000, iterateList:true, parallel:true, params:{{curatedDatasetID: $curatedDatasetID, presignedDataURL: $presignedDataURL, permissions_map: $permissions_map}}}}
                 )
                 YIELD batches, total, timeTaken, operations, updateStatistics
                 RETURN batches, total, timeTaken, operations, updateStatistics;'''
 
             result = session.run(query,
-                {'curatedDatasetID': curatedDatasetID, 'presignedDataURL': presignedURLRaw}
+                {'curatedDatasetID': curatedDatasetID, 'presignedDataURL': presignedURLRaw, 'permissions_map': permissions_map}
               )
 
             # print(query)

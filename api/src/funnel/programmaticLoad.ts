@@ -1,9 +1,9 @@
-if (process.argv.length !== 6) {
-  console.error(`Expected 4 arguments (got ${process.argv.length - 2})!
+if (process.argv.length !== 8) {
+  console.error(`Expected 6 arguments (got ${process.argv.length - 2})!
   
-  e.g. TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/createCuratedDatasetFromRawDataset.ts {rawDatasetID} {rawObjectName} {codebookObjectName} {neo4j|programmatic}
+  e.g. TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/createCuratedDatasetFromRawDataset.ts {rawDatasetID} {rawObjectName} {codebookObjectName} {neo4j|programmatic} 111222,111222,111333 111aaa,111bbb,333aaa
 
-  TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/createCuratedDatasetFromRawDataset.ts 7ec33aac-9209-4948-8804-8cc115bc8b20 rawdata_sample_3.csv.gz codebook_sample_3.csv.gz neo4j
+  TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/createCuratedDatasetFromRawDataset.ts 7ec33aac-9209-4948-8804-8cc115bc8b20 rawdata_sample_3.csv.gz codebook_sample_3.csv.gz neo4j 111222,111222,111333 111aaa,111bbb,333aaa
   
   `);
   process.exit(1);
@@ -17,21 +17,54 @@ import { minioClient } from '../minio/minio';
 import zlib from 'zlib'
 import papa from 'papaparse'
 import util from 'util'
-
+import { v4 as uuidv4 } from 'uuid';
 
 (async function () {
 
+  const curatedDatasetID = uuidv4()
+
   const rawDatasetID = process.argv[2]
+
   const rawObjectName = process.argv[3]
+  // const rawObjectName = 'rawdata_sample_4.csv.gz'
   // const rawObjectName = 'Data-Table 1.csv.gz'
   // const rawObjectName = 'test3m.bedgraph.gz'
+
   const codebookObjectName = process.argv[4]
   // const codebookObjectName = "codebook_sample_3.csv.gz"
 
   // const mode = 'programmatic'
-  // const mode = 'neo4j'
-  const mode = process.argv[5]
+  const mode = 'neo4j'
+  // const mode = process.argv[5]
 
+  const properties = process.argv[6]
+  // const properties = ''
+  const values = process.argv[7]
+  // const values = ''
+
+  let permissions_map = {}
+  const properties_split = properties.split(',')
+  const values_split = values.split(',')
+
+  if (properties_split.length !== values_split.length) {
+    console.error(`Arguments 5 and 6 must be comma separated strings that are the same length.`);
+    process.exit(1);
+  }
+
+  properties_split.forEach((prop, index) => {
+    const val = values_split[index]
+
+    if (prop == '') {
+      return
+    }
+
+    if (!(prop in permissions_map)) {
+      permissions_map[prop] = []
+    }
+    permissions_map[prop].push(val)
+
+  })
+  
 
   // const limit = 0
   // const limit = 5
@@ -80,9 +113,17 @@ import util from 'util'
   const CuratedDatasetModel = ogm.model("CuratedDataset")
   const bucketName = `raw-dataset-${rawDatasetID}`
 
-  const curatedDatasetInput = {name: 'test', description: 'testgen', generatedByRawDataset: {connect: {where: {node: {rawDatasetID}}}}}
-  const { curatedDatasets: [curatedDataset] } = await CuratedDatasetModel.create({ input: [curatedDatasetInput],  })
-  const { curatedDatasetID } = curatedDataset
+  // const curatedDatasetInput = {name: 'test', description: 'testgen',
+  //                              generatedByRawDataset: {connect: {where: {node: {rawDatasetID}}}},
+  //                              ...permissions_map
+  //                             }
+  // const { curatedDatasets: [curatedDataset] } = await CuratedDatasetModel.create({ input: [curatedDatasetInput],  })
+  // const { curatedDatasetID } = curatedDataset
+
+  await session.run(`
+  CREATE (n:CuratedDataset {curatedDatasetID: "${curatedDatasetID}"})
+  SET n += $permissions_map;
+  `, {permissions_map: permissions_map})
 
   console.timeEnd('2')
   console.time('3')
@@ -102,8 +143,10 @@ import util from 'util'
     `
     CALL apoc.load.csv($presignedCodebookURL, {sep: ",", compression: "GZIP", header: false}) YIELD lineNo, list, map
     MATCH (cd:CuratedDataset {curatedDatasetID: $curatedDatasetID})
-    MERGE (cd)-[:HAS_FIELD_DEFINITION]->(dvfd: DataVariableFieldDefinition { xref: list[0], description: list[1], validationSchema: list[2], rank: lineNo, dataVariableFieldDefinitionID: apoc.create.uuid()});`,
-    {curatedDatasetID: curatedDatasetID, presignedCodebookURL: presignedURLCodebook}
+    MERGE (cd)-[:HAS_FIELD_DEFINITION]->(dvfd: DataVariableFieldDefinition { xref: list[0], description: list[1], validationSchema: list[2], rank: lineNo, dataVariableFieldDefinitionID: apoc.create.uuid()})
+    SET dvfd += $permissions_map
+    ;`,
+    {curatedDatasetID: curatedDatasetID, presignedCodebookURL: presignedURLCodebook, 'permissions_map': permissions_map}
   )
 
   console.timeEnd('4')
@@ -159,11 +202,12 @@ import util from 'util'
         // MATCH (cd: CuratedDataset {curatedDatasetID: "${curatedDatasetID}"})
         // CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {curatedDatasetID: "${curatedDatasetID}", dataVariableID: apoc.create.uuid()})
         // SET dv += args
+        // SET dv += $permissions_map
         // ',
-        // {batchSize:10000, iterateList:true, parallel:true, params:{argsToUpdate: $argsToUpdate}}
+        // {batchSize:10000, iterateList:true, parallel:true, params:{argsToUpdate: $argsToUpdate, permissions_map: $permissions_map}}
         // )
         // YIELD batches, total, timeTaken, operations, updateStatistics
-        // RETURN batches, total, timeTaken, operations, updateStatistics;`, {'argsToUpdate': chunk})
+        // RETURN batches, total, timeTaken, operations, updateStatistics;`, {'argsToUpdate': chunk, permissions_map: permissions_map})
 
 
 
@@ -173,7 +217,8 @@ import util from 'util'
         //   UNWIND $argsToUpdate AS args
         //   CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {curatedDatasetID: "${curatedDatasetID}", dataVariableID: apoc.create.uuid()})
         //   SET dv += args
-        //   ;`, {'argsToUpdate': chunk})
+        //   SET dv += $permissions_map
+        //   ;`, {'argsToUpdate': chunk, permissions_map: permissions_map})
 
 
 
@@ -197,8 +242,9 @@ import util from 'util'
           MATCH (cd: CuratedDataset {curatedDatasetID: "${curatedDatasetID}"})
           CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {curatedDatasetID: "${curatedDatasetID}", dataVariableID: apoc.create.uuid()})
           SET dv += $argsToUpdate
+          SET dv += $permissions_map
           ;
-          `, {argsToUpdate: result})
+          `, {argsToUpdate: result, permissions_map: permissions_map})
 
         }))
 
@@ -222,12 +268,13 @@ import util from 'util'
     MATCH (cd: CuratedDataset {curatedDatasetID: $curatedDatasetID})
     CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {curatedDatasetID: $curatedDatasetID, dataVariableID: apoc.create.uuid()})
     SET dv += map
+    SET dv += $permissions_map
     ;',
-    {batchSize:10000, iterateList:true, parallel:true, params:{curatedDatasetID: $curatedDatasetID, presignedDataURL: $presignedDataURL}}
+    {batchSize:10000, iterateList:true, parallel:true, params:{curatedDatasetID: $curatedDatasetID, presignedDataURL: $presignedDataURL, permissions_map: $permissions_map}}
     )
     YIELD batches, total, timeTaken, operations, updateStatistics
     RETURN batches, total, timeTaken, operations, updateStatistics;`,
-        {curatedDatasetID: curatedDatasetID, presignedDataURL: presignedURLRaw}
+        {curatedDatasetID: curatedDatasetID, presignedDataURL: presignedURLRaw, permissions_map: permissions_map}
       )
     
 
