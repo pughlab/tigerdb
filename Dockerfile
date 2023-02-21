@@ -5,9 +5,9 @@ FROM node:16-alpine as build-deps
 WORKDIR /usr/src/app
 COPY package.json .
 COPY package-lock.json .
-RUN npm install graphql-ws
+RUN npm install --force graphql-ws
 # RUN npm i --force
-RUN npm ci
+RUN npm --force ci
 
 COPY . .
 ENV NODE_ENV production
