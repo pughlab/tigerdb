@@ -19,6 +19,8 @@ if __name__ == "__main__":
       
       e.g. python api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "Data-Table 1.csv.gz" "Code Book-Table 1.csv.gz" neo4j 111222,111222,111333 111aaa,111bbb,333aaa
 
+      e.g. npx nodemon --watch api/src/funnel/programmaticLoad.py --exec "python -m debugpy --wait-for-client --listen 5678" api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "rawdata_sample_4.csv.gz" "codebook_sample_3.csv.gz" neo4j %allowedSites,%allowedSites,%allowedStudies Vancouver,Toronto,Milk
+
       ''')
       exit(1)
 
@@ -35,7 +37,7 @@ if __name__ == "__main__":
     minio_secret_key = config['MINIO_ROOT_PASSWORD']
 
     driver = GraphDatabase.driver(uri, auth=(user, password))
-    curatedDatasetID = uuid.uuid4().hex
+    curatedDatasetID = str(uuid.uuid4())
     rawDatasetID = sys.argv[1]
     # rawDatasetID = '7ec33aac-9209-4948-8804-8cc115bc8b20'
     bucket = f'raw-dataset-{rawDatasetID}'
@@ -53,9 +55,9 @@ if __name__ == "__main__":
     # mode = 'neo4j'
 
     properties = sys.argv[5]
-    # properties = '111222,111222,111333'
+    # properties = '%allowedSites,%allowedSites,%allowedStudies'
     values = sys.argv[6]
-    # values = '111aaa,111bbb,333aaa'
+    # values = 'Vancouver,Toronto,Milk'
 
     properties_split = properties.split(',')
     values_split = values.split(',')
@@ -74,6 +76,8 @@ if __name__ == "__main__":
       if prop not in permissions_map:
         permissions_map[prop] = []
       permissions_map[prop].append(val)
+
+    permissions_codebook = {'%permissions_codebook': list(permissions_map.keys())}
 
     # limit = 5
     # limit = 1200
@@ -127,8 +131,9 @@ if __name__ == "__main__":
 
       result = session.run(f'''
                             CREATE (n:CuratedDataset {{curatedDatasetID: "{curatedDatasetID}"}})
-                            SET n += $permissions_map;
-                            ''', parameters={'permissions_map': permissions_map})
+                            SET n += $permissions_map
+                            SET n += $permissions_codebook
+                            ''', parameters={'permissions_map': permissions_map, 'permissions_codebook': permissions_codebook})
       # print(result.single())
       time_counter += 1
       toc = time.perf_counter()
