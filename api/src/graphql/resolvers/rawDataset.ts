@@ -14,7 +14,11 @@ export const resolvers = {
       try {
         const RawDatasetModel = ogm.model("RawDataset")
 
-        const rawDatasetInput = {name, description, fromStudy: {connect: {where: {node: {studyID}}}}}
+        const rawDatasetInput = {
+          name, description, fromStudy: {connect: {where: {node: {studyID}}}},
+          allowedStudies: ["admin"],
+          allowedSites: ["admin"]
+        }
         const { rawDatasets: [rawDataset] } = await RawDatasetModel.create({ input: [rawDatasetInput] })
         const { rawDatasetID } = rawDataset
         const bucketName = `raw-dataset-${rawDatasetID}`

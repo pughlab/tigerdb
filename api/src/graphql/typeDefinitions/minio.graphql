@@ -29,6 +29,16 @@ type MinioUpload {
   pairedRawdataFile: MinioUpload @relationship(type: "HAS_PAIRED_CODEBOOK", properties: "HasPairedCodebook", direction: OUT)
 }
 
+extend type MinioUpload @auth(
+  rules: [{
+      isAuthenticated: true,
+      where: {AND: [
+        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
+        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
+        ]}
+    }]
+)
+
 interface HasPairedRawdatafile @relationshipProperties {
     validated: Boolean!
 }
@@ -41,6 +51,16 @@ type MinioBucket {
   bucketName: ID!
   minioObjects: [MinioUpload!]! @relationship(type: "HAS_MINIO_OBJECT", direction: OUT)
 }
+
+extend type MinioBucket @auth(
+  rules: [{
+      isAuthenticated: true,
+      where: {AND: [
+        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
+        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
+        ]}
+    }]
+)
 
 type Mutation {
   # Example usage (should be generalized)

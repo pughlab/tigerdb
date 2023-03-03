@@ -13,12 +13,19 @@ export default function AddStudyModal(
 
 	const [createStudy, { data, loading, error }] = useMutation(gql`
 		mutation createStudy($fullName: String!, $shortName: String!, $description: String!) {
-			createStudies(input: [{fullName: $fullName, shortName: $shortName, description: $description}]) {
+			createStudies(input: [{
+															fullName: $fullName, shortName: $shortName,
+															description: $description,
+															allowedStudies: ["admin"],
+															allowedSites: ["admin"],
+													 }]) {
 				studies {
 					studyID
 					fullName
 					shortName
 					description
+					allowedStudies
+					allowedSites
 				}
 			}
 		}

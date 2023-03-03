@@ -204,7 +204,7 @@ export const resolvers = {
 
         const session = driver.session()
         const createMinioUpload = await session.run(
-          'CREATE (a:MinioUpload {bucketName: $bucketName, objectName: apoc.create.uuid(), filename: $filenameExt}) RETURN a',
+          'CREATE (a:MinioUpload {bucketName: $bucketName, objectName: apoc.create.uuid(), filename: $filenameExt, allowedStudies: ["admin"], allowedSites: ["admin"]}) RETURN a',
           { bucketName, filenameExt }
         )
         // console.log(createMinioUpload.records[0].get(0).properties)
