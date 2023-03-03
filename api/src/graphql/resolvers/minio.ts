@@ -139,7 +139,7 @@ export const resolvers = {
 
         let isValid = true
         let message = `Rawdata file and codebook match`
-        let mismatches = {}
+        let mismatches = []
 
         if (keysRF.length !== keysCB.length) {
           message = `Number of columns in Rawdata file (${keysRF.length}) does not match number of data variables in the codebook (${keysCB.length})`
@@ -149,12 +149,12 @@ export const resolvers = {
           keysRF.forEach((keyRF, index) => {
             const keyCB = keysCB[index]
             if (!(keyRF === keyCB)) {
-              mismatches[index] = [keyRF, keyCB]
+              mismatches.push({lineNumber: index, fileA: keyRF, fileB: keyCB})
             }
           })
   
           if (Object.keys(mismatches).length != 0) {
-            message = `Rawdata file does not match the codebook: ${JSON.stringify(mismatches)}`
+            message = `Rawdata file does not match the codebook`
             isValid = false
           }
 
@@ -176,7 +176,7 @@ export const resolvers = {
           }}},
         })
 
-        return {isValid, message}
+        return {isValid, message, mismatches}
       } catch (error) {
         console.log(error)
         throw new ApolloError('query.validateCodebook error')

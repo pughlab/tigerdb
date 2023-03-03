@@ -1,9 +1,16 @@
 # Types used for multi-part forms uploading files
 scalar Upload
 
+type Mismatch {
+  lineNumber: Int
+  fileA: String
+  fileB: String
+}
+
 type FileValidation {
   isValid: Boolean!
   message: String
+  mismatches: [Mismatch]
 }
 
 type File @exclude {
