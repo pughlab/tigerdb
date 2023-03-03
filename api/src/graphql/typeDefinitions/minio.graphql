@@ -1,5 +1,11 @@
 # Types used for multi-part forms uploading files
 scalar Upload
+
+type FileValidation {
+  isValid: Boolean!
+  message: String
+}
+
 type File @exclude {
   filename: String!
   mimetype: String!
@@ -12,6 +18,16 @@ type MinioUpload {
   objectName: ID! @id
   filename: String!
   presignedURL: String @customResolver
+  pairedCodebook: MinioUpload @relationship(type: "HAS_PAIRED_RAWDATAFILE", properties: "HasPairedRawdatafile", direction: OUT)
+  pairedRawdataFile: MinioUpload @relationship(type: "HAS_PAIRED_CODEBOOK", properties: "HasPairedCodebook", direction: OUT)
+}
+
+interface HasPairedRawdatafile @relationshipProperties {
+    validated: Boolean!
+}
+
+interface HasPairedCodebook @relationshipProperties {
+    validated: Boolean!
 }
 
 type MinioBucket {
@@ -22,4 +38,10 @@ type MinioBucket {
 type Mutation {
   # Example usage (should be generalized)
   minioUpload(bucketName: String!, file: Upload!): MinioUpload!
+}
+
+type Query {
+  validateRawdatafile(rawDatasetID: ID!, objectName: ID!): FileValidation
+  validateCodebook(rawDatasetID: ID!, objectName: ID!): FileValidation
+  validateRawfileCodebookPair(rawDatasetIDRF: ID!, objectNameRF: ID!, rawDatasetIDCB: ID!, objectNameCB: ID!): FileValidation
 }
