@@ -70,6 +70,42 @@ const checkNoPrefix = (keys) => {
 
 export const resolvers = {
   Query: {
+  },
+  Mutation: {
+    minioUpload: async (obj, { bucketName, file }, { driver }) => {
+      try {
+        const { filename, mimetype, encoding, createReadStream } = await file
+        
+        let filenameExt = filename
+        let stream = createReadStream()
+
+        if (extname(filename) != ".gz") {
+          stream = createReadStream().pipe(zlib.createGzip())
+          filenameExt = filename.concat(".gz") 
+        }
+        
+        // assume file is already gzipped:
+        // const stream = createReadStream()
+
+        // to gzip the file:
+        // const compressedFileStream = createReadStream().pipe(zlib.createGzip());
+
+        const session = driver.session()
+        const createMinioUpload = await session.run(
+          'CREATE (a:MinioUpload {bucketName: $bucketName, objectName: apoc.create.uuid(), filename: $filenameExt, allowedStudies: ["admin"], allowedSites: ["admin"]}) RETURN a',
+          { bucketName, filenameExt }
+        )
+        // console.log(createMinioUpload.records[0].get(0).properties)
+        const minioUpload = createMinioUpload.records[0].get(0)
+        const { objectName } = minioUpload.properties
+        await minioClient.putObject(bucketName, objectName, stream)
+        return minioUpload.properties
+      } catch (error) {
+        console.log(error)
+        throw new ApolloError('mutation.minioUpload error')
+      }
+    },
+  
     validateRawdatafile: async (obj, { rawDatasetID, objectName }, { driver, ogm }) => {
       try {
 
@@ -152,7 +188,7 @@ export const resolvers = {
               mismatches.push({lineNumber: index, fileA: keyRF, fileB: keyCB})
             }
           })
-  
+
           if (Object.keys(mismatches).length != 0) {
             message = `Rawdata file does not match the codebook`
             isValid = false
@@ -180,41 +216,6 @@ export const resolvers = {
       } catch (error) {
         console.log(error)
         throw new ApolloError('query.validateCodebook error')
-      }
-    },
-  },
-  Mutation: {
-    minioUpload: async (obj, { bucketName, file }, { driver }) => {
-      try {
-        const { filename, mimetype, encoding, createReadStream } = await file
-        
-        let filenameExt = filename
-        let stream = createReadStream()
-
-        if (extname(filename) != ".gz") {
-          stream = createReadStream().pipe(zlib.createGzip())
-          filenameExt = filename.concat(".gz") 
-        }
-        
-        // assume file is already gzipped:
-        // const stream = createReadStream()
-
-        // to gzip the file:
-        // const compressedFileStream = createReadStream().pipe(zlib.createGzip());
-
-        const session = driver.session()
-        const createMinioUpload = await session.run(
-          'CREATE (a:MinioUpload {bucketName: $bucketName, objectName: apoc.create.uuid(), filename: $filenameExt, allowedStudies: ["admin"], allowedSites: ["admin"]}) RETURN a',
-          { bucketName, filenameExt }
-        )
-        // console.log(createMinioUpload.records[0].get(0).properties)
-        const minioUpload = createMinioUpload.records[0].get(0)
-        const { objectName } = minioUpload.properties
-        await minioClient.putObject(bucketName, objectName, stream)
-        return minioUpload.properties
-      } catch (error) {
-        console.log(error)
-        throw new ApolloError('mutation.minioUpload error')
       }
     },
   },
