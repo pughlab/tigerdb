@@ -6,8 +6,58 @@ import { Route, Routes, useParams } from 'react-router-dom'
 import MinioBucket from '../../common/minio'
 // import DataVariableTable from '../../visualizations/tables/DataVariableTable'
 
-function useRawDatasetDataVariablesQuery({rawDatasetID}) {
+function useRawDatasetDataVariablesQuery({ rawDatasetID }) {
   return {}
+}
+
+function DatasetTransformationSubmit({ rawDatasetID }) {
+  const bucketName = `raw-dataset-${rawDatasetID}`
+  const { data, loading, error } = useQuery(gql`
+  query MinioUploads($bucketName: ID!) {
+      minioUploads(where: {bucketName: $bucketName}) {
+          bucketName
+          objectName
+          filename
+      }
+  }`,
+    { variables: { bucketName }, fetchPolicy: 'network-only' })
+  if (!data?.minioUploads) {
+    return null
+  }
+  const { minioUploads } = data
+  const dropdownOptions = minioUploads.map(({ filename, objectName }) => ({
+    value: objectName, text: filename, description: objectName
+  }))
+  return (
+    <>
+      <Segment>
+        {/* TODO: a global Message component content object to hold all text in one place */}
+        <Message>
+          Steps: validate codebook, validate raw data, submit to make available to admins
+        </Message>
+        <Divider horizontal content='Codebook' />
+        <Dropdown
+          placeholder='Select codebook file'
+          fluid search selection
+          options={dropdownOptions}
+          // This will be the minioUpload.objectName from above
+          onChange={(e, { value }) => { console.log(value) }}
+        />
+        <Button fluid content='Validate Codebook' />
+        {/* TODO: add checker to disable buttons in order of validation (e.g. raw data validation only after codebook), can be checked from RawDataset  */}
+        <Divider horizontal content='Raw Data' />
+        <Dropdown
+          placeholder='Select raw data file'
+          fluid search selection
+          options={[]}
+        />
+        <Button fluid content='Validate Raw Data' />
+
+        <Divider horizontal />
+        <Button fluid content='Submit' />
+      </Segment>
+    </>
+  )
 }
 
 export default function DatasetDetails() {
@@ -46,7 +96,7 @@ export default function DatasetDetails() {
               <Label.Detail content={fromStudy.shortName} />
               {/* TODO: every raw dataset can be assumed to have study site, remove this check? */}
               {!!studySite && <Label.Detail content={`${studySite.city} (${studySite.country})`} />}
-              
+
             </Label>
           </Message>
         </Grid.Column>
@@ -56,18 +106,7 @@ export default function DatasetDetails() {
             <MinioBucket bucketName={`raw-dataset-${rawDatasetID}`} />
           </Grid.Column>
           <Grid.Column width={6}>
-            <Segment>
-              <Divider horizontal content='Transformation Into Data Variables' />
-              <Dropdown
-                placeholder='Select transformation for the raw dataset minio bucket'
-                fluid search selection
-                options={[]}
-              />
-              <Message>
-                Transformation requirements
-              </Message>
-              <Button fluid content='Submit' />
-            </Segment>
+            <DatasetTransformationSubmit {...{rawDatasetID}} />
           </Grid.Column>
         </Grid.Row>
 
