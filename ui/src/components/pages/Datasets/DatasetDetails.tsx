@@ -49,7 +49,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
         <Dropdown
           placeholder='Select raw data file'
           fluid search selection
-          options={[]}
+          options={dropdownOptions}
         />
         <Button fluid content='Validate Raw Data' />
 
