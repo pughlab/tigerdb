@@ -1,5 +1,5 @@
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useReducer } from 'react'
 import * as React from 'react'
 import { Button, Form, Header, Label, Input, Segment, Container, Message, List, Divider, Modal, Grid, Dropdown } from 'semantic-ui-react'
 import { Route, Routes, useParams } from 'react-router-dom'
@@ -12,6 +12,65 @@ function useRawDatasetDataVariablesQuery({ rawDatasetID }) {
 
 function DatasetTransformationSubmit({ rawDatasetID }) {
   const bucketName = `raw-dataset-${rawDatasetID}`
+
+  function useValidateRawdatafileReducer() {
+    // const studiesQuery = useStudiesQuery({})
+
+    const [validateRawdatafileMutation, validateRawdatafileMutationState] = useMutation(gql`
+          mutation validateRawdatafile($objectName: ID!, $rawDatasetID: ID!) {
+            validateRawdatafile(
+              rawDatasetID: $rawDatasetID
+              objectName: $objectName
+            ) {
+              isValid
+              message
+            }
+          }`)
+
+    const initialState = { objectName: null, rawDatasetID: rawDatasetID }
+    const [validateRawdatafileState, validateRawdatafileDispatch] = useReducer((state, action) => {
+        const { type, payload } = action
+        switch (type) {
+            case 'setObjectName':
+                const { objectName } = payload
+                return { ...state, objectName }
+        }
+        return state
+    }, initialState)
+    return { validateRawdatafileState, validateRawdatafileDispatch, validateRawdatafileMutation, validateRawdatafileMutationState }
+  }
+
+  const { validateRawdatafileState, validateRawdatafileDispatch, validateRawdatafileMutation, validateRawdatafileMutationState } = useValidateRawdatafileReducer()
+
+  function usevalidateCodebookReducer() {
+    // const studiesQuery = useStudiesQuery({})
+
+    const [validateCodebookMutation, validateCodebookMutationState] = useMutation(gql`
+          mutation validateCodebook($objectName: ID!, $rawDatasetID: ID!) {
+            validateCodebook(
+              rawDatasetID: $rawDatasetID
+              objectName: $objectName
+            ) {
+              isValid
+              message
+            }
+          }`)
+
+    const initialState = { objectName: null, rawDatasetID: rawDatasetID }
+    const [validateCodebookState, validateCodebookDispatch] = useReducer((state, action) => {
+        const { type, payload } = action
+        switch (type) {
+            case 'setObjectName':
+                const { objectName } = payload
+                return { ...state, objectName }
+        }
+        return state
+    }, initialState)
+    return { validateCodebookState, validateCodebookDispatch, validateCodebookMutation, validateCodebookMutationState }
+  }
+
+  const { validateCodebookState, validateCodebookDispatch, validateCodebookMutation, validateCodebookMutationState } = usevalidateCodebookReducer()
+
   const { data, loading, error } = useQuery(gql`
   query MinioUploads($bucketName: ID!) {
       minioUploads(where: {bucketName: $bucketName}) {
@@ -41,17 +100,18 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           fluid search selection
           options={dropdownOptions}
           // This will be the minioUpload.objectName from above
-          onChange={(e, { value }) => { console.log(value) }}
+          onChange={(e, { value }) => { validateCodebookDispatch({ type: 'setObjectName', payload: {objectName: value} }); console.log(value) }}
         />
-        <Button fluid content='Validate Codebook' />
+        <Button fluid content='Validate Codebook' onClick={() => {console.log(validateCodebookState); validateCodebookMutation({ variables: validateCodebookState })}} />
         {/* TODO: add checker to disable buttons in order of validation (e.g. raw data validation only after codebook), can be checked from RawDataset  */}
         <Divider horizontal content='Raw Data' />
         <Dropdown
           placeholder='Select raw data file'
           fluid search selection
           options={dropdownOptions}
+          onChange={(e, { value }) => { validateRawdatafileDispatch({ type: 'setObjectName', payload: {objectName: value} }); console.log(value) }}
         />
-        <Button fluid content='Validate Raw Data' />
+        <Button fluid content='Validate Raw Data' onClick={() => {console.log(validateRawdatafileState); validateRawdatafileMutation({ variables: validateRawdatafileState })}} />
 
         <Divider horizontal />
         <Button fluid content='Submit' />
