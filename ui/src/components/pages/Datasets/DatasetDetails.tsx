@@ -13,36 +13,8 @@ function useRawDatasetDataVariablesQuery({ rawDatasetID }) {
 function DatasetTransformationSubmit({ rawDatasetID }) {
   const bucketName = `raw-dataset-${rawDatasetID}`
 
-  function useValidateRawdatafileReducer() {
-    // const studiesQuery = useStudiesQuery({})
-
-    const [validateRawdatafileMutation, validateRawdatafileMutationState] = useMutation(gql`
-          mutation validateRawdatafile($objectName: ID!, $rawDatasetID: ID!) {
-            validateRawdatafile(
-              rawDatasetID: $rawDatasetID
-              objectName: $objectName
-            ) {
-              isValid
-              message
-            }
-          }`)
-
-    const initialState = { objectName: null, rawDatasetID: rawDatasetID }
-    const [validateRawdatafileState, validateRawdatafileDispatch] = useReducer((state, action) => {
-        const { type, payload } = action
-        switch (type) {
-            case 'setObjectName':
-                const { objectName } = payload
-                return { ...state, objectName }
-        }
-        return state
-    }, initialState)
-    return { validateRawdatafileState, validateRawdatafileDispatch, validateRawdatafileMutation, validateRawdatafileMutationState }
-  }
-
-  const { validateRawdatafileState, validateRawdatafileDispatch, validateRawdatafileMutation, validateRawdatafileMutationState } = useValidateRawdatafileReducer()
-  const { data: validateRawdatafileMutationData, loading: validateRawdatafileMutationLoading, error: validateRawdatafileMutationError } = validateRawdatafileMutationState
-
+  
+  
   function usevalidateCodebookReducer() {
     // const studiesQuery = useStudiesQuery({})
 
@@ -76,6 +48,41 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
 
   const { validateCodebookState, validateCodebookDispatch, validateCodebookMutation, validateCodebookMutationState } = usevalidateCodebookReducer()
   const { data: validateCodebookMutationData, loading: validateCodebookMutationLoading, error: validateCodebookMutationError } = validateCodebookMutationState
+
+
+
+  function useValidateRawdatafileReducer() {
+    // const studiesQuery = useStudiesQuery({})
+
+    const [validateRawdatafileMutation, validateRawdatafileMutationState] = useMutation(gql`
+          mutation validateRawdatafile($objectName: ID!, $rawDatasetID: ID!) {
+            validateRawdatafile(
+              rawDatasetID: $rawDatasetID
+              objectName: $objectName
+            ) {
+              isValid
+              message
+            }
+          }`)
+
+    const initialState = { objectName: null, rawDatasetID: rawDatasetID }
+    const [validateRawdatafileState, validateRawdatafileDispatch] = useReducer((state, action) => {
+        const { type, payload } = action
+        switch (type) {
+            case 'setObjectName':
+                const { objectName } = payload
+                return { ...state, objectName }
+        }
+        return state
+    }, initialState)
+    return { validateRawdatafileState, validateRawdatafileDispatch, validateRawdatafileMutation, validateRawdatafileMutationState }
+  }
+
+  const { validateRawdatafileState, validateRawdatafileDispatch, validateRawdatafileMutation, validateRawdatafileMutationState } = useValidateRawdatafileReducer()
+  const { data: validateRawdatafileMutationData, loading: validateRawdatafileMutationLoading, error: validateRawdatafileMutationError } = validateRawdatafileMutationState
+
+
+
 
   const { data, loading, error } = useQuery(gql`
   query MinioUploads($bucketName: ID!) {
