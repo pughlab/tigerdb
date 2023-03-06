@@ -41,6 +41,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
   }
 
   const { validateRawdatafileState, validateRawdatafileDispatch, validateRawdatafileMutation, validateRawdatafileMutationState } = useValidateRawdatafileReducer()
+  const { data: validateRawdatafileMutationData, loading: validateRawdatafileMutationLoading, error: validateRawdatafileMutationError } = validateRawdatafileMutationState
 
   function usevalidateCodebookReducer() {
     // const studiesQuery = useStudiesQuery({})
@@ -121,7 +122,10 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           onChange={(e, { value }) => { validateRawdatafileDispatch({ type: 'setObjectName', payload: {objectName: value} }); console.log(value) }}
         />
         <Button fluid content='Validate Raw Data' onClick={() => {console.log(validateRawdatafileState); validateRawdatafileMutation({ variables: validateRawdatafileState })}} />
-
+        {
+          (validateRawdatafileMutationData) && (validateRawdatafileMutationData.validateRawdatafile) && (validateRawdatafileMutationData.validateRawdatafile.message) &&
+          <Message>{validateRawdatafileMutationData.validateRawdatafile.message}</Message>
+        }
         <Divider horizontal />
         <Button fluid content='Submit' />
       </Segment>
