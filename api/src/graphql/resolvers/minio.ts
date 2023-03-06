@@ -116,6 +116,19 @@ export const resolvers = {
 
         const {isValid, message} = checkNoPrefix(keys)
 
+        // const session = driver.session()
+        // const rawDatasetModelUpdate1 = await session.run(
+        //     `MATCH (n:RawDataset)-[r:HAS_RAWDATAFILE]->(m:MinioUpload)
+        //     where n.rawDatasetID = "${rawDatasetID}"
+        //     delete r`,
+        // )
+
+        const MinioUploadModel = ogm.model("MinioUpload")
+        const datafileMinioUploadOld = await MinioUploadModel.update({
+          where: { bucketName: bucketName },
+          disconnect: {rawdataFileRawDataset: {where: {node: {rawDatasetID: rawDatasetID}}}}
+        })
+
         const rawDatasetModelUpdate = await RawDatasetModel.update({ 
           where: { rawDatasetID },
           update: { rawdataFile: {connect: {
@@ -140,7 +153,20 @@ export const resolvers = {
 
         const {isValid, message} = checkNoPrefix(keys)
 
-        const rawDatasetModelUpdate = await RawDatasetModel.update({ 
+        // const session = driver.session()
+        // const rawDatasetModelUpdate1 = await session.run(
+        //     `MATCH (n:RawDataset)-[r:HAS_CODEBOOK]->(m:MinioUpload)
+        //     where n.rawDatasetID = "${rawDatasetID}"
+        //     delete r`,
+        // )
+
+        const MinioUploadModel = ogm.model("MinioUpload")
+        const datafileMinioUploadOld = await MinioUploadModel.update({
+          where: { bucketName: bucketName },
+          disconnect: {codeBookRawDataset: {where: {node: {rawDatasetID: rawDatasetID}}}}
+        })
+
+        const rawDatasetModelUpdate2 = await RawDatasetModel.update({ 
           where: { rawDatasetID },
           update: { codeBook: {connect: {
             where: {node: {objectName: datafileMinioUpload[0].objectName}},
