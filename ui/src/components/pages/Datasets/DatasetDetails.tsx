@@ -54,7 +54,11 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
               isValid
               message
             }
-          }`)
+          }`, 
+          {
+            errorPolicy: 'none'
+          }
+          )
 
     const initialState = { objectName: null, rawDatasetID: rawDatasetID }
     const [validateCodebookState, validateCodebookDispatch] = useReducer((state, action) => {
@@ -70,6 +74,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
   }
 
   const { validateCodebookState, validateCodebookDispatch, validateCodebookMutation, validateCodebookMutationState } = usevalidateCodebookReducer()
+  const { data: validateCodebookMutationData, loading: validateCodebookMutationLoading, error: validateCodebookMutationError } = validateCodebookMutationState
 
   const { data, loading, error } = useQuery(gql`
   query MinioUploads($bucketName: ID!) {
@@ -104,6 +109,10 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
         />
         <Button fluid content='Validate Codebook' onClick={() => {console.log(validateCodebookState); validateCodebookMutation({ variables: validateCodebookState })}} />
         {/* TODO: add checker to disable buttons in order of validation (e.g. raw data validation only after codebook), can be checked from RawDataset  */}
+        {
+          (validateCodebookMutationData) && (validateCodebookMutationData.validateCodebook) && (validateCodebookMutationData.validateCodebook.message) &&
+          <Message>{validateCodebookMutationData.validateCodebook.message}</Message>
+        }
         <Divider horizontal content='Raw Data' />
         <Dropdown
           placeholder='Select raw data file'
