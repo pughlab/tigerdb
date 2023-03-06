@@ -83,6 +83,43 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
 
 
 
+  function useValidateRawfileCodebookPairReducer() {
+    // const studiesQuery = useStudiesQuery({})
+
+    const [validateRawfileCodebookPairMutation, validateRawfileCodebookPairMutationState] = useMutation(gql`
+          mutation validateRawfileCodebookPair($rawDatasetIDRF: ID!, $objectNameRF: ID!, $rawDatasetIDCB: ID!, $objectNameCB: ID!) {
+            validateRawfileCodebookPair(
+              rawDatasetIDRF: $rawDatasetIDRF
+              objectNameRF: $objectNameRF
+              rawDatasetIDCB: $rawDatasetIDCB
+              objectNameCB: $objectNameCB
+            ) {
+              isValid
+              message
+            }
+          }`)
+
+    const initialState = { rawDatasetIDRF: rawDatasetID, objectNameRF: null, rawDatasetIDCB: rawDatasetID, objectNameCB: null }
+    const [validateRawfileCodebookPairState, validateRawfileCodebookPairDispatch] = useReducer((state, action) => {
+        const { type, payload } = action
+        switch (type) {
+            case 'objectNameRF':
+                const { objectNameRF } = payload
+                return { ...state, objectNameRF }
+            case 'objectNameCB':
+                const { objectNameCB } = payload
+                return { ...state, objectNameCB }
+        }
+        return state
+    }, initialState)
+    return { validateRawfileCodebookPairState, validateRawfileCodebookPairDispatch, validateRawfileCodebookPairMutation, validateRawfileCodebookPairMutationState }
+  }
+
+  const { validateRawfileCodebookPairState, validateRawfileCodebookPairDispatch, validateRawfileCodebookPairMutation, validateRawfileCodebookPairMutationState } = useValidateRawfileCodebookPairReducer()
+  const { data: validateRawfileCodebookPairMutationData, loading: validateRawfileCodebookPairMutationLoading, error: validateRawfileCodebookPairMutationError } = validateRawfileCodebookPairMutationState
+
+
+
 
   const { data, loading, error } = useQuery(gql`
   query MinioUploads($bucketName: ID!) {
@@ -113,7 +150,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           fluid search selection
           options={dropdownOptions}
           // This will be the minioUpload.objectName from above
-          onChange={(e, { value }) => { validateCodebookDispatch({ type: 'setObjectName', payload: {objectName: value} }); console.log(value) }}
+          onChange={(e, { value }) => { validateCodebookDispatch({ type: 'setObjectName', payload: {objectName: value} }); validateRawfileCodebookPairDispatch({ type: 'objectNameCB', payload: {objectNameCB: value} }); console.log(value) }}
         />
         <Button fluid content='Validate Codebook' onClick={() => {console.log(validateCodebookState); validateCodebookMutation({ variables: validateCodebookState })}} />
         {/* TODO: add checker to disable buttons in order of validation (e.g. raw data validation only after codebook), can be checked from RawDataset  */}
@@ -126,12 +163,18 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           placeholder='Select raw data file'
           fluid search selection
           options={dropdownOptions}
-          onChange={(e, { value }) => { validateRawdatafileDispatch({ type: 'setObjectName', payload: {objectName: value} }); console.log(value) }}
+          onChange={(e, { value }) => { validateRawdatafileDispatch({ type: 'setObjectName', payload: {objectName: value} }); validateRawfileCodebookPairDispatch({ type: 'objectNameRF', payload: {objectNameRF: value} }); console.log(value) }}
         />
         <Button fluid content='Validate Raw Data' onClick={() => {console.log(validateRawdatafileState); validateRawdatafileMutation({ variables: validateRawdatafileState })}} />
         {
           (validateRawdatafileMutationData) && (validateRawdatafileMutationData.validateRawdatafile) && (validateRawdatafileMutationData.validateRawdatafile.message) &&
           <Message>{validateRawdatafileMutationData.validateRawdatafile.message}</Message>
+        }
+        <Divider horizontal content='Validate rawdata codebook pair' />
+        <Button fluid content='Validate rawdata codebook pair' onClick={() => {console.log(validateRawdatafileState); validateRawfileCodebookPairMutation({ variables: validateRawfileCodebookPairState })}} />
+        {
+          (validateRawfileCodebookPairMutationData) && (validateRawfileCodebookPairMutationData.validateRawfileCodebookPair) && (validateRawfileCodebookPairMutationData.validateRawfileCodebookPair.message) &&
+          <Message>{validateRawfileCodebookPairMutationData.validateRawfileCodebookPair.message}</Message>
         }
         <Divider horizontal />
         <Button fluid content='Submit' />
