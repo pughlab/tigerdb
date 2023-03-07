@@ -123,19 +123,21 @@ export const resolvers = {
         //     delete r`,
         // )
 
-        const MinioUploadModel = ogm.model("MinioUpload")
-        const datafileMinioUploadOld = await MinioUploadModel.update({
-          where: { bucketName: bucketName },
-          disconnect: {rawdataFileRawDataset: {where: {node: {rawDatasetID: rawDatasetID}}}}
-        })
+        if (isValid) {
+          const MinioUploadModel = ogm.model("MinioUpload")
+          const datafileMinioUploadOld = await MinioUploadModel.update({
+            where: { bucketName: bucketName },
+            disconnect: {rawdataFileRawDataset: {where: {node: {rawDatasetID: rawDatasetID}}}}
+          })
 
-        const rawDatasetModelUpdate = await RawDatasetModel.update({ 
-          where: { rawDatasetID },
-          update: { rawdataFile: {connect: {
-            where: {node: {objectName: datafileMinioUpload[0].objectName}},
-            edge: {validated: isValid},
-          }}},
-        })
+          const rawDatasetModelUpdate = await RawDatasetModel.update({ 
+            where: { rawDatasetID },
+            update: { rawdataFile: {connect: {
+              where: {node: {objectName: datafileMinioUpload[0].objectName}},
+              edge: {validated: isValid},
+            }}},
+          })
+        }
 
         return {isValid, message}
       } catch (error) {
@@ -160,19 +162,21 @@ export const resolvers = {
         //     delete r`,
         // )
 
-        const MinioUploadModel = ogm.model("MinioUpload")
-        const datafileMinioUploadOld = await MinioUploadModel.update({
-          where: { bucketName: bucketName },
-          disconnect: {codeBookRawDataset: {where: {node: {rawDatasetID: rawDatasetID}}}}
-        })
+        if (isValid) {
+          const MinioUploadModel = ogm.model("MinioUpload")
+          const datafileMinioUploadOld = await MinioUploadModel.update({
+            where: { bucketName: bucketName },
+            disconnect: {codeBookRawDataset: {where: {node: {rawDatasetID: rawDatasetID}}}}
+          })
 
-        const rawDatasetModelUpdate2 = await RawDatasetModel.update({ 
-          where: { rawDatasetID },
-          update: { codeBook: {connect: {
-            where: {node: {objectName: datafileMinioUpload[0].objectName}},
-            edge: {validated: isValid},
-          }}},
-        })
+          const rawDatasetModelUpdate2 = await RawDatasetModel.update({ 
+            where: { rawDatasetID },
+            update: { codeBook: {connect: {
+              where: {node: {objectName: datafileMinioUpload[0].objectName}},
+              edge: {validated: isValid},
+            }}},
+          })
+        }
 
         return {isValid, message}
       } catch (error) {
@@ -222,21 +226,23 @@ export const resolvers = {
 
         }
 
-        const rawDatasetModelUpdateRF = await MinioUploadModel.update({ 
-          where: { objectName: datafileMinioUploadRF[0].objectName },
-          update: { pairedCodebook: {connect: {
-            where: {node: {objectName: datafileMinioUploadCB[0].objectName}},
-            edge: {validated: isValid},
-          }}},
-        })
+        if (isValid) {
+          const rawDatasetModelUpdateRF = await MinioUploadModel.update({ 
+            where: { objectName: datafileMinioUploadRF[0].objectName },
+            update: { pairedCodebook: {connect: {
+              where: {node: {objectName: datafileMinioUploadCB[0].objectName}},
+              edge: {validated: isValid},
+            }}},
+          })
 
-        const rawDatasetModelUpdateCB = await MinioUploadModel.update({ 
-          where: { objectName: datafileMinioUploadCB[0].objectName },
-          update: { pairedRawdataFile: {connect: {
-            where: {node: {objectName: datafileMinioUploadRF[0].objectName}},
-            edge: {validated: isValid},
-          }}},
-        })
+          const rawDatasetModelUpdateCB = await MinioUploadModel.update({ 
+            where: { objectName: datafileMinioUploadCB[0].objectName },
+            update: { pairedRawdataFile: {connect: {
+              where: {node: {objectName: datafileMinioUploadRF[0].objectName}},
+              edge: {validated: isValid},
+            }}},
+          })
+        }
 
         return {isValid, message, mismatches}
       } catch (error) {
