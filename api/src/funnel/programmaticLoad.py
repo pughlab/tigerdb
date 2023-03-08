@@ -19,7 +19,11 @@ if __name__ == "__main__":
       
       e.g. python api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "Data-Table 1.csv.gz" "Code Book-Table 1.csv.gz" neo4j 111222,111222,111333 111aaa,111bbb,333aaa
 
-      e.g. npx nodemon --watch api/src/funnel/programmaticLoad.py --exec "python -m debugpy --wait-for-client --listen 5678" api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "rawdata_sample_4.csv.gz" "codebook_sample_3.csv.gz" neo4j %allowedSites,%allowedSites,%allowedStudies Vancouver,Toronto,Milk
+      e.g. npx nodemon --watch api/src/funnel/programmaticLoad.py --exec "python -m debugpy --wait-for-client --listen 5678" api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "rawdata_sample_4.csv.gz" "codebook_sample_3.csv.gz" neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk
+
+      e.g. python api/src/funnel/programmaticLoad.py 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 "rawdata_sample_4.csv.gz" "codebook_sample_4.csv.gz" neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk
+
+      e.g. npx nodemon --watch api/src/funnel/programmaticLoad.py --exec "python -m debugpy --wait-for-client --listen 5678" api/src/funnel/programmaticLoad.py 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 0027aa5d-9a0f-40f1-b7e6-7e070953acc7 802d6267-1b27-42c6-ac8f-cad7d3ab4d70 neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk
 
       ''')
       exit(1)
@@ -77,7 +81,7 @@ if __name__ == "__main__":
         permissions_map[prop] = []
       permissions_map[prop].append(val)
 
-    permissions_codebook = {'%permissions_codebook': list(permissions_map.keys())}
+    permissions_codebook = {'%permission_codebook': list(permissions_map.keys())}
 
     # limit = 5
     # limit = 1200
@@ -130,7 +134,8 @@ if __name__ == "__main__":
       tic = time.perf_counter()
 
       result = session.run(f'''
-                            CREATE (n:CuratedDataset {{curatedDatasetID: "{curatedDatasetID}"}})
+                            MATCH (m:RawDataset {{rawDatasetID: "{rawDatasetID}"}})
+                            MERGE (m)-[:GENERATED_CURATED_DATASET]->(n:CuratedDataset {{curatedDatasetID: "{curatedDatasetID}"}})
                             SET n += $permissions_map
                             SET n += $permissions_codebook
                             ''', parameters={'permissions_map': permissions_map, 'permissions_codebook': permissions_codebook})

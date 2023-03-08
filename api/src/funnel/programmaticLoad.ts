@@ -5,7 +5,9 @@ if (process.argv.length !== 8) {
 
   e.g. TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/createCuratedDatasetFromRawDataset.ts 7ec33aac-9209-4948-8804-8cc115bc8b20 rawdata_sample_3.csv.gz codebook_sample_3.csv.gz neo4j 111222,111222,111333 111aaa,111bbb,333aaa
 
-  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticLoad.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticLoad.ts 7ec33aac-9209-4948-8804-8cc115bc8b20 "rawdata_sample_4.csv.gz" "codebook_sample_3.csv.gz" neo4j %allowedSites,%allowedSites,%allowedStudies Vancouver,Toronto,Milk
+  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticLoad.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticLoad.ts 7ec33aac-9209-4948-8804-8cc115bc8b20 "rawdata_sample_4.csv.gz" "codebook_sample_3.csv.gz" neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk
+
+  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticLoad.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticLoad.ts 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 0027aa5d-9a0f-40f1-b7e6-7e070953acc7 802d6267-1b27-42c6-ac8f-cad7d3ab4d70 neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk
   
   `);
   process.exit(1);
@@ -67,7 +69,7 @@ import { v4 as uuidv4 } from 'uuid';
 
   })
   
-  const permissions_codebook = {'%permissions_codebook': Object.keys(permissions_map)}
+  const permissions_codebook = {'%permission_codebook': Object.keys(permissions_map)}
 
   // const limit = 0
   // const limit = 5
@@ -124,7 +126,8 @@ import { v4 as uuidv4 } from 'uuid';
   // const { curatedDatasetID } = curatedDataset
 
   await session.run(`
-  CREATE (n:CuratedDataset {curatedDatasetID: "${curatedDatasetID}"})
+  MATCH (m:RawDataset {rawDatasetID: "${rawDatasetID}"})
+  MERGE (m)-[:GENERATED_CURATED_DATASET]->(n:CuratedDataset {curatedDatasetID: "${curatedDatasetID}"})
   SET n += $permissions_map
   SET n += $permissions_codebook
   `, {permissions_map: permissions_map, permissions_codebook: permissions_codebook})
