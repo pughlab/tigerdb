@@ -5,6 +5,7 @@ import { Button, Form, Header, Label, Input, Segment, Container, Message, List, 
 import { Route, Routes, useParams } from 'react-router-dom'
 import MinioBucket from '../../common/minio'
 // import DataVariableTable from '../../visualizations/tables/DataVariableTable'
+import { v4 as uuidv4 } from 'uuid'
 
 function useRawDatasetDataVariablesQuery({ rawDatasetID }) {
   return {}
@@ -120,6 +121,58 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
 
 
 
+  function useFunnelLoadReducer() {
+    // const studiesQuery = useStudiesQuery({})
+    const const_image = `funnel-base`
+
+    const [funnelLoadMutation, funnelLoadMutationState] = useMutation(gql`
+          mutation submitTask($name: String!, $image: String!, $command: String!) {
+            submitTask(
+              name: $name
+              image: $image
+              command: $command
+            ) {
+              id
+            }
+          }`)
+
+    function setCommand(objectNameRF, objectNameCB) {
+      const const_program = `python api/src/funnel/programmaticLoad.py`
+      const const_mode = `neo4j`
+      // const const_mode = `programmatic`
+      const const_permission_keys = `%permission_allowedSites,%permission_allowedStudies`
+      const const_permission_values = `admin,admin`
+      const command = `${const_program} ${rawDatasetID} ${objectNameRF} ${objectNameCB} ${const_mode} ${const_permission_keys} ${const_permission_values}`
+      console.log(command)
+      return command
+    }
+
+    const initialState = { name: uuidv4(), image: const_image, objectNameRF:null, objectNameCB: null, command: null }
+    const [funnelLoadState, funnelLoadDispatch] = useReducer((state, action) => {
+        const { type, payload } = action
+        let objectNameRF, objectNameCB, command
+        switch (type) {
+            case 'objectNameRF':
+                ({ objectNameRF } = payload);
+                ({ objectNameCB } = state);
+                command = setCommand(objectNameRF, objectNameCB)
+                return { ...state, objectNameRF, command }
+            case 'objectNameCB':
+                ({ objectNameRF } = state);
+                ({ objectNameCB } = payload);
+                command = setCommand(objectNameRF, objectNameCB)
+                return { ...state, objectNameCB, command }
+        }
+        return state
+    }, initialState)
+    return { funnelLoadState, funnelLoadDispatch, funnelLoadMutation, funnelLoadMutationState }
+  }
+
+  const { funnelLoadState, funnelLoadDispatch, funnelLoadMutation, funnelLoadMutationState } = useFunnelLoadReducer()
+  const { data: funnelLoadMutationData, loading: funnelLoadMutationLoading, error: funnelLoadMutationError } = funnelLoadMutationState
+
+
+
 
   const { data, loading, error } = useQuery(gql`
   query MinioUploads($bucketName: ID!) {
@@ -150,7 +203,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           fluid search selection
           options={dropdownOptions}
           // This will be the minioUpload.objectName from above
-          onChange={(e, { value }) => { validateCodebookDispatch({ type: 'setObjectName', payload: {objectName: value} }); validateRawfileCodebookPairDispatch({ type: 'objectNameCB', payload: {objectNameCB: value} }); console.log(value) }}
+          onChange={(e, { value }) => { validateCodebookDispatch({ type: 'setObjectName', payload: {objectName: value} }); validateRawfileCodebookPairDispatch({ type: 'objectNameCB', payload: {objectNameCB: value} }); funnelLoadDispatch({ type: 'objectNameCB', payload: {objectNameCB: value} }); console.log(value) }}
         />
         <Button fluid content='Validate Codebook' onClick={() => {console.log(validateCodebookState); validateCodebookMutation({ variables: validateCodebookState })}} />
         {/* TODO: add checker to disable buttons in order of validation (e.g. raw data validation only after codebook), can be checked from RawDataset  */}
@@ -163,7 +216,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           placeholder='Select raw data file'
           fluid search selection
           options={dropdownOptions}
-          onChange={(e, { value }) => { validateRawdatafileDispatch({ type: 'setObjectName', payload: {objectName: value} }); validateRawfileCodebookPairDispatch({ type: 'objectNameRF', payload: {objectNameRF: value} }); console.log(value) }}
+          onChange={(e, { value }) => { validateRawdatafileDispatch({ type: 'setObjectName', payload: {objectName: value} }); validateRawfileCodebookPairDispatch({ type: 'objectNameRF', payload: {objectNameRF: value} }); funnelLoadDispatch({ type: 'objectNameRF', payload: {objectNameRF: value} }); console.log(value) }}
         />
         <Button fluid content='Validate Raw Data' onClick={() => {console.log(validateRawdatafileState); validateRawdatafileMutation({ variables: validateRawdatafileState })}} />
         {
@@ -177,7 +230,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           <Message>{validateRawfileCodebookPairMutationData.validateRawfileCodebookPair.message}</Message>
         }
         <Divider horizontal />
-        <Button fluid content='Submit' />
+        <Button fluid content='Submit'  onClick={() => { funnelLoadMutation({ variables: funnelLoadState })}}/>
       </Segment>
     </>
   )
