@@ -14,7 +14,52 @@ function useRawDatasetDataVariablesQuery({ rawDatasetID }) {
 function DatasetTransformationSubmit({ rawDatasetID }) {
   const bucketName = `raw-dataset-${rawDatasetID}`
 
-  
+  const [codebook, setCodebook] = useState(null)
+  const [rawDataset, setRawDataset] = useState(null)
+  const [codebookPair, setCodebookPair] = useState(null)
+  const [rawDatasetPair, setRawDatasetPair] = useState(null)
+
+  const { data: rawDatasetDetailsData, loading: rawDatasetDetailsLoading, error: rawDatasetDetailsError, refetch: rawDatasetDetailsRefetch } = useQuery(gql`
+  query RawDatasetDetails($rawDatasetID: ID!) {
+      rawDatasets(where:
+        {rawDatasetID: $rawDatasetID}) {
+        rawDatasetID
+        codeBook {
+          bucketName
+          objectName
+          filename
+          pairedRawdataFile {
+            bucketName
+            objectName
+            filename
+          }
+        }
+        rawdataFile {
+          bucketName
+          objectName
+          filename
+          pairedCodebook {
+            bucketName
+            objectName
+            filename
+          }
+        }
+    }
+  }`,
+  { 
+    variables: { rawDatasetID: rawDatasetID },
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].codeBook) && (data.rawDatasets[0].codeBook.objectName) ? setCodebook(data.rawDatasets[0].codeBook.objectName) : setCodebook(null);
+
+      (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].rawdataFile) && (data.rawDatasets[0].rawdataFile.objectName) ? setRawDataset(data.rawDatasets[0].rawdataFile.objectName) : setRawDataset(null);
+
+      (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].codeBook) && (data.rawDatasets[0].codeBook.pairedRawdataFile) && (data.rawDatasets[0].codeBook.pairedRawdataFile.objectName) ? setCodebookPair(data.rawDatasets[0].codeBook.pairedRawdataFile.objectName) : setCodebookPair(null);
+
+      (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].rawdataFile) && (data.rawDatasets[0].rawdataFile.pairedCodebook) && (data.rawDatasets[0].rawdataFile.pairedCodebook.objectName) ? setRawDatasetPair(data.rawDatasets[0].rawdataFile.pairedCodebook.objectName) : setRawDatasetPair(null);
+
+    }
+  })
   
   function usevalidateCodebookReducer() {
     // const studiesQuery = useStudiesQuery({})
@@ -30,7 +75,8 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
             }
           }`, 
           {
-            errorPolicy: 'none'
+            errorPolicy: 'none',
+            onCompleted: () => { rawDatasetDetailsRefetch() },
           }
           )
 
@@ -64,7 +110,11 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
               isValid
               message
             }
-          }`)
+          }`, 
+          {
+            errorPolicy: 'none',
+            onCompleted: () => { rawDatasetDetailsRefetch() },
+          })
 
     const initialState = { objectName: null, rawDatasetID: rawDatasetID }
     const [validateRawdatafileState, validateRawdatafileDispatch] = useReducer((state, action) => {
@@ -98,7 +148,11 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
               isValid
               message
             }
-          }`)
+          }`, 
+          {
+            errorPolicy: 'none',
+            onCompleted: () => { rawDatasetDetailsRefetch() },
+          })
 
     const initialState = { rawDatasetIDRF: rawDatasetID, objectNameRF: null, rawDatasetIDCB: rawDatasetID, objectNameCB: null }
     const [validateRawfileCodebookPairState, validateRawfileCodebookPairDispatch] = useReducer((state, action) => {
@@ -143,7 +197,6 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
       const const_permission_keys = `%permission_allowedSites,%permission_allowedStudies`
       const const_permission_values = `admin,admin`
       const command = `${const_program} ${rawDatasetID} ${objectNameRF} ${objectNameCB} ${const_mode} ${const_permission_keys} ${const_permission_values}`
-      console.log(command)
       return command
     }
 
@@ -190,6 +243,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
   const dropdownOptions = minioUploads.map(({ filename, objectName }) => ({
     value: objectName, text: filename, description: objectName
   }))
+
   return (
     <>
       <Segment>
@@ -203,9 +257,9 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           fluid search selection
           options={dropdownOptions}
           // This will be the minioUpload.objectName from above
-          onChange={(e, { value }) => { validateCodebookDispatch({ type: 'setObjectName', payload: {objectName: value} }); validateRawfileCodebookPairDispatch({ type: 'objectNameCB', payload: {objectNameCB: value} }); funnelLoadDispatch({ type: 'objectNameCB', payload: {objectNameCB: value} }); console.log(value) }}
+          onChange={(e, { value }) => { validateCodebookDispatch({ type: 'setObjectName', payload: {objectName: value} }); validateRawfileCodebookPairDispatch({ type: 'objectNameCB', payload: {objectNameCB: value} }); funnelLoadDispatch({ type: 'objectNameCB', payload: {objectNameCB: value} }); }}
         />
-        <Button fluid content='Validate Codebook' onClick={() => {console.log(validateCodebookState); validateCodebookMutation({ variables: validateCodebookState })}} />
+        <Button fluid content='Validate Codebook' onClick={() => { validateCodebookMutation({ variables: validateCodebookState })}} />
         {/* TODO: add checker to disable buttons in order of validation (e.g. raw data validation only after codebook), can be checked from RawDataset  */}
         {
           (validateCodebookMutationData) && (validateCodebookMutationData.validateCodebook) && (validateCodebookMutationData.validateCodebook.message) &&
@@ -216,21 +270,32 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           placeholder='Select raw data file'
           fluid search selection
           options={dropdownOptions}
-          onChange={(e, { value }) => { validateRawdatafileDispatch({ type: 'setObjectName', payload: {objectName: value} }); validateRawfileCodebookPairDispatch({ type: 'objectNameRF', payload: {objectNameRF: value} }); funnelLoadDispatch({ type: 'objectNameRF', payload: {objectNameRF: value} }); console.log(value) }}
+          onChange={(e, { value }) => { validateRawdatafileDispatch({ type: 'setObjectName', payload: {objectName: value} }); validateRawfileCodebookPairDispatch({ type: 'objectNameRF', payload: {objectNameRF: value} }); funnelLoadDispatch({ type: 'objectNameRF', payload: {objectNameRF: value} }) }}
         />
-        <Button fluid content='Validate Raw Data' onClick={() => {console.log(validateRawdatafileState); validateRawdatafileMutation({ variables: validateRawdatafileState })}} />
+        <Button fluid content='Validate Raw Data' onClick={() => { validateRawdatafileMutation({ variables: validateRawdatafileState })}} />
         {
           (validateRawdatafileMutationData) && (validateRawdatafileMutationData.validateRawdatafile) && (validateRawdatafileMutationData.validateRawdatafile.message) &&
           <Message>{validateRawdatafileMutationData.validateRawdatafile.message}</Message>
         }
         <Divider horizontal content='Validate rawdata codebook pair' />
-        <Button fluid content='Validate rawdata codebook pair' onClick={() => {console.log(validateRawdatafileState); validateRawfileCodebookPairMutation({ variables: validateRawfileCodebookPairState })}} />
+        <Button fluid content='Validate rawdata codebook pair' onClick={() => { validateRawfileCodebookPairMutation({ variables: validateRawfileCodebookPairState })}} />
         {
           (validateRawfileCodebookPairMutationData) && (validateRawfileCodebookPairMutationData.validateRawfileCodebookPair) && (validateRawfileCodebookPairMutationData.validateRawfileCodebookPair.message) &&
           <Message>{validateRawfileCodebookPairMutationData.validateRawfileCodebookPair.message}</Message>
         }
         <Divider horizontal />
-        <Button fluid content='Submit'  onClick={() => { funnelLoadMutation({ variables: funnelLoadState })}}/>
+        <Button disabled={!(codebook && rawDataset && codebookPair && rawDatasetPair)} fluid content='Submit'  onClick={() => { funnelLoadMutation({ variables: funnelLoadState })}}/>
+        {
+          <Message>
+            codebook: {codebook}
+            <br/>
+            rawdata: {rawDataset}
+            <br/>
+            codebook pair: {codebookPair}
+            <br/>
+            rawdata pair: {rawDatasetPair}
+          </Message>
+        }
       </Segment>
     </>
   )
