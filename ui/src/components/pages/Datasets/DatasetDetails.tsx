@@ -177,66 +177,89 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
   const { funnelLoadState, funnelLoadDispatch, funnelLoadMutation, funnelLoadMutationState } = useFunnelLoadReducer()
   const { data: funnelLoadMutationData, loading: funnelLoadMutationLoading, error: funnelLoadMutationError } = funnelLoadMutationState
 
-  const [codebook, setCodebook] = useState(null)
-  const [rawDataset, setRawDataset] = useState(null)
-  const [codebookPair, setCodebookPair] = useState(null)
-  const [rawDatasetPair, setRawDatasetPair] = useState(null)
 
-  const { data: rawDatasetDetailsData, loading: rawDatasetDetailsLoading, error: rawDatasetDetailsError, refetch: rawDatasetDetailsRefetch } = useQuery(gql`
-  query RawDatasetDetails($rawDatasetID: ID!) {
-      rawDatasets(where:
-        {rawDatasetID: $rawDatasetID}) {
-        rawDatasetID
-        codeBook {
-          bucketName
-          objectName
-          filename
-          pairedRawdataFile {
+
+  function useFunnelConnectedDataReducer() {
+
+    const initialState = { codebook: null, rawDataset:null, codebookPair: null, rawDataPair: null }
+    const [funnelConnectedDataState, funnelConnectedDataDispatch] = useReducer((state, action) => {
+        const { type, payload } = action
+        switch (type) {
+            case 'codebook':
+                const { codebook } = payload
+                return { ...state, codebook }
+            case 'rawDataset':
+              const { rawDataset } = payload
+                return { ...state, rawDataset }
+            case 'codebookPair':
+              const { codebookPair } = payload
+                return { ...state, codebookPair }
+            case 'rawDataPair':
+              const { rawDataPair } = payload
+                return { ...state, rawDataPair }
+        }
+        return state
+    }, initialState)
+  
+    const { data: rawDatasetDetailsData, loading: rawDatasetDetailsLoading, error: rawDatasetDetailsError, refetch: rawDatasetDetailsRefetch } = useQuery(gql`
+    query RawDatasetDetails($rawDatasetID: ID!) {
+        rawDatasets(where:
+          {rawDatasetID: $rawDatasetID}) {
+          rawDatasetID
+          codeBook {
             bucketName
             objectName
             filename
+            pairedRawdataFile {
+              bucketName
+              objectName
+              filename
+            }
           }
-        }
-        rawdataFile {
-          bucketName
-          objectName
-          filename
-          pairedCodebook {
+          rawdataFile {
             bucketName
             objectName
             filename
+            pairedCodebook {
+              bucketName
+              objectName
+              filename
+            }
           }
-        }
-    }
-  }`,
-  { 
-    variables: { rawDatasetID: rawDatasetID },
-    fetchPolicy: 'network-only',
-    onCompleted: (data) => {
-      let codebook = null
-      let rawDataset = null
-      let codebookPair = null
-      let rawDataPair = null
+      }
+    }`,
+    { 
+      variables: { rawDatasetID: rawDatasetID },
+      fetchPolicy: 'network-only',
+      onCompleted: (data) => {
+        let codebook = null
+        let rawDataset = null
+        let codebookPair = null
+        let rawDataPair = null
+  
+        codebook = (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].codeBook) && (data.rawDatasets[0].codeBook.objectName) ? data.rawDatasets[0].codeBook.objectName : null
+        funnelConnectedDataDispatch({ type: 'codebook', payload: {codebook} })
+  
+        rawDataset = (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].rawdataFile) && (data.rawDatasets[0].rawdataFile.objectName) ? data.rawDatasets[0].rawdataFile.objectName : null
+        funnelConnectedDataDispatch({ type: 'rawDataset', payload: {rawDataset} })
+  
+        codebookPair = (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].codeBook) && (data.rawDatasets[0].codeBook.pairedRawdataFile) && (data.rawDatasets[0].codeBook.pairedRawdataFile.objectName) ? data.rawDatasets[0].codeBook.pairedRawdataFile.objectName : null
+        funnelConnectedDataDispatch({ type: 'codebookPair', payload: {codebookPair} })
+  
+        rawDataPair = (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].rawdataFile) && (data.rawDatasets[0].rawdataFile.pairedCodebook) && (data.rawDatasets[0].rawdataFile.pairedCodebook.objectName) ? data.rawDatasets[0].rawdataFile.pairedCodebook.objectName : null
+        funnelConnectedDataDispatch({ type: 'rawDataPair', payload: {rawDataPair} })
+  
+        funnelLoadDispatch({ type: 'objectNameCB', payload: {objectNameCB: codebook} });
+        funnelLoadDispatch({ type: 'objectNameRF', payload: {objectNameRF: rawDataset} });
+  
+      }
+    })
 
-      codebook = (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].codeBook) && (data.rawDatasets[0].codeBook.objectName) ? data.rawDatasets[0].codeBook.objectName : null
-      setCodebook(codebook);
+    return { funnelConnectedDataState, funnelConnectedDataDispatch, rawDatasetDetailsData, rawDatasetDetailsLoading, rawDatasetDetailsError, rawDatasetDetailsRefetch }
+  }
+  
+  const { funnelConnectedDataState, funnelConnectedDataDispatch, rawDatasetDetailsData, rawDatasetDetailsLoading, rawDatasetDetailsError, rawDatasetDetailsRefetch } = useFunnelConnectedDataReducer()
 
-      rawDataset = (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].rawdataFile) && (data.rawDatasets[0].rawdataFile.objectName) ? data.rawDatasets[0].rawdataFile.objectName : null
-      setRawDataset(rawDataset);
-
-      codebookPair = (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].codeBook) && (data.rawDatasets[0].codeBook.pairedRawdataFile) && (data.rawDatasets[0].codeBook.pairedRawdataFile.objectName) ? data.rawDatasets[0].codeBook.pairedRawdataFile.objectName : null
-      setCodebookPair(codebookPair);
-
-      rawDataPair = (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].rawdataFile) && (data.rawDatasets[0].rawdataFile.pairedCodebook) && (data.rawDatasets[0].rawdataFile.pairedCodebook.objectName) ? data.rawDatasets[0].rawdataFile.pairedCodebook.objectName : null
-      setRawDatasetPair(rawDataPair);
-
-      console.log([data, {objectNameCB: codebook}, {objectNameRF: rawDataset}])
-
-      funnelLoadDispatch({ type: 'objectNameCB', payload: {objectNameCB: codebook} });
-      funnelLoadDispatch({ type: 'objectNameRF', payload: {objectNameRF: rawDataset} });
-
-    }
-  })
 
   const { data, loading, error } = useQuery(gql`
   query MinioUploads($bucketName: ID!) {
@@ -295,17 +318,17 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           <Message>{validateRawfileCodebookPairMutationData.validateRawfileCodebookPair.message}</Message>
         }
         <Divider horizontal />
-        <Button disabled={!(codebook && rawDataset && codebookPair && rawDatasetPair)} fluid content='Submit'  onClick={() => { funnelLoadMutation({ variables: funnelLoadState })}}/>
+        <Button disabled={funnelConnectedDataState && !(funnelConnectedDataState.codebook && funnelConnectedDataState.rawDataset && funnelConnectedDataState.codebookPair && funnelConnectedDataState.rawDataPair)} fluid content='Submit'  onClick={() => { funnelLoadMutation({ variables: funnelLoadState })}}/>
         {
-          <Message>
-            codebook: {codebook}
-            <br/>
-            rawdata: {rawDataset}
-            <br/>
-            codebook pair: {codebookPair}
-            <br/>
-            rawdata pair: {rawDatasetPair}
-          </Message>
+            <Message>
+              codebook: {funnelConnectedDataState && funnelConnectedDataState.codebook ? funnelConnectedDataState.codebook : 'No file'}
+              <br/>
+              rawdata: {funnelConnectedDataState && funnelConnectedDataState.rawDataset ? funnelConnectedDataState.rawDataset : 'No file'}
+              <br/>
+              codebook pair: {funnelConnectedDataState && funnelConnectedDataState.codebookPair ? funnelConnectedDataState.codebookPair : 'No file'}
+              <br/>
+              rawdata pair: {funnelConnectedDataState && funnelConnectedDataState.rawDataPair ? funnelConnectedDataState.rawDataPair : 'No file'}
+            </Message>
         }
       </Segment>
     </>
