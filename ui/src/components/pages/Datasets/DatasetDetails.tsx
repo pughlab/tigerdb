@@ -100,6 +100,11 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
             ) {
               isValid
               message
+              mismatches {
+                lineNumber
+                fileA
+                fileB
+              }
             }
           }`, 
           {

@@ -220,7 +220,7 @@ export const resolvers = {
           })
 
           if (Object.keys(mismatches).length != 0) {
-            message = `Rawdata file does not match the codebook`
+            message = `Rawdata file does not match the codebook: ${JSON.stringify(mismatches)}`
             isValid = false
           }
 
