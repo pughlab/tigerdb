@@ -111,7 +111,7 @@ export const resolvers = {
 
         const RawDatasetModel = ogm.model("RawDataset")
 
-        const {bucketName, rawDataset, datafileMinioUpload, result:csv} = await validateFile(ogm, rawDatasetID, objectName, 1, true)
+        const {bucketName, rawDataset, datafileMinioUpload, result:csv} = await validateFile(ogm, rawDatasetID, objectName, 0, true)
         let keys = Object.keys(csv[0])
 
         const {isValid, message} = checkNoPrefix(keys)
