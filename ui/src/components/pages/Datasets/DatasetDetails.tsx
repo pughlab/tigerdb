@@ -251,6 +251,8 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
   
         funnelLoadDispatch({ type: 'objectNameCB', payload: {objectNameCB: codebook} });
         funnelLoadDispatch({ type: 'objectNameRF', payload: {objectNameRF: rawDataset} });
+
+        validateRawfileCodebookPairDispatch({ type: 'objectNameCB', payload: {objectNameCB: codebook} });validateRawfileCodebookPairDispatch({ type: 'objectNameRF', payload: {objectNameRF: rawDataset} });
   
       }
     })
@@ -291,7 +293,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           fluid search selection
           options={dropdownOptions}
           // This will be the minioUpload.objectName from above
-          onChange={(e, { value }) => { validateCodebookDispatch({ type: 'setObjectName', payload: {objectName: value} }); validateRawfileCodebookPairDispatch({ type: 'objectNameCB', payload: {objectNameCB: value} }); }}
+          onChange={(e, { value }) => { validateCodebookDispatch({ type: 'setObjectName', payload: {objectName: value} }) }}
         />
         <Button fluid content='Validate Codebook' onClick={() => { validateCodebookMutation({ variables: validateCodebookState })}} />
         {/* TODO: add checker to disable buttons in order of validation (e.g. raw data validation only after codebook), can be checked from RawDataset  */}
@@ -304,7 +306,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           placeholder='Select raw data file'
           fluid search selection
           options={dropdownOptions}
-          onChange={(e, { value }) => { validateRawdatafileDispatch({ type: 'setObjectName', payload: {objectName: value} }); validateRawfileCodebookPairDispatch({ type: 'objectNameRF', payload: {objectNameRF: value} }) }}
+          onChange={(e, { value }) => { validateRawdatafileDispatch({ type: 'setObjectName', payload: {objectName: value} }) }}
         />
         <Button fluid content='Validate Raw Data' onClick={() => { validateRawdatafileMutation({ variables: validateRawdatafileState })}} />
         {
@@ -312,7 +314,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           <Message>{validateRawdatafileMutationData.validateRawdatafile.message}</Message>
         }
         <Divider horizontal content='Validate rawdata codebook pair' />
-        <Button fluid content='Validate rawdata codebook pair' onClick={() => { validateRawfileCodebookPairMutation({ variables: validateRawfileCodebookPairState })}} />
+        <Button disabled={funnelConnectedDataState && !(funnelConnectedDataState.codebook && funnelConnectedDataState.rawDataset)} fluid content='Validate rawdata codebook pair' onClick={() => { validateRawfileCodebookPairMutation({ variables: validateRawfileCodebookPairState })}} />
         {
           (validateRawfileCodebookPairMutationData) && (validateRawfileCodebookPairMutationData.validateRawfileCodebookPair) && (validateRawfileCodebookPairMutationData.validateRawfileCodebookPair.message) &&
           <Message>{validateRawfileCodebookPairMutationData.validateRawfileCodebookPair.message}</Message>
