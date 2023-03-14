@@ -122,6 +122,9 @@ services:
     expose:
       - 8003
       - 9093
+    # ports:
+    #   # - 8003:8003
+    #   - 9093:9093
     volumes:
       - ./api/src/funnel:/opt/funnel/funnel
       - .:/opt/funnel/service
