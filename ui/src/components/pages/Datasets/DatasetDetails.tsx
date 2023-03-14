@@ -149,7 +149,8 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           }`)
 
     function setCommand(objectNameRF, objectNameCB) {
-      const const_program = `python api/src/funnel/programmaticLoad.py`
+      // const const_program = `python api/src/funnel/programmaticLoad.py`
+      const const_program = `TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/programmaticLoad.ts`
       const const_mode = `neo4j`
       // const const_mode = `programmatic`
       const const_permission_keys = `%permission_allowedSites,%permission_allowedStudies`
