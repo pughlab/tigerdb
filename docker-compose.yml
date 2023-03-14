@@ -4,8 +4,10 @@ services:
   neo4j:
     image: neo4j:4.4.7
     ports:
-      - 7474:7474
+      # - 7474:7474
       - 7687:7687
+    expose:
+      - 7474
     environment:
       - NEO4J_AUTH=neo4j/letmein
       - NEO4J_dbms_security_procedures_unrestricted=apoc.*
@@ -27,9 +29,9 @@ services:
     command: >
       sh -c "node api/src/proxy_pass minio 9000 &
              npm run start:api"
-    ports:
-      - 4001:4001
-      - 9231:9231
+    expose:
+      - 4001
+      - 9231
     environment:
       # - NEO4J_URI=bolt://neo4j:7687
       - NEO4J_URI=${NEO4J_URI}
@@ -58,8 +60,8 @@ services:
     working_dir: /usr/src/service
     command: >
       sh -c "npm run start:ui"
-    ports:
-      - 3001:3001
+    expose:
+      - 3001
     environment:
       - CI=true
       - REACT_APP_GRAPHQL_URI=${GRAPHQL_SERVER_PATH}
@@ -76,9 +78,9 @@ services:
 
   minio:
     image: minio/minio
-    ports:
-      - ${MINIO_API_PORT}:${MINIO_API_PORT}
-      - ${MINIO_CONSOLE_PORT}:${MINIO_CONSOLE_PORT}
+    expose:
+      - ${MINIO_API_PORT}
+      - ${MINIO_CONSOLE_PORT}
     volumes:
       - pibu_minio_volume:/data
       - /etc/localtime:/etc/localtime:ro
@@ -94,9 +96,9 @@ services:
     container_name: keycloak
     expose: 
       - 8443
-    ports:
-      - "8085:8443"
-      - "8080:8080"
+    expose:
+      - 8085
+      - 8080
     volumes:
       - ./keycloak/realm-export.json:/opt/jboss/keycloak/realm-export.json
       - pibu_keycloak_volume:/opt/jboss/keycloak/standalone/data
@@ -117,9 +119,9 @@ services:
     privileged: true
     # command: funnel server run --Server.HTTPPort 8003 --Server.RPCPort 9093 --config /opt/funnel/funnel/funnel_config.yaml
     entrypoint: funnel server run --Server.HTTPPort 8003 --Server.RPCPort 9093 --config /opt/funnel/funnel/funnel_config.yaml
-    ports:
-      - "8003:8003"
-      - "9093:9093"
+    expose:
+      - 8003
+      - 9093
     volumes:
       - ./api/src/funnel:/opt/funnel/funnel
       - .:/opt/funnel/service
@@ -141,9 +143,10 @@ services:
       - keycloak
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./nginx/certs:/etc/nginx/certs
     entrypoint: >
-      sh -c "while true; do sleep 1000; done"
+      nginx -g "daemon off;"
       
 
 volumes:
