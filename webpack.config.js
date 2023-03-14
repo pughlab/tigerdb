@@ -20,7 +20,7 @@ module.exports = {
   output: {
     path: path.join(__dirname, outputDir),
     filename: 'pibu.bundle.js?t=' + new Date().getTime(),
-    publicPath: '/',
+    publicPath: '',
   },
   module: {
     rules: [
@@ -78,6 +78,7 @@ module.exports = {
   devServer: {
     port: 3001,
     host: '0.0.0.0',
+    public: process.env.WEBPACK_PUBLIC_IP,
     hot: true,
     https: true,
     cert: "./nginx/certs/bundle.crt",
