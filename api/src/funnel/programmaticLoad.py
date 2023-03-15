@@ -37,6 +37,7 @@ if __name__ == "__main__":
 
     minio_host = config['MINIO_IP']
     minio_port = config['MINIO_API_PORT']
+    minio_external_port = config['MINIO_EXTERNAL_PORT']
     minio_access_key = config['MINIO_ROOT_USER']
     minio_secret_key = config['MINIO_ROOT_PASSWORD']
 
@@ -145,7 +146,7 @@ if __name__ == "__main__":
       print(f'{time_counter} in {toc - tic:0.4f} seconds')
       tic = time.perf_counter()
 
-    client = Minio(f'{minio_host}:{minio_port}',
+    client = Minio(f'{minio_host}:{minio_external_port}',
                   secure=False,
                   access_key=minio_access_key,
                   secret_key=minio_secret_key)
