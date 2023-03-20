@@ -1,13 +1,13 @@
-if (process.argv.length !== 8) {
-  console.error(`Expected 6 arguments (got ${process.argv.length - 2})!
+if (process.argv.length !== 9) {
+  console.error(`Expected 7 arguments (got ${process.argv.length - 2})!
   
   e.g. TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/createCuratedDatasetFromRawDataset.ts {rawDatasetID} {rawObjectName} {codebookObjectName} {neo4j|programmatic} 111222,111222,111333 111aaa,111bbb,333aaa
 
   e.g. TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/createCuratedDatasetFromRawDataset.ts 7ec33aac-9209-4948-8804-8cc115bc8b20 rawdata_sample_3.csv.gz codebook_sample_3.csv.gz neo4j 111222,111222,111333 111aaa,111bbb,333aaa
 
-  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticLoad.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticLoad.ts 7ec33aac-9209-4948-8804-8cc115bc8b20 "rawdata_sample_4.csv.gz" "codebook_sample_3.csv.gz" neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk
+  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticLoad.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticLoad.ts 7ec33aac-9209-4948-8804-8cc115bc8b20 "rawdata_sample_4.csv.gz" "codebook_sample_3.csv.gz" neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk ydelall|ndelall
 
-  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticLoad.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticLoad.ts 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 0027aa5d-9a0f-40f1-b7e6-7e070953acc7 802d6267-1b27-42c6-ac8f-cad7d3ab4d70 neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk
+  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticLoad.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticLoad.ts 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 0027aa5d-9a0f-40f1-b7e6-7e070953acc7 802d6267-1b27-42c6-ac8f-cad7d3ab4d70 neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk ydelall|ndelall
   
   `);
   process.exit(1);
@@ -45,6 +45,8 @@ import { v4 as uuidv4 } from 'uuid';
   // const properties = ''
   const values = process.argv[7]
   // const values = ''
+
+  const isdelall = process.argv[8]
 
   let permissions_map = {}
   const properties_split = properties.split(',')
@@ -93,23 +95,25 @@ import { v4 as uuidv4 } from 'uuid';
 
   const session = driver.session()
 
-  await session.run(
-    `CALL apoc.periodic.iterate('MATCH (n:DataVariable) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
-    YIELD batches, total, timeTaken, operations, updateStatistics
-    RETURN batches, total, timeTaken, operations, updateStatistics;`
-  )
+  if (isdelall === 'ydelall') {
+    await session.run(
+      `CALL apoc.periodic.iterate('MATCH (n:DataVariable) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
+      YIELD batches, total, timeTaken, operations, updateStatistics
+      RETURN batches, total, timeTaken, operations, updateStatistics;`
+    )
 
-  await session.run(
-    `CALL apoc.periodic.iterate('MATCH (n:DataVariableFieldDefinition) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
-    YIELD batches, total, timeTaken, operations, updateStatistics
-    RETURN batches, total, timeTaken, operations, updateStatistics;`
-  )
+    await session.run(
+      `CALL apoc.periodic.iterate('MATCH (n:DataVariableFieldDefinition) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
+      YIELD batches, total, timeTaken, operations, updateStatistics
+      RETURN batches, total, timeTaken, operations, updateStatistics;`
+    )
 
-  await session.run(
-    `CALL apoc.periodic.iterate('MATCH (n:CuratedDataset) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
-    YIELD batches, total, timeTaken, operations, updateStatistics
-    RETURN batches, total, timeTaken, operations, updateStatistics;`
-  )
+    await session.run(
+      `CALL apoc.periodic.iterate('MATCH (n:CuratedDataset) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
+      YIELD batches, total, timeTaken, operations, updateStatistics
+      RETURN batches, total, timeTaken, operations, updateStatistics;`
+    )
+  }
 
   await ogm.init()
   console.timeEnd('1')

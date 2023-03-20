@@ -155,7 +155,8 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
       // const const_mode = `programmatic`
       const const_permission_keys = `%permission_allowedSites,%permission_allowedStudies`
       const const_permission_values = `admin,admin`
-      const command = `${const_program} ${rawDatasetID} ${objectNameRF} ${objectNameCB} ${const_mode} ${const_permission_keys} ${const_permission_values}`
+      const const_isdelall = `ndelall` // ydelall to delete all before load
+      const command = `${const_program} ${rawDatasetID} ${objectNameRF} ${objectNameCB} ${const_mode} ${const_permission_keys} ${const_permission_values} ${const_isdelall}`
       return command
     }
 

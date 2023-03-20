@@ -12,18 +12,18 @@ import uuid
 if __name__ == "__main__":
 
 
-    if len(sys.argv) != 7:
-      print(f'''Expected 6 arguments (got {len(sys.argv)})!)
+    if len(sys.argv) != 8:
+      print(f'''Expected 7 arguments (got {len(sys.argv)})!)
       
       e.g. python -m debugpy --wait-for-client --listen 5678 api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "Data-Table 1.csv.gz" "Code Book-Table 1.csv.gz" neo4j 111222,111222,111333 111aaa,111bbb,333aaa
       
       e.g. python api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "Data-Table 1.csv.gz" "Code Book-Table 1.csv.gz" neo4j 111222,111222,111333 111aaa,111bbb,333aaa
 
-      e.g. npx nodemon --watch api/src/funnel/programmaticLoad.py --exec "python -m debugpy --wait-for-client --listen 5678" api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "rawdata_sample_4.csv.gz" "codebook_sample_3.csv.gz" neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk
+      e.g. npx nodemon --watch api/src/funnel/programmaticLoad.py --exec "python -m debugpy --wait-for-client --listen 5678" api/src/funnel/programmaticLoad.py 7ec33aac-9209-4948-8804-8cc115bc8b20 "rawdata_sample_4.csv.gz" "codebook_sample_3.csv.gz" neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk ydelall|ndelall
 
-      e.g. python api/src/funnel/programmaticLoad.py 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 "rawdata_sample_4.csv.gz" "codebook_sample_4.csv.gz" neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk
+      e.g. python api/src/funnel/programmaticLoad.py 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 "rawdata_sample_4.csv.gz" "codebook_sample_4.csv.gz" neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk ydelall|ndelall
 
-      e.g. npx nodemon --watch api/src/funnel/programmaticLoad.py --exec "python -m debugpy --wait-for-client --listen 5678" api/src/funnel/programmaticLoad.py 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 0027aa5d-9a0f-40f1-b7e6-7e070953acc7 802d6267-1b27-42c6-ac8f-cad7d3ab4d70 neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk
+      e.g. npx nodemon --watch api/src/funnel/programmaticLoad.py --exec "python -m debugpy --wait-for-client --listen 5678" api/src/funnel/programmaticLoad.py 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 0027aa5d-9a0f-40f1-b7e6-7e070953acc7 802d6267-1b27-42c6-ac8f-cad7d3ab4d70 neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk ydelall|ndelall
 
       ''')
       exit(1)
@@ -63,6 +63,8 @@ if __name__ == "__main__":
     # properties = '%allowedSites,%allowedSites,%allowedStudies'
     values = sys.argv[6]
     # values = 'Vancouver,Toronto,Milk'
+
+    isdelall = sys.argv[7]
 
     properties_split = properties.split(',')
     values_split = values.split(',')
@@ -107,32 +109,35 @@ if __name__ == "__main__":
     tic = time.perf_counter()
 
     with driver.session() as session:
-      result = session.run('''CALL apoc.periodic.iterate('MATCH (n:DataVariable) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
-      YIELD batches, total, timeTaken, operations, updateStatistics
-      RETURN batches, total, timeTaken, operations, updateStatistics;''')
-      # print(result.single()[0])
-      time_counter += 1
-      toc = time.perf_counter()
-      print(f'{time_counter} in {toc - tic:0.4f} seconds')
-      tic = time.perf_counter()
 
-      result = session.run('''CALL apoc.periodic.iterate('MATCH (n:DataVariableFieldDefinition) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
-      YIELD batches, total, timeTaken, operations, updateStatistics
-      RETURN batches, total, timeTaken, operations, updateStatistics;''')
-      # print(result.single()[0])
-      time_counter += 1
-      toc = time.perf_counter()
-      print(f'{time_counter} in {toc - tic:0.4f} seconds')
-      tic = time.perf_counter()
+      if isdelall == 'ydelall':
 
-      result = session.run('''CALL apoc.periodic.iterate('MATCH (n:CuratedDataset) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
-      YIELD batches, total, timeTaken, operations, updateStatistics
-      RETURN batches, total, timeTaken, operations, updateStatistics;''')
-      # print(result.single()[0])
-      time_counter += 1
-      toc = time.perf_counter()
-      print(f'{time_counter} in {toc - tic:0.4f} seconds')
-      tic = time.perf_counter()
+        result = session.run('''CALL apoc.periodic.iterate('MATCH (n:DataVariable) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
+        YIELD batches, total, timeTaken, operations, updateStatistics
+        RETURN batches, total, timeTaken, operations, updateStatistics;''')
+        # print(result.single()[0])
+        time_counter += 1
+        toc = time.perf_counter()
+        print(f'{time_counter} in {toc - tic:0.4f} seconds')
+        tic = time.perf_counter()
+
+        result = session.run('''CALL apoc.periodic.iterate('MATCH (n:DataVariableFieldDefinition) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
+        YIELD batches, total, timeTaken, operations, updateStatistics
+        RETURN batches, total, timeTaken, operations, updateStatistics;''')
+        # print(result.single()[0])
+        time_counter += 1
+        toc = time.perf_counter()
+        print(f'{time_counter} in {toc - tic:0.4f} seconds')
+        tic = time.perf_counter()
+
+        result = session.run('''CALL apoc.periodic.iterate('MATCH (n:CuratedDataset) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
+        YIELD batches, total, timeTaken, operations, updateStatistics
+        RETURN batches, total, timeTaken, operations, updateStatistics;''')
+        # print(result.single()[0])
+        time_counter += 1
+        toc = time.perf_counter()
+        print(f'{time_counter} in {toc - tic:0.4f} seconds')
+        tic = time.perf_counter()
 
       result = session.run(f'''
                             MATCH (m:RawDataset {{rawDatasetID: "{rawDatasetID}"}})
