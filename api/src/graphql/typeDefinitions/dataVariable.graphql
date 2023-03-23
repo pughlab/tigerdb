@@ -12,6 +12,8 @@ type DataVariable {
     # currentDefinition: DataVariableDefinition! @relationship(type: "HAS_DEFINITION", direction: OUT)
     # previousDefinitions: [DataVariableDefinition!]! @relationship(type: "HAS_DEFINITION", direction: OUT)
 
+    curatedDataset: [CuratedDataset!]! @relationship(type: "HAS_DATA_VARIABLE", direction: IN)
+
     fields: [DataVariableField!]! @relationship(type: "HAS_FIELD", direction: OUT)
     # fields: [String]
 }
@@ -36,6 +38,7 @@ type DataVariableFieldDefinition {
     description: String!
     validationSchema: JSON
 
+    hasCuratedDataset: CuratedDataset! @relationship(type: "HAS_FIELD_DEFINITION", direction: IN)
     hasFieldValues: [DataVariableValue!]! @relationship(type: "HAS_FIELD_VALUE", direction: OUT)
 }
 

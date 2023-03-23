@@ -1,13 +1,7 @@
 if (process.argv.length !== 9) {
   console.error(`Expected 7 arguments (got ${process.argv.length - 2})!
-  
-  e.g. TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/createCuratedDatasetFromRawDataset.ts {rawDatasetID} {rawObjectName} {codebookObjectName} {neo4j|programmatic} 111222,111222,111333 111aaa,111bbb,333aaa
 
-  e.g. TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/createCuratedDatasetFromRawDataset.ts 7ec33aac-9209-4948-8804-8cc115bc8b20 rawdata_sample_3.csv.gz codebook_sample_3.csv.gz neo4j 111222,111222,111333 111aaa,111bbb,333aaa
-
-  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticLoad.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticLoad.ts 7ec33aac-9209-4948-8804-8cc115bc8b20 "rawdata_sample_4.csv.gz" "codebook_sample_3.csv.gz" neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk ydelall|ndelall
-
-  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticLoad.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticLoad.ts 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 0027aa5d-9a0f-40f1-b7e6-7e070953acc7 802d6267-1b27-42c6-ac8f-cad7d3ab4d70 neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk ydelall|ndelall
+  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticExport.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticExport.ts 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 0027aa5d-9a0f-40f1-b7e6-7e070953acc7 802d6267-1b27-42c6-ac8f-cad7d3ab4d70 neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk ydelall|ndelall
   
   `);
   process.exit(1);
@@ -22,284 +16,89 @@ import zlib from 'zlib'
 import papa from 'papaparse'
 import util from 'util'
 import { v4 as uuidv4 } from 'uuid';
+import * as R from 'remeda'
 
 (async function () {
 
-  const curatedDatasetID = uuidv4()
-
-  const rawDatasetID = process.argv[2]
-
-  const rawObjectName = process.argv[3]
-  // const rawObjectName = 'rawdata_sample_4.csv.gz'
-  // const rawObjectName = 'Data-Table 1.csv.gz'
-  // const rawObjectName = 'test3m.bedgraph.gz'
-
-  const codebookObjectName = process.argv[4]
-  // const codebookObjectName = "codebook_sample_3.csv.gz"
-
-  // const mode = 'programmatic'
-  const mode = 'neo4j'
-  // const mode = process.argv[5]
-
-  const properties = process.argv[6]
-  // const properties = ''
-  const values = process.argv[7]
-  // const values = ''
-
-  const isdelall = process.argv[8]
-
-  let permissions_map = {}
-  const properties_split = properties.split(',')
-  const values_split = values.split(',')
-
-  if (properties_split.length !== values_split.length) {
-    console.error(`Arguments 5 and 6 must be comma separated strings that are the same length.`);
-    process.exit(1);
-  }
-
-  properties_split.forEach((prop, index) => {
-    const val = values_split[index]
-
-    if (prop == '') {
-      return
-    }
-
-    if (!(prop in permissions_map)) {
-      permissions_map[prop] = []
-    }
-    permissions_map[prop].push(val)
-
-  })
-  
-  const permissions_codebook = {'%permission_codebook': Object.keys(permissions_map)}
-
-  // const limit = 0
-  // const limit = 5
-  // const limit = 1200
-  // const limit = 1000
-  // const limit = 10000
-  // const limit = 100000
-
-  // const rawDatasetID = "7ec33aac-9209-4948-8804-8cc115bc8b20"
-  // const rawObjectName = "rawdata_sample_3.csv.gz"
-
-  console.log(``)
-  console.log(`data_file = ${rawObjectName}`)
-  console.log(`codebook_file = ${codebookObjectName}`)
-  console.log(`mode = ${mode}`)
-  // console.log(`limit = ${limit}`)
-  console.log(``)
-
   const ogm = new OGM({typeDefs, driver, resolvers})
+  await ogm.init()
+  
   console.time('1')
 
   const session = driver.session()
 
-  if (isdelall === 'ydelall') {
-    await session.run(
-      `CALL apoc.periodic.iterate('MATCH (n:DataVariable) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
-      YIELD batches, total, timeTaken, operations, updateStatistics
-      RETURN batches, total, timeTaken, operations, updateStatistics;`
-    )
-
-    await session.run(
-      `CALL apoc.periodic.iterate('MATCH (n:DataVariableFieldDefinition) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
-      YIELD batches, total, timeTaken, operations, updateStatistics
-      RETURN batches, total, timeTaken, operations, updateStatistics;`
-    )
-
-    await session.run(
-      `CALL apoc.periodic.iterate('MATCH (n:CuratedDataset) RETURN n', 'detach delete n;', {batchSize:10000, iterateList:true, parallel:true})
-      YIELD batches, total, timeTaken, operations, updateStatistics
-      RETURN batches, total, timeTaken, operations, updateStatistics;`
-    )
-  }
-
-  await ogm.init()
-  console.timeEnd('1')
-  console.time('2')
-
   const CuratedDatasetModel = ogm.model("CuratedDataset")
-  const bucketName = `raw-dataset-${rawDatasetID}`
+  const DataVariableFieldDefinitionModel = ogm.model("DataVariableFieldDefinition")
+  const DataVariableModel = ogm.model("DataVariable")
 
-  // const curatedDatasetInput = {name: 'test', description: 'testgen',
-  //                              generatedByRawDataset: {connect: {where: {node: {rawDatasetID}}}},
-  //                              ...permissions_map
-  //                             }
-  // const { curatedDatasets: [curatedDataset] } = await CuratedDatasetModel.create({ input: [curatedDatasetInput],  })
-  // const { curatedDatasetID } = curatedDataset
+  const dvfdIDs = ['fa95d024-132b-4f16-b3ac-2011c7264cf9', 'b406a8f2-74f4-4df5-a83b-01b079267abf']
+  const r = await DataVariableFieldDefinitionModel.find({where: {dataVariableFieldDefinitionID_IN: dvfdIDs}})
 
-  await session.run(`
-  MATCH (m:RawDataset {rawDatasetID: "${rawDatasetID}"})
-  MERGE (m)-[:GENERATED_CURATED_DATASET]->(n:CuratedDataset {curatedDatasetID: "${curatedDatasetID}"})
-  SET n += $permissions_map
-  SET n += $permissions_codebook
-  `, {permissions_map: permissions_map, permissions_codebook: permissions_codebook})
+  let dvfdToCd = {}
+  let cdToDvfd = {}
+  let dvfdToXref = {}
+  let xrefToDvfd = {}
 
-  console.timeEnd('2')
-  console.time('3')
-  // const session = driver.session()
-  console.timeEnd('3')
-  console.time('4')
+  await Promise.all(dvfdIDs.map(async (dvfdID) => {
+    const cd = await CuratedDatasetModel.find({where: {fieldDefinitions_SOME: {dataVariableFieldDefinitionID: dvfdID}}})
+    const dvfd = await DataVariableFieldDefinitionModel.find({where: {dataVariableFieldDefinitionID: dvfdID}})
 
-  const bucketObjects = (await listBucketObjects(minioClient, bucketName)).map(({ name }) => name)
-  // console.log(bucketObjects)
-  // const presignedURLRaw = await makePresignedURL(minioClient, bucketName, bucketObjects.slice(-1)[0])
-  const presignedURLRaw = await makePresignedURL(minioClient, bucketName, rawObjectName)
-  const presignedURLCodebook = await makePresignedURL(minioClient, bucketName, codebookObjectName)
-  console.time(presignedURLCodebook, presignedURLRaw)
+    const cdID = cd[0].curatedDatasetID
+    const xref = dvfd[0].xref
 
-  // Load codebook
-  const createDataVariables = await session.run(
-    `
-    CALL apoc.load.csv($presignedCodebookURL, {sep: ",", compression: "GZIP", header: false}) YIELD lineNo, list, map
-    MATCH (cd:CuratedDataset {curatedDatasetID: $curatedDatasetID})
-    MERGE (cd)-[:HAS_FIELD_DEFINITION]->(dvfd: DataVariableFieldDefinition { xref: list[0], description: list[1], validationSchema: list[2], rank: lineNo, dataVariableFieldDefinitionID: apoc.create.uuid()})
-    SET dvfd += $permissions_map
-    ;`,
-    {curatedDatasetID: curatedDatasetID, presignedCodebookURL: presignedURLCodebook, 'permissions_map': permissions_map}
-  )
+    dvfdToCd[dvfdID] = cdID
+    if (!cdToDvfd.hasOwnProperty(cdID)) {
+      cdToDvfd[cdID] = []
+    }
+    cdToDvfd[cdID].push(dvfdID)
 
-  console.timeEnd('4')
-  console.time('5')
+    dvfdToXref[dvfdID] = xref
+    xrefToDvfd[xref] = dvfdID
 
-  console.log(`${mode} load dv`)
-  if (mode === 'programmatic') {
+  }))
 
-    // get last uploaded item in bucket (slice[-1][0]) and return stream 
-    const stream = await minioClient.getObject(bucketName, rawObjectName)
-    // gunzip stream
-    const compressedFileStream = stream.pipe(zlib.createGunzip())
+  let papaFields = R.keys(xrefToDvfd)
+  papaFields.unshift('StudyCenter')
+  papaFields.unshift('CHILDid')
+  let ret = []
 
-    async function dataVariableTransformation() {
-      let result = { meta: {}, data: [] };
-      // let result = []
-      await new Promise((resolve, reject) => {
-        papa.parse(compressedFileStream, {
-          worker: true,
-          header: true,
-          delimiter: ",",
-          // preview: limit,
-          step: (results) => {
-            result.data.push(results.data)
-          },
-          complete: () => {
-            resolve(result);
-          },
-          error: (err) => {
-            reject(err);
-          },
-        })
-      })
-      const chunkSize = 1000;
-      console.log(result.data.length)
-      // result.data = result.data.slice(0, limit);
-      console.log(result.data.length)
-      
-      for (let i = 0; i < result.data.length; i += chunkSize) {
-        const chunk = result.data.slice(i, i + chunkSize);
-        console.log("NOW PROCESSING CHUNK: "+i)
+  await Promise.all(R.keys(cdToDvfd).map(async (cdID) => {
+    let rows = []
 
+    // // OGM doesn't have properties that aren't in the graphql model
+    // const dVs2 = await DataVariableModel.find({where: {curatedDataset: {curatedDatasetID: cdID}}})
 
+    const dVs = await session.run(`
+    MATCH (cd:CuratedDataset {curatedDatasetID: "${cdID}"})-[:HAS_DATA_VARIABLE]->(dv:DataVariable)
+    RETURN dv
+    `)
 
-        // // neo4j iterate
-        // const vvv = await session.run(`
-        // CALL apoc.periodic.iterate('
-        // UNWIND $argsToUpdate AS args
-        // RETURN args
-        // '
-        // ,
-        // '
-        // MATCH (cd: CuratedDataset {curatedDatasetID: "${curatedDatasetID}"})
-        // CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {curatedDatasetID: "${curatedDatasetID}", dataVariableID: apoc.create.uuid()})
-        // SET dv += args
-        // SET dv += $permissions_map
-        // ',
-        // {batchSize:10000, iterateList:true, parallel:true, params:{argsToUpdate: $argsToUpdate, permissions_map: $permissions_map}}
-        // )
-        // YIELD batches, total, timeTaken, operations, updateStatistics
-        // RETURN batches, total, timeTaken, operations, updateStatistics;`, {'argsToUpdate': chunk, permissions_map: permissions_map})
+    dVs.records.forEach((record) => {
+      const properties = record._fields[0].properties
+      const dvfdIDs = cdToDvfd[cdID]
+      let xrefs = R.map(dvfdIDs, (dvfdID) => { return dvfdToXref[dvfdID] })
+      xrefs.unshift('StudyCenter')
+      xrefs.unshift('CHILDid')
+      const row = R.pick(properties, xrefs)
+      ret.push(row)
+      console.log()
+    })
 
+    cdToDvfd[cdID].map((dvfdID) => {
+      const xref = dvfdToXref[dvfdID]
 
+    })
 
-        // // neo4j unwind
-        // const vvv = await session.run(`
-        //   MATCH (cd: CuratedDataset {curatedDatasetID: "${curatedDatasetID}"})
-        //   UNWIND $argsToUpdate AS args
-        //   CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {curatedDatasetID: "${curatedDatasetID}", dataVariableID: apoc.create.uuid()})
-        //   SET dv += args
-        //   SET dv += $permissions_map
-        //   ;`, {'argsToUpdate': chunk, permissions_map: permissions_map})
+  }))
 
+  const csv = papa.unparse({
+    fields: papaFields,
+    data: ret
+  }, {
+    header: true
+  })
 
+  console.log(csv)
 
-
-        // js promise.all
-        // console.log(chunk)
-        await Promise.all(chunk.map(async (result) => {
-          const chromosome = result[0]
-          const start = result[1]
-          const end = result[2]
-
-          const datavalue = result[3]
-
-          const DataVariableModel = ogm.model("DataVariable");
-
-          const sessionNest = driver.session()
-
-          // console.log(util.inspect(result))
-
-          const vvv = await sessionNest.run(`
-          MATCH (cd: CuratedDataset {curatedDatasetID: "${curatedDatasetID}"})
-          CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {curatedDatasetID: "${curatedDatasetID}", dataVariableID: apoc.create.uuid()})
-          SET dv += $argsToUpdate
-          SET dv += $permissions_map
-          ;
-          `, {argsToUpdate: result, permissions_map: permissions_map})
-
-        }))
-
-
-
-
-        console.log("done neo4j transformation")
-    }}
-    await dataVariableTransformation()
-  } else if (mode === 'neo4j') {
-
-
-    const createDataValues = await session.run(
-        `
-        CALL apoc.periodic.iterate('
-        CALL apoc.load.csv($presignedDataURL, {sep: ",", compression: "GZIP", header: true}) YIELD map
-    RETURN map
-    '
-    ,
-    '
-    MATCH (cd: CuratedDataset {curatedDatasetID: $curatedDatasetID})
-    CREATE (cd)-[:HAS_DATA_VARIABLE]->(dv: DataVariable {curatedDatasetID: $curatedDatasetID, dataVariableID: apoc.create.uuid()})
-    SET dv += map
-    SET dv += $permissions_map
-    ;',
-    {batchSize:10000, iterateList:true, parallel:true, params:{curatedDatasetID: $curatedDatasetID, presignedDataURL: $presignedDataURL, permissions_map: $permissions_map}}
-    )
-    YIELD batches, total, timeTaken, operations, updateStatistics
-    RETURN batches, total, timeTaken, operations, updateStatistics;`,
-        {curatedDatasetID: curatedDatasetID, presignedDataURL: presignedURLRaw, permissions_map: permissions_map}
-      )
-    
-
-
-
-
-
-  } else {
-    console.log(`invalid mode: ${mode}`)
-  }
-
-
-  console.timeEnd('5')
-  console.time('6')
   process.exit();
-  return curatedDataset
 })()
