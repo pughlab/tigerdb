@@ -131,7 +131,7 @@ import { v4 as uuidv4 } from 'uuid';
 
   await session.run(`
   MATCH (m:RawDataset {rawDatasetID: "${rawDatasetID}"})
-  MERGE (m)-[:GENERATED_CURATED_DATASET]->(n:CuratedDataset {curatedDatasetID: "${curatedDatasetID}"})
+  MERGE (m)-[:GENERATED_CURATED_DATASET]->(n:CuratedDataset {curatedDatasetID: "${curatedDatasetID}", name: m.name, description: m.description})
   SET n += $permissions_map
   SET n += $permissions_codebook
   `, {permissions_map: permissions_map, permissions_codebook: permissions_codebook})
