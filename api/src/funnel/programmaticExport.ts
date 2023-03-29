@@ -58,8 +58,9 @@ import * as R from 'remeda'
   }))
 
   let papaFields = R.keys(xrefToDvfd)
-  papaFields.unshift('StudyCenter')
-  papaFields.unshift('CHILDid')
+  // papaFields.unshift('StudyCenter')
+  // papaFields.unshift('CHILDid')
+
   let ret = []
 
   await Promise.all(R.keys(cdToDvfd).map(async (cdID) => {
@@ -77,8 +78,10 @@ import * as R from 'remeda'
       const properties = record._fields[0].properties
       const dvfdIDs = cdToDvfd[cdID]
       let xrefs = R.map(dvfdIDs, (dvfdID) => { return dvfdToXref[dvfdID] })
-      xrefs.unshift('StudyCenter')
-      xrefs.unshift('CHILDid')
+
+      // xrefs.unshift('StudyCenter')
+      // xrefs.unshift('CHILDid')
+
       const row = R.pick(properties, xrefs)
       ret.push(row)
       console.log()
@@ -99,6 +102,23 @@ import * as R from 'remeda'
   })
 
   console.log(csv)
+
+  const gzip = zlib.gzipSync(csv)
+
+  const date = new Date()
+  const formattedDate = date.toISOString().replace(/T/, '-').replace(/\..+/, '').replace(/:/g, '-')
+  const outFile = `${formattedDate}.csv.gz`
+  const exportBucket = 'exports'
+
+  try {
+    const exists = await minioClient.bucketExists(exportBucket)
+    if (!exists) {
+      await minioClient.makeBucket(exportBucket)
+    }
+    await minioClient.putObject(exportBucket, outFile, gzip)
+  } catch (error) {
+    console.log(error)
+  }
 
   process.exit();
 })()
