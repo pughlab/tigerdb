@@ -3,7 +3,7 @@ import { Route, Routes, useParams } from 'react-router-dom'
 import { Message, Divider, Container, Icon, List, Input, Segment, Form, Button, Modal, Grid } from 'semantic-ui-react'
 import SegmentPlaceholder from '../SegmentPlaceholder'
 import { useDropzone, FileWithPath } from 'react-dropzone'
-import { gql, useQuery } from '@apollo/client'
+import { gql, useQuery, useMutation } from '@apollo/client'
 import useMinioUploadMutation from '../../../hooks/useMinioUploadMutation'
 import SegmentPlaceholder from '../SegmentPlaceholder'
 
@@ -47,6 +47,16 @@ export default function MinioBucket({ bucketName }) {
             }
         }`,
         { variables: { bucketName }, fetchPolicy: 'network-only' })
+
+    const [deleteMinioUploads, { data: deleteMinioUploadsData, loading: deleteMinioUploadsLoading, error: deleteMinioUploadsError }] =  useMutation(gql`
+        mutation deleteMinioUploads($objectName: ID) {
+            deleteMinioUploads(where: {objectName: $objectName}) {
+                nodesDeleted
+            }
+        }`,
+        { variables: {objectName: null}, fetchPolicy: 'network-only'}
+    )
+
     if (!data?.minioUploads) {
         return null
     }
@@ -64,7 +74,7 @@ export default function MinioBucket({ bucketName }) {
                                 content={minioUpload.filename}
                                 description={minioUpload.objectName}
                             />
-                            {/* <Button key={'button.' + minioUpload.objectName} >asdf</Button> */}
+                            <Button key={'button.' + minioUpload.objectName} onClick={() => { deleteMinioUploads({variables: {objectName: minioUpload.objectName}}) }}>Delete</Button>
                         </div>
                     ))}
                 </List>
