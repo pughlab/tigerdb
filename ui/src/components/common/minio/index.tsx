@@ -59,6 +59,7 @@ export default function MinioBucket({ bucketName }) {
                 <List celled divided>
                     {minioUploads.map(minioUpload => (
                         <List.Item
+                            key={minioUpload.objectName}
                             content={minioUpload.filename}
                             description={minioUpload.objectName}
                         />

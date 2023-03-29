@@ -50,7 +50,7 @@ export default function DatasetsList({ }) {
               onChange={(e, { value }) => setSearchText(value)}
             />
           </Form>
-          <List selection size='large'>
+          <List selection size='large' key={rawDataset}>
             {!!data?.rawDatasets &&
               data.rawDatasets.map(rawDataset => (
                 <DatasetListItem {...{ rawDataset }} />

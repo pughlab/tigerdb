@@ -69,13 +69,13 @@ export default function Portal () {
     <Routes>
       <Route path="*"  element={<Layout />} >
         <Route index element={<About />} />
-        <Route path='home/*' element={
+        <Route key='home/*' path='home/*' element={
           <>
             <Segment attached='top'>
             <Step.Group fluid>
               {routes.map(
                 ({path, icon}) => (
-                  <Step description={path} icon={icon} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`home/${path}`)} />
+                  <Step key={path} description={path} icon={icon} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`home/${path}`)} />
                 )
               )}
             </Step.Group>
@@ -85,14 +85,14 @@ export default function Portal () {
             </Segment>
           </>
         }>
-          <Route index element={<SegmentPlaceholder text='Select a part of the process' icon='info' />} />
+          <Route key='index' index element={<SegmentPlaceholder text='Select a part of the process' icon='info' />} />
           {routes.map(
             ({path, icon, element}) => (
-              <Route path={`${path}/*`} element={element} />
+              <Route key={path} path={`${path}/*`} element={element} />
             )
           )}
         </Route>
-        <Route path="*" element={<SegmentPlaceholder text='Not found!' icon='meh outline' />} />
+        <Route key="*" path="*" element={<SegmentPlaceholder text='Not found!' icon='meh outline' />} />
       </Route>
 
     </Routes>
