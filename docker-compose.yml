@@ -79,8 +79,9 @@ services:
   minio:
     image: minio/minio
     expose:
-      - ${MINIO_API_PORT}
-      - ${MINIO_CONSOLE_PORT}
+      - ${MINIO_CONSOLE_PORT}:${MINIO_CONSOLE_PORT}
+    ports:
+      - ${MINIO_API_PORT}:${MINIO_API_PORT}
     volumes:
       - pibu_minio_volume:/data
       - /etc/localtime:/etc/localtime:ro
