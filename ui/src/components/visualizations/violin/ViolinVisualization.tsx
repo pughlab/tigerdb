@@ -14,7 +14,7 @@ import {AxisBottom, AxisLeft} from '@visx/axis'
 const seededRandom = getSeededRandom(0.1);
 const randomNormal = getRandomNormal.source(getSeededRandom(0.789))(4, 3);
 const data: Stats[] = genStats(5, randomNormal, () => 10 * seededRandom());
-console.log(data)
+// console.log(data)
 
 // accessors
 const x = (d: Stats) => d.boxPlot.x;
