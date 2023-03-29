@@ -78,7 +78,7 @@ module.exports = {
   devServer: {
     port: 3001,
     host: '0.0.0.0',
-    public: process.env.WEBPACK_PUBLIC_IP,
+    public: process.env.WEBPACK_PUBLIC_IP+'/dev',
     hot: true,
     https: true,
     cert: "./nginx/certs/bundle.crt",
