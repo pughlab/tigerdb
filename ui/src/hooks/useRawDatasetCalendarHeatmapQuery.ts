@@ -38,6 +38,6 @@ export default function useRawDatasetCalendarHeatmapQuery () {
             })
         }
     }, [data])
-    console.log(heatmapData)
+    // console.log(heatmapData)
     return {variables: {startDate, endDate, setEndDate}, heatmapData, loading}
 }
