@@ -20,7 +20,10 @@ const minioConfig = {
   secretKey: MINIO_ROOT_PASSWORD
 }
 
-const minio = require('minio')
+// const minio = require('minio')
+// import { minio } from 'minio'
+import * as minio from 'minio'
+
 
 export const minioClient: Client = new minio.Client(minioConfig)
 minioClient.setRequestOptions({rejectUnauthorized: false})
