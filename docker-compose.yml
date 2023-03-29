@@ -31,7 +31,8 @@ services:
              npm run start:api"
     expose:
       - 4001
-      - 9231
+    ports:
+      - 9231:9231
     environment:
       # - NEO4J_URI=bolt://neo4j:7687
       - NEO4J_URI=${NEO4J_URI}
