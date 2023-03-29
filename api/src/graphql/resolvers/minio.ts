@@ -107,6 +107,21 @@ export const resolvers = {
         throw new ApolloError('mutation.minioUpload error')
       }
     },
+
+    minioDelete: async (obj, { bucketName, objectName }, { driver, ogm }) => {
+      try {
+        await minioClient.removeObject(bucketName, objectName)
+
+        const MinioUpload = ogm.model("MinioUpload")
+
+        const ret = await MinioUpload.delete({where: { bucketName, objectName}})
+
+        return true
+      } catch (error) {
+        console.log(error)
+        throw new ApolloError('mutation.minioDelete error')
+      }
+    },
   
     validateRawdatafile: async (obj, { rawDatasetID, objectName }, { driver, ogm }) => {
       try {

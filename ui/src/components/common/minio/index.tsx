@@ -48,13 +48,11 @@ export default function MinioBucket({ bucketName }) {
         }`,
         { variables: { bucketName }, fetchPolicy: 'network-only' })
 
-    const [deleteMinioUploads, { data: deleteMinioUploadsData, loading: deleteMinioUploadsLoading, error: deleteMinioUploadsError }] =  useMutation(gql`
-        mutation deleteMinioUploads($objectName: ID) {
-            deleteMinioUploads(where: {objectName: $objectName}) {
-                nodesDeleted
-            }
+    const [minioDelete, { data: minioDeleteData, loading: minioDeleteLoading, error: minioDeleteError }] =  useMutation(gql`
+        mutation minioDelete($bucketName: String!, $objectName: String!) {
+            minioDelete(bucketName: $bucketName, objectName: $objectName)
         }`,
-        { variables: {objectName: null}, fetchPolicy: 'network-only'}
+        { variables: {bucketName, objectName: null}, fetchPolicy: 'network-only'}
     )
 
     if (!data?.minioUploads) {
@@ -74,7 +72,7 @@ export default function MinioBucket({ bucketName }) {
                                 content={minioUpload.filename}
                                 description={minioUpload.objectName}
                             />
-                            <Button key={'button.' + minioUpload.objectName} onClick={() => { deleteMinioUploads({variables: {objectName: minioUpload.objectName}}) }}>Delete</Button>
+                            <Button key={'button.' + minioUpload.objectName} onClick={() => { minioDelete({variables: {objectName: minioUpload.objectName}}) }}>Delete</Button>
                         </div>
                     ))}
                 </List>
