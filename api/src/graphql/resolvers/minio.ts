@@ -4,6 +4,7 @@ import  zlib  from 'zlib';
 import { extname } from 'path'
 import papa from 'papaparse'
 import * as R from 'remeda'
+import { v4 as uuidv4 } from 'uuid';
 
 const validateFile = async (ogm, rawDatasetID, objectName, preview, header) => {
 
@@ -75,6 +76,7 @@ export const resolvers = {
     minioUpload: async (obj, { bucketName, file }, { driver }) => {
       try {
         const { filename, mimetype, encoding, createReadStream } = await file
+        const objectName = uuidv4()
         
         let filenameExt = filename
         let stream = createReadStream()
@@ -90,15 +92,15 @@ export const resolvers = {
         // to gzip the file:
         // const compressedFileStream = createReadStream().pipe(zlib.createGzip());
 
+        await minioClient.putObject(bucketName, objectName, stream)
+
         const session = driver.session()
         const createMinioUpload = await session.run(
-          'CREATE (a:MinioUpload {bucketName: $bucketName, objectName: apoc.create.uuid(), filename: $filenameExt, allowedStudies: ["admin"], allowedSites: ["admin"]}) RETURN a',
+          `CREATE (a:MinioUpload {bucketName: $bucketName, objectName: "${objectName}", filename: $filenameExt, allowedStudies: ["admin"], allowedSites: ["admin"]}) RETURN a`,
           { bucketName, filenameExt }
         )
         // console.log(createMinioUpload.records[0].get(0).properties)
         const minioUpload = createMinioUpload.records[0].get(0)
-        const { objectName } = minioUpload.properties
-        await minioClient.putObject(bucketName, objectName, stream)
         return minioUpload.properties
       } catch (error) {
         console.log(error)
