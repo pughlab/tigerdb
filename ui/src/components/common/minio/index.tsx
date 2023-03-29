@@ -7,38 +7,8 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import useMinioUploadMutation from '../../../hooks/useMinioUploadMutation'
 import SegmentPlaceholder from '../SegmentPlaceholder'
 
-
-function MinioUploadModal({ bucketName }) {
-    const { state: uploadState, dispatch: uploadDispatch, mutation: uploadMutation } = useMinioUploadMutation()
-    const onDrop = useCallback((files: FileWithPath[]) => {
-        uploadMutation({
-            variables: {
-                bucketName: bucketName,
-                file: files[0]
-            }
-        })
-    }, [])
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
-    return (
-        <Modal
-            trigger={<Button fluid icon='upload' />}
-        >
-            <Modal.Content>
-                <SegmentPlaceholder text='Click to upload a file' icon='upload'>
-                    <div {...getRootProps()}>
-                        <Button>
-                            Upload a file
-                            <input {...getInputProps()} />
-                        </Button>
-                    </div>
-                </SegmentPlaceholder>
-            </Modal.Content>
-        </Modal>
-    )
-}
-
 export default function MinioBucket({ bucketName }) {
-    const { data, loading, error } = useQuery(gql`
+    const { data, loading, error, refetch } = useQuery(gql`
         query MinioUploads($bucketName: ID!) {
             minioUploads(where: {bucketName: $bucketName}) {
                 bucketName
@@ -48,11 +18,44 @@ export default function MinioBucket({ bucketName }) {
         }`,
         { variables: { bucketName }, fetchPolicy: 'network-only' })
 
+    function MinioUploadModal({ bucketName }) {
+        const { state: uploadState, dispatch: uploadDispatch, mutation: uploadMutation } = useMinioUploadMutation(refetch)
+        const onDrop = useCallback((files: FileWithPath[]) => {
+            uploadMutation({
+                variables: {
+                    bucketName: bucketName,
+                    file: files[0]
+                }
+            })
+        }, [])
+        const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+        return (
+            <Modal
+                trigger={<Button fluid icon='upload' />}
+            >
+                <Modal.Content>
+                    <SegmentPlaceholder text='Click to upload a file' icon='upload'>
+                        <div {...getRootProps()}>
+                            <Button>
+                                Upload a file
+                                <input {...getInputProps()} />
+                            </Button>
+                        </div>
+                    </SegmentPlaceholder>
+                </Modal.Content>
+            </Modal>
+        )
+    }
+
     const [minioDelete, { data: minioDeleteData, loading: minioDeleteLoading, error: minioDeleteError }] =  useMutation(gql`
         mutation minioDelete($bucketName: String!, $objectName: String!) {
             minioDelete(bucketName: $bucketName, objectName: $objectName)
         }`,
-        { variables: {bucketName, objectName: null}, fetchPolicy: 'network-only'}
+        {
+            variables: {bucketName, objectName: null},
+            fetchPolicy: 'network-only',
+            onCompleted: () => { refetch() }
+        }
     )
 
     if (!data?.minioUploads) {

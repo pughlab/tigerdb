@@ -31,7 +31,7 @@ const initialState = {
     error: undefined
 }
 
-export default function useMinioUploadMutation() {
+export default function useMinioUploadMutation(postFn: any) {
     const [state, dispatch] = useReducer(reducer, initialState)
     const [minioUpload, {loading, error, data}] = useMutation(gql`
         mutation minioUpload(
@@ -53,6 +53,7 @@ export default function useMinioUploadMutation() {
                 console.log(data)
                 dispatch({type: 'SET_MINIO_UPLOAD', minioUpload: data.minioUpload})
             }
+            postFn()
         }
     })
     
