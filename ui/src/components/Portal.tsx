@@ -56,7 +56,7 @@ function Layout ({}) {
 
 export default function Portal () {
   const {navigate, location, isActivePathElement} = useRouter()
-  console.log(location)
+  // console.log(location)
   const [meMutationState] = useKeycloakMeMutation()
   const routes = [
     {path: 'studies', icon: 'stethoscope', element: <Studies />},

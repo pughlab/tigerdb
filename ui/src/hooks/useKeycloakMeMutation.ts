@@ -16,7 +16,7 @@ export default function useKeycloakMeMutation(): [any] {
         }
     `, {
         onCompleted: (data) => {
-            console.log(data)
+            // console.log(data)
             if (!!data) {
                 dispatch(setKeycloakMe({keycloakMe: data?.me}))
             }
