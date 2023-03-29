@@ -69,7 +69,7 @@ export default function Portal () {
     <Routes>
       <Route path="*"  element={<Layout />} >
         <Route index element={<About />} />
-        <Route key='home/*' path='home/*' element={
+        <Route key='home' path='home/*' element={
           <>
             <Segment attached='top'>
             <Step.Group fluid>
@@ -92,7 +92,7 @@ export default function Portal () {
             )
           )}
         </Route>
-        <Route key="*" path="*" element={<SegmentPlaceholder text='Not found!' icon='meh outline' />} />
+        <Route key='notfound' path="*" element={<SegmentPlaceholder text='Not found!' icon='meh outline' />} />
       </Route>
 
     </Routes>
