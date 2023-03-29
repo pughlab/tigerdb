@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import { Route, Routes, useParams } from 'react-router-dom'
-import { Message, Divider, Container, Icon, List, Input, Segment, Form, Button, Modal } from 'semantic-ui-react'
+import { Message, Divider, Container, Icon, List, Input, Segment, Form, Button, Modal, Grid } from 'semantic-ui-react'
 import SegmentPlaceholder from '../SegmentPlaceholder'
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { gql, useQuery } from '@apollo/client'
@@ -58,11 +58,14 @@ export default function MinioBucket({ bucketName }) {
             {!minioUploads.length ? <SegmentPlaceholder text={'No uploads yet'} /> :
                 <List celled divided>
                     {minioUploads.map(minioUpload => (
-                        <List.Item
-                            key={minioUpload.objectName}
-                            content={minioUpload.filename}
-                            description={minioUpload.objectName}
-                        />
+                        <div key={'div.' + minioUpload.objectName}>
+                            <List.Item
+                                key={'list.' + minioUpload.objectName}
+                                content={minioUpload.filename}
+                                description={minioUpload.objectName}
+                            />
+                            {/* <Button key={'button.' + minioUpload.objectName} >asdf</Button> */}
+                        </div>
                     ))}
                 </List>
             }
