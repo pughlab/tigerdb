@@ -17,14 +17,14 @@ curl -s -k -g -X POST -H "Content-Type: application/json" -H "Authorization: Bea
 
 
 # curl -s -k --request POST \
-#   --url https://localhost:4001/graphql \
+#   --url https://${KEYCLOAK_SERVER_HOST_AND_PORT}:4001/graphql \
 #   -H "Authorization: Bearer $token" \
 #   --header 'accept: application/json' \
 #   --header 'accept-encoding: gzip, deflate, br' \
 #   --header 'connection: keep-alive' \
 #   --header 'dnt: 1' \
-#   --header 'origin: http://localhost:4001/graphql' \
-#   --form 'operations={"query": "mutation minioUpload($file: Upload!) {minioUpload( bucketName: \"raw-dataset-7ec33aac-9209-4948-8804-8cc115bc8b20\" file: $file ) { bucketName objectName filename presignedURL  }}",   "variables": { "file": null } }' \
+#   --header 'origin: https://${KEYCLOAK_SERVER_HOST_AND_PORT}:4001/graphql' \
+#   --form 'operations={"query": "mutation minioUpload($file: Upload!) {minioUpload( bucketName: \"exports\" file: $file ) { bucketName objectName filename presignedURL  }}",   "variables": { "file": null } }' \
 #   --form 'map={ "nFile": ["variables.file"] }' \
 #   --form nFile=@/c/Users/jfoong/Downloads/rawdata_sample_4.csv.gz | jq
 
