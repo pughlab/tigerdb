@@ -6,14 +6,15 @@ dotenv.config()
 const MINIO_ROOT_USER = process.env.MINIO_ROOT_USER || 'DEFAULT_MINIO_ROOT_USER'
 const MINIO_ROOT_PASSWORD = process.env.MINIO_ROOT_PASSWORD || 'DEFAULT_MINIO_ROOT_PASSWORD'
 const MINIO_IP = process.env.MINIO_IP || 'DEFAULT_MINIO_IP'
-const MINIO_PORT = process.env.MINIO_PORT || 'DEFAULT_MINIO_PORT'
+const MINIO_API_PORT = Number(process.env.MINIO_API_PORT) || 'DEFAULT_MINIO_PORT'
 const MINIO_EXTERNAL_PORT = process.env.MINIO_EXTERNAL_PORT || 'DEFAULT_MINIO_EXTERNAL_PORT'
 
 console.log('MINIO_IP', MINIO_IP)
+console.log('MINIO_API_PORT', typeof(MINIO_API_PORT))
 
 const minioConfig = {
   endPoint: MINIO_IP,
-  // port: 9000,
+  port: MINIO_API_PORT,
   // port: MINIO_EXTERNAL_PORT,
   useSSL: false,
   accessKey: MINIO_ROOT_USER,
