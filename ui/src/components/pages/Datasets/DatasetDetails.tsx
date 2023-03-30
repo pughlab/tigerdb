@@ -138,17 +138,18 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
     const const_image = `funnel-base`
 
     const [funnelLoadMutation, funnelLoadMutationState] = useMutation(gql`
-          mutation submitTask($name: String!, $image: String!, $command: String!) {
+          mutation submitTask($name: String!, $image: String!, $command: String!, $taskID: String!) {
             submitTask(
               name: $name
               image: $image
+              taskID: $taskID
               command: $command
             ) {
               id
             }
           }`)
 
-    function setCommand(objectNameRF, objectNameCB) {
+    function setCommand(objectNameRF, objectNameCB, taskID) {
       // const const_program = `python api/src/funnel/programmaticLoad.py`
       const const_program = `TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/programmaticLoad.ts`
       const const_mode = `neo4j`
@@ -156,25 +157,33 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
       const const_permission_keys = `%permission_allowedSites,%permission_allowedStudies`
       const const_permission_values = `admin,admin`
       const const_isdelall = `ndelall` // ydelall to delete all before load
-      const command = `${const_program} ${rawDatasetID} ${objectNameRF} ${objectNameCB} ${const_mode} ${const_permission_keys} ${const_permission_values} ${const_isdelall}`
+      const command = `${const_program} ${rawDatasetID} ${objectNameRF} ${objectNameCB} ${const_mode} ${const_permission_keys} ${const_permission_values} ${const_isdelall} ${taskID}`
       return command
     }
 
-    const initialState = { name: uuidv4(), image: const_image, objectNameRF:null, objectNameCB: null, command: null }
+    const initialState = { name: uuidv4(), image: const_image, objectNameRF:null, objectNameCB: null, command: null, taskID: uuidv4() }
     const [funnelLoadState, funnelLoadDispatch] = useReducer((state, action) => {
         const { type, payload } = action
-        let objectNameRF, objectNameCB, command
+        let objectNameRF, objectNameCB, command, taskID
         switch (type) {
+            case 'taskID':
+              ({ objectNameRF } = state);
+              ({ objectNameCB } = state);
+              ({ taskID } = payload);
+              command = setCommand(objectNameRF, objectNameCB, taskID)
+              return { ...state, objectNameCB, command, taskID }
             case 'objectNameRF':
                 ({ objectNameRF } = payload);
                 ({ objectNameCB } = state);
-                command = setCommand(objectNameRF, objectNameCB)
-                return { ...state, objectNameRF, command }
+                ({ taskID } = state);
+                command = setCommand(objectNameRF, objectNameCB, taskID)
+                return { ...state, objectNameRF, command, taskID }
             case 'objectNameCB':
                 ({ objectNameRF } = state);
                 ({ objectNameCB } = payload);
-                command = setCommand(objectNameRF, objectNameCB)
-                return { ...state, objectNameCB, command }
+                ({ taskID } = state);
+                command = setCommand(objectNameRF, objectNameCB, taskID)
+                return { ...state, objectNameCB, command, taskID }
         }
         return state
     }, initialState)
@@ -327,7 +336,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           <Message>{validateRawfileCodebookPairMutationData.validateRawfileCodebookPair.message}</Message>
         }
         <Divider horizontal />
-        <Button disabled={funnelConnectedDataState && !(funnelConnectedDataState.codebook && funnelConnectedDataState.rawDataset && funnelConnectedDataState.codebookPair && funnelConnectedDataState.rawDataPair)} fluid content='Submit'  onClick={() => { funnelLoadMutation({ variables: funnelLoadState })}}/>
+        <Button disabled={funnelConnectedDataState && !(funnelConnectedDataState.codebook && funnelConnectedDataState.rawDataset && funnelConnectedDataState.codebookPair && funnelConnectedDataState.rawDataPair)} fluid content='Submit'  onClick={ async () => { await funnelLoadDispatch({ type: 'taskID', payload: {taskID: uuidv4()} }); funnelLoadMutation({ variables: funnelLoadState })}}/>
         {
             <Message>
               codebook: {funnelConnectedDataState && funnelConnectedDataState.codebook ? funnelConnectedDataState.codebook : 'No file'}

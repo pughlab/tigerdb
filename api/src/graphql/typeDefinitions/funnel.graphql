@@ -3,18 +3,31 @@
 
 # }
 
+enum FunnelState {
+  PENDING
+  CONFIGURING
+  RUNNING
+  RESIZING
+  COMPLETING
+  SUSPENDED
+  COMPLETE
+  CANCELLED
+}
+
 type Task {
   creationTime: String
   description: String
   id: String
+  taskID: ID
   name: String
-  state: String
+  state: FunnelState
 }
 
 type Mutation {
   submitTask(
     name: String
     description: String
+    taskID: String
     image: String
     command: String
     ): Task
