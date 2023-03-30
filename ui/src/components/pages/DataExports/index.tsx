@@ -215,9 +215,8 @@ export default function DataExports () {
             <Route index element={(
             <>
             <Container>
-                    <Message content='Explore variables' >
+                    <Message>
                     Exports are groups of data variables tagged together
-
                     <Divider horizontal />
                 </Message>
                 
