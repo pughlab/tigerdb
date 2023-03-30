@@ -1,4 +1,4 @@
-schema: "http://localhost:4001/graphql"
+schema: "https://localhost/graphql"
 generates:
   ./api/src/types/types.tsx:
     plugins:

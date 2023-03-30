@@ -1,6 +1,6 @@
-schema: "http://localhost:4001/graphql"
+schema: "https://localhost/graphql"
 documents: [
-    "./ui/src/graphql/*.tsx",
+    # "./ui/src/graphql/*.tsx",
   ]
 generates:
   ./ui/src/types/types.tsx:
