@@ -43,6 +43,7 @@ function MercatorProjection ({ width, height, events = false, cityMarkers = []})
   const scale = (width / 630) * 100;
   const translate = [centerX, centerY]
   const projection = geoMercator().translate(translate).scale(scale);
+  // return null
   return width < 10 ? null : (
     <svg width={width} height={height}>
       <rect x={0} y={0} width={width} height={height} fill={background} rx={14} />
@@ -70,19 +71,18 @@ function MercatorProjection ({ width, height, events = false, cityMarkers = []})
         )}
       </Mercator>
       {cityMarkers.map(marker =>
-        <>
-            <circle
-              onClick={()=> {}}
-              r={8}
-              fill="#333"
-              stroke="#333"
-              strokeWidth={4}
-              transform={`translate(${projection([
-                marker.longitude,
-                marker.latitude
-              ])})`}
-            />
-        </>
+        <circle
+          key={`id-${marker.longitude}-${marker.latitude}`}
+          onClick={()=> {}}
+          r={8}
+          fill="#333"
+          stroke="#333"
+          strokeWidth={4}
+          transform={`translate(${projection([
+            marker.longitude,
+            marker.latitude
+          ])})`}
+        />
       )}
     </svg>
   );
