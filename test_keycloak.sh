@@ -24,7 +24,7 @@ curl -s -k -g -X POST -H "Content-Type: application/json" -H "Authorization: Bea
 #   --header 'connection: keep-alive' \
 #   --header 'dnt: 1' \
 #   --header 'origin: https://${KEYCLOAK_SERVER_HOST_AND_PORT}:4001/graphql' \
-#   --form 'operations={"query": "mutation minioUpload($file: Upload!) {minioUpload( bucketName: \"exports\" file: $file ) { bucketName objectName filename presignedURL  }}",   "variables": { "file": null } }' \
+#   --form 'operations={"query": "mutation minioUploadFile($file: Upload!) {minioUploadFile( bucketName: \"raw-dataset-6df28ac1-3291-4fa4-a38c-8ebfb8bb5f4a\" file: $file ) { bucketName objectName filename presignedURL  }}",   "variables": { "file": null } }' \
 #   --form 'map={ "nFile": ["variables.file"] }' \
 #   --form nFile=@/c/Users/jfoong/Downloads/rawdata_sample_4.csv.gz | jq
 

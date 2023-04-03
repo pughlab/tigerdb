@@ -7,7 +7,8 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import useMinioUploadMutation from '../../../hooks/useMinioUploadMutation'
 import SegmentPlaceholder from '../SegmentPlaceholder'
 
-export default function MinioBucket({ bucketName }) {
+export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) {
+    const bucketName = `raw-dataset-${rawDatasetID}`
     const { data, loading, error, refetch } = useQuery(gql`
         query MinioUploads($bucketName: ID!) {
             minioUploads(where: {bucketName: $bucketName}) {
@@ -18,11 +19,14 @@ export default function MinioBucket({ bucketName }) {
         }`,
         { variables: { bucketName }, fetchPolicy: 'network-only' })
 
-    function MinioUploadModal({ bucketName }) {
+    function MinioUploadModal({ rawDatasetID } : { rawDatasetID:String }) {
+        const bucketName = `raw-dataset-${rawDatasetID}`
+
         const { state: uploadState, dispatch: uploadDispatch, mutation: uploadMutation } = useMinioUploadMutation(refetch)
         const onDrop = useCallback((files: FileWithPath[]) => {
             uploadMutation({
                 variables: {
+                    rawDatasetID: rawDatasetID,
                     bucketName: bucketName,
                     file: files[0]
                 }
@@ -64,7 +68,7 @@ export default function MinioBucket({ bucketName }) {
     const { minioUploads } = data
     return (
         <Segment>
-            <MinioUploadModal bucketName={bucketName} />
+            <MinioUploadModal rawDatasetID={rawDatasetID} />
             <Divider horizontal />
             {!minioUploads.length ? <SegmentPlaceholder text={'No uploads yet'} /> :
                 <List celled divided>

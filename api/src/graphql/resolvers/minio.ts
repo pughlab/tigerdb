@@ -73,7 +73,7 @@ export const resolvers = {
   Query: {
   },
   Mutation: {
-    minioUpload: async (obj, { bucketName, file }, { driver }) => {
+    minioUploadFile: async (obj, { bucketName, file, rawDatasetID }, { driver }) => {
       try {
         const { filename, mimetype, encoding, createReadStream } = await file
         const objectName = uuidv4()
@@ -96,7 +96,10 @@ export const resolvers = {
 
         const session = driver.session()
         const createMinioUpload = await session.run(
-          `CREATE (a:MinioUpload {bucketName: $bucketName, objectName: "${objectName}", filename: $filenameExt, allowedStudies: ["admin"], allowedSites: ["admin"]}) RETURN a`,
+          `
+          MATCH (rd:RawDataset {rawDatasetID: "${rawDatasetID}"})
+          MERGE (rd)-[:HAS_FILE]->(a:MinioUpload {bucketName: $bucketName, objectName: "${objectName}", filename: $filenameExt, allowedStudies: ["admin"], allowedSites: ["admin"]}) RETURN a
+          `,
           { bucketName, filenameExt }
         )
         // console.log(createMinioUpload.records[0].get(0).properties)

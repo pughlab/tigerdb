@@ -397,7 +397,7 @@ export default function DatasetDetails() {
         <Grid.Row divided>
           <Grid.Column width={10}>
             <Divider horizontal content='Dataset Files' />
-            <MinioBucket bucketName={`raw-dataset-${rawDatasetID}`} />
+            <MinioBucket rawDatasetID={`${rawDatasetID}`} />
           </Grid.Column>
           <Grid.Column width={6}>
             <DatasetTransformationSubmit {...{rawDatasetID}} />

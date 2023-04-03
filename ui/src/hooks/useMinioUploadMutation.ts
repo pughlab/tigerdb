@@ -33,14 +33,16 @@ const initialState = {
 
 export default function useMinioUploadMutation(postFn: any) {
     const [state, dispatch] = useReducer(reducer, initialState)
-    const [minioUpload, {loading, error, data}] = useMutation(gql`
-        mutation minioUpload(
+    const [minioUploadFile, {loading, error, data}] = useMutation(gql`
+        mutation minioUploadFile(
             $bucketName: String!
             $file: Upload!
+            $rawDatasetID: ID!
         ) {
-            minioUpload(
+            minioUploadFile(
                 bucketName: $bucketName
                 file: $file
+                rawDatasetID: $rawDatasetID
             ) {
                 bucketName
                 objectName
@@ -58,7 +60,7 @@ export default function useMinioUploadMutation(postFn: any) {
     })
     
 
-    return {state, dispatch, mutation: minioUpload}
+    return {state, dispatch, mutation: minioUploadFile}
     
 }
   
