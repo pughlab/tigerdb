@@ -10,7 +10,7 @@ curl -s -k -g -X POST -H "Content-Type: application/json" -H "Authorization: Bea
 
 # curl -s -k -g -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d '{"query":"mutation { testKeycloak }"}' https://localhost:4001/graphql | jq
 
-curl -s -k -g -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d '{"query":"query { studies { studyID } }"}' https://${KEYCLOAK_SERVER_HOST_AND_PORT}/graphql | jq
+# curl -s -k -g -X POST -H "Content-Type: application/json" -H "Authorization: Bearer $token" -d '{"query":"query { studies { studyID } }"}' https://${KEYCLOAK_SERVER_HOST_AND_PORT}/graphql | jq
 
 
 # echo -e "\n\n\nbbb\n\n\n"
