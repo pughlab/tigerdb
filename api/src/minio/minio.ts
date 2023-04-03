@@ -10,7 +10,7 @@ const MINIO_API_PORT = Number(process.env.MINIO_API_PORT) || 'DEFAULT_MINIO_PORT
 const MINIO_EXTERNAL_PORT = process.env.MINIO_EXTERNAL_PORT || 'DEFAULT_MINIO_EXTERNAL_PORT'
 
 console.log('MINIO_IP', MINIO_IP)
-console.log('MINIO_API_PORT', typeof(MINIO_API_PORT))
+console.log('MINIO_API_PORT', MINIO_API_PORT)
 
 const minioConfig = {
   endPoint: MINIO_IP,
