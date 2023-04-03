@@ -155,7 +155,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
       const const_program = `TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/programmaticLoad.ts`
       const const_mode = `neo4j`
       // const const_mode = `programmatic`
-      const const_permission_keys = `%permission_allowedSites,%permission_allowedStudies`
+      const const_permission_keys = `allowedSites,allowedStudies`
       const const_permission_values = `admin,admin`
       const const_isdelall = `ndelall` // ydelall to delete all before load
       const command = `${const_program} ${rawDatasetID} ${objectNameRF} ${objectNameCB} ${const_mode} ${const_permission_keys} ${const_permission_values} ${const_isdelall} ${taskID}`

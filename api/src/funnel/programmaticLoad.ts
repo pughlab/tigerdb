@@ -9,6 +9,8 @@ if (process.argv.length !== 10) {
 
   e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticLoad.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticLoad.ts 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 0027aa5d-9a0f-40f1-b7e6-7e070953acc7 802d6267-1b27-42c6-ac8f-cad7d3ab4d70 neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk ydelall|ndelall taskID
   
+  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticLoad.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticLoad.ts 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 0027aa5d-9a0f-40f1-b7e6-7e070953acc7 802d6267-1b27-42c6-ac8f-cad7d3ab4d70 neo4j allowedSites,allowedSites,allowedStudies Vancouver,Toronto,Milk ydelall|ndelall taskID
+  
   `);
   process.exit(1);
 }
@@ -73,7 +75,7 @@ import { v4 as uuidv4 } from 'uuid';
 
   })
   
-  const permissions_codebook = {'%permission_codebook': Object.keys(permissions_map)}
+  const permissions_codebook = {'permission_codebook': Object.keys(permissions_map)}
 
   // const limit = 0
   // const limit = 5
