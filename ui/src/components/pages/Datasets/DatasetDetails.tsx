@@ -138,10 +138,11 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
     const const_image = `funnel-base`
 
     const [funnelLoadMutation, funnelLoadMutationState] = useMutation(gql`
-          mutation submitTask($name: String!, $image: String!, $command: String!, $taskID: String!) {
+          mutation submitTask($name: String!, $image: String!, $description: String!, $taskID: String!, $command: String!) {
             submitTask(
               name: $name
               image: $image
+              description: $description
               taskID: $taskID
               command: $command
             ) {
@@ -161,7 +162,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
       return command
     }
 
-    const initialState = { name: uuidv4(), image: const_image, objectNameRF:null, objectNameCB: null, command: null, taskID: uuidv4() }
+    const initialState = { name: uuidv4(), description: rawDatasetID, taskID: uuidv4(), image: const_image, objectNameRF:null, objectNameCB: null, command: null }
     const [funnelLoadState, funnelLoadDispatch] = useReducer((state, action) => {
         const { type, payload } = action
         let objectNameRF, objectNameCB, command, taskID

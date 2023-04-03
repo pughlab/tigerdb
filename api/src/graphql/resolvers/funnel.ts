@@ -42,6 +42,7 @@ export const resolvers = {
                             }, { driver, kcAdminClient, ogm }: { driver: Driver, kcAdminClient: KeycloakAdminClient, ogm: OGM }) => {
       try {
         const TaskModel = ogm.model('Task')
+        const RawDatasetModel = ogm.model('RawDataset')
         const response: Response = await fetch(
           'http://funnel:8003/v1/tasks?view=BASIC', {
             method: 'POST',
@@ -50,7 +51,7 @@ export const resolvers = {
             },
             body: JSON.stringify({
               "name": taskID,
-              "description": taskID,
+              "description": description,
               "executors": [
                 {
                   "image": image,
@@ -62,7 +63,11 @@ export const resolvers = {
           }
           )
         const result: Task = await response.json()
-        const res = await TaskModel.create({input: {...result, taskID, state: 'RUNNING'}})
+        const createTaskResult = await TaskModel.create({input: {...result, taskID, state: 'RUNNING'}})
+        const addTaskResult = await RawDatasetModel.update({
+          where: { rawDatasetID: description },
+          update: {funnelTasks: {connect: {where: {node: {taskID}}}}}
+        })
         return result
       } catch (error) {
         console.log(error)
