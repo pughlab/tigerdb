@@ -1,11 +1,12 @@
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { useCallback, useState, useReducer } from 'react'
 import * as React from 'react'
-import { Button, Form, Header, Label, Input, Segment, Container, Message, List, Divider, Modal, Grid, Dropdown } from 'semantic-ui-react'
+import { Button, Form, Header, Label, Input, Segment, Container, Message, List, Divider, Modal, Grid, Dropdown, Item } from 'semantic-ui-react'
 import { Route, Routes, useParams } from 'react-router-dom'
 import MinioBucket from '../../common/minio'
 // import DataVariableTable from '../../visualizations/tables/DataVariableTable'
 import { v4 as uuidv4 } from 'uuid'
+import { GeographyCity, MinioUpload, Study, Task } from '../../../types/types'
 
 function useRawDatasetDataVariablesQuery({ rawDatasetID }) {
   return {}
@@ -358,25 +359,53 @@ export default function DatasetDetails() {
   const { datasetID } = useParams()
   const { data, loading, error } = useQuery(gql`
 		query RawDatasetDetails($rawDatasetID: ID!) {
-			rawDatasets (where: {rawDatasetID: $rawDatasetID}) {
-				rawDatasetID
-				name
-				description
+      rawDatasets(where: {rawDatasetID: $rawDatasetID}) {
+        rawDatasetID
+        name
+        description
+        files {
+          bucketName
+          objectName
+          filename
+        }
+        funnelTasks {
+          creationTime
+          description
+          id
+          name
+          state
+          fromRawDataset {
+            rawDatasetID
+            name
+            description
+          }
+          generatedCuratedDataset {
+            curatedDatasetID
+            name
+            dataVariablesAggregate {
+              count
+            }
+            fieldDefinitionsAggregate {
+              count
+            }
+          }
+        }
         fromStudy {
           studyID
           shortName
+          __typename
         }
         studySite {
           city
           country
         }
-			}
-		}`,
+      }
+    }`,
     { variables: { rawDatasetID: datasetID } })
   if (!data?.rawDatasets) {
     return null
   }
-  const [{ rawDatasetID, name, description, fromStudy, studySite }] = data.rawDatasets
+  const [{ rawDatasetID, name, description, fromStudy, studySite, files, funnelTasks }] : [{ rawDatasetID: String, name: String, description: String, fromStudy: Study, studySite: GeographyCity, files: MinioUpload, funnelTasks: Task }]= data.rawDatasets
   return (
     <>
       <Grid>
@@ -403,6 +432,33 @@ export default function DatasetDetails() {
             <DatasetTransformationSubmit {...{rawDatasetID}} />
           </Grid.Column>
         </Grid.Row>
+        
+        <Grid.Column width={16}>
+          <Segment>
+            <Divider horizontal content='Funnel Tasks...' />
+            <Segment>
+              <List>
+                {funnelTasks &&
+                  funnelTasks.map((funnelTask: Task) => 
+                  (
+                  <List.Item key={`List.Item.${funnelTask.id}`}>
+                    <Button
+                      active={funnelTask.state === 'COMPLETE'}
+                      key={`Button.${funnelTask.id}`}
+                      content={
+                        `
+                        id: ${funnelTask.id}
+                        |state: ${funnelTask.state}
+                        |fdCount: ${funnelTask?.generatedCuratedDataset?.fieldDefinitionsAggregate ? funnelTask?.generatedCuratedDataset?.fieldDefinitionsAggregate?.count : 0}
+                        |dvCount: ${funnelTask?.generatedCuratedDataset?.dataVariablesAggregate ? funnelTask?.generatedCuratedDataset?.dataVariablesAggregate?.count : 0}`
+                      }
+                    />
+                  </List.Item>
+                ))}
+              </List>
+            </Segment>
+          </Segment>
+        </Grid.Column>
 
         <Grid.Column width={16}>
           <Segment>
