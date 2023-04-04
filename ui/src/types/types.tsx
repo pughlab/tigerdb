@@ -400,6 +400,9 @@ export type CuratedDataset = {
   fieldDefinitions: Array<DataVariableFieldDefinition>;
   fieldDefinitionsAggregate: Maybe<CuratedDatasetDataVariableFieldDefinitionFieldDefinitionsAggregationSelection>;
   fieldDefinitionsConnection: CuratedDatasetFieldDefinitionsConnection;
+  funnelTask: Maybe<Task>;
+  funnelTaskAggregate: Maybe<CuratedDatasetTaskFunnelTaskAggregationSelection>;
+  funnelTaskConnection: CuratedDatasetFunnelTaskConnection;
   generatedByRawDataset: Maybe<RawDataset>;
   generatedByRawDatasetAggregate: Maybe<CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection>;
   generatedByRawDatasetConnection: CuratedDatasetGeneratedByRawDatasetConnection;
@@ -451,6 +454,28 @@ export type CuratedDatasetFieldDefinitionsConnectionArgs = {
 };
 
 
+export type CuratedDatasetFunnelTaskArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  options: InputMaybe<TaskOptions>;
+  where: InputMaybe<TaskWhere>;
+};
+
+
+export type CuratedDatasetFunnelTaskAggregateArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  where: InputMaybe<TaskWhere>;
+};
+
+
+export type CuratedDatasetFunnelTaskConnectionArgs = {
+  after: InputMaybe<Scalars['String']>;
+  directed?: InputMaybe<Scalars['Boolean']>;
+  first: InputMaybe<Scalars['Int']>;
+  sort: InputMaybe<Array<CuratedDatasetFunnelTaskConnectionSort>>;
+  where: InputMaybe<CuratedDatasetFunnelTaskConnectionWhere>;
+};
+
+
 export type CuratedDatasetGeneratedByRawDatasetArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   options: InputMaybe<RawDatasetOptions>;
@@ -483,6 +508,7 @@ export type CuratedDatasetAggregateSelection = {
 export type CuratedDatasetConnectInput = {
   dataVariables: InputMaybe<Array<CuratedDatasetDataVariablesConnectFieldInput>>;
   fieldDefinitions: InputMaybe<Array<CuratedDatasetFieldDefinitionsConnectFieldInput>>;
+  funnelTask: InputMaybe<CuratedDatasetFunnelTaskConnectFieldInput>;
   generatedByRawDataset: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectFieldInput>;
 };
 
@@ -506,6 +532,7 @@ export type CuratedDatasetCreateInput = {
   dataVariables: InputMaybe<CuratedDatasetDataVariablesFieldInput>;
   description: Scalars['String'];
   fieldDefinitions: InputMaybe<CuratedDatasetFieldDefinitionsFieldInput>;
+  funnelTask: InputMaybe<CuratedDatasetFunnelTaskFieldInput>;
   generatedByRawDataset: InputMaybe<CuratedDatasetGeneratedByRawDatasetFieldInput>;
   name: Scalars['String'];
 };
@@ -626,12 +653,14 @@ export type CuratedDatasetDataVariablesUpdateFieldInput = {
 export type CuratedDatasetDeleteInput = {
   dataVariables: InputMaybe<Array<CuratedDatasetDataVariablesDeleteFieldInput>>;
   fieldDefinitions: InputMaybe<Array<CuratedDatasetFieldDefinitionsDeleteFieldInput>>;
+  funnelTask: InputMaybe<CuratedDatasetFunnelTaskDeleteFieldInput>;
   generatedByRawDataset: InputMaybe<CuratedDatasetGeneratedByRawDatasetDeleteFieldInput>;
 };
 
 export type CuratedDatasetDisconnectInput = {
   dataVariables: InputMaybe<Array<CuratedDatasetDataVariablesDisconnectFieldInput>>;
   fieldDefinitions: InputMaybe<Array<CuratedDatasetFieldDefinitionsDisconnectFieldInput>>;
+  funnelTask: InputMaybe<CuratedDatasetFunnelTaskDisconnectFieldInput>;
   generatedByRawDataset: InputMaybe<CuratedDatasetGeneratedByRawDatasetDisconnectFieldInput>;
 };
 
@@ -749,6 +778,164 @@ export type CuratedDatasetFieldDefinitionsUpdateFieldInput = {
   disconnect: InputMaybe<Array<CuratedDatasetFieldDefinitionsDisconnectFieldInput>>;
   update: InputMaybe<CuratedDatasetFieldDefinitionsUpdateConnectionInput>;
   where: InputMaybe<CuratedDatasetFieldDefinitionsConnectionWhere>;
+};
+
+export type CuratedDatasetFunnelTaskAggregateInput = {
+  AND: InputMaybe<Array<CuratedDatasetFunnelTaskAggregateInput>>;
+  OR: InputMaybe<Array<CuratedDatasetFunnelTaskAggregateInput>>;
+  count: InputMaybe<Scalars['Int']>;
+  count_GT: InputMaybe<Scalars['Int']>;
+  count_GTE: InputMaybe<Scalars['Int']>;
+  count_LT: InputMaybe<Scalars['Int']>;
+  count_LTE: InputMaybe<Scalars['Int']>;
+  node: InputMaybe<CuratedDatasetFunnelTaskNodeAggregationWhereInput>;
+};
+
+export type CuratedDatasetFunnelTaskConnectFieldInput = {
+  connect: InputMaybe<TaskConnectInput>;
+  where: InputMaybe<TaskConnectWhere>;
+};
+
+export type CuratedDatasetFunnelTaskConnection = {
+  __typename?: 'CuratedDatasetFunnelTaskConnection';
+  edges: Array<CuratedDatasetFunnelTaskRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type CuratedDatasetFunnelTaskConnectionSort = {
+  node: InputMaybe<TaskSort>;
+};
+
+export type CuratedDatasetFunnelTaskConnectionWhere = {
+  AND: InputMaybe<Array<CuratedDatasetFunnelTaskConnectionWhere>>;
+  OR: InputMaybe<Array<CuratedDatasetFunnelTaskConnectionWhere>>;
+  node: InputMaybe<TaskWhere>;
+  node_NOT: InputMaybe<TaskWhere>;
+};
+
+export type CuratedDatasetFunnelTaskCreateFieldInput = {
+  node: TaskCreateInput;
+};
+
+export type CuratedDatasetFunnelTaskDeleteFieldInput = {
+  delete: InputMaybe<TaskDeleteInput>;
+  where: InputMaybe<CuratedDatasetFunnelTaskConnectionWhere>;
+};
+
+export type CuratedDatasetFunnelTaskDisconnectFieldInput = {
+  disconnect: InputMaybe<TaskDisconnectInput>;
+  where: InputMaybe<CuratedDatasetFunnelTaskConnectionWhere>;
+};
+
+export type CuratedDatasetFunnelTaskFieldInput = {
+  connect: InputMaybe<CuratedDatasetFunnelTaskConnectFieldInput>;
+  create: InputMaybe<CuratedDatasetFunnelTaskCreateFieldInput>;
+};
+
+export type CuratedDatasetFunnelTaskNodeAggregationWhereInput = {
+  AND: InputMaybe<Array<CuratedDatasetFunnelTaskNodeAggregationWhereInput>>;
+  OR: InputMaybe<Array<CuratedDatasetFunnelTaskNodeAggregationWhereInput>>;
+  creationTime_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  creationTime_EQUAL: InputMaybe<Scalars['String']>;
+  creationTime_GT: InputMaybe<Scalars['Int']>;
+  creationTime_GTE: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  creationTime_LT: InputMaybe<Scalars['Int']>;
+  creationTime_LTE: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  description_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  description_EQUAL: InputMaybe<Scalars['String']>;
+  description_GT: InputMaybe<Scalars['Int']>;
+  description_GTE: InputMaybe<Scalars['Int']>;
+  description_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  description_LT: InputMaybe<Scalars['Int']>;
+  description_LTE: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  id_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  id_EQUAL: InputMaybe<Scalars['String']>;
+  id_GT: InputMaybe<Scalars['Int']>;
+  id_GTE: InputMaybe<Scalars['Int']>;
+  id_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  id_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  id_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  id_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  id_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  id_LT: InputMaybe<Scalars['Int']>;
+  id_LTE: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  name_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  name_EQUAL: InputMaybe<Scalars['String']>;
+  name_GT: InputMaybe<Scalars['Int']>;
+  name_GTE: InputMaybe<Scalars['Int']>;
+  name_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  name_LT: InputMaybe<Scalars['Int']>;
+  name_LTE: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  taskID_EQUAL: InputMaybe<Scalars['ID']>;
+};
+
+export type CuratedDatasetFunnelTaskRelationship = {
+  __typename?: 'CuratedDatasetFunnelTaskRelationship';
+  cursor: Scalars['String'];
+  node: Task;
+};
+
+export type CuratedDatasetFunnelTaskUpdateConnectionInput = {
+  node: InputMaybe<TaskUpdateInput>;
+};
+
+export type CuratedDatasetFunnelTaskUpdateFieldInput = {
+  connect: InputMaybe<CuratedDatasetFunnelTaskConnectFieldInput>;
+  create: InputMaybe<CuratedDatasetFunnelTaskCreateFieldInput>;
+  delete: InputMaybe<CuratedDatasetFunnelTaskDeleteFieldInput>;
+  disconnect: InputMaybe<CuratedDatasetFunnelTaskDisconnectFieldInput>;
+  update: InputMaybe<CuratedDatasetFunnelTaskUpdateConnectionInput>;
+  where: InputMaybe<CuratedDatasetFunnelTaskConnectionWhere>;
 };
 
 export type CuratedDatasetGeneratedByRawDatasetAggregateInput = {
@@ -926,6 +1113,7 @@ export type CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection 
 export type CuratedDatasetRelationInput = {
   dataVariables: InputMaybe<Array<CuratedDatasetDataVariablesCreateFieldInput>>;
   fieldDefinitions: InputMaybe<Array<CuratedDatasetFieldDefinitionsCreateFieldInput>>;
+  funnelTask: InputMaybe<CuratedDatasetFunnelTaskCreateFieldInput>;
   generatedByRawDataset: InputMaybe<CuratedDatasetGeneratedByRawDatasetCreateFieldInput>;
 };
 
@@ -934,6 +1122,21 @@ export type CuratedDatasetSort = {
   curatedDatasetID: InputMaybe<SortDirection>;
   description: InputMaybe<SortDirection>;
   name: InputMaybe<SortDirection>;
+};
+
+export type CuratedDatasetTaskFunnelTaskAggregationSelection = {
+  __typename?: 'CuratedDatasetTaskFunnelTaskAggregationSelection';
+  count: Scalars['Int'];
+  node: Maybe<CuratedDatasetTaskFunnelTaskNodeAggregateSelection>;
+};
+
+export type CuratedDatasetTaskFunnelTaskNodeAggregateSelection = {
+  __typename?: 'CuratedDatasetTaskFunnelTaskNodeAggregateSelection';
+  creationTime: StringAggregateSelectionNullable;
+  description: StringAggregateSelectionNullable;
+  id: StringAggregateSelectionNullable;
+  name: StringAggregateSelectionNullable;
+  taskID: IdAggregateSelectionNullable;
 };
 
 export type CuratedDatasetUniqueWhere = {
@@ -950,6 +1153,7 @@ export type CuratedDatasetUpdateInput = {
   dataVariables: InputMaybe<Array<CuratedDatasetDataVariablesUpdateFieldInput>>;
   description: InputMaybe<Scalars['String']>;
   fieldDefinitions: InputMaybe<Array<CuratedDatasetFieldDefinitionsUpdateFieldInput>>;
+  funnelTask: InputMaybe<CuratedDatasetFunnelTaskUpdateFieldInput>;
   generatedByRawDataset: InputMaybe<CuratedDatasetGeneratedByRawDatasetUpdateFieldInput>;
   name: InputMaybe<Scalars['String']>;
 };
@@ -1019,6 +1223,11 @@ export type CuratedDatasetWhere = {
   fieldDefinitions_SINGLE: InputMaybe<DataVariableFieldDefinitionWhere>;
   /** Return CuratedDatasets where some of the related DataVariableFieldDefinitions match this filter */
   fieldDefinitions_SOME: InputMaybe<DataVariableFieldDefinitionWhere>;
+  funnelTask: InputMaybe<TaskWhere>;
+  funnelTaskAggregate: InputMaybe<CuratedDatasetFunnelTaskAggregateInput>;
+  funnelTaskConnection: InputMaybe<CuratedDatasetFunnelTaskConnectionWhere>;
+  funnelTaskConnection_NOT: InputMaybe<CuratedDatasetFunnelTaskConnectionWhere>;
+  funnelTask_NOT: InputMaybe<TaskWhere>;
   generatedByRawDataset: InputMaybe<RawDatasetWhere>;
   generatedByRawDatasetAggregate: InputMaybe<CuratedDatasetGeneratedByRawDatasetAggregateInput>;
   generatedByRawDatasetConnection: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectionWhere>;
@@ -2672,6 +2881,17 @@ export type FloatAggregateSelectionNonNullable = {
   sum: Scalars['Float'];
 };
 
+export enum FunnelState {
+  Cancelled = 'CANCELLED',
+  Complete = 'COMPLETE',
+  Completing = 'COMPLETING',
+  Configuring = 'CONFIGURING',
+  Pending = 'PENDING',
+  Resizing = 'RESIZING',
+  Running = 'RUNNING',
+  Suspended = 'SUSPENDED'
+}
+
 export type GeographyCitiesConnection = {
   __typename?: 'GeographyCitiesConnection';
   edges: Array<GeographyCityEdge>;
@@ -3506,6 +3726,9 @@ export type MinioUpload = {
   pairedRawdataFileAggregate: Maybe<MinioUploadMinioUploadPairedRawdataFileAggregationSelection>;
   pairedRawdataFileConnection: MinioUploadPairedRawdataFileConnection;
   presignedURL: Maybe<Scalars['String']>;
+  rawDataset: Maybe<RawDataset>;
+  rawDatasetAggregate: Maybe<MinioUploadRawDatasetRawDatasetAggregationSelection>;
+  rawDatasetConnection: MinioUploadRawDatasetConnection;
   rawdataFileRawDataset: Maybe<RawDataset>;
   rawdataFileRawDatasetAggregate: Maybe<MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelection>;
   rawdataFileRawDatasetConnection: MinioUploadRawdataFileRawDatasetConnection;
@@ -3575,6 +3798,28 @@ export type MinioUploadPairedRawdataFileConnectionArgs = {
   first: InputMaybe<Scalars['Int']>;
   sort: InputMaybe<Array<MinioUploadPairedRawdataFileConnectionSort>>;
   where: InputMaybe<MinioUploadPairedRawdataFileConnectionWhere>;
+};
+
+
+export type MinioUploadRawDatasetArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  options: InputMaybe<RawDatasetOptions>;
+  where: InputMaybe<RawDatasetWhere>;
+};
+
+
+export type MinioUploadRawDatasetAggregateArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  where: InputMaybe<RawDatasetWhere>;
+};
+
+
+export type MinioUploadRawDatasetConnectionArgs = {
+  after: InputMaybe<Scalars['String']>;
+  directed?: InputMaybe<Scalars['Boolean']>;
+  first: InputMaybe<Scalars['Int']>;
+  sort: InputMaybe<Array<MinioUploadRawDatasetConnectionSort>>;
+  where: InputMaybe<MinioUploadRawDatasetConnectionWhere>;
 };
 
 
@@ -3763,6 +4008,7 @@ export type MinioUploadConnectInput = {
   codeBookRawDataset: InputMaybe<MinioUploadCodeBookRawDatasetConnectFieldInput>;
   pairedCodebook: InputMaybe<MinioUploadPairedCodebookConnectFieldInput>;
   pairedRawdataFile: InputMaybe<MinioUploadPairedRawdataFileConnectFieldInput>;
+  rawDataset: InputMaybe<MinioUploadRawDatasetConnectFieldInput>;
   rawdataFileRawDataset: InputMaybe<MinioUploadRawdataFileRawDatasetConnectFieldInput>;
 };
 
@@ -3770,6 +4016,7 @@ export type MinioUploadConnectOrCreateInput = {
   codeBookRawDataset: InputMaybe<MinioUploadCodeBookRawDatasetConnectOrCreateFieldInput>;
   pairedCodebook: InputMaybe<MinioUploadPairedCodebookConnectOrCreateFieldInput>;
   pairedRawdataFile: InputMaybe<MinioUploadPairedRawdataFileConnectOrCreateFieldInput>;
+  rawDataset: InputMaybe<MinioUploadRawDatasetConnectOrCreateFieldInput>;
   rawdataFileRawDataset: InputMaybe<MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInput>;
 };
 
@@ -3787,6 +4034,7 @@ export type MinioUploadCreateInput = {
   filename: Scalars['String'];
   pairedCodebook: InputMaybe<MinioUploadPairedCodebookFieldInput>;
   pairedRawdataFile: InputMaybe<MinioUploadPairedRawdataFileFieldInput>;
+  rawDataset: InputMaybe<MinioUploadRawDatasetFieldInput>;
   rawdataFileRawDataset: InputMaybe<MinioUploadRawdataFileRawDatasetFieldInput>;
 };
 
@@ -3794,6 +4042,7 @@ export type MinioUploadDeleteInput = {
   codeBookRawDataset: InputMaybe<MinioUploadCodeBookRawDatasetDeleteFieldInput>;
   pairedCodebook: InputMaybe<MinioUploadPairedCodebookDeleteFieldInput>;
   pairedRawdataFile: InputMaybe<MinioUploadPairedRawdataFileDeleteFieldInput>;
+  rawDataset: InputMaybe<MinioUploadRawDatasetDeleteFieldInput>;
   rawdataFileRawDataset: InputMaybe<MinioUploadRawdataFileRawDatasetDeleteFieldInput>;
 };
 
@@ -3801,6 +4050,7 @@ export type MinioUploadDisconnectInput = {
   codeBookRawDataset: InputMaybe<MinioUploadCodeBookRawDatasetDisconnectFieldInput>;
   pairedCodebook: InputMaybe<MinioUploadPairedCodebookDisconnectFieldInput>;
   pairedRawdataFile: InputMaybe<MinioUploadPairedRawdataFileDisconnectFieldInput>;
+  rawDataset: InputMaybe<MinioUploadRawDatasetDisconnectFieldInput>;
   rawdataFileRawDataset: InputMaybe<MinioUploadRawdataFileRawDatasetDisconnectFieldInput>;
 };
 
@@ -4084,6 +4334,17 @@ export type MinioUploadPairedRawdataFileUpdateFieldInput = {
   where: InputMaybe<MinioUploadPairedRawdataFileConnectionWhere>;
 };
 
+export type MinioUploadRawDatasetAggregateInput = {
+  AND: InputMaybe<Array<MinioUploadRawDatasetAggregateInput>>;
+  OR: InputMaybe<Array<MinioUploadRawDatasetAggregateInput>>;
+  count: InputMaybe<Scalars['Int']>;
+  count_GT: InputMaybe<Scalars['Int']>;
+  count_GTE: InputMaybe<Scalars['Int']>;
+  count_LT: InputMaybe<Scalars['Int']>;
+  count_LTE: InputMaybe<Scalars['Int']>;
+  node: InputMaybe<MinioUploadRawDatasetNodeAggregationWhereInput>;
+};
+
 export type MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection = {
   __typename?: 'MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection';
   count: Scalars['Int'];
@@ -4092,6 +4353,133 @@ export type MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection = {
 
 export type MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection = {
   __typename?: 'MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection';
+  createdAt: DateTimeAggregateSelectionNonNullable;
+  description: StringAggregateSelectionNonNullable;
+  name: StringAggregateSelectionNonNullable;
+  rawDatasetID: IdAggregateSelectionNonNullable;
+};
+
+export type MinioUploadRawDatasetConnectFieldInput = {
+  connect: InputMaybe<RawDatasetConnectInput>;
+  where: InputMaybe<RawDatasetConnectWhere>;
+};
+
+export type MinioUploadRawDatasetConnectOrCreateFieldInput = {
+  onCreate: MinioUploadRawDatasetConnectOrCreateFieldInputOnCreate;
+  where: RawDatasetConnectOrCreateWhere;
+};
+
+export type MinioUploadRawDatasetConnectOrCreateFieldInputOnCreate = {
+  node: RawDatasetOnCreateInput;
+};
+
+export type MinioUploadRawDatasetConnection = {
+  __typename?: 'MinioUploadRawDatasetConnection';
+  edges: Array<MinioUploadRawDatasetRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type MinioUploadRawDatasetConnectionSort = {
+  node: InputMaybe<RawDatasetSort>;
+};
+
+export type MinioUploadRawDatasetConnectionWhere = {
+  AND: InputMaybe<Array<MinioUploadRawDatasetConnectionWhere>>;
+  OR: InputMaybe<Array<MinioUploadRawDatasetConnectionWhere>>;
+  node: InputMaybe<RawDatasetWhere>;
+  node_NOT: InputMaybe<RawDatasetWhere>;
+};
+
+export type MinioUploadRawDatasetCreateFieldInput = {
+  node: RawDatasetCreateInput;
+};
+
+export type MinioUploadRawDatasetDeleteFieldInput = {
+  delete: InputMaybe<RawDatasetDeleteInput>;
+  where: InputMaybe<MinioUploadRawDatasetConnectionWhere>;
+};
+
+export type MinioUploadRawDatasetDisconnectFieldInput = {
+  disconnect: InputMaybe<RawDatasetDisconnectInput>;
+  where: InputMaybe<MinioUploadRawDatasetConnectionWhere>;
+};
+
+export type MinioUploadRawDatasetFieldInput = {
+  connect: InputMaybe<MinioUploadRawDatasetConnectFieldInput>;
+  connectOrCreate: InputMaybe<MinioUploadRawDatasetConnectOrCreateFieldInput>;
+  create: InputMaybe<MinioUploadRawDatasetCreateFieldInput>;
+};
+
+export type MinioUploadRawDatasetNodeAggregationWhereInput = {
+  AND: InputMaybe<Array<MinioUploadRawDatasetNodeAggregationWhereInput>>;
+  OR: InputMaybe<Array<MinioUploadRawDatasetNodeAggregationWhereInput>>;
+  createdAt_EQUAL: InputMaybe<Scalars['DateTime']>;
+  createdAt_GT: InputMaybe<Scalars['DateTime']>;
+  createdAt_GTE: InputMaybe<Scalars['DateTime']>;
+  createdAt_LT: InputMaybe<Scalars['DateTime']>;
+  createdAt_LTE: InputMaybe<Scalars['DateTime']>;
+  createdAt_MAX_EQUAL: InputMaybe<Scalars['DateTime']>;
+  createdAt_MAX_GT: InputMaybe<Scalars['DateTime']>;
+  createdAt_MAX_GTE: InputMaybe<Scalars['DateTime']>;
+  createdAt_MAX_LT: InputMaybe<Scalars['DateTime']>;
+  createdAt_MAX_LTE: InputMaybe<Scalars['DateTime']>;
+  createdAt_MIN_EQUAL: InputMaybe<Scalars['DateTime']>;
+  createdAt_MIN_GT: InputMaybe<Scalars['DateTime']>;
+  createdAt_MIN_GTE: InputMaybe<Scalars['DateTime']>;
+  createdAt_MIN_LT: InputMaybe<Scalars['DateTime']>;
+  createdAt_MIN_LTE: InputMaybe<Scalars['DateTime']>;
+  description_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  description_EQUAL: InputMaybe<Scalars['String']>;
+  description_GT: InputMaybe<Scalars['Int']>;
+  description_GTE: InputMaybe<Scalars['Int']>;
+  description_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  description_LT: InputMaybe<Scalars['Int']>;
+  description_LTE: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  name_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  name_EQUAL: InputMaybe<Scalars['String']>;
+  name_GT: InputMaybe<Scalars['Int']>;
+  name_GTE: InputMaybe<Scalars['Int']>;
+  name_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  name_LT: InputMaybe<Scalars['Int']>;
+  name_LTE: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  rawDatasetID_EQUAL: InputMaybe<Scalars['ID']>;
+};
+
+export type MinioUploadRawDatasetRawDatasetAggregationSelection = {
+  __typename?: 'MinioUploadRawDatasetRawDatasetAggregationSelection';
+  count: Scalars['Int'];
+  node: Maybe<MinioUploadRawDatasetRawDatasetNodeAggregateSelection>;
+};
+
+export type MinioUploadRawDatasetRawDatasetNodeAggregateSelection = {
+  __typename?: 'MinioUploadRawDatasetRawDatasetNodeAggregateSelection';
   createdAt: DateTimeAggregateSelectionNonNullable;
   description: StringAggregateSelectionNonNullable;
   name: StringAggregateSelectionNonNullable;
@@ -4110,6 +4498,26 @@ export type MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelection = {
   description: StringAggregateSelectionNonNullable;
   name: StringAggregateSelectionNonNullable;
   rawDatasetID: IdAggregateSelectionNonNullable;
+};
+
+export type MinioUploadRawDatasetRelationship = {
+  __typename?: 'MinioUploadRawDatasetRelationship';
+  cursor: Scalars['String'];
+  node: RawDataset;
+};
+
+export type MinioUploadRawDatasetUpdateConnectionInput = {
+  node: InputMaybe<RawDatasetUpdateInput>;
+};
+
+export type MinioUploadRawDatasetUpdateFieldInput = {
+  connect: InputMaybe<MinioUploadRawDatasetConnectFieldInput>;
+  connectOrCreate: InputMaybe<MinioUploadRawDatasetConnectOrCreateFieldInput>;
+  create: InputMaybe<MinioUploadRawDatasetCreateFieldInput>;
+  delete: InputMaybe<MinioUploadRawDatasetDeleteFieldInput>;
+  disconnect: InputMaybe<MinioUploadRawDatasetDisconnectFieldInput>;
+  update: InputMaybe<MinioUploadRawDatasetUpdateConnectionInput>;
+  where: InputMaybe<MinioUploadRawDatasetConnectionWhere>;
 };
 
 export type MinioUploadRawdataFileRawDatasetAggregateInput = {
@@ -4268,6 +4676,7 @@ export type MinioUploadRelationInput = {
   codeBookRawDataset: InputMaybe<MinioUploadCodeBookRawDatasetCreateFieldInput>;
   pairedCodebook: InputMaybe<MinioUploadPairedCodebookCreateFieldInput>;
   pairedRawdataFile: InputMaybe<MinioUploadPairedRawdataFileCreateFieldInput>;
+  rawDataset: InputMaybe<MinioUploadRawDatasetCreateFieldInput>;
   rawdataFileRawDataset: InputMaybe<MinioUploadRawdataFileRawDatasetCreateFieldInput>;
 };
 
@@ -4288,6 +4697,7 @@ export type MinioUploadUpdateInput = {
   filename: InputMaybe<Scalars['String']>;
   pairedCodebook: InputMaybe<MinioUploadPairedCodebookUpdateFieldInput>;
   pairedRawdataFile: InputMaybe<MinioUploadPairedRawdataFileUpdateFieldInput>;
+  rawDataset: InputMaybe<MinioUploadRawDatasetUpdateFieldInput>;
   rawdataFileRawDataset: InputMaybe<MinioUploadRawdataFileRawDatasetUpdateFieldInput>;
 };
 
@@ -4339,6 +4749,11 @@ export type MinioUploadWhere = {
   pairedRawdataFileConnection: InputMaybe<MinioUploadPairedRawdataFileConnectionWhere>;
   pairedRawdataFileConnection_NOT: InputMaybe<MinioUploadPairedRawdataFileConnectionWhere>;
   pairedRawdataFile_NOT: InputMaybe<MinioUploadWhere>;
+  rawDataset: InputMaybe<RawDatasetWhere>;
+  rawDatasetAggregate: InputMaybe<MinioUploadRawDatasetAggregateInput>;
+  rawDatasetConnection: InputMaybe<MinioUploadRawDatasetConnectionWhere>;
+  rawDatasetConnection_NOT: InputMaybe<MinioUploadRawDatasetConnectionWhere>;
+  rawDataset_NOT: InputMaybe<RawDatasetWhere>;
   rawdataFileRawDataset: InputMaybe<RawDatasetWhere>;
   rawdataFileRawDatasetAggregate: InputMaybe<MinioUploadRawdataFileRawDatasetAggregateInput>;
   rawdataFileRawDatasetConnection: InputMaybe<MinioUploadRawdataFileRawDatasetConnectionWhere>;
@@ -4495,7 +4910,7 @@ export type Mutation = {
   keycloak_users_delClientRoleMappings: Maybe<Scalars['Boolean']>;
   me: Maybe<KeycloakUser>;
   minioDelete: Maybe<Scalars['Boolean']>;
-  minioUpload: MinioUpload;
+  minioUploadFile: MinioUpload;
   nestedCuratedDatasetPermissions: Maybe<Scalars['Boolean']>;
   nestedCuratedDatasetProperty: Maybe<Scalars['Boolean']>;
   nestedDataVariableDefinitionProperty: Maybe<Scalars['Boolean']>;
@@ -4775,6 +5190,7 @@ export type MutationDeleteStudiesArgs = {
 
 
 export type MutationDeleteTasksArgs = {
+  delete: InputMaybe<TaskDeleteInput>;
   where: InputMaybe<TaskWhere>;
 };
 
@@ -4813,9 +5229,10 @@ export type MutationMinioDeleteArgs = {
 };
 
 
-export type MutationMinioUploadArgs = {
+export type MutationMinioUploadFileArgs = {
   bucketName: Scalars['String'];
   file: Scalars['Upload'];
+  rawDatasetID: Scalars['ID'];
 };
 
 
@@ -4888,6 +5305,7 @@ export type MutationSubmitTaskArgs = {
   description: InputMaybe<Scalars['String']>;
   image: InputMaybe<Scalars['String']>;
   name: InputMaybe<Scalars['String']>;
+  taskID: InputMaybe<Scalars['String']>;
 };
 
 
@@ -5072,6 +5490,11 @@ export type MutationUpdateStudiesArgs = {
 
 
 export type MutationUpdateTasksArgs = {
+  connect: InputMaybe<TaskConnectInput>;
+  connectOrCreate: InputMaybe<TaskConnectOrCreateInput>;
+  create: InputMaybe<TaskRelationInput>;
+  delete: InputMaybe<TaskDeleteInput>;
+  disconnect: InputMaybe<TaskDisconnectInput>;
   update: InputMaybe<TaskUpdateInput>;
   where: InputMaybe<TaskWhere>;
 };
@@ -6539,12 +6962,18 @@ export type RawDataset = {
   codeBookConnection: RawDatasetCodeBookConnection;
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
+  files: Array<MinioUpload>;
+  filesAggregate: Maybe<RawDatasetMinioUploadFilesAggregationSelection>;
+  filesConnection: RawDatasetFilesConnection;
   fromStudy: Maybe<Study>;
   fromStudyAggregate: Maybe<RawDatasetStudyFromStudyAggregationSelection>;
   fromStudyConnection: RawDatasetFromStudyConnection;
-  generatedCuratedDataset: Maybe<CuratedDataset>;
-  generatedCuratedDatasetAggregate: Maybe<RawDatasetCuratedDatasetGeneratedCuratedDatasetAggregationSelection>;
-  generatedCuratedDatasetConnection: RawDatasetGeneratedCuratedDatasetConnection;
+  funnelTasks: Array<Task>;
+  funnelTasksAggregate: Maybe<RawDatasetTaskFunnelTasksAggregationSelection>;
+  funnelTasksConnection: RawDatasetFunnelTasksConnection;
+  generatedCuratedDatasets: Array<CuratedDataset>;
+  generatedCuratedDatasetsAggregate: Maybe<RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection>;
+  generatedCuratedDatasetsConnection: RawDatasetGeneratedCuratedDatasetsConnection;
   minioBucket: Maybe<MinioBucket>;
   minioBucketAggregate: Maybe<RawDatasetMinioBucketMinioBucketAggregationSelection>;
   minioBucketConnection: RawDatasetMinioBucketConnection;
@@ -6581,6 +7010,28 @@ export type RawDatasetCodeBookConnectionArgs = {
 };
 
 
+export type RawDatasetFilesArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  options: InputMaybe<MinioUploadOptions>;
+  where: InputMaybe<MinioUploadWhere>;
+};
+
+
+export type RawDatasetFilesAggregateArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  where: InputMaybe<MinioUploadWhere>;
+};
+
+
+export type RawDatasetFilesConnectionArgs = {
+  after: InputMaybe<Scalars['String']>;
+  directed?: InputMaybe<Scalars['Boolean']>;
+  first: InputMaybe<Scalars['Int']>;
+  sort: InputMaybe<Array<RawDatasetFilesConnectionSort>>;
+  where: InputMaybe<RawDatasetFilesConnectionWhere>;
+};
+
+
 export type RawDatasetFromStudyArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   options: InputMaybe<StudyOptions>;
@@ -6603,25 +7054,47 @@ export type RawDatasetFromStudyConnectionArgs = {
 };
 
 
-export type RawDatasetGeneratedCuratedDatasetArgs = {
+export type RawDatasetFunnelTasksArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  options: InputMaybe<TaskOptions>;
+  where: InputMaybe<TaskWhere>;
+};
+
+
+export type RawDatasetFunnelTasksAggregateArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  where: InputMaybe<TaskWhere>;
+};
+
+
+export type RawDatasetFunnelTasksConnectionArgs = {
+  after: InputMaybe<Scalars['String']>;
+  directed?: InputMaybe<Scalars['Boolean']>;
+  first: InputMaybe<Scalars['Int']>;
+  sort: InputMaybe<Array<RawDatasetFunnelTasksConnectionSort>>;
+  where: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+};
+
+
+export type RawDatasetGeneratedCuratedDatasetsArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   options: InputMaybe<CuratedDatasetOptions>;
   where: InputMaybe<CuratedDatasetWhere>;
 };
 
 
-export type RawDatasetGeneratedCuratedDatasetAggregateArgs = {
+export type RawDatasetGeneratedCuratedDatasetsAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   where: InputMaybe<CuratedDatasetWhere>;
 };
 
 
-export type RawDatasetGeneratedCuratedDatasetConnectionArgs = {
+export type RawDatasetGeneratedCuratedDatasetsConnectionArgs = {
   after: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first: InputMaybe<Scalars['Int']>;
-  sort: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetConnectionSort>>;
-  where: InputMaybe<RawDatasetGeneratedCuratedDatasetConnectionWhere>;
+  sort: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectionSort>>;
+  where: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
 };
 
 
@@ -6819,8 +7292,10 @@ export type RawDatasetCodeBookUpdateFieldInput = {
 
 export type RawDatasetConnectInput = {
   codeBook: InputMaybe<RawDatasetCodeBookConnectFieldInput>;
+  files: InputMaybe<Array<RawDatasetFilesConnectFieldInput>>;
   fromStudy: InputMaybe<RawDatasetFromStudyConnectFieldInput>;
-  generatedCuratedDataset: InputMaybe<RawDatasetGeneratedCuratedDatasetConnectFieldInput>;
+  funnelTasks: InputMaybe<Array<RawDatasetFunnelTasksConnectFieldInput>>;
+  generatedCuratedDatasets: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectFieldInput>>;
   minioBucket: InputMaybe<RawDatasetMinioBucketConnectFieldInput>;
   rawdataFile: InputMaybe<RawDatasetRawdataFileConnectFieldInput>;
   studySite: InputMaybe<RawDatasetStudySiteConnectFieldInput>;
@@ -6828,8 +7303,9 @@ export type RawDatasetConnectInput = {
 
 export type RawDatasetConnectOrCreateInput = {
   codeBook: InputMaybe<RawDatasetCodeBookConnectOrCreateFieldInput>;
+  files: InputMaybe<Array<RawDatasetFilesConnectOrCreateFieldInput>>;
   fromStudy: InputMaybe<RawDatasetFromStudyConnectOrCreateFieldInput>;
-  generatedCuratedDataset: InputMaybe<RawDatasetGeneratedCuratedDatasetConnectOrCreateFieldInput>;
+  generatedCuratedDatasets: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput>>;
   rawdataFile: InputMaybe<RawDatasetRawdataFileConnectOrCreateFieldInput>;
   studySite: InputMaybe<RawDatasetStudySiteConnectOrCreateFieldInput>;
 };
@@ -6847,22 +7323,24 @@ export type RawDatasetCreateInput = {
   allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   codeBook: InputMaybe<RawDatasetCodeBookFieldInput>;
   description: Scalars['String'];
+  files: InputMaybe<RawDatasetFilesFieldInput>;
   fromStudy: InputMaybe<RawDatasetFromStudyFieldInput>;
-  generatedCuratedDataset: InputMaybe<RawDatasetGeneratedCuratedDatasetFieldInput>;
+  funnelTasks: InputMaybe<RawDatasetFunnelTasksFieldInput>;
+  generatedCuratedDatasets: InputMaybe<RawDatasetGeneratedCuratedDatasetsFieldInput>;
   minioBucket: InputMaybe<RawDatasetMinioBucketFieldInput>;
   name: Scalars['String'];
   rawdataFile: InputMaybe<RawDatasetRawdataFileFieldInput>;
   studySite: InputMaybe<RawDatasetStudySiteFieldInput>;
 };
 
-export type RawDatasetCuratedDatasetGeneratedCuratedDatasetAggregationSelection = {
-  __typename?: 'RawDatasetCuratedDatasetGeneratedCuratedDatasetAggregationSelection';
+export type RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection = {
+  __typename?: 'RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection';
   count: Scalars['Int'];
-  node: Maybe<RawDatasetCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelection>;
+  node: Maybe<RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection>;
 };
 
-export type RawDatasetCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelection = {
-  __typename?: 'RawDatasetCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelection';
+export type RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection = {
+  __typename?: 'RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection';
   curatedDatasetID: IdAggregateSelectionNonNullable;
   description: StringAggregateSelectionNonNullable;
   name: StringAggregateSelectionNonNullable;
@@ -6870,8 +7348,10 @@ export type RawDatasetCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelectio
 
 export type RawDatasetDeleteInput = {
   codeBook: InputMaybe<RawDatasetCodeBookDeleteFieldInput>;
+  files: InputMaybe<Array<RawDatasetFilesDeleteFieldInput>>;
   fromStudy: InputMaybe<RawDatasetFromStudyDeleteFieldInput>;
-  generatedCuratedDataset: InputMaybe<RawDatasetGeneratedCuratedDatasetDeleteFieldInput>;
+  funnelTasks: InputMaybe<Array<RawDatasetFunnelTasksDeleteFieldInput>>;
+  generatedCuratedDatasets: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsDeleteFieldInput>>;
   minioBucket: InputMaybe<RawDatasetMinioBucketDeleteFieldInput>;
   rawdataFile: InputMaybe<RawDatasetRawdataFileDeleteFieldInput>;
   studySite: InputMaybe<RawDatasetStudySiteDeleteFieldInput>;
@@ -6879,8 +7359,10 @@ export type RawDatasetDeleteInput = {
 
 export type RawDatasetDisconnectInput = {
   codeBook: InputMaybe<RawDatasetCodeBookDisconnectFieldInput>;
+  files: InputMaybe<Array<RawDatasetFilesDisconnectFieldInput>>;
   fromStudy: InputMaybe<RawDatasetFromStudyDisconnectFieldInput>;
-  generatedCuratedDataset: InputMaybe<RawDatasetGeneratedCuratedDatasetDisconnectFieldInput>;
+  funnelTasks: InputMaybe<Array<RawDatasetFunnelTasksDisconnectFieldInput>>;
+  generatedCuratedDatasets: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsDisconnectFieldInput>>;
   minioBucket: InputMaybe<RawDatasetMinioBucketDisconnectFieldInput>;
   rawdataFile: InputMaybe<RawDatasetRawdataFileDisconnectFieldInput>;
   studySite: InputMaybe<RawDatasetStudySiteDisconnectFieldInput>;
@@ -6890,6 +7372,116 @@ export type RawDatasetEdge = {
   __typename?: 'RawDatasetEdge';
   cursor: Scalars['String'];
   node: RawDataset;
+};
+
+export type RawDatasetFilesAggregateInput = {
+  AND: InputMaybe<Array<RawDatasetFilesAggregateInput>>;
+  OR: InputMaybe<Array<RawDatasetFilesAggregateInput>>;
+  count: InputMaybe<Scalars['Int']>;
+  count_GT: InputMaybe<Scalars['Int']>;
+  count_GTE: InputMaybe<Scalars['Int']>;
+  count_LT: InputMaybe<Scalars['Int']>;
+  count_LTE: InputMaybe<Scalars['Int']>;
+  node: InputMaybe<RawDatasetFilesNodeAggregationWhereInput>;
+};
+
+export type RawDatasetFilesConnectFieldInput = {
+  connect: InputMaybe<Array<MinioUploadConnectInput>>;
+  where: InputMaybe<MinioUploadConnectWhere>;
+};
+
+export type RawDatasetFilesConnectOrCreateFieldInput = {
+  onCreate: RawDatasetFilesConnectOrCreateFieldInputOnCreate;
+  where: MinioUploadConnectOrCreateWhere;
+};
+
+export type RawDatasetFilesConnectOrCreateFieldInputOnCreate = {
+  node: MinioUploadOnCreateInput;
+};
+
+export type RawDatasetFilesConnection = {
+  __typename?: 'RawDatasetFilesConnection';
+  edges: Array<RawDatasetFilesRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type RawDatasetFilesConnectionSort = {
+  node: InputMaybe<MinioUploadSort>;
+};
+
+export type RawDatasetFilesConnectionWhere = {
+  AND: InputMaybe<Array<RawDatasetFilesConnectionWhere>>;
+  OR: InputMaybe<Array<RawDatasetFilesConnectionWhere>>;
+  node: InputMaybe<MinioUploadWhere>;
+  node_NOT: InputMaybe<MinioUploadWhere>;
+};
+
+export type RawDatasetFilesCreateFieldInput = {
+  node: MinioUploadCreateInput;
+};
+
+export type RawDatasetFilesDeleteFieldInput = {
+  delete: InputMaybe<MinioUploadDeleteInput>;
+  where: InputMaybe<RawDatasetFilesConnectionWhere>;
+};
+
+export type RawDatasetFilesDisconnectFieldInput = {
+  disconnect: InputMaybe<MinioUploadDisconnectInput>;
+  where: InputMaybe<RawDatasetFilesConnectionWhere>;
+};
+
+export type RawDatasetFilesFieldInput = {
+  connect: InputMaybe<Array<RawDatasetFilesConnectFieldInput>>;
+  connectOrCreate: InputMaybe<Array<RawDatasetFilesConnectOrCreateFieldInput>>;
+  create: InputMaybe<Array<RawDatasetFilesCreateFieldInput>>;
+};
+
+export type RawDatasetFilesNodeAggregationWhereInput = {
+  AND: InputMaybe<Array<RawDatasetFilesNodeAggregationWhereInput>>;
+  OR: InputMaybe<Array<RawDatasetFilesNodeAggregationWhereInput>>;
+  bucketName_EQUAL: InputMaybe<Scalars['ID']>;
+  filename_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  filename_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  filename_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  filename_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  filename_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  filename_EQUAL: InputMaybe<Scalars['String']>;
+  filename_GT: InputMaybe<Scalars['Int']>;
+  filename_GTE: InputMaybe<Scalars['Int']>;
+  filename_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  filename_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  filename_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  filename_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  filename_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  filename_LT: InputMaybe<Scalars['Int']>;
+  filename_LTE: InputMaybe<Scalars['Int']>;
+  filename_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  filename_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  filename_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  filename_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  filename_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  objectName_EQUAL: InputMaybe<Scalars['ID']>;
+};
+
+export type RawDatasetFilesRelationship = {
+  __typename?: 'RawDatasetFilesRelationship';
+  cursor: Scalars['String'];
+  node: MinioUpload;
+};
+
+export type RawDatasetFilesUpdateConnectionInput = {
+  node: InputMaybe<MinioUploadUpdateInput>;
+};
+
+export type RawDatasetFilesUpdateFieldInput = {
+  connect: InputMaybe<Array<RawDatasetFilesConnectFieldInput>>;
+  connectOrCreate: InputMaybe<Array<RawDatasetFilesConnectOrCreateFieldInput>>;
+  create: InputMaybe<Array<RawDatasetFilesCreateFieldInput>>;
+  delete: InputMaybe<Array<RawDatasetFilesDeleteFieldInput>>;
+  disconnect: InputMaybe<Array<RawDatasetFilesDisconnectFieldInput>>;
+  update: InputMaybe<RawDatasetFilesUpdateConnectionInput>;
+  where: InputMaybe<RawDatasetFilesConnectionWhere>;
 };
 
 export type RawDatasetFromStudyAggregateInput = {
@@ -7041,72 +7633,230 @@ export type RawDatasetFromStudyUpdateFieldInput = {
   where: InputMaybe<RawDatasetFromStudyConnectionWhere>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetAggregateInput = {
-  AND: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetAggregateInput>>;
-  OR: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetAggregateInput>>;
+export type RawDatasetFunnelTasksAggregateInput = {
+  AND: InputMaybe<Array<RawDatasetFunnelTasksAggregateInput>>;
+  OR: InputMaybe<Array<RawDatasetFunnelTasksAggregateInput>>;
   count: InputMaybe<Scalars['Int']>;
   count_GT: InputMaybe<Scalars['Int']>;
   count_GTE: InputMaybe<Scalars['Int']>;
   count_LT: InputMaybe<Scalars['Int']>;
   count_LTE: InputMaybe<Scalars['Int']>;
-  node: InputMaybe<RawDatasetGeneratedCuratedDatasetNodeAggregationWhereInput>;
+  node: InputMaybe<RawDatasetFunnelTasksNodeAggregationWhereInput>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetConnectFieldInput = {
-  connect: InputMaybe<CuratedDatasetConnectInput>;
-  where: InputMaybe<CuratedDatasetConnectWhere>;
+export type RawDatasetFunnelTasksConnectFieldInput = {
+  connect: InputMaybe<Array<TaskConnectInput>>;
+  where: InputMaybe<TaskConnectWhere>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetConnectOrCreateFieldInput = {
-  onCreate: RawDatasetGeneratedCuratedDatasetConnectOrCreateFieldInputOnCreate;
-  where: CuratedDatasetConnectOrCreateWhere;
-};
-
-export type RawDatasetGeneratedCuratedDatasetConnectOrCreateFieldInputOnCreate = {
-  node: CuratedDatasetOnCreateInput;
-};
-
-export type RawDatasetGeneratedCuratedDatasetConnection = {
-  __typename?: 'RawDatasetGeneratedCuratedDatasetConnection';
-  edges: Array<RawDatasetGeneratedCuratedDatasetRelationship>;
+export type RawDatasetFunnelTasksConnection = {
+  __typename?: 'RawDatasetFunnelTasksConnection';
+  edges: Array<RawDatasetFunnelTasksRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type RawDatasetGeneratedCuratedDatasetConnectionSort = {
+export type RawDatasetFunnelTasksConnectionSort = {
+  node: InputMaybe<TaskSort>;
+};
+
+export type RawDatasetFunnelTasksConnectionWhere = {
+  AND: InputMaybe<Array<RawDatasetFunnelTasksConnectionWhere>>;
+  OR: InputMaybe<Array<RawDatasetFunnelTasksConnectionWhere>>;
+  node: InputMaybe<TaskWhere>;
+  node_NOT: InputMaybe<TaskWhere>;
+};
+
+export type RawDatasetFunnelTasksCreateFieldInput = {
+  node: TaskCreateInput;
+};
+
+export type RawDatasetFunnelTasksDeleteFieldInput = {
+  delete: InputMaybe<TaskDeleteInput>;
+  where: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+};
+
+export type RawDatasetFunnelTasksDisconnectFieldInput = {
+  disconnect: InputMaybe<TaskDisconnectInput>;
+  where: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+};
+
+export type RawDatasetFunnelTasksFieldInput = {
+  connect: InputMaybe<Array<RawDatasetFunnelTasksConnectFieldInput>>;
+  create: InputMaybe<Array<RawDatasetFunnelTasksCreateFieldInput>>;
+};
+
+export type RawDatasetFunnelTasksNodeAggregationWhereInput = {
+  AND: InputMaybe<Array<RawDatasetFunnelTasksNodeAggregationWhereInput>>;
+  OR: InputMaybe<Array<RawDatasetFunnelTasksNodeAggregationWhereInput>>;
+  creationTime_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  creationTime_EQUAL: InputMaybe<Scalars['String']>;
+  creationTime_GT: InputMaybe<Scalars['Int']>;
+  creationTime_GTE: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  creationTime_LT: InputMaybe<Scalars['Int']>;
+  creationTime_LTE: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  description_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  description_EQUAL: InputMaybe<Scalars['String']>;
+  description_GT: InputMaybe<Scalars['Int']>;
+  description_GTE: InputMaybe<Scalars['Int']>;
+  description_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  description_LT: InputMaybe<Scalars['Int']>;
+  description_LTE: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  id_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  id_EQUAL: InputMaybe<Scalars['String']>;
+  id_GT: InputMaybe<Scalars['Int']>;
+  id_GTE: InputMaybe<Scalars['Int']>;
+  id_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  id_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  id_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  id_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  id_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  id_LT: InputMaybe<Scalars['Int']>;
+  id_LTE: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  name_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  name_EQUAL: InputMaybe<Scalars['String']>;
+  name_GT: InputMaybe<Scalars['Int']>;
+  name_GTE: InputMaybe<Scalars['Int']>;
+  name_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  name_LT: InputMaybe<Scalars['Int']>;
+  name_LTE: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  taskID_EQUAL: InputMaybe<Scalars['ID']>;
+};
+
+export type RawDatasetFunnelTasksRelationship = {
+  __typename?: 'RawDatasetFunnelTasksRelationship';
+  cursor: Scalars['String'];
+  node: Task;
+};
+
+export type RawDatasetFunnelTasksUpdateConnectionInput = {
+  node: InputMaybe<TaskUpdateInput>;
+};
+
+export type RawDatasetFunnelTasksUpdateFieldInput = {
+  connect: InputMaybe<Array<RawDatasetFunnelTasksConnectFieldInput>>;
+  create: InputMaybe<Array<RawDatasetFunnelTasksCreateFieldInput>>;
+  delete: InputMaybe<Array<RawDatasetFunnelTasksDeleteFieldInput>>;
+  disconnect: InputMaybe<Array<RawDatasetFunnelTasksDisconnectFieldInput>>;
+  update: InputMaybe<RawDatasetFunnelTasksUpdateConnectionInput>;
+  where: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+};
+
+export type RawDatasetGeneratedCuratedDatasetsAggregateInput = {
+  AND: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsAggregateInput>>;
+  OR: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsAggregateInput>>;
+  count: InputMaybe<Scalars['Int']>;
+  count_GT: InputMaybe<Scalars['Int']>;
+  count_GTE: InputMaybe<Scalars['Int']>;
+  count_LT: InputMaybe<Scalars['Int']>;
+  count_LTE: InputMaybe<Scalars['Int']>;
+  node: InputMaybe<RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput>;
+};
+
+export type RawDatasetGeneratedCuratedDatasetsConnectFieldInput = {
+  connect: InputMaybe<Array<CuratedDatasetConnectInput>>;
+  where: InputMaybe<CuratedDatasetConnectWhere>;
+};
+
+export type RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput = {
+  onCreate: RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate;
+  where: CuratedDatasetConnectOrCreateWhere;
+};
+
+export type RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate = {
+  node: CuratedDatasetOnCreateInput;
+};
+
+export type RawDatasetGeneratedCuratedDatasetsConnection = {
+  __typename?: 'RawDatasetGeneratedCuratedDatasetsConnection';
+  edges: Array<RawDatasetGeneratedCuratedDatasetsRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type RawDatasetGeneratedCuratedDatasetsConnectionSort = {
   node: InputMaybe<CuratedDatasetSort>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetConnectionWhere = {
-  AND: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetConnectionWhere>>;
-  OR: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetConnectionWhere>>;
+export type RawDatasetGeneratedCuratedDatasetsConnectionWhere = {
+  AND: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectionWhere>>;
+  OR: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectionWhere>>;
   node: InputMaybe<CuratedDatasetWhere>;
   node_NOT: InputMaybe<CuratedDatasetWhere>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetCreateFieldInput = {
+export type RawDatasetGeneratedCuratedDatasetsCreateFieldInput = {
   node: CuratedDatasetCreateInput;
 };
 
-export type RawDatasetGeneratedCuratedDatasetDeleteFieldInput = {
+export type RawDatasetGeneratedCuratedDatasetsDeleteFieldInput = {
   delete: InputMaybe<CuratedDatasetDeleteInput>;
-  where: InputMaybe<RawDatasetGeneratedCuratedDatasetConnectionWhere>;
+  where: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetDisconnectFieldInput = {
+export type RawDatasetGeneratedCuratedDatasetsDisconnectFieldInput = {
   disconnect: InputMaybe<CuratedDatasetDisconnectInput>;
-  where: InputMaybe<RawDatasetGeneratedCuratedDatasetConnectionWhere>;
+  where: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetFieldInput = {
-  connect: InputMaybe<RawDatasetGeneratedCuratedDatasetConnectFieldInput>;
-  connectOrCreate: InputMaybe<RawDatasetGeneratedCuratedDatasetConnectOrCreateFieldInput>;
-  create: InputMaybe<RawDatasetGeneratedCuratedDatasetCreateFieldInput>;
+export type RawDatasetGeneratedCuratedDatasetsFieldInput = {
+  connect: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectFieldInput>>;
+  connectOrCreate: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput>>;
+  create: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsCreateFieldInput>>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetNodeAggregationWhereInput = {
-  AND: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetNodeAggregationWhereInput>>;
-  OR: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetNodeAggregationWhereInput>>;
+export type RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput = {
+  AND: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput>>;
+  OR: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput>>;
   curatedDatasetID_EQUAL: InputMaybe<Scalars['ID']>;
   description_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
   description_AVERAGE_GT: InputMaybe<Scalars['Float']>;
@@ -7150,24 +7900,24 @@ export type RawDatasetGeneratedCuratedDatasetNodeAggregationWhereInput = {
   name_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetRelationship = {
-  __typename?: 'RawDatasetGeneratedCuratedDatasetRelationship';
+export type RawDatasetGeneratedCuratedDatasetsRelationship = {
+  __typename?: 'RawDatasetGeneratedCuratedDatasetsRelationship';
   cursor: Scalars['String'];
   node: CuratedDataset;
 };
 
-export type RawDatasetGeneratedCuratedDatasetUpdateConnectionInput = {
+export type RawDatasetGeneratedCuratedDatasetsUpdateConnectionInput = {
   node: InputMaybe<CuratedDatasetUpdateInput>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetUpdateFieldInput = {
-  connect: InputMaybe<RawDatasetGeneratedCuratedDatasetConnectFieldInput>;
-  connectOrCreate: InputMaybe<RawDatasetGeneratedCuratedDatasetConnectOrCreateFieldInput>;
-  create: InputMaybe<RawDatasetGeneratedCuratedDatasetCreateFieldInput>;
-  delete: InputMaybe<RawDatasetGeneratedCuratedDatasetDeleteFieldInput>;
-  disconnect: InputMaybe<RawDatasetGeneratedCuratedDatasetDisconnectFieldInput>;
-  update: InputMaybe<RawDatasetGeneratedCuratedDatasetUpdateConnectionInput>;
-  where: InputMaybe<RawDatasetGeneratedCuratedDatasetConnectionWhere>;
+export type RawDatasetGeneratedCuratedDatasetsUpdateFieldInput = {
+  connect: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectFieldInput>>;
+  connectOrCreate: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput>>;
+  create: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsCreateFieldInput>>;
+  delete: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsDeleteFieldInput>>;
+  disconnect: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsDisconnectFieldInput>>;
+  update: InputMaybe<RawDatasetGeneratedCuratedDatasetsUpdateConnectionInput>;
+  where: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
 };
 
 export type RawDatasetGeographyCityStudySiteAggregationSelection = {
@@ -7283,6 +8033,19 @@ export type RawDatasetMinioUploadCodeBookAggregationSelection = {
 
 export type RawDatasetMinioUploadCodeBookNodeAggregateSelection = {
   __typename?: 'RawDatasetMinioUploadCodeBookNodeAggregateSelection';
+  bucketName: IdAggregateSelectionNonNullable;
+  filename: StringAggregateSelectionNonNullable;
+  objectName: IdAggregateSelectionNonNullable;
+};
+
+export type RawDatasetMinioUploadFilesAggregationSelection = {
+  __typename?: 'RawDatasetMinioUploadFilesAggregationSelection';
+  count: Scalars['Int'];
+  node: Maybe<RawDatasetMinioUploadFilesNodeAggregateSelection>;
+};
+
+export type RawDatasetMinioUploadFilesNodeAggregateSelection = {
+  __typename?: 'RawDatasetMinioUploadFilesNodeAggregateSelection';
   bucketName: IdAggregateSelectionNonNullable;
   filename: StringAggregateSelectionNonNullable;
   objectName: IdAggregateSelectionNonNullable;
@@ -7435,8 +8198,10 @@ export type RawDatasetRawdataFileUpdateFieldInput = {
 
 export type RawDatasetRelationInput = {
   codeBook: InputMaybe<RawDatasetCodeBookCreateFieldInput>;
+  files: InputMaybe<Array<RawDatasetFilesCreateFieldInput>>;
   fromStudy: InputMaybe<RawDatasetFromStudyCreateFieldInput>;
-  generatedCuratedDataset: InputMaybe<RawDatasetGeneratedCuratedDatasetCreateFieldInput>;
+  funnelTasks: InputMaybe<Array<RawDatasetFunnelTasksCreateFieldInput>>;
+  generatedCuratedDatasets: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsCreateFieldInput>>;
   minioBucket: InputMaybe<RawDatasetMinioBucketCreateFieldInput>;
   rawdataFile: InputMaybe<RawDatasetRawdataFileCreateFieldInput>;
   studySite: InputMaybe<RawDatasetStudySiteCreateFieldInput>;
@@ -7641,6 +8406,21 @@ export type RawDatasetStudySiteUpdateFieldInput = {
   where: InputMaybe<RawDatasetStudySiteConnectionWhere>;
 };
 
+export type RawDatasetTaskFunnelTasksAggregationSelection = {
+  __typename?: 'RawDatasetTaskFunnelTasksAggregationSelection';
+  count: Scalars['Int'];
+  node: Maybe<RawDatasetTaskFunnelTasksNodeAggregateSelection>;
+};
+
+export type RawDatasetTaskFunnelTasksNodeAggregateSelection = {
+  __typename?: 'RawDatasetTaskFunnelTasksNodeAggregateSelection';
+  creationTime: StringAggregateSelectionNullable;
+  description: StringAggregateSelectionNullable;
+  id: StringAggregateSelectionNullable;
+  name: StringAggregateSelectionNullable;
+  taskID: IdAggregateSelectionNullable;
+};
+
 export type RawDatasetUniqueWhere = {
   rawDatasetID: InputMaybe<Scalars['ID']>;
 };
@@ -7654,8 +8434,10 @@ export type RawDatasetUpdateInput = {
   allowedStudies_PUSH: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   codeBook: InputMaybe<RawDatasetCodeBookUpdateFieldInput>;
   description: InputMaybe<Scalars['String']>;
+  files: InputMaybe<Array<RawDatasetFilesUpdateFieldInput>>;
   fromStudy: InputMaybe<RawDatasetFromStudyUpdateFieldInput>;
-  generatedCuratedDataset: InputMaybe<RawDatasetGeneratedCuratedDatasetUpdateFieldInput>;
+  funnelTasks: InputMaybe<Array<RawDatasetFunnelTasksUpdateFieldInput>>;
+  generatedCuratedDatasets: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsUpdateFieldInput>>;
   minioBucket: InputMaybe<RawDatasetMinioBucketUpdateFieldInput>;
   name: InputMaybe<Scalars['String']>;
   rawdataFile: InputMaybe<RawDatasetRawdataFileUpdateFieldInput>;
@@ -7696,16 +8478,62 @@ export type RawDatasetWhere = {
   description_NOT_IN: InputMaybe<Array<Scalars['String']>>;
   description_NOT_STARTS_WITH: InputMaybe<Scalars['String']>;
   description_STARTS_WITH: InputMaybe<Scalars['String']>;
+  files: InputMaybe<MinioUploadWhere>;
+  filesAggregate: InputMaybe<RawDatasetFilesAggregateInput>;
+  filesConnection: InputMaybe<RawDatasetFilesConnectionWhere>;
+  filesConnection_ALL: InputMaybe<RawDatasetFilesConnectionWhere>;
+  filesConnection_NONE: InputMaybe<RawDatasetFilesConnectionWhere>;
+  filesConnection_NOT: InputMaybe<RawDatasetFilesConnectionWhere>;
+  filesConnection_SINGLE: InputMaybe<RawDatasetFilesConnectionWhere>;
+  filesConnection_SOME: InputMaybe<RawDatasetFilesConnectionWhere>;
+  /** Return RawDatasets where all of the related MinioUploads match this filter */
+  files_ALL: InputMaybe<MinioUploadWhere>;
+  /** Return RawDatasets where none of the related MinioUploads match this filter */
+  files_NONE: InputMaybe<MinioUploadWhere>;
+  files_NOT: InputMaybe<MinioUploadWhere>;
+  /** Return RawDatasets where one of the related MinioUploads match this filter */
+  files_SINGLE: InputMaybe<MinioUploadWhere>;
+  /** Return RawDatasets where some of the related MinioUploads match this filter */
+  files_SOME: InputMaybe<MinioUploadWhere>;
   fromStudy: InputMaybe<StudyWhere>;
   fromStudyAggregate: InputMaybe<RawDatasetFromStudyAggregateInput>;
   fromStudyConnection: InputMaybe<RawDatasetFromStudyConnectionWhere>;
   fromStudyConnection_NOT: InputMaybe<RawDatasetFromStudyConnectionWhere>;
   fromStudy_NOT: InputMaybe<StudyWhere>;
-  generatedCuratedDataset: InputMaybe<CuratedDatasetWhere>;
-  generatedCuratedDatasetAggregate: InputMaybe<RawDatasetGeneratedCuratedDatasetAggregateInput>;
-  generatedCuratedDatasetConnection: InputMaybe<RawDatasetGeneratedCuratedDatasetConnectionWhere>;
-  generatedCuratedDatasetConnection_NOT: InputMaybe<RawDatasetGeneratedCuratedDatasetConnectionWhere>;
-  generatedCuratedDataset_NOT: InputMaybe<CuratedDatasetWhere>;
+  funnelTasks: InputMaybe<TaskWhere>;
+  funnelTasksAggregate: InputMaybe<RawDatasetFunnelTasksAggregateInput>;
+  funnelTasksConnection: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+  funnelTasksConnection_ALL: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+  funnelTasksConnection_NONE: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+  funnelTasksConnection_NOT: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+  funnelTasksConnection_SINGLE: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+  funnelTasksConnection_SOME: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+  /** Return RawDatasets where all of the related Tasks match this filter */
+  funnelTasks_ALL: InputMaybe<TaskWhere>;
+  /** Return RawDatasets where none of the related Tasks match this filter */
+  funnelTasks_NONE: InputMaybe<TaskWhere>;
+  funnelTasks_NOT: InputMaybe<TaskWhere>;
+  /** Return RawDatasets where one of the related Tasks match this filter */
+  funnelTasks_SINGLE: InputMaybe<TaskWhere>;
+  /** Return RawDatasets where some of the related Tasks match this filter */
+  funnelTasks_SOME: InputMaybe<TaskWhere>;
+  generatedCuratedDatasets: InputMaybe<CuratedDatasetWhere>;
+  generatedCuratedDatasetsAggregate: InputMaybe<RawDatasetGeneratedCuratedDatasetsAggregateInput>;
+  generatedCuratedDatasetsConnection: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
+  generatedCuratedDatasetsConnection_ALL: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
+  generatedCuratedDatasetsConnection_NONE: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
+  generatedCuratedDatasetsConnection_NOT: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
+  generatedCuratedDatasetsConnection_SINGLE: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
+  generatedCuratedDatasetsConnection_SOME: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
+  /** Return RawDatasets where all of the related CuratedDatasets match this filter */
+  generatedCuratedDatasets_ALL: InputMaybe<CuratedDatasetWhere>;
+  /** Return RawDatasets where none of the related CuratedDatasets match this filter */
+  generatedCuratedDatasets_NONE: InputMaybe<CuratedDatasetWhere>;
+  generatedCuratedDatasets_NOT: InputMaybe<CuratedDatasetWhere>;
+  /** Return RawDatasets where one of the related CuratedDatasets match this filter */
+  generatedCuratedDatasets_SINGLE: InputMaybe<CuratedDatasetWhere>;
+  /** Return RawDatasets where some of the related CuratedDatasets match this filter */
+  generatedCuratedDatasets_SOME: InputMaybe<CuratedDatasetWhere>;
   minioBucket: InputMaybe<MinioBucketWhere>;
   minioBucketAggregate: InputMaybe<RawDatasetMinioBucketAggregateInput>;
   minioBucketConnection: InputMaybe<RawDatasetMinioBucketConnectionWhere>;
@@ -8377,9 +9205,60 @@ export type Task = {
   __typename?: 'Task';
   creationTime: Maybe<Scalars['String']>;
   description: Maybe<Scalars['String']>;
+  fromRawDataset: Maybe<RawDataset>;
+  fromRawDatasetAggregate: Maybe<TaskRawDatasetFromRawDatasetAggregationSelection>;
+  fromRawDatasetConnection: TaskFromRawDatasetConnection;
+  generatedCuratedDataset: Maybe<CuratedDataset>;
+  generatedCuratedDatasetAggregate: Maybe<TaskCuratedDatasetGeneratedCuratedDatasetAggregationSelection>;
+  generatedCuratedDatasetConnection: TaskGeneratedCuratedDatasetConnection;
   id: Maybe<Scalars['String']>;
   name: Maybe<Scalars['String']>;
-  state: Maybe<Scalars['String']>;
+  state: Maybe<FunnelState>;
+  taskID: Maybe<Scalars['ID']>;
+};
+
+
+export type TaskFromRawDatasetArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  options: InputMaybe<RawDatasetOptions>;
+  where: InputMaybe<RawDatasetWhere>;
+};
+
+
+export type TaskFromRawDatasetAggregateArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  where: InputMaybe<RawDatasetWhere>;
+};
+
+
+export type TaskFromRawDatasetConnectionArgs = {
+  after: InputMaybe<Scalars['String']>;
+  directed?: InputMaybe<Scalars['Boolean']>;
+  first: InputMaybe<Scalars['Int']>;
+  sort: InputMaybe<Array<TaskFromRawDatasetConnectionSort>>;
+  where: InputMaybe<TaskFromRawDatasetConnectionWhere>;
+};
+
+
+export type TaskGeneratedCuratedDatasetArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  options: InputMaybe<CuratedDatasetOptions>;
+  where: InputMaybe<CuratedDatasetWhere>;
+};
+
+
+export type TaskGeneratedCuratedDatasetAggregateArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  where: InputMaybe<CuratedDatasetWhere>;
+};
+
+
+export type TaskGeneratedCuratedDatasetConnectionArgs = {
+  after: InputMaybe<Scalars['String']>;
+  directed?: InputMaybe<Scalars['Boolean']>;
+  first: InputMaybe<Scalars['Int']>;
+  sort: InputMaybe<Array<TaskGeneratedCuratedDatasetConnectionSort>>;
+  where: InputMaybe<TaskGeneratedCuratedDatasetConnectionWhere>;
 };
 
 export type TaskAggregateSelection = {
@@ -8389,21 +9268,334 @@ export type TaskAggregateSelection = {
   description: StringAggregateSelectionNullable;
   id: StringAggregateSelectionNullable;
   name: StringAggregateSelectionNullable;
-  state: StringAggregateSelectionNullable;
+  taskID: IdAggregateSelectionNullable;
+};
+
+export type TaskConnectInput = {
+  fromRawDataset: InputMaybe<TaskFromRawDatasetConnectFieldInput>;
+  generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetConnectFieldInput>;
+};
+
+export type TaskConnectOrCreateInput = {
+  fromRawDataset: InputMaybe<TaskFromRawDatasetConnectOrCreateFieldInput>;
+  generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetConnectOrCreateFieldInput>;
+};
+
+export type TaskConnectWhere = {
+  node: TaskWhere;
 };
 
 export type TaskCreateInput = {
   creationTime: InputMaybe<Scalars['String']>;
   description: InputMaybe<Scalars['String']>;
+  fromRawDataset: InputMaybe<TaskFromRawDatasetFieldInput>;
+  generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetFieldInput>;
   id: InputMaybe<Scalars['String']>;
   name: InputMaybe<Scalars['String']>;
-  state: InputMaybe<Scalars['String']>;
+  state: InputMaybe<FunnelState>;
+  taskID: InputMaybe<Scalars['ID']>;
+};
+
+export type TaskCuratedDatasetGeneratedCuratedDatasetAggregationSelection = {
+  __typename?: 'TaskCuratedDatasetGeneratedCuratedDatasetAggregationSelection';
+  count: Scalars['Int'];
+  node: Maybe<TaskCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelection>;
+};
+
+export type TaskCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelection = {
+  __typename?: 'TaskCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelection';
+  curatedDatasetID: IdAggregateSelectionNonNullable;
+  description: StringAggregateSelectionNonNullable;
+  name: StringAggregateSelectionNonNullable;
+};
+
+export type TaskDeleteInput = {
+  fromRawDataset: InputMaybe<TaskFromRawDatasetDeleteFieldInput>;
+  generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetDeleteFieldInput>;
+};
+
+export type TaskDisconnectInput = {
+  fromRawDataset: InputMaybe<TaskFromRawDatasetDisconnectFieldInput>;
+  generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetDisconnectFieldInput>;
 };
 
 export type TaskEdge = {
   __typename?: 'TaskEdge';
   cursor: Scalars['String'];
   node: Task;
+};
+
+export type TaskFromRawDatasetAggregateInput = {
+  AND: InputMaybe<Array<TaskFromRawDatasetAggregateInput>>;
+  OR: InputMaybe<Array<TaskFromRawDatasetAggregateInput>>;
+  count: InputMaybe<Scalars['Int']>;
+  count_GT: InputMaybe<Scalars['Int']>;
+  count_GTE: InputMaybe<Scalars['Int']>;
+  count_LT: InputMaybe<Scalars['Int']>;
+  count_LTE: InputMaybe<Scalars['Int']>;
+  node: InputMaybe<TaskFromRawDatasetNodeAggregationWhereInput>;
+};
+
+export type TaskFromRawDatasetConnectFieldInput = {
+  connect: InputMaybe<RawDatasetConnectInput>;
+  where: InputMaybe<RawDatasetConnectWhere>;
+};
+
+export type TaskFromRawDatasetConnectOrCreateFieldInput = {
+  onCreate: TaskFromRawDatasetConnectOrCreateFieldInputOnCreate;
+  where: RawDatasetConnectOrCreateWhere;
+};
+
+export type TaskFromRawDatasetConnectOrCreateFieldInputOnCreate = {
+  node: RawDatasetOnCreateInput;
+};
+
+export type TaskFromRawDatasetConnection = {
+  __typename?: 'TaskFromRawDatasetConnection';
+  edges: Array<TaskFromRawDatasetRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type TaskFromRawDatasetConnectionSort = {
+  node: InputMaybe<RawDatasetSort>;
+};
+
+export type TaskFromRawDatasetConnectionWhere = {
+  AND: InputMaybe<Array<TaskFromRawDatasetConnectionWhere>>;
+  OR: InputMaybe<Array<TaskFromRawDatasetConnectionWhere>>;
+  node: InputMaybe<RawDatasetWhere>;
+  node_NOT: InputMaybe<RawDatasetWhere>;
+};
+
+export type TaskFromRawDatasetCreateFieldInput = {
+  node: RawDatasetCreateInput;
+};
+
+export type TaskFromRawDatasetDeleteFieldInput = {
+  delete: InputMaybe<RawDatasetDeleteInput>;
+  where: InputMaybe<TaskFromRawDatasetConnectionWhere>;
+};
+
+export type TaskFromRawDatasetDisconnectFieldInput = {
+  disconnect: InputMaybe<RawDatasetDisconnectInput>;
+  where: InputMaybe<TaskFromRawDatasetConnectionWhere>;
+};
+
+export type TaskFromRawDatasetFieldInput = {
+  connect: InputMaybe<TaskFromRawDatasetConnectFieldInput>;
+  connectOrCreate: InputMaybe<TaskFromRawDatasetConnectOrCreateFieldInput>;
+  create: InputMaybe<TaskFromRawDatasetCreateFieldInput>;
+};
+
+export type TaskFromRawDatasetNodeAggregationWhereInput = {
+  AND: InputMaybe<Array<TaskFromRawDatasetNodeAggregationWhereInput>>;
+  OR: InputMaybe<Array<TaskFromRawDatasetNodeAggregationWhereInput>>;
+  createdAt_EQUAL: InputMaybe<Scalars['DateTime']>;
+  createdAt_GT: InputMaybe<Scalars['DateTime']>;
+  createdAt_GTE: InputMaybe<Scalars['DateTime']>;
+  createdAt_LT: InputMaybe<Scalars['DateTime']>;
+  createdAt_LTE: InputMaybe<Scalars['DateTime']>;
+  createdAt_MAX_EQUAL: InputMaybe<Scalars['DateTime']>;
+  createdAt_MAX_GT: InputMaybe<Scalars['DateTime']>;
+  createdAt_MAX_GTE: InputMaybe<Scalars['DateTime']>;
+  createdAt_MAX_LT: InputMaybe<Scalars['DateTime']>;
+  createdAt_MAX_LTE: InputMaybe<Scalars['DateTime']>;
+  createdAt_MIN_EQUAL: InputMaybe<Scalars['DateTime']>;
+  createdAt_MIN_GT: InputMaybe<Scalars['DateTime']>;
+  createdAt_MIN_GTE: InputMaybe<Scalars['DateTime']>;
+  createdAt_MIN_LT: InputMaybe<Scalars['DateTime']>;
+  createdAt_MIN_LTE: InputMaybe<Scalars['DateTime']>;
+  description_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  description_EQUAL: InputMaybe<Scalars['String']>;
+  description_GT: InputMaybe<Scalars['Int']>;
+  description_GTE: InputMaybe<Scalars['Int']>;
+  description_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  description_LT: InputMaybe<Scalars['Int']>;
+  description_LTE: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  name_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  name_EQUAL: InputMaybe<Scalars['String']>;
+  name_GT: InputMaybe<Scalars['Int']>;
+  name_GTE: InputMaybe<Scalars['Int']>;
+  name_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  name_LT: InputMaybe<Scalars['Int']>;
+  name_LTE: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  rawDatasetID_EQUAL: InputMaybe<Scalars['ID']>;
+};
+
+export type TaskFromRawDatasetRelationship = {
+  __typename?: 'TaskFromRawDatasetRelationship';
+  cursor: Scalars['String'];
+  node: RawDataset;
+};
+
+export type TaskFromRawDatasetUpdateConnectionInput = {
+  node: InputMaybe<RawDatasetUpdateInput>;
+};
+
+export type TaskFromRawDatasetUpdateFieldInput = {
+  connect: InputMaybe<TaskFromRawDatasetConnectFieldInput>;
+  connectOrCreate: InputMaybe<TaskFromRawDatasetConnectOrCreateFieldInput>;
+  create: InputMaybe<TaskFromRawDatasetCreateFieldInput>;
+  delete: InputMaybe<TaskFromRawDatasetDeleteFieldInput>;
+  disconnect: InputMaybe<TaskFromRawDatasetDisconnectFieldInput>;
+  update: InputMaybe<TaskFromRawDatasetUpdateConnectionInput>;
+  where: InputMaybe<TaskFromRawDatasetConnectionWhere>;
+};
+
+export type TaskGeneratedCuratedDatasetAggregateInput = {
+  AND: InputMaybe<Array<TaskGeneratedCuratedDatasetAggregateInput>>;
+  OR: InputMaybe<Array<TaskGeneratedCuratedDatasetAggregateInput>>;
+  count: InputMaybe<Scalars['Int']>;
+  count_GT: InputMaybe<Scalars['Int']>;
+  count_GTE: InputMaybe<Scalars['Int']>;
+  count_LT: InputMaybe<Scalars['Int']>;
+  count_LTE: InputMaybe<Scalars['Int']>;
+  node: InputMaybe<TaskGeneratedCuratedDatasetNodeAggregationWhereInput>;
+};
+
+export type TaskGeneratedCuratedDatasetConnectFieldInput = {
+  connect: InputMaybe<CuratedDatasetConnectInput>;
+  where: InputMaybe<CuratedDatasetConnectWhere>;
+};
+
+export type TaskGeneratedCuratedDatasetConnectOrCreateFieldInput = {
+  onCreate: TaskGeneratedCuratedDatasetConnectOrCreateFieldInputOnCreate;
+  where: CuratedDatasetConnectOrCreateWhere;
+};
+
+export type TaskGeneratedCuratedDatasetConnectOrCreateFieldInputOnCreate = {
+  node: CuratedDatasetOnCreateInput;
+};
+
+export type TaskGeneratedCuratedDatasetConnection = {
+  __typename?: 'TaskGeneratedCuratedDatasetConnection';
+  edges: Array<TaskGeneratedCuratedDatasetRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type TaskGeneratedCuratedDatasetConnectionSort = {
+  node: InputMaybe<CuratedDatasetSort>;
+};
+
+export type TaskGeneratedCuratedDatasetConnectionWhere = {
+  AND: InputMaybe<Array<TaskGeneratedCuratedDatasetConnectionWhere>>;
+  OR: InputMaybe<Array<TaskGeneratedCuratedDatasetConnectionWhere>>;
+  node: InputMaybe<CuratedDatasetWhere>;
+  node_NOT: InputMaybe<CuratedDatasetWhere>;
+};
+
+export type TaskGeneratedCuratedDatasetCreateFieldInput = {
+  node: CuratedDatasetCreateInput;
+};
+
+export type TaskGeneratedCuratedDatasetDeleteFieldInput = {
+  delete: InputMaybe<CuratedDatasetDeleteInput>;
+  where: InputMaybe<TaskGeneratedCuratedDatasetConnectionWhere>;
+};
+
+export type TaskGeneratedCuratedDatasetDisconnectFieldInput = {
+  disconnect: InputMaybe<CuratedDatasetDisconnectInput>;
+  where: InputMaybe<TaskGeneratedCuratedDatasetConnectionWhere>;
+};
+
+export type TaskGeneratedCuratedDatasetFieldInput = {
+  connect: InputMaybe<TaskGeneratedCuratedDatasetConnectFieldInput>;
+  connectOrCreate: InputMaybe<TaskGeneratedCuratedDatasetConnectOrCreateFieldInput>;
+  create: InputMaybe<TaskGeneratedCuratedDatasetCreateFieldInput>;
+};
+
+export type TaskGeneratedCuratedDatasetNodeAggregationWhereInput = {
+  AND: InputMaybe<Array<TaskGeneratedCuratedDatasetNodeAggregationWhereInput>>;
+  OR: InputMaybe<Array<TaskGeneratedCuratedDatasetNodeAggregationWhereInput>>;
+  curatedDatasetID_EQUAL: InputMaybe<Scalars['ID']>;
+  description_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  description_EQUAL: InputMaybe<Scalars['String']>;
+  description_GT: InputMaybe<Scalars['Int']>;
+  description_GTE: InputMaybe<Scalars['Int']>;
+  description_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  description_LT: InputMaybe<Scalars['Int']>;
+  description_LTE: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+  name_AVERAGE_EQUAL: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GT: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GTE: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LT: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LTE: InputMaybe<Scalars['Float']>;
+  name_EQUAL: InputMaybe<Scalars['String']>;
+  name_GT: InputMaybe<Scalars['Int']>;
+  name_GTE: InputMaybe<Scalars['Int']>;
+  name_LONGEST_EQUAL: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GT: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GTE: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LT: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LTE: InputMaybe<Scalars['Int']>;
+  name_LT: InputMaybe<Scalars['Int']>;
+  name_LTE: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_EQUAL: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GT: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GTE: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LT: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LTE: InputMaybe<Scalars['Int']>;
+};
+
+export type TaskGeneratedCuratedDatasetRelationship = {
+  __typename?: 'TaskGeneratedCuratedDatasetRelationship';
+  cursor: Scalars['String'];
+  node: CuratedDataset;
+};
+
+export type TaskGeneratedCuratedDatasetUpdateConnectionInput = {
+  node: InputMaybe<CuratedDatasetUpdateInput>;
+};
+
+export type TaskGeneratedCuratedDatasetUpdateFieldInput = {
+  connect: InputMaybe<TaskGeneratedCuratedDatasetConnectFieldInput>;
+  connectOrCreate: InputMaybe<TaskGeneratedCuratedDatasetConnectOrCreateFieldInput>;
+  create: InputMaybe<TaskGeneratedCuratedDatasetCreateFieldInput>;
+  delete: InputMaybe<TaskGeneratedCuratedDatasetDeleteFieldInput>;
+  disconnect: InputMaybe<TaskGeneratedCuratedDatasetDisconnectFieldInput>;
+  update: InputMaybe<TaskGeneratedCuratedDatasetUpdateConnectionInput>;
+  where: InputMaybe<TaskGeneratedCuratedDatasetConnectionWhere>;
 };
 
 export type TaskOptions = {
@@ -8413,6 +9605,25 @@ export type TaskOptions = {
   sort: InputMaybe<Array<TaskSort>>;
 };
 
+export type TaskRawDatasetFromRawDatasetAggregationSelection = {
+  __typename?: 'TaskRawDatasetFromRawDatasetAggregationSelection';
+  count: Scalars['Int'];
+  node: Maybe<TaskRawDatasetFromRawDatasetNodeAggregateSelection>;
+};
+
+export type TaskRawDatasetFromRawDatasetNodeAggregateSelection = {
+  __typename?: 'TaskRawDatasetFromRawDatasetNodeAggregateSelection';
+  createdAt: DateTimeAggregateSelectionNonNullable;
+  description: StringAggregateSelectionNonNullable;
+  name: StringAggregateSelectionNonNullable;
+  rawDatasetID: IdAggregateSelectionNonNullable;
+};
+
+export type TaskRelationInput = {
+  fromRawDataset: InputMaybe<TaskFromRawDatasetCreateFieldInput>;
+  generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetCreateFieldInput>;
+};
+
 /** Fields to sort Tasks by. The order in which sorts are applied is not guaranteed when specifying many fields in one TaskSort object. */
 export type TaskSort = {
   creationTime: InputMaybe<SortDirection>;
@@ -8420,14 +9631,18 @@ export type TaskSort = {
   id: InputMaybe<SortDirection>;
   name: InputMaybe<SortDirection>;
   state: InputMaybe<SortDirection>;
+  taskID: InputMaybe<SortDirection>;
 };
 
 export type TaskUpdateInput = {
   creationTime: InputMaybe<Scalars['String']>;
   description: InputMaybe<Scalars['String']>;
+  fromRawDataset: InputMaybe<TaskFromRawDatasetUpdateFieldInput>;
+  generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetUpdateFieldInput>;
   id: InputMaybe<Scalars['String']>;
   name: InputMaybe<Scalars['String']>;
-  state: InputMaybe<Scalars['String']>;
+  state: InputMaybe<FunnelState>;
+  taskID: InputMaybe<Scalars['ID']>;
 };
 
 export type TaskWhere = {
@@ -8453,6 +9668,16 @@ export type TaskWhere = {
   description_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   description_NOT_STARTS_WITH: InputMaybe<Scalars['String']>;
   description_STARTS_WITH: InputMaybe<Scalars['String']>;
+  fromRawDataset: InputMaybe<RawDatasetWhere>;
+  fromRawDatasetAggregate: InputMaybe<TaskFromRawDatasetAggregateInput>;
+  fromRawDatasetConnection: InputMaybe<TaskFromRawDatasetConnectionWhere>;
+  fromRawDatasetConnection_NOT: InputMaybe<TaskFromRawDatasetConnectionWhere>;
+  fromRawDataset_NOT: InputMaybe<RawDatasetWhere>;
+  generatedCuratedDataset: InputMaybe<CuratedDatasetWhere>;
+  generatedCuratedDatasetAggregate: InputMaybe<TaskGeneratedCuratedDatasetAggregateInput>;
+  generatedCuratedDatasetConnection: InputMaybe<TaskGeneratedCuratedDatasetConnectionWhere>;
+  generatedCuratedDatasetConnection_NOT: InputMaybe<TaskGeneratedCuratedDatasetConnectionWhere>;
+  generatedCuratedDataset_NOT: InputMaybe<CuratedDatasetWhere>;
   id: InputMaybe<Scalars['String']>;
   id_CONTAINS: InputMaybe<Scalars['String']>;
   id_ENDS_WITH: InputMaybe<Scalars['String']>;
@@ -8473,16 +9698,20 @@ export type TaskWhere = {
   name_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   name_NOT_STARTS_WITH: InputMaybe<Scalars['String']>;
   name_STARTS_WITH: InputMaybe<Scalars['String']>;
-  state: InputMaybe<Scalars['String']>;
-  state_CONTAINS: InputMaybe<Scalars['String']>;
-  state_ENDS_WITH: InputMaybe<Scalars['String']>;
-  state_IN: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  state_NOT: InputMaybe<Scalars['String']>;
-  state_NOT_CONTAINS: InputMaybe<Scalars['String']>;
-  state_NOT_ENDS_WITH: InputMaybe<Scalars['String']>;
-  state_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  state_NOT_STARTS_WITH: InputMaybe<Scalars['String']>;
-  state_STARTS_WITH: InputMaybe<Scalars['String']>;
+  state: InputMaybe<FunnelState>;
+  state_IN: InputMaybe<Array<InputMaybe<FunnelState>>>;
+  state_NOT: InputMaybe<FunnelState>;
+  state_NOT_IN: InputMaybe<Array<InputMaybe<FunnelState>>>;
+  taskID: InputMaybe<Scalars['ID']>;
+  taskID_CONTAINS: InputMaybe<Scalars['ID']>;
+  taskID_ENDS_WITH: InputMaybe<Scalars['ID']>;
+  taskID_IN: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  taskID_NOT: InputMaybe<Scalars['ID']>;
+  taskID_NOT_CONTAINS: InputMaybe<Scalars['ID']>;
+  taskID_NOT_ENDS_WITH: InputMaybe<Scalars['ID']>;
+  taskID_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  taskID_NOT_STARTS_WITH: InputMaybe<Scalars['ID']>;
+  taskID_STARTS_WITH: InputMaybe<Scalars['ID']>;
 };
 
 export type TasksConnection = {
