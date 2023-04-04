@@ -443,7 +443,7 @@ export default function DatasetDetails() {
                   (
                   <List.Item key={`List.Item.${funnelTask.id}`}>
                     <Button
-                      active={funnelTask.state === 'COMPLETE'}
+                      disabled={funnelTask.state !== 'COMPLETE'}
                       key={`Button.${funnelTask.id}`}
                       content={
                         `
