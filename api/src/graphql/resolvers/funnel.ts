@@ -16,7 +16,6 @@ const submitTask = async (obj, { name = "Hello world", description = "Demonstrat
 }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
   try {
     const TaskModel = ogm.model('Task');
-    const RawDatasetModel = ogm.model('RawDataset');
     const response: Response = await fetch(
       'http://funnel:8003/v1/tasks?view=BASIC', {
       method: 'POST',
@@ -42,11 +41,7 @@ const submitTask = async (obj, { name = "Hello world", description = "Demonstrat
     const fullResult = await funnelTask(obj, { taskId }, { driver, kcAdminClient })
     let subsetResult = R.pick(fullResult, ['creationTime', 'description', 'id', 'name', 'state'])
 
-    const createTaskResult = await TaskModel.create({ input: { ...subsetResult, taskID, state: 'RUNNING' } });
-    const addTaskResult = await RawDatasetModel.update({
-      where: { rawDatasetID: description },
-      update: { funnelTasks: { connect: { where: { node: { taskID } } } } }
-    });
+    const createTaskResult = await TaskModel.create({ input: { ...subsetResult, taskID } });
 
     subsetResult['taskID'] = subsetResult['id']
     return subsetResult;

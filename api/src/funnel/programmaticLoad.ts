@@ -52,6 +52,14 @@ import { v4 as uuidv4 } from 'uuid';
 
   const taskID = process.argv[9]
 
+  const ogm = new OGM({typeDefs, driver, resolvers})
+  await ogm.init()
+  const RawDatasetModel = ogm.model('RawDataset');
+  const addTaskResult = await RawDatasetModel.update({
+    where: { rawDatasetID: rawDatasetID },
+    update: { funnelTasks: { connect: { where: { node: { taskID } } } } }
+  });
+
   let permissions_map = {}
   const properties_split = properties.split(',')
   const values_split = values.split(',')
@@ -94,7 +102,6 @@ import { v4 as uuidv4 } from 'uuid';
   // console.log(`limit = ${limit}`)
   console.log(``)
 
-  const ogm = new OGM({typeDefs, driver, resolvers})
   console.time('1')
 
   const session = driver.session()
@@ -119,7 +126,6 @@ import { v4 as uuidv4 } from 'uuid';
     )
   }
 
-  await ogm.init()
   console.timeEnd('1')
   console.time('2')
 
