@@ -12,6 +12,7 @@ enum FunnelState {
   SUSPENDED
   COMPLETE
   CANCELLED
+  QUEUED
 }
 
 type Task {

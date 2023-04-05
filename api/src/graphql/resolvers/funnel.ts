@@ -9,6 +9,8 @@ import { OGM } from '@neo4j/graphql-ogm';
 import { Driver } from 'neo4j-driver';
 import { DataVariableFieldDefinition, Task } from '../../../../ui/src/types/types';
 import { v4 as uuidv4 } from 'uuid';
+import * as R from 'remeda'
+
 
 const submitTask = async (obj, { name = "Hello world", description = "Demonstrates the most basic echo task", taskID = uuidv4(), image = "alpine", command = "ls -la /",
 }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
@@ -35,12 +37,19 @@ const submitTask = async (obj, { name = "Hello world", description = "Demonstrat
     }
     );
     const result: Task = await response.json();
-    const createTaskResult = await TaskModel.create({ input: { ...result, taskID, state: 'RUNNING' } });
+    const { id: taskId } = result
+
+    const fullResult = await funnelTask(obj, { taskId }, { driver, kcAdminClient })
+    let subsetResult = R.pick(fullResult, ['creationTime', 'description', 'id', 'name', 'state'])
+
+    const createTaskResult = await TaskModel.create({ input: { ...subsetResult, taskID, state: 'RUNNING' } });
     const addTaskResult = await RawDatasetModel.update({
       where: { rawDatasetID: description },
       update: { funnelTasks: { connect: { where: { node: { taskID } } } } }
     });
-    return result;
+
+    subsetResult['taskID'] = subsetResult['id']
+    return subsetResult;
   } catch (error) {
     console.log(error);
     throw new ApolloError('mutation.submitTask error');
