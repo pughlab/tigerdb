@@ -382,6 +382,17 @@ export default function DatasetDetails() {
           generatedCuratedDataset {
             curatedDatasetID
             name
+            exportTask {
+              generatedExport {
+                bucketName
+                objectName
+                filename
+                presignedURL
+              }
+            }
+            fieldDefinitions {
+              dataVariableFieldDefinitionID
+            }
             dataVariablesAggregate {
               count
             }
@@ -406,6 +417,7 @@ export default function DatasetDetails() {
     return null
   }
   const [{ rawDatasetID, name, description, fromStudy, studySite, files, funnelTasks }] : [{ rawDatasetID: String, name: String, description: String, fromStudy: Study, studySite: GeographyCity, files: MinioUpload, funnelTasks: Task }]= data.rawDatasets
+  
   return (
     <>
       <Grid>
@@ -439,9 +451,15 @@ export default function DatasetDetails() {
             <Segment>
               <List>
                 {funnelTasks &&
-                  funnelTasks.map((funnelTask: Task) => 
-                  (
-                  <List.Item key={`List.Item.${funnelTask.id}`}>
+                  funnelTasks.map((funnelTask: Task) => {
+                
+                  const linkURL = funnelTask?.generatedCuratedDataset?.exportTask?.generatedExport?.presignedURL
+                  const linkText = funnelTask?.generatedCuratedDataset?.exportTask?.generatedExport?.filename
+
+                  console.log(linkText)
+                  console.log(linkURL)
+
+                  return <List.Item key={`List.Item.${funnelTask.id}`}>
                     <Button
                       disabled={funnelTask.state !== 'COMPLETE'}
                       key={`Button.${funnelTask.id}`}
@@ -453,8 +471,9 @@ export default function DatasetDetails() {
                         |dvCount: ${funnelTask?.generatedCuratedDataset?.dataVariablesAggregate ? funnelTask?.generatedCuratedDataset?.dataVariablesAggregate?.count : 0}`
                       }
                     />
+                    <a href={linkURL} target='_blank'>{linkText}</a>
                   </List.Item>
-                ))}
+                })}
               </List>
             </Segment>
           </Segment>
