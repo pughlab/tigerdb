@@ -93,46 +93,52 @@ const funnelTaskExportCuratedDataset = async (obj, { curatedDatasetID }, { drive
   }
 };
 
+const funnelTask = async (obj, { taskId }, { driver, kcAdminClient }) => {
+  try {
+    const response = await fetch(`http://funnel:8003/v1/tasks/${taskId}?view=FULL`);
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw new ApolloError('query.funnelTasks error');
+  }
+};
+
+const funnelTasks = async (obj, { bucketName, file }, { driver, kcAdminClient }) => {
+  try {
+    const response = await fetch('http://funnel:8003/v1/tasks?view=BASIC');
+    const result = await response.json();
+    return result.tasks;
+  } catch (error) {
+    console.log(error);
+    throw new ApolloError('query.funnelTasks error');
+  }
+};
+
+const cancelTask = async (obj, { taskId }, { driver, kcAdminClient }) => {
+  try {
+    const response = await fetch(
+      `http://funnel:8003/v1/tasks/${taskId}:cancel`, {
+      method: 'POST',
+    }
+    );
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw new ApolloError('mutation.cancelTask error');
+  }
+};
+
 export const resolvers = {
   Query: {
-    funnelTasks: async (obj, { bucketName, file }, { driver, kcAdminClient }) => {
-      try {
-        const response = await fetch('http://funnel:8003/v1/tasks?view=BASIC')
-        const result = await response.json()
-        return result.tasks
-      } catch (error) {
-        console.log(error)
-        throw new ApolloError('query.funnelTasks error')
-      }
-    },
-    funnelTask: async (obj, { taskId }, { driver, kcAdminClient }) => {
-      try {
-        const response = await fetch(`http://funnel:8003/v1/tasks/${taskId}?view=FULL`)
-        const result = await response.json()
-        return result
-      } catch (error) {
-        console.log(error)
-        throw new ApolloError('query.funnelTasks error')
-      }
-    },
+    funnelTasks: funnelTasks,
+    funnelTask: funnelTask,
   },
   Mutation: {
     submitTask: submitTask,
     funnelTaskExportDataVariableFieldDefinitions: funnelTaskExportDataVariableFieldDefinitions,
     funnelTaskExportCuratedDataset: funnelTaskExportCuratedDataset,
-    cancelTask: async (obj, { taskId }, { driver, kcAdminClient }) => {
-      try {
-        const response = await fetch(
-          `http://funnel:8003/v1/tasks/${taskId}:cancel`, {
-            method: 'POST',
-          }
-          )
-        const result = await response.json()
-        return result
-      } catch (error) {
-        console.log(error)
-        throw new ApolloError('mutation.cancelTask error')
-      }
-    },
+    cancelTask: cancelTask,
   },
 }
