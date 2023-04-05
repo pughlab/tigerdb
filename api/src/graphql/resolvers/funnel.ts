@@ -51,7 +51,7 @@ const submitTask = async (obj, { name = "Hello world", description = "Demonstrat
   }
 };
 
-const funnelTaskExportDataVariableFieldDefinitions = async (obj, { taskID, description, dataVariableFieldDefinitionIDs } : { taskID: string, description: string, dataVariableFieldDefinitionIDs: string }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
+const funnelTaskExportDataVariableFieldDefinitions = async (obj, { taskID, description, dataVariableFieldDefinitionIDs, curatedDatasetID } : { taskID: string, description: string, dataVariableFieldDefinitionIDs: string }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
   try {
 
     const name = uuidv4()
@@ -65,7 +65,7 @@ const funnelTaskExportDataVariableFieldDefinitions = async (obj, { taskID, descr
     const const_permission_keys = `allowedSites,allowedStudies`
     const const_permission_values = `admin,admin`
     const const_isdelall = `ndelall` // ydelall to delete all before load
-    const command = `${const_program} ${dataVariableFieldDefinitionIDs} ${taskID}`
+    const command = `${const_program} ${dataVariableFieldDefinitionIDs} ${taskID} ${curatedDatasetID}`
 
     console.log(command)
 
@@ -88,7 +88,7 @@ const funnelTaskExportCuratedDataset = async (obj, { taskID, description, curate
 
     const dataVariableFieldDefinitionIDs = dvfds.map((dvfd: DataVariableFieldDefinition) => dvfd.dataVariableFieldDefinitionID)
 
-    const result = funnelTaskExportDataVariableFieldDefinitions(obj, { taskID, description, dataVariableFieldDefinitionIDs }, { driver, kcAdminClient, ogm })
+    const result = funnelTaskExportDataVariableFieldDefinitions(obj, { taskID, description, dataVariableFieldDefinitionIDs, curatedDatasetID }, { driver, kcAdminClient, ogm })
 
     return result;
   } catch (error) {

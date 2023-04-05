@@ -33,6 +33,8 @@ type MinioUpload {
 
   pairedCodebook: MinioUpload @relationship(type: "HAS_PAIRED_RAWDATAFILE", properties: "HasPairedRawdatafile", direction: OUT)
   pairedRawdataFile: MinioUpload @relationship(type: "HAS_PAIRED_CODEBOOK", properties: "HasPairedCodebook", direction: OUT)
+
+  fromExportTask: Task @relationship(type: "FROM_FUNNEL_TASK", direction: IN)
 }
 
 extend type MinioUpload @auth(

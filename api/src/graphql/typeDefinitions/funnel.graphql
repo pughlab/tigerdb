@@ -25,6 +25,9 @@ type Task {
 
   fromRawDataset: RawDataset @relationship(type: "HAS_FUNNEL_TASK", direction: IN)
   generatedCuratedDataset: CuratedDataset @relationship(type: "FROM_FUNNEL_TASK", direction: OUT)
+
+  fromCuratedDataset: Task @relationship(type: "HAS_FUNNEL_TASK", direction: IN)
+  generatedExport: MinioUpload @relationship(type: "FROM_FUNNEL_TASK", direction: OUT)
 }
 
 type Mutation {
