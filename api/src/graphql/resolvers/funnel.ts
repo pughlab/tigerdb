@@ -56,11 +56,11 @@ const submitTask = async (obj, { name = "Hello world", description = "Demonstrat
   }
 };
 
-const funnelTaskExportDataVariableFieldDefinitions = async (obj, { taskID, dataVariableFieldDefinitionIDs } : { taskID: String, dataVariableFieldDefinitionIDs: String }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
+const funnelTaskExportDataVariableFieldDefinitions = async (obj, { taskID, description, dataVariableFieldDefinitionIDs } : { taskID: string, description: string, dataVariableFieldDefinitionIDs: string }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
   try {
 
     const name = uuidv4()
-    const description = uuidv4()
+    // const description = uuidv4()
     // const taskID = uuidv4()
     const image = 'funnel-base'
 
@@ -83,7 +83,7 @@ const funnelTaskExportDataVariableFieldDefinitions = async (obj, { taskID, dataV
   }
 };
 
-const funnelTaskExportCuratedDataset = async (obj, { taskID, curatedDatasetID } : { taskID: String, curatedDatasetID: String }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
+const funnelTaskExportCuratedDataset = async (obj, { taskID, description, curatedDatasetID } : { taskID: string, description: string, curatedDatasetID: string }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
   try {
 
     const DataVariableFieldDefinitionModel = ogm.model("DataVariableFieldDefinition")
@@ -93,7 +93,7 @@ const funnelTaskExportCuratedDataset = async (obj, { taskID, curatedDatasetID } 
 
     const dataVariableFieldDefinitionIDs = dvfds.map((dvfd: DataVariableFieldDefinition) => dvfd.dataVariableFieldDefinitionID)
 
-    const result = funnelTaskExportDataVariableFieldDefinitions(obj, { taskID, dataVariableFieldDefinitionIDs }, { driver, kcAdminClient, ogm })
+    const result = funnelTaskExportDataVariableFieldDefinitions(obj, { taskID, description, dataVariableFieldDefinitionIDs }, { driver, kcAdminClient, ogm })
 
     return result;
   } catch (error) {
