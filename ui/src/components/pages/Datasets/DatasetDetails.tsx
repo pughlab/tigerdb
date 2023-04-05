@@ -356,7 +356,9 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
 }
 
 export default function DatasetDetails() {
+
   const { datasetID } = useParams()
+
   const { data, loading, error } = useQuery(gql`
 		query RawDatasetDetails($rawDatasetID: ID!) {
       rawDatasets(where: {rawDatasetID: $rawDatasetID}) {
@@ -413,9 +415,27 @@ export default function DatasetDetails() {
       }
     }`,
     { variables: { rawDatasetID: datasetID } })
+
+  const [funnelTaskExportCuratedDatasetMutation, funnelTaskExportCuratedDatasetState] = useMutation(gql`
+    mutation funnelTaskExportCuratedDataset($taskID: ID!, $curatedDatasetID: ID!) {
+    funnelTaskExportCuratedDataset(
+      taskID: $taskID
+      curatedDatasetID: $curatedDatasetID
+    ) {
+      creationTime
+      taskID
+      name
+      state
+    }
+  }`, 
+  {
+    errorPolicy: 'none',
+  })
+
   if (!data?.rawDatasets) {
     return null
   }
+
   const [{ rawDatasetID, name, description, fromStudy, studySite, files, funnelTasks }] : [{ rawDatasetID: String, name: String, description: String, fromStudy: Study, studySite: GeographyCity, files: MinioUpload, funnelTasks: Task }]= data.rawDatasets
   
   return (
@@ -462,6 +482,7 @@ export default function DatasetDetails() {
                   return <List.Item key={`List.Item.${funnelTask.id}`}>
                     <Button
                       disabled={funnelTask.state !== 'COMPLETE'}
+                      onClick={() => { funnelTaskExportCuratedDatasetMutation({ variables: {taskID: uuidv4(), curatedDatasetID: funnelTask?.generatedCuratedDataset?.curatedDatasetID} })} }
                       key={`Button.${funnelTask.id}`}
                       content={
                         `

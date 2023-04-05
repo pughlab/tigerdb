@@ -39,8 +39,8 @@ type Mutation {
     command: String
     ): Task
   cancelTask(taskId: ID): Task
-  funnelTaskExportDataVariableFieldDefinitions(taskID: ID, description: String, dataVariableFieldDefinitionIDs: [ID]): Task
-  funnelTaskExportCuratedDataset(taskID: ID, description: String, curatedDatasetID: ID): Task
+  funnelTaskExportDataVariableFieldDefinitions(taskID: ID!, dataVariableFieldDefinitionIDs: [ID!]!): Task
+  funnelTaskExportCuratedDataset(taskID: ID!,  curatedDatasetID: ID!): Task
 }
 
 

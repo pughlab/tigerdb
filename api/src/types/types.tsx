@@ -399,6 +399,9 @@ export type CuratedDataset = {
   dataVariablesAggregate?: Maybe<CuratedDatasetDataVariableDataVariablesAggregationSelection>;
   dataVariablesConnection: CuratedDatasetDataVariablesConnection;
   description: Scalars['String'];
+  exportTask?: Maybe<Task>;
+  exportTaskAggregate?: Maybe<CuratedDatasetTaskExportTaskAggregationSelection>;
+  exportTaskConnection: CuratedDatasetExportTaskConnection;
   fieldDefinitions: Array<DataVariableFieldDefinition>;
   fieldDefinitionsAggregate?: Maybe<CuratedDatasetDataVariableFieldDefinitionFieldDefinitionsAggregationSelection>;
   fieldDefinitionsConnection: CuratedDatasetFieldDefinitionsConnection;
@@ -431,6 +434,28 @@ export type CuratedDatasetDataVariablesConnectionArgs = {
   first?: InputMaybe<Scalars['Int']>;
   sort?: InputMaybe<Array<CuratedDatasetDataVariablesConnectionSort>>;
   where?: InputMaybe<CuratedDatasetDataVariablesConnectionWhere>;
+};
+
+
+export type CuratedDatasetExportTaskArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  options?: InputMaybe<TaskOptions>;
+  where?: InputMaybe<TaskWhere>;
+};
+
+
+export type CuratedDatasetExportTaskAggregateArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<TaskWhere>;
+};
+
+
+export type CuratedDatasetExportTaskConnectionArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  directed?: InputMaybe<Scalars['Boolean']>;
+  first?: InputMaybe<Scalars['Int']>;
+  sort?: InputMaybe<Array<CuratedDatasetExportTaskConnectionSort>>;
+  where?: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
 };
 
 
@@ -509,6 +534,7 @@ export type CuratedDatasetAggregateSelection = {
 
 export type CuratedDatasetConnectInput = {
   dataVariables?: InputMaybe<Array<CuratedDatasetDataVariablesConnectFieldInput>>;
+  exportTask?: InputMaybe<CuratedDatasetExportTaskConnectFieldInput>;
   fieldDefinitions?: InputMaybe<Array<CuratedDatasetFieldDefinitionsConnectFieldInput>>;
   funnelTask?: InputMaybe<CuratedDatasetFunnelTaskConnectFieldInput>;
   generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectFieldInput>;
@@ -533,6 +559,7 @@ export type CuratedDatasetCreateInput = {
   allowedStudies?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   dataVariables?: InputMaybe<CuratedDatasetDataVariablesFieldInput>;
   description: Scalars['String'];
+  exportTask?: InputMaybe<CuratedDatasetExportTaskFieldInput>;
   fieldDefinitions?: InputMaybe<CuratedDatasetFieldDefinitionsFieldInput>;
   funnelTask?: InputMaybe<CuratedDatasetFunnelTaskFieldInput>;
   generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetFieldInput>;
@@ -654,6 +681,7 @@ export type CuratedDatasetDataVariablesUpdateFieldInput = {
 
 export type CuratedDatasetDeleteInput = {
   dataVariables?: InputMaybe<Array<CuratedDatasetDataVariablesDeleteFieldInput>>;
+  exportTask?: InputMaybe<CuratedDatasetExportTaskDeleteFieldInput>;
   fieldDefinitions?: InputMaybe<Array<CuratedDatasetFieldDefinitionsDeleteFieldInput>>;
   funnelTask?: InputMaybe<CuratedDatasetFunnelTaskDeleteFieldInput>;
   generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetDeleteFieldInput>;
@@ -661,6 +689,7 @@ export type CuratedDatasetDeleteInput = {
 
 export type CuratedDatasetDisconnectInput = {
   dataVariables?: InputMaybe<Array<CuratedDatasetDataVariablesDisconnectFieldInput>>;
+  exportTask?: InputMaybe<CuratedDatasetExportTaskDisconnectFieldInput>;
   fieldDefinitions?: InputMaybe<Array<CuratedDatasetFieldDefinitionsDisconnectFieldInput>>;
   funnelTask?: InputMaybe<CuratedDatasetFunnelTaskDisconnectFieldInput>;
   generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetDisconnectFieldInput>;
@@ -670,6 +699,164 @@ export type CuratedDatasetEdge = {
   __typename?: 'CuratedDatasetEdge';
   cursor: Scalars['String'];
   node: CuratedDataset;
+};
+
+export type CuratedDatasetExportTaskAggregateInput = {
+  AND?: InputMaybe<Array<CuratedDatasetExportTaskAggregateInput>>;
+  OR?: InputMaybe<Array<CuratedDatasetExportTaskAggregateInput>>;
+  count?: InputMaybe<Scalars['Int']>;
+  count_GT?: InputMaybe<Scalars['Int']>;
+  count_GTE?: InputMaybe<Scalars['Int']>;
+  count_LT?: InputMaybe<Scalars['Int']>;
+  count_LTE?: InputMaybe<Scalars['Int']>;
+  node?: InputMaybe<CuratedDatasetExportTaskNodeAggregationWhereInput>;
+};
+
+export type CuratedDatasetExportTaskConnectFieldInput = {
+  connect?: InputMaybe<TaskConnectInput>;
+  where?: InputMaybe<TaskConnectWhere>;
+};
+
+export type CuratedDatasetExportTaskConnection = {
+  __typename?: 'CuratedDatasetExportTaskConnection';
+  edges: Array<CuratedDatasetExportTaskRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type CuratedDatasetExportTaskConnectionSort = {
+  node?: InputMaybe<TaskSort>;
+};
+
+export type CuratedDatasetExportTaskConnectionWhere = {
+  AND?: InputMaybe<Array<CuratedDatasetExportTaskConnectionWhere>>;
+  OR?: InputMaybe<Array<CuratedDatasetExportTaskConnectionWhere>>;
+  node?: InputMaybe<TaskWhere>;
+  node_NOT?: InputMaybe<TaskWhere>;
+};
+
+export type CuratedDatasetExportTaskCreateFieldInput = {
+  node: TaskCreateInput;
+};
+
+export type CuratedDatasetExportTaskDeleteFieldInput = {
+  delete?: InputMaybe<TaskDeleteInput>;
+  where?: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
+};
+
+export type CuratedDatasetExportTaskDisconnectFieldInput = {
+  disconnect?: InputMaybe<TaskDisconnectInput>;
+  where?: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
+};
+
+export type CuratedDatasetExportTaskFieldInput = {
+  connect?: InputMaybe<CuratedDatasetExportTaskConnectFieldInput>;
+  create?: InputMaybe<CuratedDatasetExportTaskCreateFieldInput>;
+};
+
+export type CuratedDatasetExportTaskNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<CuratedDatasetExportTaskNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<CuratedDatasetExportTaskNodeAggregationWhereInput>>;
+  creationTime_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  creationTime_EQUAL?: InputMaybe<Scalars['String']>;
+  creationTime_GT?: InputMaybe<Scalars['Int']>;
+  creationTime_GTE?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  creationTime_LT?: InputMaybe<Scalars['Int']>;
+  creationTime_LTE?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  description_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  description_EQUAL?: InputMaybe<Scalars['String']>;
+  description_GT?: InputMaybe<Scalars['Int']>;
+  description_GTE?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  description_LT?: InputMaybe<Scalars['Int']>;
+  description_LTE?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  id_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  id_EQUAL?: InputMaybe<Scalars['String']>;
+  id_GT?: InputMaybe<Scalars['Int']>;
+  id_GTE?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  id_LT?: InputMaybe<Scalars['Int']>;
+  id_LTE?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  name_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  name_EQUAL?: InputMaybe<Scalars['String']>;
+  name_GT?: InputMaybe<Scalars['Int']>;
+  name_GTE?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  name_LT?: InputMaybe<Scalars['Int']>;
+  name_LTE?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  taskID_EQUAL?: InputMaybe<Scalars['ID']>;
+};
+
+export type CuratedDatasetExportTaskRelationship = {
+  __typename?: 'CuratedDatasetExportTaskRelationship';
+  cursor: Scalars['String'];
+  node: Task;
+};
+
+export type CuratedDatasetExportTaskUpdateConnectionInput = {
+  node?: InputMaybe<TaskUpdateInput>;
+};
+
+export type CuratedDatasetExportTaskUpdateFieldInput = {
+  connect?: InputMaybe<CuratedDatasetExportTaskConnectFieldInput>;
+  create?: InputMaybe<CuratedDatasetExportTaskCreateFieldInput>;
+  delete?: InputMaybe<CuratedDatasetExportTaskDeleteFieldInput>;
+  disconnect?: InputMaybe<CuratedDatasetExportTaskDisconnectFieldInput>;
+  update?: InputMaybe<CuratedDatasetExportTaskUpdateConnectionInput>;
+  where?: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
 };
 
 export type CuratedDatasetFieldDefinitionsAggregateInput = {
@@ -1114,6 +1301,7 @@ export type CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection 
 
 export type CuratedDatasetRelationInput = {
   dataVariables?: InputMaybe<Array<CuratedDatasetDataVariablesCreateFieldInput>>;
+  exportTask?: InputMaybe<CuratedDatasetExportTaskCreateFieldInput>;
   fieldDefinitions?: InputMaybe<Array<CuratedDatasetFieldDefinitionsCreateFieldInput>>;
   funnelTask?: InputMaybe<CuratedDatasetFunnelTaskCreateFieldInput>;
   generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetCreateFieldInput>;
@@ -1124,6 +1312,21 @@ export type CuratedDatasetSort = {
   curatedDatasetID?: InputMaybe<SortDirection>;
   description?: InputMaybe<SortDirection>;
   name?: InputMaybe<SortDirection>;
+};
+
+export type CuratedDatasetTaskExportTaskAggregationSelection = {
+  __typename?: 'CuratedDatasetTaskExportTaskAggregationSelection';
+  count: Scalars['Int'];
+  node?: Maybe<CuratedDatasetTaskExportTaskNodeAggregateSelection>;
+};
+
+export type CuratedDatasetTaskExportTaskNodeAggregateSelection = {
+  __typename?: 'CuratedDatasetTaskExportTaskNodeAggregateSelection';
+  creationTime: StringAggregateSelectionNullable;
+  description: StringAggregateSelectionNullable;
+  id: StringAggregateSelectionNullable;
+  name: StringAggregateSelectionNullable;
+  taskID: IdAggregateSelectionNullable;
 };
 
 export type CuratedDatasetTaskFunnelTaskAggregationSelection = {
@@ -1154,6 +1357,7 @@ export type CuratedDatasetUpdateInput = {
   allowedStudies_PUSH?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   dataVariables?: InputMaybe<Array<CuratedDatasetDataVariablesUpdateFieldInput>>;
   description?: InputMaybe<Scalars['String']>;
+  exportTask?: InputMaybe<CuratedDatasetExportTaskUpdateFieldInput>;
   fieldDefinitions?: InputMaybe<Array<CuratedDatasetFieldDefinitionsUpdateFieldInput>>;
   funnelTask?: InputMaybe<CuratedDatasetFunnelTaskUpdateFieldInput>;
   generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetUpdateFieldInput>;
@@ -1208,6 +1412,11 @@ export type CuratedDatasetWhere = {
   description_NOT_IN?: InputMaybe<Array<Scalars['String']>>;
   description_NOT_STARTS_WITH?: InputMaybe<Scalars['String']>;
   description_STARTS_WITH?: InputMaybe<Scalars['String']>;
+  exportTask?: InputMaybe<TaskWhere>;
+  exportTaskAggregate?: InputMaybe<CuratedDatasetExportTaskAggregateInput>;
+  exportTaskConnection?: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
+  exportTaskConnection_NOT?: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
+  exportTask_NOT?: InputMaybe<TaskWhere>;
   fieldDefinitions?: InputMaybe<DataVariableFieldDefinitionWhere>;
   fieldDefinitionsAggregate?: InputMaybe<CuratedDatasetFieldDefinitionsAggregateInput>;
   fieldDefinitionsConnection?: InputMaybe<CuratedDatasetFieldDefinitionsConnectionWhere>;
@@ -2889,6 +3098,7 @@ export enum FunnelState {
   Completing = 'COMPLETING',
   Configuring = 'CONFIGURING',
   Pending = 'PENDING',
+  Queued = 'QUEUED',
   Resizing = 'RESIZING',
   Running = 'RUNNING',
   Suspended = 'SUSPENDED'
@@ -3720,6 +3930,9 @@ export type MinioUpload = {
   codeBookRawDatasetAggregate?: Maybe<MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection>;
   codeBookRawDatasetConnection: MinioUploadCodeBookRawDatasetConnection;
   filename: Scalars['String'];
+  fromExportTask?: Maybe<Task>;
+  fromExportTaskAggregate?: Maybe<MinioUploadTaskFromExportTaskAggregationSelection>;
+  fromExportTaskConnection: MinioUploadFromExportTaskConnection;
   objectName: Scalars['ID'];
   pairedCodebook?: Maybe<MinioUpload>;
   pairedCodebookAggregate?: Maybe<MinioUploadMinioUploadPairedCodebookAggregationSelection>;
@@ -3756,6 +3969,28 @@ export type MinioUploadCodeBookRawDatasetConnectionArgs = {
   first?: InputMaybe<Scalars['Int']>;
   sort?: InputMaybe<Array<MinioUploadCodeBookRawDatasetConnectionSort>>;
   where?: InputMaybe<MinioUploadCodeBookRawDatasetConnectionWhere>;
+};
+
+
+export type MinioUploadFromExportTaskArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  options?: InputMaybe<TaskOptions>;
+  where?: InputMaybe<TaskWhere>;
+};
+
+
+export type MinioUploadFromExportTaskAggregateArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<TaskWhere>;
+};
+
+
+export type MinioUploadFromExportTaskConnectionArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  directed?: InputMaybe<Scalars['Boolean']>;
+  first?: InputMaybe<Scalars['Int']>;
+  sort?: InputMaybe<Array<MinioUploadFromExportTaskConnectionSort>>;
+  where?: InputMaybe<MinioUploadFromExportTaskConnectionWhere>;
 };
 
 
@@ -4008,6 +4243,7 @@ export type MinioUploadCodeBookRawDatasetUpdateFieldInput = {
 
 export type MinioUploadConnectInput = {
   codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetConnectFieldInput>;
+  fromExportTask?: InputMaybe<MinioUploadFromExportTaskConnectFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookConnectFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileConnectFieldInput>;
   rawDataset?: InputMaybe<MinioUploadRawDatasetConnectFieldInput>;
@@ -4034,6 +4270,7 @@ export type MinioUploadCreateInput = {
   bucketName: Scalars['ID'];
   codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetFieldInput>;
   filename: Scalars['String'];
+  fromExportTask?: InputMaybe<MinioUploadFromExportTaskFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileFieldInput>;
   rawDataset?: InputMaybe<MinioUploadRawDatasetFieldInput>;
@@ -4042,6 +4279,7 @@ export type MinioUploadCreateInput = {
 
 export type MinioUploadDeleteInput = {
   codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetDeleteFieldInput>;
+  fromExportTask?: InputMaybe<MinioUploadFromExportTaskDeleteFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookDeleteFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileDeleteFieldInput>;
   rawDataset?: InputMaybe<MinioUploadRawDatasetDeleteFieldInput>;
@@ -4050,6 +4288,7 @@ export type MinioUploadDeleteInput = {
 
 export type MinioUploadDisconnectInput = {
   codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetDisconnectFieldInput>;
+  fromExportTask?: InputMaybe<MinioUploadFromExportTaskDisconnectFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookDisconnectFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileDisconnectFieldInput>;
   rawDataset?: InputMaybe<MinioUploadRawDatasetDisconnectFieldInput>;
@@ -4060,6 +4299,164 @@ export type MinioUploadEdge = {
   __typename?: 'MinioUploadEdge';
   cursor: Scalars['String'];
   node: MinioUpload;
+};
+
+export type MinioUploadFromExportTaskAggregateInput = {
+  AND?: InputMaybe<Array<MinioUploadFromExportTaskAggregateInput>>;
+  OR?: InputMaybe<Array<MinioUploadFromExportTaskAggregateInput>>;
+  count?: InputMaybe<Scalars['Int']>;
+  count_GT?: InputMaybe<Scalars['Int']>;
+  count_GTE?: InputMaybe<Scalars['Int']>;
+  count_LT?: InputMaybe<Scalars['Int']>;
+  count_LTE?: InputMaybe<Scalars['Int']>;
+  node?: InputMaybe<MinioUploadFromExportTaskNodeAggregationWhereInput>;
+};
+
+export type MinioUploadFromExportTaskConnectFieldInput = {
+  connect?: InputMaybe<TaskConnectInput>;
+  where?: InputMaybe<TaskConnectWhere>;
+};
+
+export type MinioUploadFromExportTaskConnection = {
+  __typename?: 'MinioUploadFromExportTaskConnection';
+  edges: Array<MinioUploadFromExportTaskRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type MinioUploadFromExportTaskConnectionSort = {
+  node?: InputMaybe<TaskSort>;
+};
+
+export type MinioUploadFromExportTaskConnectionWhere = {
+  AND?: InputMaybe<Array<MinioUploadFromExportTaskConnectionWhere>>;
+  OR?: InputMaybe<Array<MinioUploadFromExportTaskConnectionWhere>>;
+  node?: InputMaybe<TaskWhere>;
+  node_NOT?: InputMaybe<TaskWhere>;
+};
+
+export type MinioUploadFromExportTaskCreateFieldInput = {
+  node: TaskCreateInput;
+};
+
+export type MinioUploadFromExportTaskDeleteFieldInput = {
+  delete?: InputMaybe<TaskDeleteInput>;
+  where?: InputMaybe<MinioUploadFromExportTaskConnectionWhere>;
+};
+
+export type MinioUploadFromExportTaskDisconnectFieldInput = {
+  disconnect?: InputMaybe<TaskDisconnectInput>;
+  where?: InputMaybe<MinioUploadFromExportTaskConnectionWhere>;
+};
+
+export type MinioUploadFromExportTaskFieldInput = {
+  connect?: InputMaybe<MinioUploadFromExportTaskConnectFieldInput>;
+  create?: InputMaybe<MinioUploadFromExportTaskCreateFieldInput>;
+};
+
+export type MinioUploadFromExportTaskNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<MinioUploadFromExportTaskNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<MinioUploadFromExportTaskNodeAggregationWhereInput>>;
+  creationTime_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  creationTime_EQUAL?: InputMaybe<Scalars['String']>;
+  creationTime_GT?: InputMaybe<Scalars['Int']>;
+  creationTime_GTE?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  creationTime_LT?: InputMaybe<Scalars['Int']>;
+  creationTime_LTE?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  description_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  description_EQUAL?: InputMaybe<Scalars['String']>;
+  description_GT?: InputMaybe<Scalars['Int']>;
+  description_GTE?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  description_LT?: InputMaybe<Scalars['Int']>;
+  description_LTE?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  id_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  id_EQUAL?: InputMaybe<Scalars['String']>;
+  id_GT?: InputMaybe<Scalars['Int']>;
+  id_GTE?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  id_LT?: InputMaybe<Scalars['Int']>;
+  id_LTE?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  name_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  name_EQUAL?: InputMaybe<Scalars['String']>;
+  name_GT?: InputMaybe<Scalars['Int']>;
+  name_GTE?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  name_LT?: InputMaybe<Scalars['Int']>;
+  name_LTE?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  taskID_EQUAL?: InputMaybe<Scalars['ID']>;
+};
+
+export type MinioUploadFromExportTaskRelationship = {
+  __typename?: 'MinioUploadFromExportTaskRelationship';
+  cursor: Scalars['String'];
+  node: Task;
+};
+
+export type MinioUploadFromExportTaskUpdateConnectionInput = {
+  node?: InputMaybe<TaskUpdateInput>;
+};
+
+export type MinioUploadFromExportTaskUpdateFieldInput = {
+  connect?: InputMaybe<MinioUploadFromExportTaskConnectFieldInput>;
+  create?: InputMaybe<MinioUploadFromExportTaskCreateFieldInput>;
+  delete?: InputMaybe<MinioUploadFromExportTaskDeleteFieldInput>;
+  disconnect?: InputMaybe<MinioUploadFromExportTaskDisconnectFieldInput>;
+  update?: InputMaybe<MinioUploadFromExportTaskUpdateConnectionInput>;
+  where?: InputMaybe<MinioUploadFromExportTaskConnectionWhere>;
 };
 
 export type MinioUploadMinioUploadPairedCodebookAggregationSelection = {
@@ -4676,6 +5073,7 @@ export type MinioUploadRawdataFileRawDatasetUpdateFieldInput = {
 
 export type MinioUploadRelationInput = {
   codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetCreateFieldInput>;
+  fromExportTask?: InputMaybe<MinioUploadFromExportTaskCreateFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookCreateFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileCreateFieldInput>;
   rawDataset?: InputMaybe<MinioUploadRawDatasetCreateFieldInput>;
@@ -4689,6 +5087,21 @@ export type MinioUploadSort = {
   objectName?: InputMaybe<SortDirection>;
 };
 
+export type MinioUploadTaskFromExportTaskAggregationSelection = {
+  __typename?: 'MinioUploadTaskFromExportTaskAggregationSelection';
+  count: Scalars['Int'];
+  node?: Maybe<MinioUploadTaskFromExportTaskNodeAggregateSelection>;
+};
+
+export type MinioUploadTaskFromExportTaskNodeAggregateSelection = {
+  __typename?: 'MinioUploadTaskFromExportTaskNodeAggregateSelection';
+  creationTime: StringAggregateSelectionNullable;
+  description: StringAggregateSelectionNullable;
+  id: StringAggregateSelectionNullable;
+  name: StringAggregateSelectionNullable;
+  taskID: IdAggregateSelectionNullable;
+};
+
 export type MinioUploadUniqueWhere = {
   objectName?: InputMaybe<Scalars['ID']>;
 };
@@ -4697,6 +5110,7 @@ export type MinioUploadUpdateInput = {
   bucketName?: InputMaybe<Scalars['ID']>;
   codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetUpdateFieldInput>;
   filename?: InputMaybe<Scalars['String']>;
+  fromExportTask?: InputMaybe<MinioUploadFromExportTaskUpdateFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookUpdateFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileUpdateFieldInput>;
   rawDataset?: InputMaybe<MinioUploadRawDatasetUpdateFieldInput>;
@@ -4731,6 +5145,11 @@ export type MinioUploadWhere = {
   filename_NOT_IN?: InputMaybe<Array<Scalars['String']>>;
   filename_NOT_STARTS_WITH?: InputMaybe<Scalars['String']>;
   filename_STARTS_WITH?: InputMaybe<Scalars['String']>;
+  fromExportTask?: InputMaybe<TaskWhere>;
+  fromExportTaskAggregate?: InputMaybe<MinioUploadFromExportTaskAggregateInput>;
+  fromExportTaskConnection?: InputMaybe<MinioUploadFromExportTaskConnectionWhere>;
+  fromExportTaskConnection_NOT?: InputMaybe<MinioUploadFromExportTaskConnectionWhere>;
+  fromExportTask_NOT?: InputMaybe<TaskWhere>;
   objectName?: InputMaybe<Scalars['ID']>;
   objectName_CONTAINS?: InputMaybe<Scalars['ID']>;
   objectName_ENDS_WITH?: InputMaybe<Scalars['ID']>;
@@ -4906,6 +5325,8 @@ export type Mutation = {
   deleteRawDatasets: DeleteInfo;
   deleteStudies: DeleteInfo;
   deleteTasks: DeleteInfo;
+  funnelTaskExportCuratedDataset?: Maybe<Task>;
+  funnelTaskExportDataVariableFieldDefinitions?: Maybe<Task>;
   keycloak_clients_createRole?: Maybe<Scalars['Boolean']>;
   keycloak_clients_delRole?: Maybe<Scalars['Boolean']>;
   keycloak_users_addClientRoleMappings?: Maybe<Scalars['Boolean']>;
@@ -5194,6 +5615,18 @@ export type MutationDeleteStudiesArgs = {
 export type MutationDeleteTasksArgs = {
   delete?: InputMaybe<TaskDeleteInput>;
   where?: InputMaybe<TaskWhere>;
+};
+
+
+export type MutationFunnelTaskExportCuratedDatasetArgs = {
+  curatedDatasetID: Scalars['ID'];
+  taskID: Scalars['ID'];
+};
+
+
+export type MutationFunnelTaskExportDataVariableFieldDefinitionsArgs = {
+  dataVariableFieldDefinitionIDs: Array<Scalars['ID']>;
+  taskID: Scalars['ID'];
 };
 
 
@@ -9207,16 +9640,44 @@ export type Task = {
   __typename?: 'Task';
   creationTime?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
+  fromCuratedDataset?: Maybe<Task>;
+  fromCuratedDatasetAggregate?: Maybe<TaskTaskFromCuratedDatasetAggregationSelection>;
+  fromCuratedDatasetConnection: TaskFromCuratedDatasetConnection;
   fromRawDataset?: Maybe<RawDataset>;
   fromRawDatasetAggregate?: Maybe<TaskRawDatasetFromRawDatasetAggregationSelection>;
   fromRawDatasetConnection: TaskFromRawDatasetConnection;
   generatedCuratedDataset?: Maybe<CuratedDataset>;
   generatedCuratedDatasetAggregate?: Maybe<TaskCuratedDatasetGeneratedCuratedDatasetAggregationSelection>;
   generatedCuratedDatasetConnection: TaskGeneratedCuratedDatasetConnection;
+  generatedExport?: Maybe<MinioUpload>;
+  generatedExportAggregate?: Maybe<TaskMinioUploadGeneratedExportAggregationSelection>;
+  generatedExportConnection: TaskGeneratedExportConnection;
   id?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
   state?: Maybe<FunnelState>;
   taskID?: Maybe<Scalars['ID']>;
+};
+
+
+export type TaskFromCuratedDatasetArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  options?: InputMaybe<TaskOptions>;
+  where?: InputMaybe<TaskWhere>;
+};
+
+
+export type TaskFromCuratedDatasetAggregateArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<TaskWhere>;
+};
+
+
+export type TaskFromCuratedDatasetConnectionArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  directed?: InputMaybe<Scalars['Boolean']>;
+  first?: InputMaybe<Scalars['Int']>;
+  sort?: InputMaybe<Array<TaskFromCuratedDatasetConnectionSort>>;
+  where?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
 };
 
 
@@ -9263,6 +9724,28 @@ export type TaskGeneratedCuratedDatasetConnectionArgs = {
   where?: InputMaybe<TaskGeneratedCuratedDatasetConnectionWhere>;
 };
 
+
+export type TaskGeneratedExportArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  options?: InputMaybe<MinioUploadOptions>;
+  where?: InputMaybe<MinioUploadWhere>;
+};
+
+
+export type TaskGeneratedExportAggregateArgs = {
+  directed?: InputMaybe<Scalars['Boolean']>;
+  where?: InputMaybe<MinioUploadWhere>;
+};
+
+
+export type TaskGeneratedExportConnectionArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  directed?: InputMaybe<Scalars['Boolean']>;
+  first?: InputMaybe<Scalars['Int']>;
+  sort?: InputMaybe<Array<TaskGeneratedExportConnectionSort>>;
+  where?: InputMaybe<TaskGeneratedExportConnectionWhere>;
+};
+
 export type TaskAggregateSelection = {
   __typename?: 'TaskAggregateSelection';
   count: Scalars['Int'];
@@ -9274,13 +9757,16 @@ export type TaskAggregateSelection = {
 };
 
 export type TaskConnectInput = {
+  fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
   fromRawDataset?: InputMaybe<TaskFromRawDatasetConnectFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetConnectFieldInput>;
+  generatedExport?: InputMaybe<TaskGeneratedExportConnectFieldInput>;
 };
 
 export type TaskConnectOrCreateInput = {
   fromRawDataset?: InputMaybe<TaskFromRawDatasetConnectOrCreateFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetConnectOrCreateFieldInput>;
+  generatedExport?: InputMaybe<TaskGeneratedExportConnectOrCreateFieldInput>;
 };
 
 export type TaskConnectWhere = {
@@ -9290,8 +9776,10 @@ export type TaskConnectWhere = {
 export type TaskCreateInput = {
   creationTime?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetFieldInput>;
   fromRawDataset?: InputMaybe<TaskFromRawDatasetFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetFieldInput>;
+  generatedExport?: InputMaybe<TaskGeneratedExportFieldInput>;
   id?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<FunnelState>;
@@ -9312,19 +9800,181 @@ export type TaskCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelection = {
 };
 
 export type TaskDeleteInput = {
+  fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetDeleteFieldInput>;
   fromRawDataset?: InputMaybe<TaskFromRawDatasetDeleteFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetDeleteFieldInput>;
+  generatedExport?: InputMaybe<TaskGeneratedExportDeleteFieldInput>;
 };
 
 export type TaskDisconnectInput = {
+  fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetDisconnectFieldInput>;
   fromRawDataset?: InputMaybe<TaskFromRawDatasetDisconnectFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetDisconnectFieldInput>;
+  generatedExport?: InputMaybe<TaskGeneratedExportDisconnectFieldInput>;
 };
 
 export type TaskEdge = {
   __typename?: 'TaskEdge';
   cursor: Scalars['String'];
   node: Task;
+};
+
+export type TaskFromCuratedDatasetAggregateInput = {
+  AND?: InputMaybe<Array<TaskFromCuratedDatasetAggregateInput>>;
+  OR?: InputMaybe<Array<TaskFromCuratedDatasetAggregateInput>>;
+  count?: InputMaybe<Scalars['Int']>;
+  count_GT?: InputMaybe<Scalars['Int']>;
+  count_GTE?: InputMaybe<Scalars['Int']>;
+  count_LT?: InputMaybe<Scalars['Int']>;
+  count_LTE?: InputMaybe<Scalars['Int']>;
+  node?: InputMaybe<TaskFromCuratedDatasetNodeAggregationWhereInput>;
+};
+
+export type TaskFromCuratedDatasetConnectFieldInput = {
+  connect?: InputMaybe<TaskConnectInput>;
+  where?: InputMaybe<TaskConnectWhere>;
+};
+
+export type TaskFromCuratedDatasetConnection = {
+  __typename?: 'TaskFromCuratedDatasetConnection';
+  edges: Array<TaskFromCuratedDatasetRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type TaskFromCuratedDatasetConnectionSort = {
+  node?: InputMaybe<TaskSort>;
+};
+
+export type TaskFromCuratedDatasetConnectionWhere = {
+  AND?: InputMaybe<Array<TaskFromCuratedDatasetConnectionWhere>>;
+  OR?: InputMaybe<Array<TaskFromCuratedDatasetConnectionWhere>>;
+  node?: InputMaybe<TaskWhere>;
+  node_NOT?: InputMaybe<TaskWhere>;
+};
+
+export type TaskFromCuratedDatasetCreateFieldInput = {
+  node: TaskCreateInput;
+};
+
+export type TaskFromCuratedDatasetDeleteFieldInput = {
+  delete?: InputMaybe<TaskDeleteInput>;
+  where?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
+};
+
+export type TaskFromCuratedDatasetDisconnectFieldInput = {
+  disconnect?: InputMaybe<TaskDisconnectInput>;
+  where?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
+};
+
+export type TaskFromCuratedDatasetFieldInput = {
+  connect?: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
+  create?: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
+};
+
+export type TaskFromCuratedDatasetNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<TaskFromCuratedDatasetNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<TaskFromCuratedDatasetNodeAggregationWhereInput>>;
+  creationTime_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  creationTime_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  creationTime_EQUAL?: InputMaybe<Scalars['String']>;
+  creationTime_GT?: InputMaybe<Scalars['Int']>;
+  creationTime_GTE?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  creationTime_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  creationTime_LT?: InputMaybe<Scalars['Int']>;
+  creationTime_LTE?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  creationTime_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  description_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  description_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  description_EQUAL?: InputMaybe<Scalars['String']>;
+  description_GT?: InputMaybe<Scalars['Int']>;
+  description_GTE?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  description_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  description_LT?: InputMaybe<Scalars['Int']>;
+  description_LTE?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  description_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  id_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  id_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  id_EQUAL?: InputMaybe<Scalars['String']>;
+  id_GT?: InputMaybe<Scalars['Int']>;
+  id_GTE?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  id_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  id_LT?: InputMaybe<Scalars['Int']>;
+  id_LTE?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  id_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  name_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  name_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  name_EQUAL?: InputMaybe<Scalars['String']>;
+  name_GT?: InputMaybe<Scalars['Int']>;
+  name_GTE?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  name_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  name_LT?: InputMaybe<Scalars['Int']>;
+  name_LTE?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  name_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  taskID_EQUAL?: InputMaybe<Scalars['ID']>;
+};
+
+export type TaskFromCuratedDatasetRelationship = {
+  __typename?: 'TaskFromCuratedDatasetRelationship';
+  cursor: Scalars['String'];
+  node: Task;
+};
+
+export type TaskFromCuratedDatasetUpdateConnectionInput = {
+  node?: InputMaybe<TaskUpdateInput>;
+};
+
+export type TaskFromCuratedDatasetUpdateFieldInput = {
+  connect?: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
+  create?: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
+  delete?: InputMaybe<TaskFromCuratedDatasetDeleteFieldInput>;
+  disconnect?: InputMaybe<TaskFromCuratedDatasetDisconnectFieldInput>;
+  update?: InputMaybe<TaskFromCuratedDatasetUpdateConnectionInput>;
+  where?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
 };
 
 export type TaskFromRawDatasetAggregateInput = {
@@ -9600,6 +10250,129 @@ export type TaskGeneratedCuratedDatasetUpdateFieldInput = {
   where?: InputMaybe<TaskGeneratedCuratedDatasetConnectionWhere>;
 };
 
+export type TaskGeneratedExportAggregateInput = {
+  AND?: InputMaybe<Array<TaskGeneratedExportAggregateInput>>;
+  OR?: InputMaybe<Array<TaskGeneratedExportAggregateInput>>;
+  count?: InputMaybe<Scalars['Int']>;
+  count_GT?: InputMaybe<Scalars['Int']>;
+  count_GTE?: InputMaybe<Scalars['Int']>;
+  count_LT?: InputMaybe<Scalars['Int']>;
+  count_LTE?: InputMaybe<Scalars['Int']>;
+  node?: InputMaybe<TaskGeneratedExportNodeAggregationWhereInput>;
+};
+
+export type TaskGeneratedExportConnectFieldInput = {
+  connect?: InputMaybe<MinioUploadConnectInput>;
+  where?: InputMaybe<MinioUploadConnectWhere>;
+};
+
+export type TaskGeneratedExportConnectOrCreateFieldInput = {
+  onCreate: TaskGeneratedExportConnectOrCreateFieldInputOnCreate;
+  where: MinioUploadConnectOrCreateWhere;
+};
+
+export type TaskGeneratedExportConnectOrCreateFieldInputOnCreate = {
+  node: MinioUploadOnCreateInput;
+};
+
+export type TaskGeneratedExportConnection = {
+  __typename?: 'TaskGeneratedExportConnection';
+  edges: Array<TaskGeneratedExportRelationship>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type TaskGeneratedExportConnectionSort = {
+  node?: InputMaybe<MinioUploadSort>;
+};
+
+export type TaskGeneratedExportConnectionWhere = {
+  AND?: InputMaybe<Array<TaskGeneratedExportConnectionWhere>>;
+  OR?: InputMaybe<Array<TaskGeneratedExportConnectionWhere>>;
+  node?: InputMaybe<MinioUploadWhere>;
+  node_NOT?: InputMaybe<MinioUploadWhere>;
+};
+
+export type TaskGeneratedExportCreateFieldInput = {
+  node: MinioUploadCreateInput;
+};
+
+export type TaskGeneratedExportDeleteFieldInput = {
+  delete?: InputMaybe<MinioUploadDeleteInput>;
+  where?: InputMaybe<TaskGeneratedExportConnectionWhere>;
+};
+
+export type TaskGeneratedExportDisconnectFieldInput = {
+  disconnect?: InputMaybe<MinioUploadDisconnectInput>;
+  where?: InputMaybe<TaskGeneratedExportConnectionWhere>;
+};
+
+export type TaskGeneratedExportFieldInput = {
+  connect?: InputMaybe<TaskGeneratedExportConnectFieldInput>;
+  connectOrCreate?: InputMaybe<TaskGeneratedExportConnectOrCreateFieldInput>;
+  create?: InputMaybe<TaskGeneratedExportCreateFieldInput>;
+};
+
+export type TaskGeneratedExportNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<TaskGeneratedExportNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<TaskGeneratedExportNodeAggregationWhereInput>>;
+  bucketName_EQUAL?: InputMaybe<Scalars['ID']>;
+  filename_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
+  filename_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
+  filename_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
+  filename_AVERAGE_LT?: InputMaybe<Scalars['Float']>;
+  filename_AVERAGE_LTE?: InputMaybe<Scalars['Float']>;
+  filename_EQUAL?: InputMaybe<Scalars['String']>;
+  filename_GT?: InputMaybe<Scalars['Int']>;
+  filename_GTE?: InputMaybe<Scalars['Int']>;
+  filename_LONGEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  filename_LONGEST_GT?: InputMaybe<Scalars['Int']>;
+  filename_LONGEST_GTE?: InputMaybe<Scalars['Int']>;
+  filename_LONGEST_LT?: InputMaybe<Scalars['Int']>;
+  filename_LONGEST_LTE?: InputMaybe<Scalars['Int']>;
+  filename_LT?: InputMaybe<Scalars['Int']>;
+  filename_LTE?: InputMaybe<Scalars['Int']>;
+  filename_SHORTEST_EQUAL?: InputMaybe<Scalars['Int']>;
+  filename_SHORTEST_GT?: InputMaybe<Scalars['Int']>;
+  filename_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
+  filename_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
+  filename_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
+  objectName_EQUAL?: InputMaybe<Scalars['ID']>;
+};
+
+export type TaskGeneratedExportRelationship = {
+  __typename?: 'TaskGeneratedExportRelationship';
+  cursor: Scalars['String'];
+  node: MinioUpload;
+};
+
+export type TaskGeneratedExportUpdateConnectionInput = {
+  node?: InputMaybe<MinioUploadUpdateInput>;
+};
+
+export type TaskGeneratedExportUpdateFieldInput = {
+  connect?: InputMaybe<TaskGeneratedExportConnectFieldInput>;
+  connectOrCreate?: InputMaybe<TaskGeneratedExportConnectOrCreateFieldInput>;
+  create?: InputMaybe<TaskGeneratedExportCreateFieldInput>;
+  delete?: InputMaybe<TaskGeneratedExportDeleteFieldInput>;
+  disconnect?: InputMaybe<TaskGeneratedExportDisconnectFieldInput>;
+  update?: InputMaybe<TaskGeneratedExportUpdateConnectionInput>;
+  where?: InputMaybe<TaskGeneratedExportConnectionWhere>;
+};
+
+export type TaskMinioUploadGeneratedExportAggregationSelection = {
+  __typename?: 'TaskMinioUploadGeneratedExportAggregationSelection';
+  count: Scalars['Int'];
+  node?: Maybe<TaskMinioUploadGeneratedExportNodeAggregateSelection>;
+};
+
+export type TaskMinioUploadGeneratedExportNodeAggregateSelection = {
+  __typename?: 'TaskMinioUploadGeneratedExportNodeAggregateSelection';
+  bucketName: IdAggregateSelectionNonNullable;
+  filename: StringAggregateSelectionNonNullable;
+  objectName: IdAggregateSelectionNonNullable;
+};
+
 export type TaskOptions = {
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
@@ -9622,8 +10395,10 @@ export type TaskRawDatasetFromRawDatasetNodeAggregateSelection = {
 };
 
 export type TaskRelationInput = {
+  fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
   fromRawDataset?: InputMaybe<TaskFromRawDatasetCreateFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetCreateFieldInput>;
+  generatedExport?: InputMaybe<TaskGeneratedExportCreateFieldInput>;
 };
 
 /** Fields to sort Tasks by. The order in which sorts are applied is not guaranteed when specifying many fields in one TaskSort object. */
@@ -9636,11 +10411,28 @@ export type TaskSort = {
   taskID?: InputMaybe<SortDirection>;
 };
 
+export type TaskTaskFromCuratedDatasetAggregationSelection = {
+  __typename?: 'TaskTaskFromCuratedDatasetAggregationSelection';
+  count: Scalars['Int'];
+  node?: Maybe<TaskTaskFromCuratedDatasetNodeAggregateSelection>;
+};
+
+export type TaskTaskFromCuratedDatasetNodeAggregateSelection = {
+  __typename?: 'TaskTaskFromCuratedDatasetNodeAggregateSelection';
+  creationTime: StringAggregateSelectionNullable;
+  description: StringAggregateSelectionNullable;
+  id: StringAggregateSelectionNullable;
+  name: StringAggregateSelectionNullable;
+  taskID: IdAggregateSelectionNullable;
+};
+
 export type TaskUpdateInput = {
   creationTime?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
+  fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetUpdateFieldInput>;
   fromRawDataset?: InputMaybe<TaskFromRawDatasetUpdateFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetUpdateFieldInput>;
+  generatedExport?: InputMaybe<TaskGeneratedExportUpdateFieldInput>;
   id?: InputMaybe<Scalars['String']>;
   name?: InputMaybe<Scalars['String']>;
   state?: InputMaybe<FunnelState>;
@@ -9670,6 +10462,11 @@ export type TaskWhere = {
   description_NOT_IN?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   description_NOT_STARTS_WITH?: InputMaybe<Scalars['String']>;
   description_STARTS_WITH?: InputMaybe<Scalars['String']>;
+  fromCuratedDataset?: InputMaybe<TaskWhere>;
+  fromCuratedDatasetAggregate?: InputMaybe<TaskFromCuratedDatasetAggregateInput>;
+  fromCuratedDatasetConnection?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
+  fromCuratedDatasetConnection_NOT?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
+  fromCuratedDataset_NOT?: InputMaybe<TaskWhere>;
   fromRawDataset?: InputMaybe<RawDatasetWhere>;
   fromRawDatasetAggregate?: InputMaybe<TaskFromRawDatasetAggregateInput>;
   fromRawDatasetConnection?: InputMaybe<TaskFromRawDatasetConnectionWhere>;
@@ -9680,6 +10477,11 @@ export type TaskWhere = {
   generatedCuratedDatasetConnection?: InputMaybe<TaskGeneratedCuratedDatasetConnectionWhere>;
   generatedCuratedDatasetConnection_NOT?: InputMaybe<TaskGeneratedCuratedDatasetConnectionWhere>;
   generatedCuratedDataset_NOT?: InputMaybe<CuratedDatasetWhere>;
+  generatedExport?: InputMaybe<MinioUploadWhere>;
+  generatedExportAggregate?: InputMaybe<TaskGeneratedExportAggregateInput>;
+  generatedExportConnection?: InputMaybe<TaskGeneratedExportConnectionWhere>;
+  generatedExportConnection_NOT?: InputMaybe<TaskGeneratedExportConnectionWhere>;
+  generatedExport_NOT?: InputMaybe<MinioUploadWhere>;
   id?: InputMaybe<Scalars['String']>;
   id_CONTAINS?: InputMaybe<Scalars['String']>;
   id_ENDS_WITH?: InputMaybe<Scalars['String']>;
@@ -10006,6 +10808,19 @@ export type ResolversTypes = {
   CuratedDatasetDeleteInput: CuratedDatasetDeleteInput;
   CuratedDatasetDisconnectInput: CuratedDatasetDisconnectInput;
   CuratedDatasetEdge: ResolverTypeWrapper<CuratedDatasetEdge>;
+  CuratedDatasetExportTaskAggregateInput: CuratedDatasetExportTaskAggregateInput;
+  CuratedDatasetExportTaskConnectFieldInput: CuratedDatasetExportTaskConnectFieldInput;
+  CuratedDatasetExportTaskConnection: ResolverTypeWrapper<CuratedDatasetExportTaskConnection>;
+  CuratedDatasetExportTaskConnectionSort: CuratedDatasetExportTaskConnectionSort;
+  CuratedDatasetExportTaskConnectionWhere: CuratedDatasetExportTaskConnectionWhere;
+  CuratedDatasetExportTaskCreateFieldInput: CuratedDatasetExportTaskCreateFieldInput;
+  CuratedDatasetExportTaskDeleteFieldInput: CuratedDatasetExportTaskDeleteFieldInput;
+  CuratedDatasetExportTaskDisconnectFieldInput: CuratedDatasetExportTaskDisconnectFieldInput;
+  CuratedDatasetExportTaskFieldInput: CuratedDatasetExportTaskFieldInput;
+  CuratedDatasetExportTaskNodeAggregationWhereInput: CuratedDatasetExportTaskNodeAggregationWhereInput;
+  CuratedDatasetExportTaskRelationship: ResolverTypeWrapper<CuratedDatasetExportTaskRelationship>;
+  CuratedDatasetExportTaskUpdateConnectionInput: CuratedDatasetExportTaskUpdateConnectionInput;
+  CuratedDatasetExportTaskUpdateFieldInput: CuratedDatasetExportTaskUpdateFieldInput;
   CuratedDatasetFieldDefinitionsAggregateInput: CuratedDatasetFieldDefinitionsAggregateInput;
   CuratedDatasetFieldDefinitionsConnectFieldInput: CuratedDatasetFieldDefinitionsConnectFieldInput;
   CuratedDatasetFieldDefinitionsConnectOrCreateFieldInput: CuratedDatasetFieldDefinitionsConnectOrCreateFieldInput;
@@ -10055,6 +10870,8 @@ export type ResolversTypes = {
   CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection: ResolverTypeWrapper<CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection>;
   CuratedDatasetRelationInput: CuratedDatasetRelationInput;
   CuratedDatasetSort: CuratedDatasetSort;
+  CuratedDatasetTaskExportTaskAggregationSelection: ResolverTypeWrapper<CuratedDatasetTaskExportTaskAggregationSelection>;
+  CuratedDatasetTaskExportTaskNodeAggregateSelection: ResolverTypeWrapper<CuratedDatasetTaskExportTaskNodeAggregateSelection>;
   CuratedDatasetTaskFunnelTaskAggregationSelection: ResolverTypeWrapper<CuratedDatasetTaskFunnelTaskAggregationSelection>;
   CuratedDatasetTaskFunnelTaskNodeAggregateSelection: ResolverTypeWrapper<CuratedDatasetTaskFunnelTaskNodeAggregateSelection>;
   CuratedDatasetUniqueWhere: CuratedDatasetUniqueWhere;
@@ -10379,6 +11196,19 @@ export type ResolversTypes = {
   MinioUploadDeleteInput: MinioUploadDeleteInput;
   MinioUploadDisconnectInput: MinioUploadDisconnectInput;
   MinioUploadEdge: ResolverTypeWrapper<MinioUploadEdge>;
+  MinioUploadFromExportTaskAggregateInput: MinioUploadFromExportTaskAggregateInput;
+  MinioUploadFromExportTaskConnectFieldInput: MinioUploadFromExportTaskConnectFieldInput;
+  MinioUploadFromExportTaskConnection: ResolverTypeWrapper<MinioUploadFromExportTaskConnection>;
+  MinioUploadFromExportTaskConnectionSort: MinioUploadFromExportTaskConnectionSort;
+  MinioUploadFromExportTaskConnectionWhere: MinioUploadFromExportTaskConnectionWhere;
+  MinioUploadFromExportTaskCreateFieldInput: MinioUploadFromExportTaskCreateFieldInput;
+  MinioUploadFromExportTaskDeleteFieldInput: MinioUploadFromExportTaskDeleteFieldInput;
+  MinioUploadFromExportTaskDisconnectFieldInput: MinioUploadFromExportTaskDisconnectFieldInput;
+  MinioUploadFromExportTaskFieldInput: MinioUploadFromExportTaskFieldInput;
+  MinioUploadFromExportTaskNodeAggregationWhereInput: MinioUploadFromExportTaskNodeAggregationWhereInput;
+  MinioUploadFromExportTaskRelationship: ResolverTypeWrapper<MinioUploadFromExportTaskRelationship>;
+  MinioUploadFromExportTaskUpdateConnectionInput: MinioUploadFromExportTaskUpdateConnectionInput;
+  MinioUploadFromExportTaskUpdateFieldInput: MinioUploadFromExportTaskUpdateFieldInput;
   MinioUploadMinioUploadPairedCodebookAggregationSelection: ResolverTypeWrapper<MinioUploadMinioUploadPairedCodebookAggregationSelection>;
   MinioUploadMinioUploadPairedCodebookNodeAggregateSelection: ResolverTypeWrapper<MinioUploadMinioUploadPairedCodebookNodeAggregateSelection>;
   MinioUploadMinioUploadPairedRawdataFileAggregationSelection: ResolverTypeWrapper<MinioUploadMinioUploadPairedRawdataFileAggregationSelection>;
@@ -10453,6 +11283,8 @@ export type ResolversTypes = {
   MinioUploadRawdataFileRawDatasetUpdateFieldInput: MinioUploadRawdataFileRawDatasetUpdateFieldInput;
   MinioUploadRelationInput: MinioUploadRelationInput;
   MinioUploadSort: MinioUploadSort;
+  MinioUploadTaskFromExportTaskAggregationSelection: ResolverTypeWrapper<MinioUploadTaskFromExportTaskAggregationSelection>;
+  MinioUploadTaskFromExportTaskNodeAggregateSelection: ResolverTypeWrapper<MinioUploadTaskFromExportTaskNodeAggregateSelection>;
   MinioUploadUniqueWhere: MinioUploadUniqueWhere;
   MinioUploadUpdateInput: MinioUploadUpdateInput;
   MinioUploadWhere: MinioUploadWhere;
@@ -10795,6 +11627,19 @@ export type ResolversTypes = {
   TaskDeleteInput: TaskDeleteInput;
   TaskDisconnectInput: TaskDisconnectInput;
   TaskEdge: ResolverTypeWrapper<TaskEdge>;
+  TaskFromCuratedDatasetAggregateInput: TaskFromCuratedDatasetAggregateInput;
+  TaskFromCuratedDatasetConnectFieldInput: TaskFromCuratedDatasetConnectFieldInput;
+  TaskFromCuratedDatasetConnection: ResolverTypeWrapper<TaskFromCuratedDatasetConnection>;
+  TaskFromCuratedDatasetConnectionSort: TaskFromCuratedDatasetConnectionSort;
+  TaskFromCuratedDatasetConnectionWhere: TaskFromCuratedDatasetConnectionWhere;
+  TaskFromCuratedDatasetCreateFieldInput: TaskFromCuratedDatasetCreateFieldInput;
+  TaskFromCuratedDatasetDeleteFieldInput: TaskFromCuratedDatasetDeleteFieldInput;
+  TaskFromCuratedDatasetDisconnectFieldInput: TaskFromCuratedDatasetDisconnectFieldInput;
+  TaskFromCuratedDatasetFieldInput: TaskFromCuratedDatasetFieldInput;
+  TaskFromCuratedDatasetNodeAggregationWhereInput: TaskFromCuratedDatasetNodeAggregationWhereInput;
+  TaskFromCuratedDatasetRelationship: ResolverTypeWrapper<TaskFromCuratedDatasetRelationship>;
+  TaskFromCuratedDatasetUpdateConnectionInput: TaskFromCuratedDatasetUpdateConnectionInput;
+  TaskFromCuratedDatasetUpdateFieldInput: TaskFromCuratedDatasetUpdateFieldInput;
   TaskFromRawDatasetAggregateInput: TaskFromRawDatasetAggregateInput;
   TaskFromRawDatasetConnectFieldInput: TaskFromRawDatasetConnectFieldInput;
   TaskFromRawDatasetConnectOrCreateFieldInput: TaskFromRawDatasetConnectOrCreateFieldInput;
@@ -10825,11 +11670,30 @@ export type ResolversTypes = {
   TaskGeneratedCuratedDatasetRelationship: ResolverTypeWrapper<TaskGeneratedCuratedDatasetRelationship>;
   TaskGeneratedCuratedDatasetUpdateConnectionInput: TaskGeneratedCuratedDatasetUpdateConnectionInput;
   TaskGeneratedCuratedDatasetUpdateFieldInput: TaskGeneratedCuratedDatasetUpdateFieldInput;
+  TaskGeneratedExportAggregateInput: TaskGeneratedExportAggregateInput;
+  TaskGeneratedExportConnectFieldInput: TaskGeneratedExportConnectFieldInput;
+  TaskGeneratedExportConnectOrCreateFieldInput: TaskGeneratedExportConnectOrCreateFieldInput;
+  TaskGeneratedExportConnectOrCreateFieldInputOnCreate: TaskGeneratedExportConnectOrCreateFieldInputOnCreate;
+  TaskGeneratedExportConnection: ResolverTypeWrapper<TaskGeneratedExportConnection>;
+  TaskGeneratedExportConnectionSort: TaskGeneratedExportConnectionSort;
+  TaskGeneratedExportConnectionWhere: TaskGeneratedExportConnectionWhere;
+  TaskGeneratedExportCreateFieldInput: TaskGeneratedExportCreateFieldInput;
+  TaskGeneratedExportDeleteFieldInput: TaskGeneratedExportDeleteFieldInput;
+  TaskGeneratedExportDisconnectFieldInput: TaskGeneratedExportDisconnectFieldInput;
+  TaskGeneratedExportFieldInput: TaskGeneratedExportFieldInput;
+  TaskGeneratedExportNodeAggregationWhereInput: TaskGeneratedExportNodeAggregationWhereInput;
+  TaskGeneratedExportRelationship: ResolverTypeWrapper<TaskGeneratedExportRelationship>;
+  TaskGeneratedExportUpdateConnectionInput: TaskGeneratedExportUpdateConnectionInput;
+  TaskGeneratedExportUpdateFieldInput: TaskGeneratedExportUpdateFieldInput;
+  TaskMinioUploadGeneratedExportAggregationSelection: ResolverTypeWrapper<TaskMinioUploadGeneratedExportAggregationSelection>;
+  TaskMinioUploadGeneratedExportNodeAggregateSelection: ResolverTypeWrapper<TaskMinioUploadGeneratedExportNodeAggregateSelection>;
   TaskOptions: TaskOptions;
   TaskRawDatasetFromRawDatasetAggregationSelection: ResolverTypeWrapper<TaskRawDatasetFromRawDatasetAggregationSelection>;
   TaskRawDatasetFromRawDatasetNodeAggregateSelection: ResolverTypeWrapper<TaskRawDatasetFromRawDatasetNodeAggregateSelection>;
   TaskRelationInput: TaskRelationInput;
   TaskSort: TaskSort;
+  TaskTaskFromCuratedDatasetAggregationSelection: ResolverTypeWrapper<TaskTaskFromCuratedDatasetAggregationSelection>;
+  TaskTaskFromCuratedDatasetNodeAggregateSelection: ResolverTypeWrapper<TaskTaskFromCuratedDatasetNodeAggregateSelection>;
   TaskUpdateInput: TaskUpdateInput;
   TaskWhere: TaskWhere;
   TasksConnection: ResolverTypeWrapper<TasksConnection>;
@@ -10939,6 +11803,19 @@ export type ResolversParentTypes = {
   CuratedDatasetDeleteInput: CuratedDatasetDeleteInput;
   CuratedDatasetDisconnectInput: CuratedDatasetDisconnectInput;
   CuratedDatasetEdge: CuratedDatasetEdge;
+  CuratedDatasetExportTaskAggregateInput: CuratedDatasetExportTaskAggregateInput;
+  CuratedDatasetExportTaskConnectFieldInput: CuratedDatasetExportTaskConnectFieldInput;
+  CuratedDatasetExportTaskConnection: CuratedDatasetExportTaskConnection;
+  CuratedDatasetExportTaskConnectionSort: CuratedDatasetExportTaskConnectionSort;
+  CuratedDatasetExportTaskConnectionWhere: CuratedDatasetExportTaskConnectionWhere;
+  CuratedDatasetExportTaskCreateFieldInput: CuratedDatasetExportTaskCreateFieldInput;
+  CuratedDatasetExportTaskDeleteFieldInput: CuratedDatasetExportTaskDeleteFieldInput;
+  CuratedDatasetExportTaskDisconnectFieldInput: CuratedDatasetExportTaskDisconnectFieldInput;
+  CuratedDatasetExportTaskFieldInput: CuratedDatasetExportTaskFieldInput;
+  CuratedDatasetExportTaskNodeAggregationWhereInput: CuratedDatasetExportTaskNodeAggregationWhereInput;
+  CuratedDatasetExportTaskRelationship: CuratedDatasetExportTaskRelationship;
+  CuratedDatasetExportTaskUpdateConnectionInput: CuratedDatasetExportTaskUpdateConnectionInput;
+  CuratedDatasetExportTaskUpdateFieldInput: CuratedDatasetExportTaskUpdateFieldInput;
   CuratedDatasetFieldDefinitionsAggregateInput: CuratedDatasetFieldDefinitionsAggregateInput;
   CuratedDatasetFieldDefinitionsConnectFieldInput: CuratedDatasetFieldDefinitionsConnectFieldInput;
   CuratedDatasetFieldDefinitionsConnectOrCreateFieldInput: CuratedDatasetFieldDefinitionsConnectOrCreateFieldInput;
@@ -10988,6 +11865,8 @@ export type ResolversParentTypes = {
   CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection: CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection;
   CuratedDatasetRelationInput: CuratedDatasetRelationInput;
   CuratedDatasetSort: CuratedDatasetSort;
+  CuratedDatasetTaskExportTaskAggregationSelection: CuratedDatasetTaskExportTaskAggregationSelection;
+  CuratedDatasetTaskExportTaskNodeAggregateSelection: CuratedDatasetTaskExportTaskNodeAggregateSelection;
   CuratedDatasetTaskFunnelTaskAggregationSelection: CuratedDatasetTaskFunnelTaskAggregationSelection;
   CuratedDatasetTaskFunnelTaskNodeAggregateSelection: CuratedDatasetTaskFunnelTaskNodeAggregateSelection;
   CuratedDatasetUniqueWhere: CuratedDatasetUniqueWhere;
@@ -11311,6 +12190,19 @@ export type ResolversParentTypes = {
   MinioUploadDeleteInput: MinioUploadDeleteInput;
   MinioUploadDisconnectInput: MinioUploadDisconnectInput;
   MinioUploadEdge: MinioUploadEdge;
+  MinioUploadFromExportTaskAggregateInput: MinioUploadFromExportTaskAggregateInput;
+  MinioUploadFromExportTaskConnectFieldInput: MinioUploadFromExportTaskConnectFieldInput;
+  MinioUploadFromExportTaskConnection: MinioUploadFromExportTaskConnection;
+  MinioUploadFromExportTaskConnectionSort: MinioUploadFromExportTaskConnectionSort;
+  MinioUploadFromExportTaskConnectionWhere: MinioUploadFromExportTaskConnectionWhere;
+  MinioUploadFromExportTaskCreateFieldInput: MinioUploadFromExportTaskCreateFieldInput;
+  MinioUploadFromExportTaskDeleteFieldInput: MinioUploadFromExportTaskDeleteFieldInput;
+  MinioUploadFromExportTaskDisconnectFieldInput: MinioUploadFromExportTaskDisconnectFieldInput;
+  MinioUploadFromExportTaskFieldInput: MinioUploadFromExportTaskFieldInput;
+  MinioUploadFromExportTaskNodeAggregationWhereInput: MinioUploadFromExportTaskNodeAggregationWhereInput;
+  MinioUploadFromExportTaskRelationship: MinioUploadFromExportTaskRelationship;
+  MinioUploadFromExportTaskUpdateConnectionInput: MinioUploadFromExportTaskUpdateConnectionInput;
+  MinioUploadFromExportTaskUpdateFieldInput: MinioUploadFromExportTaskUpdateFieldInput;
   MinioUploadMinioUploadPairedCodebookAggregationSelection: MinioUploadMinioUploadPairedCodebookAggregationSelection;
   MinioUploadMinioUploadPairedCodebookNodeAggregateSelection: MinioUploadMinioUploadPairedCodebookNodeAggregateSelection;
   MinioUploadMinioUploadPairedRawdataFileAggregationSelection: MinioUploadMinioUploadPairedRawdataFileAggregationSelection;
@@ -11385,6 +12277,8 @@ export type ResolversParentTypes = {
   MinioUploadRawdataFileRawDatasetUpdateFieldInput: MinioUploadRawdataFileRawDatasetUpdateFieldInput;
   MinioUploadRelationInput: MinioUploadRelationInput;
   MinioUploadSort: MinioUploadSort;
+  MinioUploadTaskFromExportTaskAggregationSelection: MinioUploadTaskFromExportTaskAggregationSelection;
+  MinioUploadTaskFromExportTaskNodeAggregateSelection: MinioUploadTaskFromExportTaskNodeAggregateSelection;
   MinioUploadUniqueWhere: MinioUploadUniqueWhere;
   MinioUploadUpdateInput: MinioUploadUpdateInput;
   MinioUploadWhere: MinioUploadWhere;
@@ -11726,6 +12620,19 @@ export type ResolversParentTypes = {
   TaskDeleteInput: TaskDeleteInput;
   TaskDisconnectInput: TaskDisconnectInput;
   TaskEdge: TaskEdge;
+  TaskFromCuratedDatasetAggregateInput: TaskFromCuratedDatasetAggregateInput;
+  TaskFromCuratedDatasetConnectFieldInput: TaskFromCuratedDatasetConnectFieldInput;
+  TaskFromCuratedDatasetConnection: TaskFromCuratedDatasetConnection;
+  TaskFromCuratedDatasetConnectionSort: TaskFromCuratedDatasetConnectionSort;
+  TaskFromCuratedDatasetConnectionWhere: TaskFromCuratedDatasetConnectionWhere;
+  TaskFromCuratedDatasetCreateFieldInput: TaskFromCuratedDatasetCreateFieldInput;
+  TaskFromCuratedDatasetDeleteFieldInput: TaskFromCuratedDatasetDeleteFieldInput;
+  TaskFromCuratedDatasetDisconnectFieldInput: TaskFromCuratedDatasetDisconnectFieldInput;
+  TaskFromCuratedDatasetFieldInput: TaskFromCuratedDatasetFieldInput;
+  TaskFromCuratedDatasetNodeAggregationWhereInput: TaskFromCuratedDatasetNodeAggregationWhereInput;
+  TaskFromCuratedDatasetRelationship: TaskFromCuratedDatasetRelationship;
+  TaskFromCuratedDatasetUpdateConnectionInput: TaskFromCuratedDatasetUpdateConnectionInput;
+  TaskFromCuratedDatasetUpdateFieldInput: TaskFromCuratedDatasetUpdateFieldInput;
   TaskFromRawDatasetAggregateInput: TaskFromRawDatasetAggregateInput;
   TaskFromRawDatasetConnectFieldInput: TaskFromRawDatasetConnectFieldInput;
   TaskFromRawDatasetConnectOrCreateFieldInput: TaskFromRawDatasetConnectOrCreateFieldInput;
@@ -11756,11 +12663,30 @@ export type ResolversParentTypes = {
   TaskGeneratedCuratedDatasetRelationship: TaskGeneratedCuratedDatasetRelationship;
   TaskGeneratedCuratedDatasetUpdateConnectionInput: TaskGeneratedCuratedDatasetUpdateConnectionInput;
   TaskGeneratedCuratedDatasetUpdateFieldInput: TaskGeneratedCuratedDatasetUpdateFieldInput;
+  TaskGeneratedExportAggregateInput: TaskGeneratedExportAggregateInput;
+  TaskGeneratedExportConnectFieldInput: TaskGeneratedExportConnectFieldInput;
+  TaskGeneratedExportConnectOrCreateFieldInput: TaskGeneratedExportConnectOrCreateFieldInput;
+  TaskGeneratedExportConnectOrCreateFieldInputOnCreate: TaskGeneratedExportConnectOrCreateFieldInputOnCreate;
+  TaskGeneratedExportConnection: TaskGeneratedExportConnection;
+  TaskGeneratedExportConnectionSort: TaskGeneratedExportConnectionSort;
+  TaskGeneratedExportConnectionWhere: TaskGeneratedExportConnectionWhere;
+  TaskGeneratedExportCreateFieldInput: TaskGeneratedExportCreateFieldInput;
+  TaskGeneratedExportDeleteFieldInput: TaskGeneratedExportDeleteFieldInput;
+  TaskGeneratedExportDisconnectFieldInput: TaskGeneratedExportDisconnectFieldInput;
+  TaskGeneratedExportFieldInput: TaskGeneratedExportFieldInput;
+  TaskGeneratedExportNodeAggregationWhereInput: TaskGeneratedExportNodeAggregationWhereInput;
+  TaskGeneratedExportRelationship: TaskGeneratedExportRelationship;
+  TaskGeneratedExportUpdateConnectionInput: TaskGeneratedExportUpdateConnectionInput;
+  TaskGeneratedExportUpdateFieldInput: TaskGeneratedExportUpdateFieldInput;
+  TaskMinioUploadGeneratedExportAggregationSelection: TaskMinioUploadGeneratedExportAggregationSelection;
+  TaskMinioUploadGeneratedExportNodeAggregateSelection: TaskMinioUploadGeneratedExportNodeAggregateSelection;
   TaskOptions: TaskOptions;
   TaskRawDatasetFromRawDatasetAggregationSelection: TaskRawDatasetFromRawDatasetAggregationSelection;
   TaskRawDatasetFromRawDatasetNodeAggregateSelection: TaskRawDatasetFromRawDatasetNodeAggregateSelection;
   TaskRelationInput: TaskRelationInput;
   TaskSort: TaskSort;
+  TaskTaskFromCuratedDatasetAggregationSelection: TaskTaskFromCuratedDatasetAggregationSelection;
+  TaskTaskFromCuratedDatasetNodeAggregateSelection: TaskTaskFromCuratedDatasetNodeAggregateSelection;
   TaskUpdateInput: TaskUpdateInput;
   TaskWhere: TaskWhere;
   TasksConnection: TasksConnection;
@@ -12025,6 +12951,9 @@ export type CuratedDatasetResolvers<ContextType = MyContextType, ParentType exte
   dataVariablesAggregate?: Resolver<Maybe<ResolversTypes['CuratedDatasetDataVariableDataVariablesAggregationSelection']>, ParentType, ContextType, RequireFields<CuratedDatasetDataVariablesAggregateArgs, 'directed'>>;
   dataVariablesConnection?: Resolver<ResolversTypes['CuratedDatasetDataVariablesConnection'], ParentType, ContextType, RequireFields<CuratedDatasetDataVariablesConnectionArgs, 'directed'>>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  exportTask?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<CuratedDatasetExportTaskArgs, 'directed'>>;
+  exportTaskAggregate?: Resolver<Maybe<ResolversTypes['CuratedDatasetTaskExportTaskAggregationSelection']>, ParentType, ContextType, RequireFields<CuratedDatasetExportTaskAggregateArgs, 'directed'>>;
+  exportTaskConnection?: Resolver<ResolversTypes['CuratedDatasetExportTaskConnection'], ParentType, ContextType, RequireFields<CuratedDatasetExportTaskConnectionArgs, 'directed'>>;
   fieldDefinitions?: Resolver<Array<ResolversTypes['DataVariableFieldDefinition']>, ParentType, ContextType, RequireFields<CuratedDatasetFieldDefinitionsArgs, 'directed'>>;
   fieldDefinitionsAggregate?: Resolver<Maybe<ResolversTypes['CuratedDatasetDataVariableFieldDefinitionFieldDefinitionsAggregationSelection']>, ParentType, ContextType, RequireFields<CuratedDatasetFieldDefinitionsAggregateArgs, 'directed'>>;
   fieldDefinitionsConnection?: Resolver<ResolversTypes['CuratedDatasetFieldDefinitionsConnection'], ParentType, ContextType, RequireFields<CuratedDatasetFieldDefinitionsConnectionArgs, 'directed'>>;
@@ -12089,6 +13018,19 @@ export type CuratedDatasetEdgeResolvers<ContextType = MyContextType, ParentType 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CuratedDatasetExportTaskConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetExportTaskConnection'] = ResolversParentTypes['CuratedDatasetExportTaskConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['CuratedDatasetExportTaskRelationship']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CuratedDatasetExportTaskRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetExportTaskRelationship'] = ResolversParentTypes['CuratedDatasetExportTaskRelationship']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Task'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CuratedDatasetFieldDefinitionsConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetFieldDefinitionsConnection'] = ResolversParentTypes['CuratedDatasetFieldDefinitionsConnection']> = {
   edges?: Resolver<Array<ResolversTypes['CuratedDatasetFieldDefinitionsRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
@@ -12139,6 +13081,21 @@ export type CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelectionR
   description?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   rawDatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CuratedDatasetTaskExportTaskAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetTaskExportTaskAggregationSelection'] = ResolversParentTypes['CuratedDatasetTaskExportTaskAggregationSelection']> = {
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['CuratedDatasetTaskExportTaskNodeAggregateSelection']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CuratedDatasetTaskExportTaskNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetTaskExportTaskNodeAggregateSelection'] = ResolversParentTypes['CuratedDatasetTaskExportTaskNodeAggregateSelection']> = {
+  creationTime?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
+  taskID?: Resolver<ResolversTypes['IDAggregateSelectionNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -12703,6 +13660,9 @@ export type MinioUploadResolvers<ContextType = MyContextType, ParentType extends
   codeBookRawDatasetAggregate?: Resolver<Maybe<ResolversTypes['MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<MinioUploadCodeBookRawDatasetAggregateArgs, 'directed'>>;
   codeBookRawDatasetConnection?: Resolver<ResolversTypes['MinioUploadCodeBookRawDatasetConnection'], ParentType, ContextType, RequireFields<MinioUploadCodeBookRawDatasetConnectionArgs, 'directed'>>;
   filename?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  fromExportTask?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MinioUploadFromExportTaskArgs, 'directed'>>;
+  fromExportTaskAggregate?: Resolver<Maybe<ResolversTypes['MinioUploadTaskFromExportTaskAggregationSelection']>, ParentType, ContextType, RequireFields<MinioUploadFromExportTaskAggregateArgs, 'directed'>>;
+  fromExportTaskConnection?: Resolver<ResolversTypes['MinioUploadFromExportTaskConnection'], ParentType, ContextType, RequireFields<MinioUploadFromExportTaskConnectionArgs, 'directed'>>;
   objectName?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   pairedCodebook?: Resolver<Maybe<ResolversTypes['MinioUpload']>, ParentType, ContextType, RequireFields<MinioUploadPairedCodebookArgs, 'directed'>>;
   pairedCodebookAggregate?: Resolver<Maybe<ResolversTypes['MinioUploadMinioUploadPairedCodebookAggregationSelection']>, ParentType, ContextType, RequireFields<MinioUploadPairedCodebookAggregateArgs, 'directed'>>;
@@ -12745,6 +13705,19 @@ export type MinioUploadCodeBookRawDatasetRelationshipResolvers<ContextType = MyC
 export type MinioUploadEdgeResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadEdge'] = ResolversParentTypes['MinioUploadEdge']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['MinioUpload'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MinioUploadFromExportTaskConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadFromExportTaskConnection'] = ResolversParentTypes['MinioUploadFromExportTaskConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['MinioUploadFromExportTaskRelationship']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MinioUploadFromExportTaskRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadFromExportTaskRelationship'] = ResolversParentTypes['MinioUploadFromExportTaskRelationship']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Task'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -12871,6 +13844,21 @@ export type MinioUploadRawdataFileRawDatasetRelationshipResolvers<ContextType = 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MinioUploadTaskFromExportTaskAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadTaskFromExportTaskAggregationSelection'] = ResolversParentTypes['MinioUploadTaskFromExportTaskAggregationSelection']> = {
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['MinioUploadTaskFromExportTaskNodeAggregateSelection']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MinioUploadTaskFromExportTaskNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadTaskFromExportTaskNodeAggregateSelection'] = ResolversParentTypes['MinioUploadTaskFromExportTaskNodeAggregateSelection']> = {
+  creationTime?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
+  taskID?: Resolver<ResolversTypes['IDAggregateSelectionNullable'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MinioUploadsConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadsConnection'] = ResolversParentTypes['MinioUploadsConnection']> = {
   edges?: Resolver<Array<ResolversTypes['MinioUploadEdge']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
@@ -12952,6 +13940,8 @@ export type MutationResolvers<ContextType = MyContextType, ParentType extends Re
   deleteRawDatasets?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteRawDatasetsArgs>>;
   deleteStudies?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteStudiesArgs>>;
   deleteTasks?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteTasksArgs>>;
+  funnelTaskExportCuratedDataset?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationFunnelTaskExportCuratedDatasetArgs, 'curatedDatasetID' | 'taskID'>>;
+  funnelTaskExportDataVariableFieldDefinitions?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationFunnelTaskExportDataVariableFieldDefinitionsArgs, 'dataVariableFieldDefinitionIDs' | 'taskID'>>;
   keycloak_clients_createRole?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, Partial<MutationKeycloak_Clients_CreateRoleArgs>>;
   keycloak_clients_delRole?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, Partial<MutationKeycloak_Clients_DelRoleArgs>>;
   keycloak_users_addClientRoleMappings?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, Partial<MutationKeycloak_Users_AddClientRoleMappingsArgs>>;
@@ -13624,12 +14614,18 @@ export type StudyStudySitesRelationshipResolvers<ContextType = MyContextType, Pa
 export type TaskResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['Task'] = ResolversParentTypes['Task']> = {
   creationTime?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  fromCuratedDataset?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<TaskFromCuratedDatasetArgs, 'directed'>>;
+  fromCuratedDatasetAggregate?: Resolver<Maybe<ResolversTypes['TaskTaskFromCuratedDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<TaskFromCuratedDatasetAggregateArgs, 'directed'>>;
+  fromCuratedDatasetConnection?: Resolver<ResolversTypes['TaskFromCuratedDatasetConnection'], ParentType, ContextType, RequireFields<TaskFromCuratedDatasetConnectionArgs, 'directed'>>;
   fromRawDataset?: Resolver<Maybe<ResolversTypes['RawDataset']>, ParentType, ContextType, RequireFields<TaskFromRawDatasetArgs, 'directed'>>;
   fromRawDatasetAggregate?: Resolver<Maybe<ResolversTypes['TaskRawDatasetFromRawDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<TaskFromRawDatasetAggregateArgs, 'directed'>>;
   fromRawDatasetConnection?: Resolver<ResolversTypes['TaskFromRawDatasetConnection'], ParentType, ContextType, RequireFields<TaskFromRawDatasetConnectionArgs, 'directed'>>;
   generatedCuratedDataset?: Resolver<Maybe<ResolversTypes['CuratedDataset']>, ParentType, ContextType, RequireFields<TaskGeneratedCuratedDatasetArgs, 'directed'>>;
   generatedCuratedDatasetAggregate?: Resolver<Maybe<ResolversTypes['TaskCuratedDatasetGeneratedCuratedDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<TaskGeneratedCuratedDatasetAggregateArgs, 'directed'>>;
   generatedCuratedDatasetConnection?: Resolver<ResolversTypes['TaskGeneratedCuratedDatasetConnection'], ParentType, ContextType, RequireFields<TaskGeneratedCuratedDatasetConnectionArgs, 'directed'>>;
+  generatedExport?: Resolver<Maybe<ResolversTypes['MinioUpload']>, ParentType, ContextType, RequireFields<TaskGeneratedExportArgs, 'directed'>>;
+  generatedExportAggregate?: Resolver<Maybe<ResolversTypes['TaskMinioUploadGeneratedExportAggregationSelection']>, ParentType, ContextType, RequireFields<TaskGeneratedExportAggregateArgs, 'directed'>>;
+  generatedExportConnection?: Resolver<ResolversTypes['TaskGeneratedExportConnection'], ParentType, ContextType, RequireFields<TaskGeneratedExportConnectionArgs, 'directed'>>;
   id?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   state?: Resolver<Maybe<ResolversTypes['FunnelState']>, ParentType, ContextType>;
@@ -13666,6 +14662,19 @@ export type TaskEdgeResolvers<ContextType = MyContextType, ParentType extends Re
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TaskFromCuratedDatasetConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskFromCuratedDatasetConnection'] = ResolversParentTypes['TaskFromCuratedDatasetConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['TaskFromCuratedDatasetRelationship']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TaskFromCuratedDatasetRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskFromCuratedDatasetRelationship'] = ResolversParentTypes['TaskFromCuratedDatasetRelationship']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Task'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TaskFromRawDatasetConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskFromRawDatasetConnection'] = ResolversParentTypes['TaskFromRawDatasetConnection']> = {
   edges?: Resolver<Array<ResolversTypes['TaskFromRawDatasetRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
@@ -13692,6 +14701,32 @@ export type TaskGeneratedCuratedDatasetRelationshipResolvers<ContextType = MyCon
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TaskGeneratedExportConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskGeneratedExportConnection'] = ResolversParentTypes['TaskGeneratedExportConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['TaskGeneratedExportRelationship']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TaskGeneratedExportRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskGeneratedExportRelationship'] = ResolversParentTypes['TaskGeneratedExportRelationship']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['MinioUpload'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TaskMinioUploadGeneratedExportAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskMinioUploadGeneratedExportAggregationSelection'] = ResolversParentTypes['TaskMinioUploadGeneratedExportAggregationSelection']> = {
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['TaskMinioUploadGeneratedExportNodeAggregateSelection']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TaskMinioUploadGeneratedExportNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskMinioUploadGeneratedExportNodeAggregateSelection'] = ResolversParentTypes['TaskMinioUploadGeneratedExportNodeAggregateSelection']> = {
+  bucketName?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  filename?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
+  objectName?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type TaskRawDatasetFromRawDatasetAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskRawDatasetFromRawDatasetAggregationSelection'] = ResolversParentTypes['TaskRawDatasetFromRawDatasetAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   node?: Resolver<Maybe<ResolversTypes['TaskRawDatasetFromRawDatasetNodeAggregateSelection']>, ParentType, ContextType>;
@@ -13703,6 +14738,21 @@ export type TaskRawDatasetFromRawDatasetNodeAggregateSelectionResolvers<ContextT
   description?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   rawDatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TaskTaskFromCuratedDatasetAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskTaskFromCuratedDatasetAggregationSelection'] = ResolversParentTypes['TaskTaskFromCuratedDatasetAggregationSelection']> = {
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['TaskTaskFromCuratedDatasetNodeAggregateSelection']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TaskTaskFromCuratedDatasetNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskTaskFromCuratedDatasetNodeAggregateSelection'] = ResolversParentTypes['TaskTaskFromCuratedDatasetNodeAggregateSelection']> = {
+  creationTime?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
+  description?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
+  taskID?: Resolver<ResolversTypes['IDAggregateSelectionNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -13890,6 +14940,8 @@ export type Resolvers<ContextType = MyContextType> = {
   CuratedDatasetDataVariablesConnection?: CuratedDatasetDataVariablesConnectionResolvers<ContextType>;
   CuratedDatasetDataVariablesRelationship?: CuratedDatasetDataVariablesRelationshipResolvers<ContextType>;
   CuratedDatasetEdge?: CuratedDatasetEdgeResolvers<ContextType>;
+  CuratedDatasetExportTaskConnection?: CuratedDatasetExportTaskConnectionResolvers<ContextType>;
+  CuratedDatasetExportTaskRelationship?: CuratedDatasetExportTaskRelationshipResolvers<ContextType>;
   CuratedDatasetFieldDefinitionsConnection?: CuratedDatasetFieldDefinitionsConnectionResolvers<ContextType>;
   CuratedDatasetFieldDefinitionsRelationship?: CuratedDatasetFieldDefinitionsRelationshipResolvers<ContextType>;
   CuratedDatasetFunnelTaskConnection?: CuratedDatasetFunnelTaskConnectionResolvers<ContextType>;
@@ -13898,6 +14950,8 @@ export type Resolvers<ContextType = MyContextType> = {
   CuratedDatasetGeneratedByRawDatasetRelationship?: CuratedDatasetGeneratedByRawDatasetRelationshipResolvers<ContextType>;
   CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection?: CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelectionResolvers<ContextType>;
   CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection?: CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelectionResolvers<ContextType>;
+  CuratedDatasetTaskExportTaskAggregationSelection?: CuratedDatasetTaskExportTaskAggregationSelectionResolvers<ContextType>;
+  CuratedDatasetTaskExportTaskNodeAggregateSelection?: CuratedDatasetTaskExportTaskNodeAggregateSelectionResolvers<ContextType>;
   CuratedDatasetTaskFunnelTaskAggregationSelection?: CuratedDatasetTaskFunnelTaskAggregationSelectionResolvers<ContextType>;
   CuratedDatasetTaskFunnelTaskNodeAggregateSelection?: CuratedDatasetTaskFunnelTaskNodeAggregateSelectionResolvers<ContextType>;
   CuratedDatasetsConnection?: CuratedDatasetsConnectionResolvers<ContextType>;
@@ -13984,6 +15038,8 @@ export type Resolvers<ContextType = MyContextType> = {
   MinioUploadCodeBookRawDatasetConnection?: MinioUploadCodeBookRawDatasetConnectionResolvers<ContextType>;
   MinioUploadCodeBookRawDatasetRelationship?: MinioUploadCodeBookRawDatasetRelationshipResolvers<ContextType>;
   MinioUploadEdge?: MinioUploadEdgeResolvers<ContextType>;
+  MinioUploadFromExportTaskConnection?: MinioUploadFromExportTaskConnectionResolvers<ContextType>;
+  MinioUploadFromExportTaskRelationship?: MinioUploadFromExportTaskRelationshipResolvers<ContextType>;
   MinioUploadMinioUploadPairedCodebookAggregationSelection?: MinioUploadMinioUploadPairedCodebookAggregationSelectionResolvers<ContextType>;
   MinioUploadMinioUploadPairedCodebookNodeAggregateSelection?: MinioUploadMinioUploadPairedCodebookNodeAggregateSelectionResolvers<ContextType>;
   MinioUploadMinioUploadPairedRawdataFileAggregationSelection?: MinioUploadMinioUploadPairedRawdataFileAggregationSelectionResolvers<ContextType>;
@@ -14002,6 +15058,8 @@ export type Resolvers<ContextType = MyContextType> = {
   MinioUploadRawDatasetRelationship?: MinioUploadRawDatasetRelationshipResolvers<ContextType>;
   MinioUploadRawdataFileRawDatasetConnection?: MinioUploadRawdataFileRawDatasetConnectionResolvers<ContextType>;
   MinioUploadRawdataFileRawDatasetRelationship?: MinioUploadRawdataFileRawDatasetRelationshipResolvers<ContextType>;
+  MinioUploadTaskFromExportTaskAggregationSelection?: MinioUploadTaskFromExportTaskAggregationSelectionResolvers<ContextType>;
+  MinioUploadTaskFromExportTaskNodeAggregateSelection?: MinioUploadTaskFromExportTaskNodeAggregateSelectionResolvers<ContextType>;
   MinioUploadsConnection?: MinioUploadsConnectionResolvers<ContextType>;
   Mismatch?: MismatchResolvers<ContextType>;
   MismatchAggregateSelection?: MismatchAggregateSelectionResolvers<ContextType>;
@@ -14089,12 +15147,20 @@ export type Resolvers<ContextType = MyContextType> = {
   TaskCuratedDatasetGeneratedCuratedDatasetAggregationSelection?: TaskCuratedDatasetGeneratedCuratedDatasetAggregationSelectionResolvers<ContextType>;
   TaskCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelection?: TaskCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelectionResolvers<ContextType>;
   TaskEdge?: TaskEdgeResolvers<ContextType>;
+  TaskFromCuratedDatasetConnection?: TaskFromCuratedDatasetConnectionResolvers<ContextType>;
+  TaskFromCuratedDatasetRelationship?: TaskFromCuratedDatasetRelationshipResolvers<ContextType>;
   TaskFromRawDatasetConnection?: TaskFromRawDatasetConnectionResolvers<ContextType>;
   TaskFromRawDatasetRelationship?: TaskFromRawDatasetRelationshipResolvers<ContextType>;
   TaskGeneratedCuratedDatasetConnection?: TaskGeneratedCuratedDatasetConnectionResolvers<ContextType>;
   TaskGeneratedCuratedDatasetRelationship?: TaskGeneratedCuratedDatasetRelationshipResolvers<ContextType>;
+  TaskGeneratedExportConnection?: TaskGeneratedExportConnectionResolvers<ContextType>;
+  TaskGeneratedExportRelationship?: TaskGeneratedExportRelationshipResolvers<ContextType>;
+  TaskMinioUploadGeneratedExportAggregationSelection?: TaskMinioUploadGeneratedExportAggregationSelectionResolvers<ContextType>;
+  TaskMinioUploadGeneratedExportNodeAggregateSelection?: TaskMinioUploadGeneratedExportNodeAggregateSelectionResolvers<ContextType>;
   TaskRawDatasetFromRawDatasetAggregationSelection?: TaskRawDatasetFromRawDatasetAggregationSelectionResolvers<ContextType>;
   TaskRawDatasetFromRawDatasetNodeAggregateSelection?: TaskRawDatasetFromRawDatasetNodeAggregateSelectionResolvers<ContextType>;
+  TaskTaskFromCuratedDatasetAggregationSelection?: TaskTaskFromCuratedDatasetAggregationSelectionResolvers<ContextType>;
+  TaskTaskFromCuratedDatasetNodeAggregateSelection?: TaskTaskFromCuratedDatasetNodeAggregateSelectionResolvers<ContextType>;
   TasksConnection?: TasksConnectionResolvers<ContextType>;
   UpdateClientRolesMutationResponse?: UpdateClientRolesMutationResponseResolvers<ContextType>;
   UpdateClientUsersMutationResponse?: UpdateClientUsersMutationResponseResolvers<ContextType>;
