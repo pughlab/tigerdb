@@ -1,7 +1,9 @@
-if (process.argv.length !== 9) {
-  console.error(`Expected 7 arguments (got ${process.argv.length - 2})!
+if (process.argv.length !== 3) {
+  console.error(`Expected 1 arguments (got ${process.argv.length - 2})!
 
-  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticExport.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticExport.ts 6cf31f33-1696-48cf-97d2-3cd4cec2e1e3 0027aa5d-9a0f-40f1-b7e6-7e070953acc7 802d6267-1b27-42c6-ac8f-cad7d3ab4d70 neo4j %permission_allowedSites,%permission_allowedSites,%permission_allowedStudies Vancouver,Toronto,Milk ydelall|ndelall
+  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticExport.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticExport.ts bae42a4c-bb6d-40c7-82f9-adcd3f34e56b,11f0ba75-1d0e-4dd1-a2df-9c02ebccbddf
+
+  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx ts-node api/src/funnel/programmaticExport.ts bae42a4c-bb6d-40c7-82f9-adcd3f34e56b,11f0ba75-1d0e-4dd1-a2df-9c02ebccbddf
   
   `);
   process.exit(1);
@@ -31,7 +33,7 @@ import * as R from 'remeda'
   const DataVariableFieldDefinitionModel = ogm.model("DataVariableFieldDefinition")
   const DataVariableModel = ogm.model("DataVariable")
 
-  const dvfdIDs = ['fa95d024-132b-4f16-b3ac-2011c7264cf9', 'b406a8f2-74f4-4df5-a83b-01b079267abf']
+  const dvfdIDs = process.argv[2].split(',')
   const r = await DataVariableFieldDefinitionModel.find({where: {dataVariableFieldDefinitionID_IN: dvfdIDs}})
 
   let dvfdToCd = {}
