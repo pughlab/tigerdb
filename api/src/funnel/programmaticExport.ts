@@ -1,9 +1,9 @@
-if (process.argv.length !== 3) {
-  console.error(`Expected 1 arguments (got ${process.argv.length - 2})!
+if (process.argv.length !== 4) {
+  console.error(`Expected 2 arguments (got ${process.argv.length - 2})!
 
-  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticExport.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticExport.ts bae42a4c-bb6d-40c7-82f9-adcd3f34e56b,11f0ba75-1d0e-4dd1-a2df-9c02ebccbddf
+  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticExport.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticExport.ts bae42a4c-bb6d-40c7-82f9-adcd3f34e56b,11f0ba75-1d0e-4dd1-a2df-9c02ebccbddf taskID
 
-  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx ts-node api/src/funnel/programmaticExport.ts bae42a4c-bb6d-40c7-82f9-adcd3f34e56b,11f0ba75-1d0e-4dd1-a2df-9c02ebccbddf
+  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx ts-node api/src/funnel/programmaticExport.ts bae42a4c-bb6d-40c7-82f9-adcd3f34e56b,11f0ba75-1d0e-4dd1-a2df-9c02ebccbddf taskID
   
   `);
   process.exit(1);
@@ -34,6 +34,8 @@ import * as R from 'remeda'
   const DataVariableModel = ogm.model("DataVariable")
 
   const dvfdIDs = process.argv[2].split(',')
+  const taskID = process.argv[3]
+
   const r = await DataVariableFieldDefinitionModel.find({where: {dataVariableFieldDefinitionID_IN: dvfdIDs}})
 
   let dvfdToCd = {}
@@ -121,6 +123,12 @@ import * as R from 'remeda'
   } catch (error) {
     console.log(error)
   }
+
+  const TaskModel = ogm.model('Task')
+  const res = await TaskModel.update({
+    where: {taskID},
+    update: {state: 'COMPLETE'},
+  })
 
   process.exit();
 })()

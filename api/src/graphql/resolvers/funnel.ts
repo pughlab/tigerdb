@@ -56,12 +56,12 @@ const submitTask = async (obj, { name = "Hello world", description = "Demonstrat
   }
 };
 
-const funnelTaskExportDataVariableFieldDefinitions = async (obj, { dataVariableFieldDefinitionIDs }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
+const funnelTaskExportDataVariableFieldDefinitions = async (obj, { taskID, dataVariableFieldDefinitionIDs } : { taskID: String, dataVariableFieldDefinitionIDs: String }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
   try {
 
     const name = uuidv4()
     const description = uuidv4()
-    const taskID = uuidv4()
+    // const taskID = uuidv4()
     const image = 'funnel-base'
 
     const const_program = `TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/programmaticExport.ts`
@@ -70,7 +70,7 @@ const funnelTaskExportDataVariableFieldDefinitions = async (obj, { dataVariableF
     const const_permission_keys = `allowedSites,allowedStudies`
     const const_permission_values = `admin,admin`
     const const_isdelall = `ndelall` // ydelall to delete all before load
-    const command = `${const_program} ${dataVariableFieldDefinitionIDs}`
+    const command = `${const_program} ${dataVariableFieldDefinitionIDs} ${taskID}`
 
     console.log(command)
 
@@ -83,7 +83,7 @@ const funnelTaskExportDataVariableFieldDefinitions = async (obj, { dataVariableF
   }
 };
 
-const funnelTaskExportCuratedDataset = async (obj, { curatedDatasetID }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
+const funnelTaskExportCuratedDataset = async (obj, { taskID, curatedDatasetID } : { taskID: String, curatedDatasetID: String }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
   try {
 
     const DataVariableFieldDefinitionModel = ogm.model("DataVariableFieldDefinition")
@@ -93,7 +93,7 @@ const funnelTaskExportCuratedDataset = async (obj, { curatedDatasetID }, { drive
 
     const dataVariableFieldDefinitionIDs = dvfds.map((dvfd: DataVariableFieldDefinition) => dvfd.dataVariableFieldDefinitionID)
 
-    const result = funnelTaskExportDataVariableFieldDefinitions(obj, { dataVariableFieldDefinitionIDs }, { driver, kcAdminClient, ogm })
+    const result = funnelTaskExportDataVariableFieldDefinitions(obj, { taskID, dataVariableFieldDefinitionIDs }, { driver, kcAdminClient, ogm })
 
     return result;
   } catch (error) {
