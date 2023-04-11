@@ -476,8 +476,8 @@ export default function DatasetDetails() {
                   const linkURL = funnelTask?.generatedCuratedDataset?.exportTask?.generatedExport?.presignedURL
                   const linkText = funnelTask?.generatedCuratedDataset?.exportTask?.generatedExport?.filename
 
-                  console.log(linkText)
-                  console.log(linkURL)
+                  // console.log(linkText)
+                  // console.log(linkURL)
 
                   return <List.Item key={`List.Item.${funnelTask.id}`}>
                     <Button
