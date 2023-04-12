@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { useCallback, useState, useReducer } from 'react'
 import * as React from 'react'
-import { Button, Form, Header, Label, Input, Segment, Container, Message, List, Divider, Modal, Grid, Dropdown, Item } from 'semantic-ui-react'
+import { Button, Form, Header, Label, Input, Segment, Container, Message, List, Divider, Modal, Grid, Dropdown, Item, Popup } from 'semantic-ui-react'
 import { Route, Routes, useParams } from 'react-router-dom'
 import MinioBucket from '../../common/minio'
 // import DataVariableTable from '../../visualizations/tables/DataVariableTable'
@@ -290,9 +290,23 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
       }
   }`,
     { variables: { bucketName }, fetchPolicy: 'network-only' })
+
+  const [disconnectCodebookMutation, disconnectCodebookState] = useMutation(gql`
+    mutation disconnectCodebook($rawDatasetID: ID!, $objectName: ID!) {
+    updateRawDatasets(
+      where: { rawDatasetID: $rawDatasetID }
+      disconnect: { codeBook: {where: {node: { objectName: $objectName }}}}
+    ) {
+      info {
+        nodesDeleted
+      }
+    }
+  }`)
+
   if (!data?.minioUploads) {
     return null
   }
+
   const { minioUploads } = data
   const dropdownOptions = minioUploads.map(({ filename, objectName }) => ({
     value: objectName, text: filename, description: objectName
@@ -341,13 +355,29 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
         <Button disabled={funnelConnectedDataState && !(funnelConnectedDataState.codebook && funnelConnectedDataState.rawDataset && funnelConnectedDataState.codebookPair && funnelConnectedDataState.rawDataPair)} fluid content='Submit'  onClick={ async () => { await funnelLoadDispatch({ type: 'taskID', payload: {taskID: uuidv4()} }); funnelLoadMutation({ variables: funnelLoadState })}}/>
         {
             <Message>
-              codebook: {funnelConnectedDataState && funnelConnectedDataState.codebook ? funnelConnectedDataState.codebook : 'No file'}
+              <Popup content='Click to unlink codebook'
+                trigger={<Button onClick={() => { disconnectCodebookMutation({ variables: { rawDatasetID, objectName: funnelConnectedDataState.codebook } }); rawDatasetDetailsRefetch() }}>
+                  codebook: {funnelConnectedDataState && funnelConnectedDataState.codebook ? funnelConnectedDataState.codebook : 'No file'}
+                </Button>}
+              />
               <br/>
-              rawdata: {funnelConnectedDataState && funnelConnectedDataState.rawDataset ? funnelConnectedDataState.rawDataset : 'No file'}
+              <Popup content='Click to unlink rawdata'
+                trigger={<Button>
+                rawdata: {funnelConnectedDataState && funnelConnectedDataState.rawDataset ? funnelConnectedDataState.rawDataset : 'No file'}
+              </Button>}
+              />
               <br/>
-              codebook pair: {funnelConnectedDataState && funnelConnectedDataState.codebookPair ? funnelConnectedDataState.codebookPair : 'No file'}
+              <Popup content='Click to unpair'
+                trigger={<Button>
+                codebook pair: {funnelConnectedDataState && funnelConnectedDataState.codebookPair ? funnelConnectedDataState.codebookPair : 'No file'}
+              </Button>}
+              />
               <br/>
-              rawdata pair: {funnelConnectedDataState && funnelConnectedDataState.rawDataPair ? funnelConnectedDataState.rawDataPair : 'No file'}
+              <Popup content='Click to unpair'
+                trigger={<Button>
+                rawdata pair: {funnelConnectedDataState && funnelConnectedDataState.rawDataPair ? funnelConnectedDataState.rawDataPair : 'No file'}
+              </Button>}
+              />
             </Message>
         }
       </Segment>
