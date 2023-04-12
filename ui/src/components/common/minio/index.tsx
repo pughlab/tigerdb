@@ -94,12 +94,12 @@ export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) 
                                 <Label
                                     content={minioUpload.objectName}
                                 />
-                                {
+                                {/* {
                                     isCodebook && <Label color='blue' >Codebook</Label>
                                 }
                                 {
                                     isRawdataFile && <Label color='blue'>Rawdata</Label>
-                                }
+                                } */}
                                 <Button key={'button.' + minioUpload.objectName} onClick={() => { minioDelete({variables: {objectName: minioUpload.objectName}}) }}>Delete</Button>
                             </List.Item>
                         </div>
