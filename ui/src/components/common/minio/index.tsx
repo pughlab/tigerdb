@@ -1,11 +1,12 @@
 import React, { useCallback } from 'react'
 import { Route, Routes, useParams } from 'react-router-dom'
-import { Message, Divider, Container, Icon, List, Input, Segment, Form, Button, Modal, Grid } from 'semantic-ui-react'
+import { Message, Divider, Container, Icon, List, Input, Segment, Form, Button, Modal, Grid, Label } from 'semantic-ui-react'
 import SegmentPlaceholder from '../SegmentPlaceholder'
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import useMinioUploadMutation from '../../../hooks/useMinioUploadMutation'
 import SegmentPlaceholder from '../SegmentPlaceholder'
+import { MinioUpload } from '../../../types/types'
 
 export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) {
     const bucketName = `raw-dataset-${rawDatasetID}`
@@ -15,6 +16,12 @@ export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) 
                 bucketName
                 objectName
                 filename
+                rawdataFileRawDataset {
+                    rawDatasetID
+                }
+                codeBookRawDataset {
+                    rawDatasetID
+                }
             }
         }`,
         { variables: { bucketName }, fetchPolicy: 'network-only' })
@@ -65,23 +72,38 @@ export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) 
     if (!data?.minioUploads) {
         return null
     }
-    const { minioUploads } = data
+    const { minioUploads } : { minioUploads: MinioUpload[] } = data
     return (
         <Segment>
             <MinioUploadModal rawDatasetID={rawDatasetID} />
             <Divider horizontal />
             {!minioUploads.length ? <SegmentPlaceholder text={'No uploads yet'} /> :
                 <List celled divided>
-                    {minioUploads.map(minioUpload => (
-                        <div key={'div.' + minioUpload.objectName}>
+                    {minioUploads.map(minioUpload => {
+
+                        const isCodebook = !!minioUpload.codeBookRawDataset
+                        const isRawdataFile = !!minioUpload.rawdataFileRawDataset
+
+                        return <div key={'div.' + minioUpload.objectName}>
                             <List.Item
                                 key={'list.' + minioUpload.objectName}
-                                content={minioUpload.filename}
-                                description={minioUpload.objectName}
-                            />
-                            <Button key={'button.' + minioUpload.objectName} onClick={() => { minioDelete({variables: {objectName: minioUpload.objectName}}) }}>Delete</Button>
+                            >
+                                <Label
+                                    content={minioUpload.filename}
+                                />
+                                <Label
+                                    content={minioUpload.objectName}
+                                />
+                                {
+                                    isCodebook && <Label color='blue' >Codebook</Label>
+                                }
+                                {
+                                    isRawdataFile && <Label color='blue'>Rawdata</Label>
+                                }
+                                <Button key={'button.' + minioUpload.objectName} onClick={() => { minioDelete({variables: {objectName: minioUpload.objectName}}) }}>Delete</Button>
+                            </List.Item>
                         </div>
-                    ))}
+                    })}
                 </List>
             }
         </Segment>
