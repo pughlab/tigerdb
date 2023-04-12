@@ -293,15 +293,55 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
 
   const [disconnectCodebookMutation, disconnectCodebookState] = useMutation(gql`
     mutation disconnectCodebook($rawDatasetID: ID!, $objectName: ID!) {
-    updateRawDatasets(
-      where: { rawDatasetID: $rawDatasetID }
-      disconnect: { codeBook: {where: {node: { objectName: $objectName }}}}
+      updateRawDatasets(
+        where: { rawDatasetID: $rawDatasetID }
+        disconnect: { codeBook: {where: {node: { objectName: $objectName }}}}
+      ) {
+        info {
+          nodesDeleted
+          relationshipsDeleted
+        }
+      }
+  }`)
+
+  const [disconnectRawdataFileMutation, disconnectRawdataFileState] = useMutation(gql`
+    mutation disconnectRawdataFile($rawDatasetID: ID!, $objectName: ID!) {
+      updateRawDatasets(
+        where: { rawDatasetID: $rawDatasetID }
+        disconnect: { rawdataFile: {where: {node: { objectName: $objectName }}}}
+      ) {
+        info {
+          nodesDeleted
+          relationshipsDeleted
+        }
+      }
+  }`)
+
+  const [disconnectPairedCodebookMutation, disconnectPairedCodebookState] = useMutation(gql`
+    mutation disconnectPairedCodebook($objectNameRF: ID!, $objectNameCB: ID!) {
+      updateMinioUploads(
+        where: { objectName: $objectNameCB }
+        disconnect: { pairedRawdataFile: {where: {node: { objectName: $objectNameRF }}}}
+      ) {
+        info {
+          nodesDeleted
+          relationshipsDeleted
+        }
+      }
+  }`)
+
+const [disconnectPairedRawdataFileMutation, disconnectCodebookPairState] = useMutation(gql`
+  mutation disconnectPairedRawdataFile($objectNameRF: ID!, $objectNameCB: ID!) {
+    updateMinioUploads(
+      where: { objectName: $objectNameRF }
+      disconnect: { pairedCodebook: {where: {node: { objectName: $objectNameCB }}}}
     ) {
       info {
         nodesDeleted
+        relationshipsDeleted
       }
     }
-  }`)
+}`)
 
   if (!data?.minioUploads) {
     return null
@@ -354,30 +394,32 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
         <Divider horizontal />
         <Button disabled={funnelConnectedDataState && !(funnelConnectedDataState.codebook && funnelConnectedDataState.rawDataset && funnelConnectedDataState.codebookPair && funnelConnectedDataState.rawDataPair)} fluid content='Submit'  onClick={ async () => { await funnelLoadDispatch({ type: 'taskID', payload: {taskID: uuidv4()} }); funnelLoadMutation({ variables: funnelLoadState })}}/>
         {
+          
             <Message>
+              codebook: {funnelConnectedDataState && funnelConnectedDataState.codebook ? 
               <Popup content='Click to unlink codebook'
-                trigger={<Button onClick={() => { disconnectCodebookMutation({ variables: { rawDatasetID, objectName: funnelConnectedDataState.codebook } }); rawDatasetDetailsRefetch() }}>
-                  codebook: {funnelConnectedDataState && funnelConnectedDataState.codebook ? funnelConnectedDataState.codebook : 'No file'}
-                </Button>}
-              />
+              trigger={<Button onClick={() => { disconnectCodebookMutation({ variables: { rawDatasetID, objectName: funnelConnectedDataState.codebook } }); rawDatasetDetailsRefetch() }}>{funnelConnectedDataState.codebook}</Button>} />
+               : 'No file'}
               <br/>
+
+              rawdata: {funnelConnectedDataState && funnelConnectedDataState.rawDataset ? 
               <Popup content='Click to unlink rawdata'
-                trigger={<Button>
-                rawdata: {funnelConnectedDataState && funnelConnectedDataState.rawDataset ? funnelConnectedDataState.rawDataset : 'No file'}
-              </Button>}
-              />
+              trigger={<Button onClick={() => { disconnectRawdataFileMutation({ variables: { rawDatasetID, objectName: funnelConnectedDataState.rawDataset } }); rawDatasetDetailsRefetch() }}>{funnelConnectedDataState.rawDataset}</Button>} />
+               : 'No file'}
               <br/>
-              <Popup content='Click to unpair'
-                trigger={<Button>
-                codebook pair: {funnelConnectedDataState && funnelConnectedDataState.codebookPair ? funnelConnectedDataState.codebookPair : 'No file'}
-              </Button>}
-              />
+
+              codebook pair: {funnelConnectedDataState && funnelConnectedDataState.codebookPair ? 
+              <Popup content='Click to unlink codebook pair'
+              trigger={<Button onClick={() => { disconnectPairedCodebookMutation({ variables: { objectNameRF: funnelConnectedDataState.codebookPair, objectNameCB: funnelConnectedDataState.codebook } }); rawDatasetDetailsRefetch() }}>{funnelConnectedDataState.codebookPair}</Button>} />
+               : 'No file'}
               <br/>
-              <Popup content='Click to unpair'
-                trigger={<Button>
-                rawdata pair: {funnelConnectedDataState && funnelConnectedDataState.rawDataPair ? funnelConnectedDataState.rawDataPair : 'No file'}
-              </Button>}
-              />
+
+              rawdata pair: {funnelConnectedDataState && funnelConnectedDataState.rawDataPair ? 
+              <Popup content='Click to unlink rawdata pair'
+              trigger={<Button onClick={() => { disconnectPairedRawdataFileMutation({ variables: { objectNameRF: funnelConnectedDataState.rawDataset, objectNameCB: funnelConnectedDataState.rawDataPair } }); rawDatasetDetailsRefetch() }}>{funnelConnectedDataState.rawDataPair}</Button>} />
+               : 'No file'}
+              <br/>
+
             </Message>
         }
       </Segment>
