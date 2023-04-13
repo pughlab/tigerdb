@@ -80,7 +80,7 @@ services:
   minio:
     image: minio/minio
     expose:
-      - ${MINIO_CONSOLE_PORT}:${MINIO_CONSOLE_PORT}
+      - ${MINIO_CONSOLE_PORT}
     ports:
       - ${MINIO_API_PORT}:${MINIO_API_PORT}
     volumes:
