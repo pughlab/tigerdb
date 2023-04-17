@@ -42,10 +42,12 @@ export default function StudiesList({
 
 }) {
 	const { data, loading, error } = useStudiesQuery({})
+	let studies
 	if (!data?.studies) {
-		return null
+		studies = []
+	} else {
+		studies = data.studies
 	}
-	const {studies} = data
 	const allStudySites = studies.map(study => study.studySites).flat()
 	return (
 		<>
@@ -69,11 +71,16 @@ export default function StudiesList({
 						// onChange={(e, {value}) => dispatch({type: 'SET_DESCRIPTION', description: value})}
 						/>
 					</Form>
+					{
+					(studies.length === 0) ?
+					<Label>No studies available. Add a study above or ask your administrator to update your permissions.
+					</Label> :
 					<List relaxed='very' selection size='large'>
 						{
 							studies.map(study => <StudiesListItem key={study.studyID} {...{ study }} />)
 						}
 					</List>
+					}
 				</Grid.Column>
 			</Grid>
 		</>
