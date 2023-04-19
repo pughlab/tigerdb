@@ -15,6 +15,7 @@ import Datasets from './pages/Datasets'
 import Explore from './pages/Explore'
 import DataExports from './pages/DataExports'
 import Metadata from './pages/Metadata'
+import Admin from './pages/Admin'
 
 import PortalNavBarIntro, {HOME_MENU_ELEMENT_ID, DATA_MENU_ELEMENT_ID} from './intros/PortalNavBarIntro'
 
@@ -58,13 +59,14 @@ export default function Portal () {
   const {navigate, location, isActivePathElement} = useRouter()
   // console.log(location)
   const [meMutationState] = useKeycloakMeMutation()
-  const routes = [
+  let routes = [
     {path: 'studies', icon: 'stethoscope', element: <Studies />},
     {path: 'datasets', icon: 'database', element: <Datasets />},
     {path: 'explore', icon: 'search', element: <Explore />},
     {path: 'export', icon: 'download', element: <DataExports />},
     {path: 'metadata', icon: 'search plus', element: <Metadata />},
   ]
+  routes.push({path: 'admin', icon: 'chain', element: <Admin />})
   return (
     <Routes>
       <Route path="*"  element={<Layout />} >
