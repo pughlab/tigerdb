@@ -66,7 +66,10 @@ export default function Portal () {
     {path: 'export', icon: 'download', element: <DataExports />},
     {path: 'metadata', icon: 'search plus', element: <Metadata />},
   ]
-  routes.push({path: 'admin', icon: 'chain', element: <Admin />})
+  const const_adminRole = 'role|allowedRoles|admin'
+  if (meMutationState?.data?.me?.roles.includes(const_adminRole)) {
+    routes.push({path: 'admin', icon: 'chain', element: <Admin />})
+  }
   return (
     <Routes>
       <Route path="*"  element={<Layout />} >
