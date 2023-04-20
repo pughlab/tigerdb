@@ -18,8 +18,8 @@ type Query {
   keycloak_users_find: [ClientUser]
   keycloak_clients_find: [Client]
   keycloak_clients_findRole(clientID: ID!, roleName: String!): ClientRole
-  keycloak_users_listAvailableClientRoleMappings(userID: ID!, clientID: ID!): [ClientRole]
-  keycloak_users_listClientRoleMappings(userID: ID!, clientID: ID!): [ClientRole]
+  keycloak_users_listAvailableClientRoleMappings(userID: ID, clientID: ID!): [ClientRole]
+  keycloak_users_listClientRoleMappings(userID: ID, clientID: ID!): [ClientRole]
 }
 
 type Mutation {

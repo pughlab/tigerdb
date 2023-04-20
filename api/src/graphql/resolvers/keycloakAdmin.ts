@@ -38,6 +38,9 @@ export const resolvers = {
     },
     keycloak_users_listAvailableClientRoleMappings: async (obj, { userID, clientID }, { kcAdminClient }) => {
       try {
+        if (!userID) {
+          return []
+        }
         const roles = await kcAdminClient.users.listAvailableClientRoleMappings({
           id: userID,
           clientUniqueId: clientID,
@@ -50,6 +53,9 @@ export const resolvers = {
     },
     keycloak_users_listClientRoleMappings: async (obj, { userID, clientID }, { kcAdminClient }) => {
       try {
+        if (!userID) {
+          return []
+        }
         const roles = await kcAdminClient.users.listClientRoleMappings({
           id: userID,
           clientUniqueId: clientID,

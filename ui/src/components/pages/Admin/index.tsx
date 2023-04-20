@@ -35,7 +35,7 @@ const AdminUserDetails = ({userID, clientID}) => {
 
   // Available Roles
   const { data: dataAvailableRoles, loading: loadingAvailableRoles, error: errorAvailableRoles, refetch: refetchAvailableRoles } = useQuery(gql`
-  query keycloak_users_listAvailableClientRoleMappings($userID: ID!, $clientID: ID!) {
+  query keycloak_users_listAvailableClientRoleMappings($userID: ID, $clientID: ID!) {
     keycloak_users_listAvailableClientRoleMappings(userID: $userID, clientID: $clientID) {
       id
       name
@@ -51,7 +51,7 @@ const AdminUserDetails = ({userID, clientID}) => {
 
   // Assigned Roles
   const { data: dataAssignedRoles, loading: loadingAssignedRoles, error: errorAssignedRoles, refetch: refetchAssignedRoles } = useQuery(gql`
-  query keycloak_users_listClientRoleMappings($userID: ID!, $clientID: ID!) {
+  query keycloak_users_listClientRoleMappings($userID: ID, $clientID: ID!) {
     keycloak_users_listClientRoleMappings(userID: $userID, clientID: $clientID) {
       id
       name
