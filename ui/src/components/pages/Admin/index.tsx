@@ -129,6 +129,7 @@ mutation keycloak_clients_delRole(
           {/* <Label>Create new role</Label> */}
           <Input
             placeholder='role|roleType|roleValue'
+            value={adminUserDetailsState.newRole}
             onChange={(e, {value}) => {adminUserDetailsDispatch({type: 'setNewRole', payload: {newRole: value}})}}
           />
           <Button type='submit' onClick={() => { createClientRole({variables: {clientID, roleName: adminUserDetailsState.newRole}})}}>Create client role</Button>
@@ -149,7 +150,7 @@ mutation keycloak_clients_delRole(
                     name={name}
                     value={id}
                     checked={adminUserDetailsState.availableID === id}
-                    onChange={((e, {value}) => {adminUserDetailsDispatch({type: 'setAvailableID', payload: {availableID: value}}); adminUserDetailsDispatch({type: 'setAvailableName', payload: {availableName: name}})})}
+                    onChange={((e, {value}) => {adminUserDetailsDispatch({type: 'setAvailableID', payload: {availableID: value}}); adminUserDetailsDispatch({type: 'setAvailableName', payload: {availableName: name}});adminUserDetailsDispatch({type: 'setNewRole', payload: {newRole: name}})})}
                   />
                 </Form.Field>
                 </>)
@@ -170,7 +171,7 @@ mutation keycloak_clients_delRole(
                       name={name}
                       value={id}
                       checked={adminUserDetailsState.assignedID === id}
-                      onChange={((e, {value}) => {adminUserDetailsDispatch({type: 'setAssignedID', payload: {assignedID: value}}); adminUserDetailsDispatch({type: 'setAssignedName', payload: {assignedName: name}})})}
+                      onChange={((e, {value}) => {adminUserDetailsDispatch({type: 'setAssignedID', payload: {assignedID: value}}); adminUserDetailsDispatch({type: 'setAssignedName', payload: {assignedName: name}});adminUserDetailsDispatch({type: 'setNewRole', payload: {newRole: name}})})}
                     />
                   </Form.Field>
                   </>)
