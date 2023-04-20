@@ -10,7 +10,7 @@ import { useReducer, useState } from 'react'
 const AdminUserDetails = ({userID, clientID}) => {
 
   // State
-  const initialState = { }
+  const initialState = { newRole: 'role|roleType|roleValue' }
   const [adminUserDetailsState, adminUserDetailsDispatch] = useReducer((state, action) => {
       const { type, payload } = action
       switch (type) {
@@ -64,6 +64,8 @@ const AdminUserDetails = ({userID, clientID}) => {
   if (dataAssignedRoles?.keycloak_users_listClientRoleMappings) {
     assignedRoles = dataAssignedRoles?.keycloak_users_listClientRoleMappings
   }
+
+  const allRoleNames = (availableRoles.concat(assignedRoles)).map(x => x.name)
 
   // Assign a role
   const [addRole, { dataAddRole, loadingAddRole, errorAddRole }] = useMutation(gql`
@@ -132,8 +134,8 @@ mutation keycloak_clients_delRole(
             value={adminUserDetailsState.newRole}
             onChange={(e, {value}) => {adminUserDetailsDispatch({type: 'setNewRole', payload: {newRole: value}})}}
           />
-          <Button type='submit' onClick={() => { createClientRole({variables: {clientID, roleName: adminUserDetailsState.newRole}})}}>Create client role</Button>
-          <Button type='submit' onClick={() => { removeClientRole({variables: {clientID, roleName: adminUserDetailsState.newRole}})}}>Remove client role</Button>
+          <Button type='submit' disabled={allRoleNames.includes(adminUserDetailsState.newRole)} onClick={() => { createClientRole({variables: {clientID, roleName: adminUserDetailsState.newRole}})}}>Create client role</Button>
+          <Button type='submit' disabled={!allRoleNames.includes(adminUserDetailsState.newRole)} onClick={() => { removeClientRole({variables: {clientID, roleName: adminUserDetailsState.newRole}})}}>Remove client role</Button>
         </Form.Field>
       </Form>
       <Grid>
