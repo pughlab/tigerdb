@@ -15,16 +15,16 @@ type Client {
 }
 
 type Query {
-  keycloak_users_find: [ClientUser]
-  keycloak_clients_find: [Client]
-  keycloak_clients_findRole(clientID: ID!, roleName: String!): ClientRole
-  keycloak_users_listAvailableClientRoleMappings(userID: ID, clientID: ID!): [ClientRole]
-  keycloak_users_listClientRoleMappings(userID: ID, clientID: ID!): [ClientRole]
+  keycloak_users_find: [ClientUser] @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloak_clients_find: [Client] @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloak_clients_findRole(clientID: ID!, roleName: String!): ClientRole @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloak_users_listAvailableClientRoleMappings(userID: ID, clientID: ID!): [ClientRole] @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloak_users_listClientRoleMappings(userID: ID, clientID: ID!): [ClientRole] @auth @hasRole(role: "role|allowedRoles|admin")
 }
 
 type Mutation {
-  keycloak_clients_createRole(clientID: ID!, roleName: String!): Boolean
-  keycloak_clients_delRole(clientID: ID!, roleName: String!): Boolean
-  keycloak_users_addClientRoleMappings(userID: ID!, clientID: ID!, roleID: ID!, roleName: String!): Boolean
-  keycloak_users_delClientRoleMappings(userID: ID!, clientID: ID!, roleID: ID!, roleName: String!): Boolean
+  keycloak_clients_createRole(clientID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloak_clients_delRole(clientID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloak_users_addClientRoleMappings(userID: ID!, clientID: ID!, roleID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloak_users_delClientRoleMappings(userID: ID!, clientID: ID!, roleID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
 }
