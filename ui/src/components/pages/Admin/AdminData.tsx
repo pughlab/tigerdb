@@ -7,11 +7,13 @@ import { Study } from '../../../types/types';
 
 export default function AdminData() {
 
+  type lastClickedType = 'Study' | 'RawDataset' | 'CuratedDataset'
+
   type stateType = {
     studyID?: String
     rawDatasetID?: String
     curatedDatasetID?: String
-    lastClicked?: String
+    lastClicked?: lastClickedType
     lastID?: String
     studyPermission?: String
     sitePermission?: String
@@ -23,6 +25,7 @@ export default function AdminData() {
   const [state, dispatch]: [state:stateType, dispatch: any] = useReducer((state, action) => {
       const { type, payload } = action
       const newState = { ...state, ...payload }
+      console.log(newState)
       switch (type) {
           case 'setPayload':
               return newState
@@ -66,13 +69,13 @@ export default function AdminData() {
 
   let studyPermissions = []
   let sitePermissions = []
-  if (state.lastClicked === 'studyID') {
+  if (state.lastClicked === 'Study') {
     studyPermissions = study?.allowedStudies
     sitePermissions = study?.allowedSites
-  } else if (state.lastClicked === 'rawDatasetID') {
+  } else if (state.lastClicked === 'RawDataset') {
     studyPermissions = rawDataset?.allowedStudies
     sitePermissions = rawDataset?.allowedSites
-  } else if (state.lastClicked === 'curatedDatasetID') {
+  } else if (state.lastClicked === 'CuratedDataset') {
     studyPermissions = curatedDataset?.allowedStudies
     sitePermissions = curatedDataset?.allowedSites
   }
@@ -110,7 +113,7 @@ export default function AdminData() {
                     name={studyID}
                     value={studyID}
                     checked={state.studyID === studyID}
-                    onClick={((e, {value}) => {dispatch({type: 'setPayload', payload: {studyID: value, lastClicked: 'studyID', lastID: value, nestedSwitch: 'nestedStudyProperty'}})})}
+                    onClick={((e, {value}) => {dispatch({type: 'setPayload', payload: {studyID: value, lastClicked: 'Study', lastID: value, nestedSwitch: 'nestedStudyProperty', lastName: fullName}})})}
                   />
                 </Form.Field>
                 </>)})}
@@ -126,7 +129,7 @@ export default function AdminData() {
                     name={rawDatasetID}
                     value={rawDatasetID}
                     checked={state.rawDatasetID === rawDatasetID}
-                    onClick={((e, {value}) => {dispatch({type: 'setPayload', payload: {rawDatasetID: value, lastClicked: 'rawDatasetID', lastID: value, nestedSwitch: 'nestedRawDatasetProperty'}})})}
+                    onClick={((e, {value}) => {dispatch({type: 'setPayload', payload: {rawDatasetID: value, lastClicked: 'RawDataset', lastID: value, nestedSwitch: 'nestedRawDatasetProperty', lastName: name}})})}
                   />
                 </Form.Field>
                 </>)})}
@@ -142,7 +145,7 @@ export default function AdminData() {
                     name={curatedDatasetID}
                     value={curatedDatasetID}
                     checked={state.curatedDatasetID === curatedDatasetID}
-                    onClick={((e, {value}) => {dispatch({type: 'setPayload', payload: {curatedDatasetID: value, lastClicked: 'curatedDatasetID', lastID: value, nestedSwitch: 'nestedCuratedDatasetProperty'}})})}
+                    onClick={((e, {value}) => {dispatch({type: 'setPayload', payload: {curatedDatasetID: value, lastClicked: 'CuratedDataset', lastID: value, nestedSwitch: 'nestedCuratedDatasetProperty', lastName: name}})})}
                   />
                 </Form.Field>
                 </>)})}
@@ -152,6 +155,7 @@ export default function AdminData() {
   <Grid.Row>
     <GridColumn>
       <Divider horizontal content='Permissions' />
+      <Label>Currently selected: {state.lastClicked} {state.lastName}</Label>
       <Grid columns={2}>
         <GridColumn>
           <Divider horizontal content='Study' />
