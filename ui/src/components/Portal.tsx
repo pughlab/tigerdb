@@ -18,6 +18,7 @@ import Metadata from './pages/Metadata'
 import Admin from './pages/Admin'
 
 import PortalNavBarIntro, {HOME_MENU_ELEMENT_ID, DATA_MENU_ELEMENT_ID} from './intros/PortalNavBarIntro'
+import { useKeycloak } from '@react-keycloak/web'
 
 function Layout ({}) {
   const {navigate, location, isActivePath} = useRouter()
@@ -66,10 +67,14 @@ export default function Portal () {
     {path: 'export', icon: 'download', element: <DataExports />},
     {path: 'metadata', icon: 'search plus', element: <Metadata />},
   ]
+
   const const_adminRole = 'role|allowedRoles|admin'
-  if (meMutationState?.data?.me?.roles.includes(const_adminRole)) {
+  const const_resource = 'pibu-app'
+  const { keycloak } = useKeycloak()
+  if (keycloak.hasResourceRole(const_adminRole, const_resource)) {
     routes.push({path: 'admin', icon: 'chain', element: <Admin />})
   }
+  
   return (
     <Routes>
       <Route path="*"  element={<Layout />} >
