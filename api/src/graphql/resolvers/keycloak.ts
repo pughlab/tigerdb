@@ -9,7 +9,9 @@ export const resolvers = {
     me: async (obj, params, { driver, kauth }, resolveInfo) => {
       try {
         const { sub: keycloakUserID, email, name, ...kcAuth } = kauth.accessToken.content
-        const keycloakUser = { keycloakUserID, email, name }
+        let roles = kauth?.accessToken?.content?.resource_access['pibu-app']?.roles
+        roles = roles ? roles : []
+        const keycloakUser = { keycloakUserID, email, name, roles }
 
         const session = driver.session()
         const existingUser = await session.run(

@@ -4,6 +4,7 @@ type KeycloakUser @exclude {
   keycloakUserID: ID!
   name: String!
   email: Email!
+  roles: [String]
 }
 
 type Mutation {
