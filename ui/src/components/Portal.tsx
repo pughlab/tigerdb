@@ -19,6 +19,7 @@ import AdminUsers from './pages/Admin/AdminUsers'
 
 import PortalNavBarIntro, {HOME_MENU_ELEMENT_ID, DATA_MENU_ELEMENT_ID} from './intros/PortalNavBarIntro'
 import { useKeycloak } from '@react-keycloak/web'
+import AdminData from './pages/Admin/AdminData'
 
 function Layout ({}) {
   const {navigate, location, isActivePath} = useRouter()
@@ -73,6 +74,7 @@ export default function Portal () {
   const { keycloak } = useKeycloak()
   if (keycloak.hasResourceRole(const_adminRole, const_resource)) {
     routes.push({path: 'adminUsers', icon: 'chain', element: <AdminUsers />})
+    routes.push({path: 'adminData', icon: 'dot circle', element: <AdminData />})
   }
 
   return (
