@@ -81,7 +81,7 @@ const AdminUserDetails = ({userID, clientID}) => {
       roleID: $roleID
       roleName: $roleName
     )
-  }`, {onCompleted: () => { refetchAvailableRoles(); refetchAssignedRoles() }})
+  }`, {onCompleted: () => { adminUserDetailsDispatch({type: 'setAssignedID', payload: {assignedID: adminUserDetailsState.availableID}}); adminUserDetailsDispatch({type: 'setAssignedName', payload: {assignedName: adminUserDetailsState.availableName}}); refetchAvailableRoles(); refetchAssignedRoles() }})
 
 // UnAssign a role
 const [delRole, { dataDelRole, loadingDelRole, errorDelRole }] = useMutation(gql`
@@ -97,7 +97,7 @@ mutation keycloak_users_delClientRoleMappings(
     roleID: $roleID
     roleName: $roleName
   )
-}`, {onCompleted: () => { refetchAvailableRoles(); refetchAssignedRoles() }})
+}`, {onCompleted: () => { adminUserDetailsDispatch({type: 'setAvailableID', payload: {availableID: adminUserDetailsState.assignedID}}); adminUserDetailsDispatch({type: 'setAvailableName', payload: {availableName: adminUserDetailsState.assignedName}}); refetchAvailableRoles(); refetchAssignedRoles() }})
 
 // Create a client role
 const [createClientRole, { dataCreateClientRole, loadingCreateClientRole, errorCreateClientRole }] = useMutation(gql`
