@@ -15,7 +15,7 @@ import Datasets from './pages/Datasets'
 import Explore from './pages/Explore'
 import DataExports from './pages/DataExports'
 import Metadata from './pages/Metadata'
-import Admin from './pages/Admin'
+import AdminUsers from './pages/Admin/AdminUsers'
 
 import PortalNavBarIntro, {HOME_MENU_ELEMENT_ID, DATA_MENU_ELEMENT_ID} from './intros/PortalNavBarIntro'
 import { useKeycloak } from '@react-keycloak/web'
@@ -72,9 +72,9 @@ export default function Portal () {
   const const_resource = 'pibu-app'
   const { keycloak } = useKeycloak()
   if (keycloak.hasResourceRole(const_adminRole, const_resource)) {
-    routes.push({path: 'admin', icon: 'chain', element: <Admin />})
+    routes.push({path: 'adminUsers', icon: 'chain', element: <AdminUsers />})
   }
-  
+
   return (
     <Routes>
       <Route path="*"  element={<Layout />} >

@@ -186,7 +186,7 @@ mutation keycloak_clients_delRole(
   )
 }
 
-export default function Admin() {
+export default function AdminUsers() {
 
   const [userID, setUserID] = useState(null)
 
