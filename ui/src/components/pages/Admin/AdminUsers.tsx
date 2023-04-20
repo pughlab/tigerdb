@@ -126,7 +126,7 @@ mutation keycloak_clients_delRole(
   return (
   <Grid.Column key='UserDetails' width={10}>
     <Divider horizontal content='User details' />
-      <Form>
+      <Form key='form.UserDetails'>
         <Form.Field>
           {/* <Label>Create new role</Label> */}
           <Input
@@ -141,7 +141,7 @@ mutation keycloak_clients_delRole(
       <Grid>
         <Grid.Column key='AvailableRoles' width={8}>
         <Divider horizontal content='Available Roles' />
-        <Form>
+        <Form key='form.AvailableRoles'>
           <Button type='submit' onClick={() => { addRole({variables: {userID, clientID, roleID: adminUserDetailsState.availableID, roleName: adminUserDetailsState.availableName}}) }}>{'Add selected >>'}</Button>
           {availableRoles.map(({id, name}) => {
                 return (<>
@@ -162,8 +162,8 @@ mutation keycloak_clients_delRole(
         </Grid.Column>
         <Grid.Column key='AssignedRoles' width={8}>
           <Divider horizontal content='Assigned Roles' />
-          <Form>
-            <Button type='submit'  onClick={() => { delRole({variables: {userID, clientID, roleID: adminUserDetailsState.assignedID, roleName: adminUserDetailsState.assignedName}}) }}>{'<< Remove selected'}</Button>
+          <Form key='form.AssignedRoles'>
+            <Button type='submit' onClick={() => { delRole({variables: {userID, clientID, roleID: adminUserDetailsState.assignedID, roleName: adminUserDetailsState.assignedName}}) }}>{'<< Remove selected'}</Button>
             {assignedRoles.map(({id, name}) => {
                   return (<>
                   <Form.Field key={`form.field.${id}`}>
