@@ -1,6 +1,7 @@
 import { ApolloServer } from 'apollo-server-express'
 
 import {neo4jSchema, typeDefs, resolvers} from './schema'
+import { applyDirectiveTransformers } from "./authDirectiveTransformer"
 
 import { driver } from './neo4j'
 import {OGM} from '@neo4j/graphql-ogm'
@@ -44,7 +45,10 @@ export const createApolloServer = async () => {
   app.use(voyagerPath, voyagerMiddleware({ endpointUrl: graphqlPath }));
 
   let schema = await neo4jSchema.getSchema()
+  schema = applyDirectiveTransformers(schema)
+  
   let config = schema.toConfig()
+
   const apolloServer = new ApolloServer({
     context: async ({req, res}) => {
       const token = req.headers.authorization || '';
