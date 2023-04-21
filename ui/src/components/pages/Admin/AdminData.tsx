@@ -18,10 +18,11 @@ export default function AdminData() {
     studyPermission?: String
     sitePermission?: String
     nestedSwitch?: String
+    nestedSwitchDelete?: String
   }
 
   // State
-  const initialState: stateType = { studyID: undefined, rawDatasetID: undefined, curatedDatasetID: undefined, lastClicked: undefined, lastID: undefined, studyPermission: undefined, sitePermission: undefined, nestedSwitch: undefined }
+  const initialState: stateType = { studyID: undefined, rawDatasetID: undefined, curatedDatasetID: undefined, lastClicked: undefined, lastID: undefined, studyPermission: undefined, sitePermission: undefined, nestedSwitch: undefined, nestedSwitchDelete: undefined }
   const [state, dispatch]: [state:stateType, dispatch: any] = useReducer((state, action) => {
       const { type, payload } = action
       const newState = { ...state, ...payload }
@@ -69,18 +70,17 @@ export default function AdminData() {
   let studyPermissions = []
   let sitePermissions = []
   if (state.lastClicked === 'Study') {
-    studyPermissions = study?.allowedStudies
-    sitePermissions = study?.allowedSites
+    studyPermissions = study?.allowedStudies ? study?.allowedStudies : []
+    sitePermissions = study?.allowedSites ? study?.allowedSites : []
   } else if (state.lastClicked === 'RawDataset') {
-    studyPermissions = rawDataset?.allowedStudies
-    sitePermissions = rawDataset?.allowedSites
+    studyPermissions = rawDataset?.allowedStudies ? rawDataset?.allowedStudies : []
+    sitePermissions = rawDataset?.allowedSites ? rawDataset?.allowedSites : []
   } else if (state.lastClicked === 'CuratedDataset') {
-    studyPermissions = curatedDataset?.allowedStudies
-    sitePermissions = curatedDataset?.allowedSites
+    studyPermissions = curatedDataset?.allowedStudies ? curatedDataset?.allowedStudies : []
+    sitePermissions = curatedDataset?.allowedSites ? curatedDataset?.allowedSites : []
   }
 
-
-  const [nestedSwitch, { dataNestedSwitch, loadingNestedSwitch, errorNestedSwitch }] = useMutation(gql`
+  const [nestedSwitch, { data: dataNestedSwitch, loading: loadingNestedSwitch, error: errorNestedSwitch }] = useMutation(gql`
   mutation nestedSwitch(
     $id: ID!
     $operation: NestedOperations!
@@ -109,6 +109,29 @@ export default function AdminData() {
     }
   }`, {onCompleted: () => { refetch() }})
 
+const [nestedSwitchDelete, { data: dataNestedSwitchDelete, loading: loadingNestedSwitchDelete, error: errorNestedSwitchDelete }] = useMutation(gql`
+mutation nestedSwitchDelete(
+  $id: ID!
+  $nestedSwitchDelete: NestedSwitchDelete!
+) {
+  nestedSwitchDelete(
+    nestedSwitchDelete: $nestedSwitchDelete
+    id: $id
+  ) {
+    nodesCreated
+    nodesDeleted
+    relationshipsCreated
+    relationshipsDeleted
+    propertiesSet
+    labelsAdded
+    labelsRemoved
+    indexesAdded
+    indexesRemoved
+    constraintsAdded
+    constraintsRemoved
+  }
+}`, {onCompleted: () => { refetch() }})
+
   return (
   <Grid>
   <Grid.Row>
@@ -124,7 +147,7 @@ export default function AdminData() {
                     name={studyID}
                     value={studyID}
                     checked={state.studyID === studyID}
-                    onClick={((e, {value}) => {dispatch({type: 'setPayload', payload: {studyID: value, lastClicked: 'Study', lastID: value, nestedSwitch: 'nestedStudyProperty', lastName: fullName}})})}
+                    onClick={((e, {value}) => {dispatch({type: 'setPayload', payload: {studyID: value, lastClicked: 'Study', lastID: value, nestedSwitch: 'nestedStudyProperty', lastName: fullName, nestedSwitchDelete: 'nestedStudyDelete' }})})}
                   />
                 </Form.Field>
                 </>)})}
@@ -140,7 +163,7 @@ export default function AdminData() {
                     name={rawDatasetID}
                     value={rawDatasetID}
                     checked={state.rawDatasetID === rawDatasetID}
-                    onClick={((e, {value}) => {dispatch({type: 'setPayload', payload: {rawDatasetID: value, lastClicked: 'RawDataset', lastID: value, nestedSwitch: 'nestedRawDatasetProperty', lastName: name}})})}
+                    onClick={((e, {value}) => {dispatch({type: 'setPayload', payload: {rawDatasetID: value, lastClicked: 'RawDataset', lastID: value, nestedSwitch: 'nestedRawDatasetProperty', lastName: name, nestedSwitchDelete: 'nestedRawDatasetDelete' }})})}
                   />
                 </Form.Field>
                 </>)})}
@@ -156,7 +179,7 @@ export default function AdminData() {
                     name={curatedDatasetID}
                     value={curatedDatasetID}
                     checked={state.curatedDatasetID === curatedDatasetID}
-                    onClick={((e, {value}) => {dispatch({type: 'setPayload', payload: {curatedDatasetID: value, lastClicked: 'CuratedDataset', lastID: value, nestedSwitch: 'nestedCuratedDatasetProperty', lastName: name}})})}
+                    onClick={((e, {value}) => {dispatch({type: 'setPayload', payload: {curatedDatasetID: value, lastClicked: 'CuratedDataset', lastID: value, nestedSwitch: 'nestedCuratedDatasetProperty', lastName: name, nestedSwitchDelete: 'nestedCuratedDatasetDelete' }})})}
                   />
                 </Form.Field>
                 </>)})}
@@ -167,6 +190,7 @@ export default function AdminData() {
     <GridColumn>
       <Divider horizontal content='Permissions' />
       <Label>Currently selected:</Label><Label>{state.lastClicked}</Label><Label>{state.lastName}</Label>
+      <Button onClick={() => { nestedSwitchDelete({variables: {id: state.lastID, nestedSwitchDelete: state.nestedSwitchDelete}}) }}>Delete</Button>
       <Grid columns={2}>
         <GridColumn>
           <Divider horizontal content='Study' />

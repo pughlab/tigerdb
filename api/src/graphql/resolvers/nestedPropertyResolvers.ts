@@ -104,6 +104,132 @@ const nestedSwitch = async (parent, { nestedSwitch, id, operation, property, val
   }
 }
 
+const nestedStudyDelete = async (parent, { id }, { driver, ogm, minioClient }) => {
+  try { 
+    const session = driver.session();
+    const query = `
+    CALL {
+      MATCH (s:Study {studyID: "${id}"})-[:HAS_RAW_DATASET]-(rd)-[:GENERATED_CURATED_DATASET]-(cd)-[r]-(dvordvfd)
+      WHERE (type(r) = "HAS_DATA_VARIABLE" OR
+      type(r) = "HAS_FIELD_DEFINITION") AND
+      (dvordvfd:DataVariable OR
+      dvordvfd:DataVariableFieldDefinition)
+      DETACH DELETE dvordvfd
+    }
+    CALL {
+      MATCH (s:Study {studyID: "${id}"})-[:HAS_RAW_DATASET]-(rd)-[:GENERATED_CURATED_DATASET]-(cd:CuratedDataset)
+      DETACH DELETE cd
+    }
+    CALL {
+      MATCH (s:Study {studyID: "${id}"})-[:HAS_RAW_DATASET]-(rd)-[:HAS_FILE]-(mu:MinioUpload)
+      DETACH DELETE mu
+    }
+    CALL {
+      MATCH (s:Study {studyID: "${id}"})-[:HAS_RAW_DATASET]-(rd)-[:HAS_FUNNEL_TASK]-(t:Task)
+      DETACH DELETE t
+    }
+    CALL {
+      MATCH (s:Study {studyID: "${id}"})-[:HAS_RAW_DATASET]-(rd)
+      DETACH DELETE rd
+    }
+    CALL {
+      MATCH (s:Study {studyID: "${id}"})
+      DETACH DELETE s
+    }
+    `
+
+    console.log(query)
+    const result = await session.run(query)
+    return result?.summary?.counters?._stats
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError('nestedStudyProperty', error )
+  }
+}
+
+const nestedRawDatasetDelete = async (parent, { id }, { driver, ogm, minioClient }) => {
+  try { 
+    const session = driver.session();
+    const query = `
+    CALL {
+      MATCH (rd {rawDatasetID: "${id}"})-[:GENERATED_CURATED_DATASET]-(cd)-[r]-(dvordvfd)
+      WHERE (type(r) = "HAS_DATA_VARIABLE" OR
+      type(r) = "HAS_FIELD_DEFINITION") AND
+      (dvordvfd:DataVariable OR
+      dvordvfd:DataVariableFieldDefinition)
+      DETACH DELETE dvordvfd
+    }
+    CALL {
+      MATCH (rd {rawDatasetID: "${id}"})-[:GENERATED_CURATED_DATASET]-(cd:CuratedDataset)
+      DETACH DELETE cd
+    }
+    CALL {
+      MATCH (rd {rawDatasetID: "${id}"})-[:HAS_FILE]-(mu:MinioUpload)
+      DETACH DELETE mu
+    }
+    CALL {
+      MATCH (rd {rawDatasetID: "${id}"})-[:HAS_FUNNEL_TASK]-(t:Task)
+      DETACH DELETE t
+    }
+    CALL {
+      MATCH (rd:RawDataset {rawDatasetID: "${id}"})
+      DETACH DELETE rd
+    }
+    `
+
+    console.log(query)
+    const result = await session.run(query)
+    return result?.summary?.counters?._stats
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError('nestedStudyProperty', error )
+  }
+}
+
+const nestedCuratedDatasetDelete = async (parent, { id }, { driver, ogm, minioClient }) => {
+  try { 
+    const session = driver.session();
+    const query = `
+    CALL {
+      MATCH (cd {curatedDatasetID: "${id}"})-[r]-(dvordvfd)
+      WHERE (type(r) = "HAS_DATA_VARIABLE" OR
+      type(r) = "HAS_FIELD_DEFINITION") AND
+      (dvordvfd:DataVariable OR
+      dvordvfd:DataVariableFieldDefinition)
+      DETACH DELETE dvordvfd
+    }
+    CALL {
+      MATCH (cd {curatedDatasetID: "${id}"})
+      DETACH DELETE cd
+    }
+    `
+
+    console.log(query)
+    const result = await session.run(query)
+    return result?.summary?.counters?._stats
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError('nestedStudyProperty', error )
+  }
+}
+
+const nestedSwitchDelete = async (parent, { nestedSwitchDelete, id }, { driver, ogm, minioClient }) => {
+  try { 
+    switch (nestedSwitchDelete) {
+      case 'nestedStudyDelete':
+          return nestedStudyDelete(parent, { id, }, { driver, ogm, minioClient })
+      case 'nestedRawDatasetDelete':
+          return nestedRawDatasetDelete(parent, { id, }, { driver, ogm, minioClient })
+      case 'nestedCuratedDatasetDelete':
+          return nestedCuratedDatasetDelete(parent, { id, }, { driver, ogm, minioClient })
+    }
+    return null
+  } catch (error) {
+    console.log(error)
+    throw new ApolloError('nestedSwitch', error )
+  }
+}
+
 export const resolvers = {
   Query: {
 
@@ -113,5 +239,9 @@ export const resolvers = {
     nestedRawDatasetProperty: nestedRawDatasetProperty,
     nestedCuratedDatasetProperty: nestedCuratedDatasetProperty,
     nestedSwitch: nestedSwitch,
+    nestedStudyDelete: nestedStudyDelete,
+    nestedRawDatasetDelete: nestedRawDatasetDelete,
+    nestedCuratedDatasetDelete: nestedCuratedDatasetDelete,
+    nestedSwitchDelete: nestedSwitchDelete,
   },
 }
