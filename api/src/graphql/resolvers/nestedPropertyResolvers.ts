@@ -109,6 +109,14 @@ const nestedStudyDelete = async (parent, { id }, { driver, ogm, minioClient }) =
     const session = driver.session();
     const query = `
     CALL {
+      MATCH (s:Study {studyID: "${id}"})-[:HAS_RAW_DATASET]-(rd)-[:GENERATED_CURATED_DATASET]-(cd)-[:HAS_FILE]-(mu:MinioUpload)
+      DETACH DELETE mu
+    }
+    CALL {
+      MATCH (s:Study {studyID: "${id}"})-[:HAS_RAW_DATASET]-(rd)-[:GENERATED_CURATED_DATASET]-(cd)-[:HAS_FUNNEL_TASK]-(t:Task)
+      DETACH DELETE t
+    }
+    CALL {
       MATCH (s:Study {studyID: "${id}"})-[:HAS_RAW_DATASET]-(rd)-[:GENERATED_CURATED_DATASET]-(cd)-[r]-(dvordvfd)
       WHERE (type(r) = "HAS_DATA_VARIABLE" OR
       type(r) = "HAS_FIELD_DEFINITION") AND
@@ -152,6 +160,14 @@ const nestedRawDatasetDelete = async (parent, { id }, { driver, ogm, minioClient
     const session = driver.session();
     const query = `
     CALL {
+      MATCH (rd {rawDatasetID: "${id}"})-[:GENERATED_CURATED_DATASET]-(cd)-[:HAS_FILE]-(mu:MinioUpload)
+      DETACH DELETE mu
+    }
+    CALL {
+      MATCH (rd {rawDatasetID: "${id}"})-[:GENERATED_CURATED_DATASET]-(cd)-[:HAS_FUNNEL_TASK]-(t:Task)
+      DETACH DELETE t
+    }
+    CALL {
       MATCH (rd {rawDatasetID: "${id}"})-[:GENERATED_CURATED_DATASET]-(cd)-[r]-(dvordvfd)
       WHERE (type(r) = "HAS_DATA_VARIABLE" OR
       type(r) = "HAS_FIELD_DEFINITION") AND
@@ -190,6 +206,14 @@ const nestedCuratedDatasetDelete = async (parent, { id }, { driver, ogm, minioCl
   try { 
     const session = driver.session();
     const query = `
+    CALL {
+      MATCH (cd {curatedDatasetID: "${id}"})-[:HAS_FILE]-(mu:MinioUpload)
+      DETACH DELETE mu
+    }
+    CALL {
+      MATCH (cd {curatedDatasetID: "${id}"})-[:HAS_FUNNEL_TASK]-(t:Task)
+      DETACH DELETE t
+    }
     CALL {
       MATCH (cd {curatedDatasetID: "${id}"})-[r]-(dvordvfd)
       WHERE (type(r) = "HAS_DATA_VARIABLE" OR
