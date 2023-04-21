@@ -82,11 +82,11 @@ export default function AdminData() {
 
   const [nestedSwitch, { dataNestedSwitch, loadingNestedSwitch, errorNestedSwitch }] = useMutation(gql`
   mutation nestedSwitch(
-    $id: ID
-    $operation: NestedOperations
-    $property: String
-    $value: String
-    $nestedSwitch: NestedSwitch
+    $id: ID!
+    $operation: NestedOperations!
+    $property: String!
+    $value: String!
+    $nestedSwitch: NestedSwitch!
   ) {
     nestedSwitch(
       nestedSwitch: $nestedSwitch

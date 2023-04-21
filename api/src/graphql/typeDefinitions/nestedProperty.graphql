@@ -24,8 +24,8 @@ enum NestedSwitch {
 }
 
 type Mutation {
-  nestedStudyProperty(id: ID, operation: NestedOperations, property: String, value: String): Neo4jUpdateStats
-  nestedRawDatasetProperty(id: ID, operation: NestedOperations, property: String, value: String): Neo4jUpdateStats
-  nestedCuratedDatasetProperty(id: ID, operation: NestedOperations, property: String, value: String): Neo4jUpdateStats
-  nestedSwitch(nestedSwitch: NestedSwitch, id: ID, operation: NestedOperations, property: String, value: String): Neo4jUpdateStats
+  nestedStudyProperty(id: ID!, operation: NestedOperations!, property: String!, value: String!): Neo4jUpdateStats @auth @hasRole(role: "role|allowedRoles|admin")
+  nestedRawDatasetProperty(id: ID!, operation: NestedOperations!, property: String!, value: String!): Neo4jUpdateStats @auth @hasRole(role: "role|allowedRoles|admin")
+  nestedCuratedDatasetProperty(id: ID!, operation: NestedOperations!, property: String!, value: String!): Neo4jUpdateStats @auth @hasRole(role: "role|allowedRoles|admin")
+  nestedSwitch(nestedSwitch: NestedSwitch!, id: ID!, operation: NestedOperations!, property: String!, value: String!): Neo4jUpdateStats @auth @hasRole(role: "role|allowedRoles|admin")
 }
