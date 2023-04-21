@@ -164,9 +164,9 @@ export default function AdminData() {
             onChange={(e, {value}) => {dispatch({type: 'setPayload', payload: {studyPermission: value}})}}
           />
           <Button onClick={() => { nestedSwitch({variables: {id: state.lastID, operation: 'union', property: 'allowedStudies', value: state.studyPermission, nestedSwitch: state.nestedSwitch}}) }}>Add permission</Button>
-          <Button onClick={() => { nestedSwitch({variables: {id: state.lastID, operation: 'subtract', property: 'allowedStudies', value: state.studyPermission, nestedSwitch: state.nestedSwitch}}) }}>Remove permission</Button>
+          <Button disabled={!studyPermissions.includes(state.studyPermission)} onClick={() => { nestedSwitch({variables: {id: state.lastID, operation: 'subtract', property: 'allowedStudies', value: state.studyPermission, nestedSwitch: state.nestedSwitch}}) }}>Remove permission</Button>
           <Form>
-          {studyPermissions.map((studyPermission) => {
+          {studyPermissions.filter(x => x != 'admin').map((studyPermission) => {
                     return (<>
                     <Form.Field key={`studyPermission.form.field.${studyPermission}`}>
                       <Radio
@@ -190,7 +190,7 @@ export default function AdminData() {
           <Button onClick={() => { nestedSwitch({variables: {id: state.lastID, operation: 'union', property: 'allowedSites', value: state.sitePermission, nestedSwitch: state.nestedSwitch}}) }}>Add permission</Button>
           <Button onClick={() => { nestedSwitch({variables: {id: state.lastID, operation: 'subtract', property: 'allowedSites', value: state.sitePermission, nestedSwitch: state.nestedSwitch}}) }}>Remove permission</Button>
           <Form>
-          {sitePermissions.map((sitePermission) => {
+          {sitePermissions.filter(x => x != 'admin').map((sitePermission) => {
                     return (<>
                     <Form.Field key={`sitePermission.form.field.${sitePermission}`}>
                       <Radio
