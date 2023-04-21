@@ -311,7 +311,8 @@ export const resolvers = {
       { driver, ogm, minioClient }
     ) => {
       try {
-        const presignedURL = await minioClient.presignedUrl('GET', bucketName, objectName)
+        // TODO: response-content-disposition to enable clickable downloads? still doesn't work...
+        const presignedURL = await minioClient.presignedUrl('GET', bucketName, objectName, 24 * 60 * 60, { "response-content-disposition": `attachment; filename=${objectName}` })
         console.log(presignedURL)
         return presignedURL
       } catch (error) {
