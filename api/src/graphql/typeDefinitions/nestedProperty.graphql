@@ -1,17 +1,31 @@
-enum nestedOperations {
+type Neo4jUpdateStats {
+  nodesCreated: Int
+  nodesDeleted: Int
+  relationshipsCreated: Int
+  relationshipsDeleted: Int
+  propertiesSet: Int
+  labelsAdded: Int
+  labelsRemoved: Int
+  indexesAdded: Int
+  indexesRemoved: Int
+  constraintsAdded: Int
+  constraintsRemoved: Int
+}
+
+enum NestedOperations {
   union
   subtract
 }
 
-enum nestedSwitch {
+enum NestedSwitch {
   nestedStudyProperty
   nestedRawDatasetProperty
   nestedCuratedDatasetProperty
 }
 
 type Mutation {
-  nestedStudyProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
-  nestedRawDatasetProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
-  nestedCuratedDatasetProperty(id: ID, operation: nestedOperations, property: String, value: String): Boolean
-  nestedSwitch(nestedSwitch: nestedSwitch, id: ID, operation: nestedOperations, property: String, value: String): Boolean
+  nestedStudyProperty(id: ID, operation: NestedOperations, property: String, value: String): Neo4jUpdateStats
+  nestedRawDatasetProperty(id: ID, operation: NestedOperations, property: String, value: String): Neo4jUpdateStats
+  nestedCuratedDatasetProperty(id: ID, operation: NestedOperations, property: String, value: String): Neo4jUpdateStats
+  nestedSwitch(nestedSwitch: NestedSwitch, id: ID, operation: NestedOperations, property: String, value: String): Neo4jUpdateStats
 }

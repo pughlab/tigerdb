@@ -83,10 +83,10 @@ export default function AdminData() {
   const [nestedSwitch, { dataNestedSwitch, loadingNestedSwitch, errorNestedSwitch }] = useMutation(gql`
   mutation nestedSwitch(
     $id: ID
-    $operation: nestedOperations
+    $operation: NestedOperations
     $property: String
     $value: String
-    $nestedSwitch: nestedSwitch
+    $nestedSwitch: NestedSwitch
   ) {
     nestedSwitch(
       nestedSwitch: $nestedSwitch
@@ -94,7 +94,19 @@ export default function AdminData() {
       operation: $operation
       property: $property
       value: $value
-    )
+    ) {
+      nodesCreated
+      nodesDeleted
+      relationshipsCreated
+      relationshipsDeleted
+      propertiesSet
+      labelsAdded
+      labelsRemoved
+      indexesAdded
+      indexesRemoved
+      constraintsAdded
+      constraintsRemoved
+    }
   }`, {onCompleted: () => { refetch() }})
 
   return (

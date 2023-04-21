@@ -27,7 +27,7 @@ const nestedStudyProperty = async (parent, { id, operation, property, value }, {
     `
 
     const result = await session.run(query)
-    return true
+    return result?.summary?.counters?._stats
   } catch (error) {
     console.log(error)
     throw new ApolloError('nestedStudyProperty', error )
@@ -55,7 +55,7 @@ const nestedRawDatasetProperty = async (parent, { id, operation, property, value
     `
 
     const result = await session.run(query)
-    return true
+    return result?.summary?.counters?._stats
   } catch (error) {
     console.log(error)
     throw new ApolloError('nestedRawDatasetProperty', error )
@@ -80,7 +80,7 @@ const nestedCuratedDatasetProperty = async (parent, { id, operation, property, v
     `
 
     const result = await session.run(query)
-    return true
+    return result?.summary?.counters?._stats
   } catch (error) {
     console.log(error)
     throw new ApolloError('nestedCuratedDatasetProperty', error )
