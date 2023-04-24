@@ -4,12 +4,13 @@ import { useEffect, useReducer, useState } from 'react'
 import { Button, Form, Header, Label, Input, Segment, Dropdown, Message, List, Divider, Modal, Grid } from 'semantic-ui-react'
 
 
-export default function AddStudyModal(
-
-) {
+export default function AddStudyModal({
+	refetch
+}) {
 	const [fullName, setFullName] = useState('')
 	const [shortName, setShortName] = useState('')
 	const [description, setDescription] = useState('')
+	const [open, setOpen] = useState(false)
 
 	const [createStudy, { data, loading, error }] = useMutation(gql`
 		mutation createStudy($fullName: String!, $shortName: String!, $description: String!) {
@@ -29,12 +30,14 @@ export default function AddStudyModal(
 				}
 			}
 		}
-	`)
+	`, {onCompleted: () => { refetch() }})
 	return (
 		<Modal
+			open={open}
+			onClose={() => { setOpen(!open) }}
 			size='large'
 			trigger={
-				<Button content='Add a study' />
+				<Button content='Add a study' onClick={() => setOpen(!open)} />
 			}
 		>
 			<Modal.Content>
@@ -67,7 +70,7 @@ export default function AddStudyModal(
 
 			</Modal.Content>
 			<Modal.Actions>
-				<Button content='Add study' loading={loading} onClick={() => createStudy({ variables: { fullName, shortName, description } })} />
+				<Button content='Add study' loading={loading} onClick={() => {createStudy({ variables: { fullName, shortName, description } }); setOpen(!open) }} />
 			</Modal.Actions>
 		</Modal>
 	)

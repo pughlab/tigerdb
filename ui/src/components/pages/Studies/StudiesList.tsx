@@ -41,7 +41,7 @@ function StudiesListItem({ study }) {
 export default function StudiesList({
 
 }) {
-	const { data, loading, error } = useStudiesQuery({})
+	const { data, loading, error, refetch } = useStudiesQuery({})
 	let studies
 	if (!data?.studies) {
 		studies = []
@@ -60,7 +60,7 @@ export default function StudiesList({
 						Some text about studies
 
 						<Divider horizontal />
-						<AddStudyModal />
+						<AddStudyModal refetch={refetch} />
 					</Message>
 					<Form>
 						<Form.Field
