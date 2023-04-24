@@ -25,6 +25,8 @@ type MinioUpload {
   objectName: ID! @id
   filename: String!
   presignedURL: String @customResolver
+  allowedStudies: [String]
+  allowedSites: [String]
 
   rawDataset: RawDataset @relationship(type: "HAS_FILE", direction: IN)
 

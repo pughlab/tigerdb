@@ -22,6 +22,8 @@ type Task {
   taskID: ID
   name: String
   state: FunnelState
+  allowedStudies: [String]
+  allowedSites: [String]
 
   fromRawDataset: RawDataset @relationship(type: "HAS_FUNNEL_TASK", direction: IN)
   generatedCuratedDataset: CuratedDataset @relationship(type: "FROM_FUNNEL_TASK", direction: OUT)
