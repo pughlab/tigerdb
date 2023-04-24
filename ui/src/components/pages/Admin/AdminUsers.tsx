@@ -200,7 +200,7 @@ export default function AdminUsers() {
   `,
   { variables: { } })
 
-  const { data: dataUsers, loading: loadingUsers, error: errorUsers } = useQuery(gql`
+  const { data: dataUsers, loading: loadingUsers, error: errorUsers, refetch: refetchUsers } = useQuery(gql`
   query keycloak_users_find {
     keycloak_users_find {
       id
@@ -231,7 +231,7 @@ export default function AdminUsers() {
       <Divider horizontal content='Users' />
       {users.map(({id, username, email}) => {
           return (<Grid.Row key={`grid.row.${id}`}>
-            <Button onClick={() => {setUserID(id)}}>{username}</Button>
+            <Button onClick={() => { refetchUsers(); setUserID(id) }}>{username}</Button>
           </Grid.Row>)
       })}
     </Grid.Column>

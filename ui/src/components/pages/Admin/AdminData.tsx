@@ -189,7 +189,7 @@ mutation nestedSwitchDelete(
   <Grid.Row>
     <GridColumn>
       <Divider horizontal content='Permissions' />
-      <Label>Currently selected:</Label><Label>{state.lastClicked}</Label><Label>{state.lastName}</Label>
+      <Label onClick={() => { refetch() }}>Currently selected:</Label><Label>{state.lastClicked}</Label><Label>{state.lastName}</Label>
       <Button onClick={() => { nestedSwitchDelete({variables: {id: state.lastID, nestedSwitchDelete: state.nestedSwitchDelete}}) }}>Delete</Button>
       <Grid columns={2}>
         <GridColumn>
