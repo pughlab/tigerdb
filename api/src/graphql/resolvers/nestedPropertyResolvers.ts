@@ -215,6 +215,10 @@ const nestedCuratedDatasetDelete = async (parent, { id }, { driver, ogm, minioCl
       DETACH DELETE t
     }
     CALL {
+      MATCH (cd {curatedDatasetID: "${id}"})-[:FROM_FUNNEL_TASK]-(t:Task)
+      DETACH DELETE t
+    }
+    CALL {
       MATCH (cd {curatedDatasetID: "${id}"})-[r]-(dvordvfd)
       WHERE (type(r) = "HAS_DATA_VARIABLE" OR
       type(r) = "HAS_FIELD_DEFINITION") AND
