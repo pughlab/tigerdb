@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react'
 
 export default function useRawDatasetsQuery({ }) {
   const [searchText, setSearchText] = useState('')
-  const { data, loading, error } = useQuery(gql`
+  const { data, loading, error, refetch } = useQuery(gql`
   query RawDatasets($searchText: String!) {
     rawDatasets (
       where: {OR :[{name_CONTAINS: $searchText}, {description_CONTAINS: $searchText}]}
@@ -17,5 +17,5 @@ export default function useRawDatasetsQuery({ }) {
       }
     }
   }`, { variables: { searchText }, fetchPolicy: 'network-only' })
-  return { data, loading, error, searchText, setSearchText }
+  return { data, loading, error, refetch, searchText, setSearchText }
 }

@@ -5,14 +5,14 @@ import { Button, Form, Dropdown, Label, Input, Segment, Container, Message, List
 
 import useStudiesQuery from '../../../hooks/useStudiesQuery'
 
-function useAddDatasetReducer() {
+function useAddDatasetReducer({refetch}) {
     const studiesQuery = useStudiesQuery({})
     const [mutation, mutationState] = useMutation(gql`
         mutation createRawDatasetWithMinioBucket($studyID: ID!, $name: String!, $description: String!, $studySiteID: ID! ) {
             createRawDatasetWithMinioBucket(studyID: $studyID, name: $name, description: $description, studySiteID: $studySiteID) {
                 rawDatasetID
             }
-        }`)
+        }`, {onCompleted: () => { refetch() }})
     const initialState = { name: '', description: '', studyID: null, studySiteID: null }
     const [state, dispatch] = useReducer((state, action) => {
         const { type, payload } = action
@@ -35,16 +35,19 @@ function useAddDatasetReducer() {
     return { state, dispatch, studiesQuery, mutation, mutationState }
 }
 
-export default function AddDatasetModal() {
-    const { state, dispatch, studiesQuery, mutation, mutationState } = useAddDatasetReducer()
+export default function AddDatasetModal({ refetch }) {
+    const { state, dispatch, studiesQuery, mutation, mutationState } = useAddDatasetReducer({refetch})
     const { name, description, studyID, studySiteID } = state
     const { loading: studiesLoading } = studiesQuery
     const { loading: mutationLoading } = mutationState
+    const [open, setOpen] = useState(false)
     return (
         <Modal
             size='large'
+            open={open}
+            onClose={() => setOpen(!open)}
             trigger={
-                <Button content='Add a dataset' />
+                <Button content='Add a dataset' onClick={() => setOpen(!open)} />
             }
         >
             <Modal.Content>
@@ -102,7 +105,7 @@ export default function AddDatasetModal() {
 
             </Modal.Content>
             <Modal.Actions>
-                <Button content='Add dataset' loading={mutationLoading} onClick={() => mutation({ variables: state })}
+                <Button content='Add dataset' loading={mutationLoading} onClick={() => {mutation({ variables: state }); setOpen(!open)}}
                     // Check that reducer state has neither empty string nor null using coercion
                     disabled={!Object.values(state).every(v => !!v)}
                 />

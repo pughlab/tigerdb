@@ -31,7 +31,7 @@ function DatasetListItem({ rawDataset }) {
 }
 
 export default function DatasetsList({ }) {
-  const { data, loading, error, searchText, setSearchText } = useRawDatasetsQuery({})
+  const { data, loading, error, refetch, searchText, setSearchText } = useRawDatasetsQuery({})
   return (
     <>
       <Container>
@@ -39,7 +39,7 @@ export default function DatasetsList({ }) {
           Some text about rd and hd
 
           <Divider horizontal />
-          <AddDatasetModal />
+          <AddDatasetModal refetch={refetch} />
         </Message>
         <Segment loading={loading}>
           <Form>
