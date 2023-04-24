@@ -431,7 +431,7 @@ export default function DatasetDetails() {
 
   const { datasetID } = useParams()
 
-  const { data, loading, error } = useQuery(gql`
+  const { data, loading, error, refetch } = useQuery(gql`
 		query RawDatasetDetails($rawDatasetID: ID!) {
       rawDatasets(where: {rawDatasetID: $rawDatasetID}) {
         rawDatasetID
@@ -518,7 +518,7 @@ export default function DatasetDetails() {
             <Divider horizontal content='Dataset Details' />
             <Header content={name} subheader={description} />
             <Divider horizontal />
-            <Label>
+            <Label onClick={() => { refetch() }}>
               Study
               <Label.Detail content={fromStudy.shortName} />
               {/* TODO: every raw dataset can be assumed to have study site, remove this check? */}
