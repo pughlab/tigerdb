@@ -7,6 +7,7 @@ import MinioBucket from '../../common/minio'
 // import DataVariableTable from '../../visualizations/tables/DataVariableTable'
 import { v4 as uuidv4 } from 'uuid'
 import { GeographyCity, MinioUpload, Study, Task } from '../../../types/types'
+import { getPermissionRoles } from '../../../state/appContext'
 
 function useRawDatasetDataVariablesQuery({ rawDatasetID }) {
   return {}
@@ -156,8 +157,21 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
       const const_program = `TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/programmaticLoad.ts`
       const const_mode = `neo4j`
       // const const_mode = `programmatic`
-      const const_permission_keys = `allowedSites,allowedStudies`
-      const const_permission_values = `admin,admin`
+      const {allowedStudies, allowedSites} = getPermissionRoles()
+      const filteredStudies = allowedStudies?.filter(x => x.split('|')[0] == 'role')
+      const filteredSites = allowedSites?.filter(x => x.split('|')[0] == 'role')
+      let const_permission_keys = `allowedSites,allowedStudies`
+      let const_permission_values = `admin,admin`
+      for (let studyPerm of filteredStudies) {
+        const study = studyPerm.split('|')[2]
+        const_permission_keys = const_permission_keys.concat(`,allowedStudies`)
+        const_permission_values = const_permission_values.concat(`,${study}`)
+      }
+      for (let sitePerm of filteredSites) {
+        const site = sitePerm.split('|')[2]
+        const_permission_keys = const_permission_keys.concat(`,allowedSites`)
+        const_permission_values = const_permission_values.concat(`,${site}`)
+      }
       const const_isdelall = `ndelall` // ydelall to delete all before load
       const command = `${const_program} ${rawDatasetID} ${objectNameRF} ${objectNameCB} ${const_mode} ${const_permission_keys} ${const_permission_values} ${const_isdelall} ${taskID}`
       return command
