@@ -1,6 +1,7 @@
 import { useKeycloak } from '@react-keycloak/web';
 import { createSlice, current } from '@reduxjs/toolkit';
 import { RootState } from "./store";
+import * as R from 'remeda'
 
 interface KeycloakMe {
   keycloakUserID: string;
@@ -19,10 +20,12 @@ export const getPermissionRoles = () => {
 	const { keycloak } = useKeycloak()
 	const token = keycloak.tokenParsed
 	const roles = token?.resource_access && token?.resource_access['pibu-app']?.roles
-	const allowedStudies = roles?.filter(x => x.split('|')[0] == 'role' && x.split('|')[1] == 'allowedStudies' ).concat(['admin'])
-	const allowedSites = roles?.filter(x => x.split('|')[0] == 'role' && x.split('|')[1] == 'allowedSites' ).concat(['admin'])
+	const allowedStudies = roles?.filter(x => x.split('|')[0] == 'role' && x.split('|')[1] == 'allowedStudies' ).map(x => x.split('|')[2]).concat(['admin'])
+	const allowedSites = roles?.filter(x => x.split('|')[0] == 'role' && x.split('|')[1] == 'allowedSites' ).map(x => x.split('|')[2]).concat(['admin'])
+  const uniqAllowedStudies = allowedStudies ? R.uniq(allowedStudies) : []
+  const uniqAllowedSites = allowedSites? R.uniq(allowedSites) : []
 
-  return {allowedStudies, allowedSites}
+  return {allowedStudies: uniqAllowedStudies, allowedSites: uniqAllowedSites}
 }
 
 export const appContextSlice = createSlice({
