@@ -1,9 +1,9 @@
-if (process.argv.length !== 5) {
-  console.error(`Expected 3 arguments (got ${process.argv.length - 2})!
+if (process.argv.length !== 7) {
+  console.error(`Expected 5 arguments (got ${process.argv.length - 2})!
 
-  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticExport.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticExport.ts bae42a4c-bb6d-40c7-82f9-adcd3f34e56b,11f0ba75-1d0e-4dd1-a2df-9c02ebccbddf taskID curatedDatasetID
+  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx nodemon --watch api/src/funnel/programmaticExport.ts --exec "node --require ts-node/register" --inspect=0.0.0.0:9232 -r ts-node/register api/src/funnel/programmaticExport.ts bae42a4c-bb6d-40c7-82f9-adcd3f34e56b,11f0ba75-1d0e-4dd1-a2df-9c02ebccbddf taskID curatedDatasetID allowedSites,allowedSites,allowedStudies Vancouver,Toronto,Milk
 
-  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx ts-node api/src/funnel/programmaticExport.ts bae42a4c-bb6d-40c7-82f9-adcd3f34e56b,11f0ba75-1d0e-4dd1-a2df-9c02ebccbddf taskID curatedDatasetID
+  e.g. TS_NODE_TRANSPILE_ONLY=true TS_NODE_PROJECT=tsconfig.api.json npx ts-node api/src/funnel/programmaticExport.ts bae42a4c-bb6d-40c7-82f9-adcd3f34e56b,11f0ba75-1d0e-4dd1-a2df-9c02ebccbddf taskID curatedDatasetID allowedSites,allowedSites,allowedStudies Vancouver,Toronto,Milk
   
   `);
   process.exit(1);
@@ -36,6 +36,31 @@ import * as R from 'remeda'
   const dvfdIDs = process.argv[2].split(',')
   const taskID = process.argv[3]
   const curatedDatasetID = process.argv[4]
+  const properties = process.argv[5]
+  const values = process.argv[6]
+
+  let permissions_map = {}
+  const properties_split = properties.split(',')
+  const values_split = values.split(',')
+
+  if (properties_split.length !== values_split.length) {
+    console.error(`Arguments 5 and 6 must be comma separated strings that are the same length.`);
+    process.exit(1);
+  }
+
+  properties_split.forEach((prop, index) => {
+    const val = values_split[index]
+
+    if (prop == '') {
+      return
+    }
+
+    if (!(prop in permissions_map)) {
+      permissions_map[prop] = []
+    }
+    permissions_map[prop].push(val)
+
+  })
 
   const addTaskResult = await CuratedDatasetModel.update({
     where: { curatedDatasetID: curatedDatasetID },
@@ -137,11 +162,12 @@ import * as R from 'remeda'
       `
       MATCH (cd:CuratedDataset {curatedDatasetID: "${curatedDatasetID}"})
       MATCH (t:Task {taskID: "${taskID}"})
-      MERGE (cd)-[:HAS_FILE]->(mu:MinioUpload {bucketName: $exportBucket, objectName: "${objectName}", filename: $outFile, presignedURL: "${presignedURL}", allowedStudies: ["admin"], allowedSites: ["admin"]})
+      MERGE (cd)-[:HAS_FILE]->(mu:MinioUpload {bucketName: $exportBucket, objectName: "${objectName}", filename: $outFile, presignedURL: "${presignedURL}"})
       MERGE (t)-[:FROM_FUNNEL_TASK]->(mu)
+      SET mu += $permissions_map
       RETURN mu
       `,
-      { exportBucket, outFile }
+      { exportBucket, outFile, permissions_map }
     )
   
     const TaskModel = ogm.model('Task')

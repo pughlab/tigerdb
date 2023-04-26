@@ -138,15 +138,18 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
   function useFunnelLoadReducer() {
     // const studiesQuery = useStudiesQuery({})
     const const_image = `funnel-base`
+    const {allowedStudies, allowedSites} = getPermissionRoles()
 
     const [funnelLoadMutation, funnelLoadMutationState] = useMutation(gql`
-          mutation submitTask($name: String!, $image: String!, $description: String!, $taskID: String!, $command: String!) {
+          mutation submitTask($name: String!, $image: String!, $description: String!, $taskID: String!, $command: String!, $allowedStudies: [String], $allowedSites: [String]) {
             submitTask(
               name: $name
               image: $image
               description: $description
               taskID: $taskID
               command: $command
+              allowedStudies: $allowedStudies
+              allowedSites: $allowedSites
             ) {
               id
             }
@@ -157,18 +160,13 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
       const const_program = `TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/programmaticLoad.ts`
       const const_mode = `neo4j`
       // const const_mode = `programmatic`
-      const {allowedStudies, allowedSites} = getPermissionRoles()
-      const filteredStudies = allowedStudies?.filter(x => x.split('|')[0] == 'role')
-      const filteredSites = allowedSites?.filter(x => x.split('|')[0] == 'role')
-      let const_permission_keys = `allowedSites,allowedStudies`
-      let const_permission_values = `admin,admin`
-      for (let studyPerm of filteredStudies) {
-        const study = studyPerm.split('|')[2]
+      let const_permission_keys = ``
+      let const_permission_values = ``
+      for (let study of allowedStudies) {
         const_permission_keys = const_permission_keys.concat(`,allowedStudies`)
         const_permission_values = const_permission_values.concat(`,${study}`)
       }
-      for (let sitePerm of filteredSites) {
-        const site = sitePerm.split('|')[2]
+      for (let site of allowedSites) {
         const_permission_keys = const_permission_keys.concat(`,allowedSites`)
         const_permission_values = const_permission_values.concat(`,${site}`)
       }
@@ -177,7 +175,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
       return command
     }
 
-    const initialState = { name: uuidv4(), description: rawDatasetID, taskID: uuidv4(), image: const_image, objectNameRF:null, objectNameCB: null, command: null }
+    const initialState = { name: uuidv4(), description: rawDatasetID, taskID: uuidv4(), image: const_image, objectNameRF:null, objectNameCB: null, command: null, allowedStudies, allowedSites }
     const [funnelLoadState, funnelLoadDispatch] = useReducer((state, action) => {
         const { type, payload } = action
         let objectNameRF, objectNameCB, command, taskID
@@ -503,10 +501,12 @@ export default function DatasetDetails() {
     { variables: { rawDatasetID: datasetID } })
 
   const [funnelTaskExportCuratedDatasetMutation, funnelTaskExportCuratedDatasetState] = useMutation(gql`
-    mutation funnelTaskExportCuratedDataset($taskID: ID!, $curatedDatasetID: ID!) {
+    mutation funnelTaskExportCuratedDataset($taskID: ID!, $curatedDatasetID: ID!, $allowedStudies: [String], $allowedSites: [String]) {
     funnelTaskExportCuratedDataset(
       taskID: $taskID
       curatedDatasetID: $curatedDatasetID
+      allowedStudies: $allowedStudies
+      allowedSites: $allowedSites
     ) {
       creationTime
       taskID
@@ -521,6 +521,8 @@ export default function DatasetDetails() {
   if (!data?.rawDatasets) {
     return null
   }
+
+  const {allowedStudies, allowedSites} = getPermissionRoles()
 
   const [{ rawDatasetID, name, description, fromStudy, studySite, files, funnelTasks }] : [{ rawDatasetID: String, name: String, description: String, fromStudy: Study, studySite: GeographyCity, files: MinioUpload, funnelTasks: Task }]= data.rawDatasets
   
@@ -568,7 +570,7 @@ export default function DatasetDetails() {
                   return <List.Item key={`List.Item.${funnelTask.id}`}>
                     <Button
                       disabled={funnelTask.state !== 'COMPLETE'}
-                      onClick={() => { funnelTaskExportCuratedDatasetMutation({ variables: {taskID: uuidv4(), curatedDatasetID: funnelTask?.generatedCuratedDataset?.curatedDatasetID} })} }
+                      onClick={() => { funnelTaskExportCuratedDatasetMutation({ variables: {taskID: uuidv4(), curatedDatasetID: funnelTask?.generatedCuratedDataset?.curatedDatasetID, allowedStudies, allowedSites }})}}
                       key={`Button.${funnelTask.id}`}
                       content={
                         `
