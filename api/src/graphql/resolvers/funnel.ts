@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as R from 'remeda'
 
 
-const submitTask = async (obj, { name = "Hello world", description = "Demonstrates the most basic echo task", taskID = uuidv4(), image = "alpine", command = "ls -la /",
+const submitTask = async (obj, { name = "Hello world", description = "Demonstrates the most basic echo task", taskID = uuidv4(), image = "alpine", command = "ls -la /", allowedStudies, allowedSites,
 }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
   try {
     const TaskModel = ogm.model('Task');
@@ -41,7 +41,7 @@ const submitTask = async (obj, { name = "Hello world", description = "Demonstrat
     const fullResult = await funnelTask(obj, { taskId }, { driver, kcAdminClient })
     let subsetResult = R.pick(fullResult, ['creationTime', 'description', 'id', 'name', 'state'])
 
-    const createTaskResult = await TaskModel.create({ input: { ...subsetResult, taskID } });
+    const createTaskResult = await TaskModel.create({ input: { ...subsetResult, taskID, allowedStudies, allowedSites } });
 
     subsetResult['taskID'] = subsetResult['id']
     return subsetResult;
@@ -51,7 +51,7 @@ const submitTask = async (obj, { name = "Hello world", description = "Demonstrat
   }
 };
 
-const funnelTaskExportDataVariableFieldDefinitions = async (obj, { taskID, description, dataVariableFieldDefinitionIDs, curatedDatasetID } : { taskID: string, description: string, dataVariableFieldDefinitionIDs: string }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
+const funnelTaskExportDataVariableFieldDefinitions = async (obj, { taskID, description, dataVariableFieldDefinitionIDs, curatedDatasetID, allowedStudies, allowedSites } : { taskID: string, description: string, dataVariableFieldDefinitionIDs: string }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
   try {
 
     const name = uuidv4()
@@ -62,14 +62,25 @@ const funnelTaskExportDataVariableFieldDefinitions = async (obj, { taskID, descr
     const const_program = `TS_NODE_TRANSPILE_ONLY=true npx ts-node --project tsconfig.api.json api/src/funnel/programmaticExport.ts`
     const const_mode = `neo4j`
     // const const_mode = `programmatic`
-    const const_permission_keys = `allowedSites,allowedStudies`
-    const const_permission_values = `admin,admin`
+    let const_permission_keys = ``
+    let const_permission_values = ``
+
+    for (let study of allowedStudies) {
+      const_permission_keys = const_permission_keys.concat(`,allowedStudies`)
+      const_permission_values = const_permission_values.concat(`,${study}`)
+    }
+    for (let site of allowedSites) {
+      const_permission_keys = const_permission_keys.concat(`,allowedSites`)
+      const_permission_values = const_permission_values.concat(`,${site}`)
+    }
+
     const const_isdelall = `ndelall` // ydelall to delete all before load
-    const command = `${const_program} ${dataVariableFieldDefinitionIDs} ${taskID} ${curatedDatasetID}`
+
+    const command = `${const_program} ${dataVariableFieldDefinitionIDs} ${taskID} ${curatedDatasetID} ${const_permission_keys} ${const_permission_values}`
 
     console.log(command)
 
-    const result = submitTask(obj, { name, description, taskID, image, command }, { driver, kcAdminClient, ogm })
+    const result = submitTask(obj, { name, description, taskID, image, command, allowedStudies, allowedSites }, { driver, kcAdminClient, ogm })
 
     return result;
   } catch (error) {
@@ -78,7 +89,7 @@ const funnelTaskExportDataVariableFieldDefinitions = async (obj, { taskID, descr
   }
 };
 
-const funnelTaskExportCuratedDataset = async (obj, { taskID, description, curatedDatasetID } : { taskID: string, description: string, curatedDatasetID: string }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
+const funnelTaskExportCuratedDataset = async (obj, { taskID, description, curatedDatasetID, allowedStudies, allowedSites } : { taskID: string, description: string, curatedDatasetID: string, allowedStudies: [string], allowedSites: [string] }, { driver, kcAdminClient, ogm }: { driver: Driver; kcAdminClient: KeycloakAdminClient; ogm: OGM; }) => {
   try {
 
     const DataVariableFieldDefinitionModel = ogm.model("DataVariableFieldDefinition")
@@ -88,7 +99,7 @@ const funnelTaskExportCuratedDataset = async (obj, { taskID, description, curate
 
     const dataVariableFieldDefinitionIDs = dvfds.map((dvfd: DataVariableFieldDefinition) => dvfd.dataVariableFieldDefinitionID)
 
-    const result = funnelTaskExportDataVariableFieldDefinitions(obj, { taskID, description, dataVariableFieldDefinitionIDs, curatedDatasetID }, { driver, kcAdminClient, ogm })
+    const result = funnelTaskExportDataVariableFieldDefinitions(obj, { taskID, description, dataVariableFieldDefinitionIDs, curatedDatasetID, allowedStudies, allowedSites }, { driver, kcAdminClient, ogm })
 
     return result;
   } catch (error) {

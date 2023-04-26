@@ -39,10 +39,12 @@ type Mutation {
     taskID: String
     image: String
     command: String
+    allowedStudies: [String]
+    allowedSites: [String]
     ): Task
   cancelTask(taskId: ID): Task
-  funnelTaskExportDataVariableFieldDefinitions(taskID: ID!, dataVariableFieldDefinitionIDs: [ID!]!): Task
-  funnelTaskExportCuratedDataset(taskID: ID!,  curatedDatasetID: ID!): Task
+  funnelTaskExportDataVariableFieldDefinitions(taskID: ID!, dataVariableFieldDefinitionIDs: [ID!]!, allowedStudies: [String], allowedSites: [String]): Task
+  funnelTaskExportCuratedDataset(taskID: ID!,  curatedDatasetID: ID!, allowedStudies: [String], allowedSites: [String]): Task
 }
 
 

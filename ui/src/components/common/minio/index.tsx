@@ -7,6 +7,7 @@ import { gql, useQuery, useMutation } from '@apollo/client'
 import useMinioUploadMutation from '../../../hooks/useMinioUploadMutation'
 import SegmentPlaceholder from '../SegmentPlaceholder'
 import { MinioUpload } from '../../../types/types'
+import { getPermissionRoles } from '../../../state/appContext'
 
 export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) {
     const bucketName = `raw-dataset-${rawDatasetID}`
@@ -28,6 +29,7 @@ export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) 
 
     function MinioUploadModal({ rawDatasetID } : { rawDatasetID:String }) {
         const bucketName = `raw-dataset-${rawDatasetID}`
+        const {allowedStudies, allowedSites} = getPermissionRoles()
 
         const { state: uploadState, dispatch: uploadDispatch, mutation: uploadMutation } = useMinioUploadMutation(refetch)
         const onDrop = useCallback((files: FileWithPath[]) => {
@@ -35,6 +37,8 @@ export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) 
                 variables: {
                     rawDatasetID: rawDatasetID,
                     bucketName: bucketName,
+                    allowedStudies: allowedStudies,
+                    allowedSites: allowedSites,
                     file: files[0]
                 }
             })
@@ -69,6 +73,8 @@ export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) 
         }
     )
 
+    const {allowedStudies, allowedSites} = getPermissionRoles()
+
     if (!data?.minioUploads) {
         return null
     }
@@ -100,7 +106,7 @@ export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) 
                                 {
                                     isRawdataFile && <Label color='blue'>Rawdata</Label>
                                 } */}
-                                <Button key={'button.' + minioUpload.objectName} onClick={() => { minioDelete({variables: {objectName: minioUpload.objectName}}) }}>Delete</Button>
+                                <Button key={'button.' + minioUpload.objectName} onClick={() => { minioDelete({variables: {objectName: minioUpload.objectName, allowedStudies, allowedSites}}) }}>Delete</Button>
                             </List.Item>
                         </div>
                     })}

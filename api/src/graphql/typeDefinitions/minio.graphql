@@ -74,7 +74,7 @@ extend type MinioBucket @auth(
 
 type Mutation {
   # Example usage (should be generalized)
-  minioUploadFile(bucketName: String!, file: Upload!, rawDatasetID: ID!): MinioUpload!
+  minioUploadFile(bucketName: String!, file: Upload!, rawDatasetID: ID!, allowedStudies: [String], allowedSites: [String]): MinioUpload!
   minioDelete(bucketName: String!, objectName: String!): Boolean
 
   validateRawdatafile(rawDatasetID: ID!, objectName: ID!): FileValidation
