@@ -1,3 +1,4 @@
+import { useKeycloak } from '@react-keycloak/web';
 import { createSlice, current } from '@reduxjs/toolkit';
 import { RootState } from "./store";
 
@@ -13,6 +14,16 @@ export interface AppContextState {
 const initialState: AppContextState = {
     keycloakMe: undefined,
 } as AppContextState;
+
+export const getPermissionRoles = () => {
+	const { keycloak } = useKeycloak()
+	const token = keycloak.tokenParsed
+	const roles = token?.resource_access && token?.resource_access['pibu-app']?.roles
+	const allowedStudies = roles?.filter(x => x.split('|')[0] == 'role' && x.split('|')[1] == 'allowedStudies' ).concat(['admin'])
+	const allowedSites = roles?.filter(x => x.split('|')[0] == 'role' && x.split('|')[1] == 'allowedSites' ).concat(['admin'])
+
+  return {allowedStudies, allowedSites}
+}
 
 export const appContextSlice = createSlice({
     name: 'context',
