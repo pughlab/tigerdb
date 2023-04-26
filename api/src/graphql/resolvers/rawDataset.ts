@@ -8,7 +8,7 @@ export const resolvers = {
   Mutation: {
     createRawDatasetWithMinioBucket: async (
       parent,
-      {studyID, studySiteID, name, description},
+      {studyID, studySiteID, name, description, allowedStudies, allowedSites},
       { driver, ogm, minioClient }
     ) => {
       try {
@@ -16,8 +16,8 @@ export const resolvers = {
 
         const rawDatasetInput = {
           name, description, fromStudy: {connect: {where: {node: {studyID}}}},
-          allowedStudies: ["admin"],
-          allowedSites: ["admin"]
+          allowedStudies,
+          allowedSites,
         }
         const { rawDatasets: [rawDataset] } = await RawDatasetModel.create({ input: [rawDatasetInput] })
         const { rawDatasetID } = rawDataset

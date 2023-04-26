@@ -4,16 +4,18 @@ import * as React from 'react'
 import { Button, Form, Dropdown, Label, Input, Segment, Container, Message, List, Divider, Modal, Grid } from 'semantic-ui-react'
 
 import useStudiesQuery from '../../../hooks/useStudiesQuery'
+import { getPermissionRoles } from '../../../state/appContext'
 
 function useAddDatasetReducer({refetch}) {
     const studiesQuery = useStudiesQuery({})
     const [mutation, mutationState] = useMutation(gql`
-        mutation createRawDatasetWithMinioBucket($studyID: ID!, $name: String!, $description: String!, $studySiteID: ID! ) {
-            createRawDatasetWithMinioBucket(studyID: $studyID, name: $name, description: $description, studySiteID: $studySiteID) {
+        mutation createRawDatasetWithMinioBucket($studyID: ID!, $name: String!, $description: String!, $studySiteID: ID!, $allowedStudies: [String], $allowedSites: [String] ) {
+            createRawDatasetWithMinioBucket(studyID: $studyID, name: $name, description: $description, studySiteID: $studySiteID, allowedStudies: $allowedStudies, allowedSites: $allowedSites) {
                 rawDatasetID
             }
         }`, {onCompleted: () => { refetch() }})
-    const initialState = { name: '', description: '', studyID: null, studySiteID: null }
+    const {allowedStudies, allowedSites} = getPermissionRoles()
+    const initialState = { name: '', description: '', studyID: null, studySiteID: null, allowedStudies, allowedSites }
     const [state, dispatch] = useReducer((state, action) => {
         const { type, payload } = action
         switch (type) {

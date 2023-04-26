@@ -39,6 +39,8 @@ type Mutation {
         studySiteID: ID!
         name: String!
         description: String!
+        allowedStudies: [String]
+        allowedSites: [String]
     ): RawDataset!
 }
 
