@@ -136,6 +136,8 @@ services:
     restart: ${RESTART}
     build:
       context: .
+      args:
+        GITLAB_AUTH_TOKEN: ${GITLAB_AUTH_TOKEN}
     environment:
       - NODE_ENV=production
     ports:

@@ -2,13 +2,16 @@ FROM node:16-alpine as build-deps
 
 # RUN apk add --no-cache python make g++
 
+ARG GITLAB_AUTH_TOKEN
+ENV GITLAB_AUTH_TOKEN $GITLAB_AUTH_TOKEN
+
 WORKDIR /usr/src/app
 COPY package.json .
 COPY package-lock.json .
 COPY .npmrc .
-RUN npm install --force graphql-ws
+RUN GITLAB_AUTH_TOKEN=${GITLAB_AUTH_TOKEN} npm install --force graphql-ws
 # RUN npm i --force
-RUN npm --force ci
+RUN GITLAB_AUTH_TOKEN=${GITLAB_AUTH_TOKEN} npm --force ci
 
 COPY . .
 ENV NODE_ENV production
