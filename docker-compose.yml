@@ -127,6 +127,8 @@ services:
     # ports:
     #   # - 8003:8003
     #   - 9093:9093
+    depends_on:
+      - mongo
     volumes:
       - ./api/src/funnel:/opt/funnel/funnel
       - .:/opt/funnel/service
@@ -154,6 +156,18 @@ services:
       - ./nginx/certs:/etc/nginx/certs
     entrypoint: >
       nginx -g "daemon off;"
+
+  mongo:
+    image: mongo:5.0.17
+    ports:
+      - "27017:27017"
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=mongoadmin
+    #   - MONGO_INITDB_ROOT_PASSWORD=mongoadmin
+    volumes:
+      - pibu_mongo_volume:/data/db
+      - /etc/localtime:/etc/localtime:ro
+      # - ./mongo-entrypoint/:/docker-entrypoint-initdb.d/
       
 
 volumes:
@@ -164,4 +178,6 @@ volumes:
   pibu_api_volume:
     external: true
   pibu_neo4j_volume:
+    external: true
+  pibu_mongo_volume:
     external: true

@@ -18,3 +18,14 @@ AmazonS3:
   Key: ""
   # AWS Secret Access Key
   Secret: ""
+
+Database: mongodb
+
+MongoDB:
+  # Addresses for the seed servers.
+  Addrs:
+    - "mongo"
+  # Database name used within MongoDB to store funnel data.
+  Database: "funnel"
+  Username: ""
+  Password: ""
