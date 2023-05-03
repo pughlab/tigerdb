@@ -7,7 +7,7 @@ import { Button, Divider, Form, Grid, Input, Label, Radio } from 'semantic-ui-re
 import * as R from 'remeda'
 import { useEffect, useReducer, useState } from 'react'
 
-const AdminUserDetails = ({userID, clientID}) => {
+const AdminUserDetails = ({userID, clientID, username, email}) => {
 
   // State
   const initialState = { newRole: 'role|roleType|roleValue' }
@@ -131,7 +131,7 @@ mutation keycloak_clients_delRole(
 
   return (
   <Grid.Column key='UserDetails' width={10}>
-    <Divider horizontal content='User details' />
+    <Divider horizontal content={`User details: ${username}`} />
       <Form key='form.UserDetails'>
         <Form.Field>
           {/* <Label>Create new role</Label> */}
@@ -195,6 +195,8 @@ mutation keycloak_clients_delRole(
 export default function AdminUsers() {
 
   const [userID, setUserID] = useState(null)
+  const [username, setUsername] = useState(null)
+  const [email, setEmail] = useState(null)
 
   const { data: dataClients, loading: loadingClients, error: errorClients } = useQuery(gql`
   query keycloak_clients_find {
@@ -242,10 +244,10 @@ export default function AdminUsers() {
       <Divider horizontal content='Users' />
       {users.map(({id, username, email}) => {
           return (<Grid.Row key={`grid.row.${id}`}>
-            <Button onClick={() => { refetchUsers(); setUserID(id) }}>{username}</Button>
+            <Button onClick={() => { refetchUsers(); setUserID(id); setUsername(username); setEmail(email) }}>{username}</Button>
           </Grid.Row>)
       })}
     </Grid.Column>
-    <AdminUserDetails userID={userID} clientID={appID}/>
+    <AdminUserDetails userID={userID} username={username} email={email} clientID={appID}/>
     </Grid>)
 }
