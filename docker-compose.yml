@@ -93,27 +93,37 @@ services:
 
   keycloak:
     # For non-M1 machines: use keycloak 11
-    image: jboss/keycloak:11.0.1
+    # image: jboss/keycloak:11.0.1
+    image: jboss/keycloak:16.1.1
     # image: wizzn/keycloak:12
     container_name: keycloak
     expose: 
       - 8443
-    expose:
-      - 8085
       - 8080
+    # ports:
+    #   - "8085:8443"
+    #   - "8080:8080"
     volumes:
       - ./keycloak/realm-export.json:/opt/jboss/keycloak/realm-export.json
       - pibu_keycloak_volume:/opt/jboss/keycloak/standalone/data
       - ./nginx/certs/bundle.crt:/etc/x509/https/tls.crt
       - ./nginx/certs/bundle.key:/etc/x509/https/tls.key
+    depends_on:
+      - mariadb
     environment:
       - KEYCLOAK_USER=${KEYCLOAK_USER}
       - KEYCLOAK_PASSWORD=${KEYCLOAK_PASSWORD}
       - KEYCLOAK_IMPORT=/opt/jboss/keycloak/realm-export.json
-      - DB_VENDOR=h2
+      - DB_VENDOR=mariadb
+      # - DB_VENDOR=h2
       - PROXY_ADDRESS_FORWARDING=true
       - REDIRECT_SOCKET="proxy-https"
       - KEYCLOAK_FRONTEND_URL=https://${KEYCLOAK_SERVER_HOST_AND_PORT}/auth
+      - DB_ADDR=${KEYCLOAK_DB_ADDR}
+      - DB_PORT=${KEYCLOAK_DB_PORT}
+      - DB_DATABASE=${KEYCLOAK_DB_DATABASE}
+      - DB_USER=${KEYCLOAK_DB_USER}
+      - DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
 
   funnel:
     image: ohsucompbio/funnel-dind
@@ -168,6 +178,18 @@ services:
       - pibu_mongo_volume:/data/db
       - /etc/localtime:/etc/localtime:ro
       # - ./mongo-entrypoint/:/docker-entrypoint-initdb.d/
+
+  mariadb:
+    image: mariadb:10.7.8
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${KEYCLOAK_DB_DATABASE}
+      MYSQL_USER: ${KEYCLOAK_DB_USER}
+      MYSQL_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+    volumes:
+      - pibu_mariadb_volume:/var/lib/mysql
+    ports:
+      - "3306:3306"
       
 
 volumes:
@@ -180,4 +202,6 @@ volumes:
   pibu_neo4j_volume:
     external: true
   pibu_mongo_volume:
+    external: true
+  pibu_mariadb_volume:
     external: true

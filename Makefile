@@ -6,6 +6,7 @@ setup-volumes:
 	docker volume create pibu_api_volume
 	docker volume create pibu_neo4j_volume
 	docker volume create pibu_mongo_volume
+	docker volume create pibu_mariadb_volume
 	
 up:
 	docker-compose up -d
