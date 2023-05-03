@@ -1,9 +1,10 @@
 import { gql, useMutation, useQuery } from '@apollo/client';
 import * as React from 'react'
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import { Button, Divider, Form, Grid, GridColumn, Input, Label, Radio } from "semantic-ui-react";
 import * as R from 'remeda'
 import { Study } from '../../../types/types';
+import { useLocation } from 'react-router-dom';
 
 export default function AdminData() {
 
@@ -56,6 +57,11 @@ export default function AdminData() {
   }}}}
   `,
   { variables: { }, fetchPolicy: 'network-only' })
+
+	const location = useLocation()
+	useEffect(() => {
+		refetch()
+	}, [location.key])
 
   let studies: [Study] = data?.studies
   studies = studies ? studies : []

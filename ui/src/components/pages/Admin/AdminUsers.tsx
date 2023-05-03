@@ -1,11 +1,11 @@
 import { gql, useMutation, useQuery } from '@apollo/client'
 import * as React from 'react'
-import { Route, Routes, useParams } from 'react-router-dom'
+import { Route, Routes, useLocation, useParams } from 'react-router-dom'
 
 import { Button, Divider, Form, Grid, Input, Label, Radio } from 'semantic-ui-react'
 
 import * as R from 'remeda'
-import { useReducer, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 
 const AdminUserDetails = ({userID, clientID}) => {
 
@@ -59,6 +59,12 @@ const AdminUserDetails = ({userID, clientID}) => {
   }
   `,
   { variables: { userID, clientID }, fetchPolicy: 'network-only' })
+
+	const location = useLocation()
+	useEffect(() => {
+    refetchAvailableRoles()
+		refetchAssignedRoles()
+	}, [location.key])
 
   let assignedRoles = []
   if (dataAssignedRoles?.keycloak_users_listClientRoleMappings) {
@@ -210,6 +216,11 @@ export default function AdminUsers() {
   }
   `,
   { variables: { } })
+
+	const location = useLocation()
+	useEffect(() => {
+    refetchUsers()
+	}, [location.key])
 
   let users
   
