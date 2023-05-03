@@ -20,6 +20,7 @@ import AdminUsers from './pages/Admin/AdminUsers'
 import PortalNavBarIntro, {HOME_MENU_ELEMENT_ID, DATA_MENU_ELEMENT_ID} from './intros/PortalNavBarIntro'
 import { useKeycloak } from '@react-keycloak/web'
 import AdminData from './pages/Admin/AdminData'
+import RenderOnApproved from './authentication/RenderOnApproved'
 
 function Layout ({}) {
   const {navigate, location, isActivePath} = useRouter()
@@ -100,7 +101,7 @@ export default function Portal () {
           <Route key='index' index element={<SegmentPlaceholder text='Select a part of the process' icon='info' />} />
           {routes.map(
             ({path, icon, element}) => (
-              <Route key={path} path={`${path}/*`} element={element} />
+              <Route key={path} path={`${path}/*`} element={<RenderOnApproved>{element}</RenderOnApproved>} />
             )
           )}
         </Route>
