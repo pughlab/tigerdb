@@ -1,11 +1,12 @@
 import { gql, useMutation, useQuery } from '@apollo/client'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import * as React from 'react'
 import { Button, Form, Header, Label, Input, Segment, Container, Message, List, Divider, Modal, Grid, Dropdown } from 'semantic-ui-react'
 import useRouter from '../../../hooks/useRouter'
 import useRawDatasetsQuery from '../../../hooks/useRawDatasetsQuery'
 
 import AddDatasetModal from './AddDatasetModal'
+import { useLocation } from 'react-router-dom'
 
 function DatasetListItem({ rawDataset }) {
   const { rawDatasetID, name, description, fromStudy } = rawDataset
@@ -32,6 +33,12 @@ function DatasetListItem({ rawDataset }) {
 
 export default function DatasetsList({ }) {
   const { data, loading, error, refetch, searchText, setSearchText } = useRawDatasetsQuery({})
+
+	const location = useLocation()
+	useEffect(() => {
+		refetch()
+	}, [location.key])
+  
   return (
     <>
       <Container>

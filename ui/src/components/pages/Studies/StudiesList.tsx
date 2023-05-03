@@ -5,7 +5,7 @@ import { Button, Form, Header, Label, Input, Segment, Dropdown, Message, List, D
 
 import GeographyVisualization from '../../visualizations/geography/GeographyVisualization'
 
-import { Route, Routes, useParams } from 'react-router-dom'
+import { Route, Routes, useLocation, useParams } from 'react-router-dom'
 import useRouter from '../../../hooks/useRouter'
 
 import useStudiesQuery from '../../../hooks/useStudiesQuery'
@@ -41,7 +41,14 @@ function StudiesListItem({ study }) {
 export default function StudiesList({
 
 }) {
+
 	const { data, loading, error, refetch } = useStudiesQuery({})
+
+	const location = useLocation()
+	useEffect(() => {
+		refetch()
+	}, [location.key])
+
 	let studies
 	if (!data?.studies) {
 		studies = []
