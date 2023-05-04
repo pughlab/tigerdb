@@ -38,7 +38,7 @@ type CuratedDataset {
 
     generatedByRawDataset: RawDataset @relationship(type: "GENERATED_CURATED_DATASET", direction: IN)
 
-    exportTask: Task @relationship(type: "HAS_FUNNEL_TASK", direction: OUT)
+    exportTask: [Task!]! @relationship(type: "HAS_FUNNEL_TASK", direction: OUT)
 }
 
 type Mutation {

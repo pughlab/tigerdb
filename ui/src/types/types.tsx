@@ -352,6 +352,12 @@ export type CreateMismatchesMutationResponse = {
   mismatches: Array<Mismatch>;
 };
 
+export type CreateNeo4JUpdateStatsMutationResponse = {
+  __typename?: 'CreateNeo4JUpdateStatsMutationResponse';
+  info: CreateInfo;
+  neo4JUpdateStats: Array<Neo4jUpdateStats>;
+};
+
 export type CreateOntologiesMutationResponse = {
   __typename?: 'CreateOntologiesMutationResponse';
   info: CreateInfo;
@@ -397,7 +403,7 @@ export type CuratedDataset = {
   dataVariablesAggregate: Maybe<CuratedDatasetDataVariableDataVariablesAggregationSelection>;
   dataVariablesConnection: CuratedDatasetDataVariablesConnection;
   description: Scalars['String'];
-  exportTask: Maybe<Task>;
+  exportTask: Array<Task>;
   exportTaskAggregate: Maybe<CuratedDatasetTaskExportTaskAggregationSelection>;
   exportTaskConnection: CuratedDatasetExportTaskConnection;
   fieldDefinitions: Array<DataVariableFieldDefinition>;
@@ -532,7 +538,7 @@ export type CuratedDatasetAggregateSelection = {
 
 export type CuratedDatasetConnectInput = {
   dataVariables: InputMaybe<Array<CuratedDatasetDataVariablesConnectFieldInput>>;
-  exportTask: InputMaybe<CuratedDatasetExportTaskConnectFieldInput>;
+  exportTask: InputMaybe<Array<CuratedDatasetExportTaskConnectFieldInput>>;
   fieldDefinitions: InputMaybe<Array<CuratedDatasetFieldDefinitionsConnectFieldInput>>;
   funnelTask: InputMaybe<CuratedDatasetFunnelTaskConnectFieldInput>;
   generatedByRawDataset: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectFieldInput>;
@@ -679,7 +685,7 @@ export type CuratedDatasetDataVariablesUpdateFieldInput = {
 
 export type CuratedDatasetDeleteInput = {
   dataVariables: InputMaybe<Array<CuratedDatasetDataVariablesDeleteFieldInput>>;
-  exportTask: InputMaybe<CuratedDatasetExportTaskDeleteFieldInput>;
+  exportTask: InputMaybe<Array<CuratedDatasetExportTaskDeleteFieldInput>>;
   fieldDefinitions: InputMaybe<Array<CuratedDatasetFieldDefinitionsDeleteFieldInput>>;
   funnelTask: InputMaybe<CuratedDatasetFunnelTaskDeleteFieldInput>;
   generatedByRawDataset: InputMaybe<CuratedDatasetGeneratedByRawDatasetDeleteFieldInput>;
@@ -687,7 +693,7 @@ export type CuratedDatasetDeleteInput = {
 
 export type CuratedDatasetDisconnectInput = {
   dataVariables: InputMaybe<Array<CuratedDatasetDataVariablesDisconnectFieldInput>>;
-  exportTask: InputMaybe<CuratedDatasetExportTaskDisconnectFieldInput>;
+  exportTask: InputMaybe<Array<CuratedDatasetExportTaskDisconnectFieldInput>>;
   fieldDefinitions: InputMaybe<Array<CuratedDatasetFieldDefinitionsDisconnectFieldInput>>;
   funnelTask: InputMaybe<CuratedDatasetFunnelTaskDisconnectFieldInput>;
   generatedByRawDataset: InputMaybe<CuratedDatasetGeneratedByRawDatasetDisconnectFieldInput>;
@@ -711,7 +717,7 @@ export type CuratedDatasetExportTaskAggregateInput = {
 };
 
 export type CuratedDatasetExportTaskConnectFieldInput = {
-  connect: InputMaybe<TaskConnectInput>;
+  connect: InputMaybe<Array<TaskConnectInput>>;
   where: InputMaybe<TaskConnectWhere>;
 };
 
@@ -748,8 +754,8 @@ export type CuratedDatasetExportTaskDisconnectFieldInput = {
 };
 
 export type CuratedDatasetExportTaskFieldInput = {
-  connect: InputMaybe<CuratedDatasetExportTaskConnectFieldInput>;
-  create: InputMaybe<CuratedDatasetExportTaskCreateFieldInput>;
+  connect: InputMaybe<Array<CuratedDatasetExportTaskConnectFieldInput>>;
+  create: InputMaybe<Array<CuratedDatasetExportTaskCreateFieldInput>>;
 };
 
 export type CuratedDatasetExportTaskNodeAggregationWhereInput = {
@@ -849,10 +855,10 @@ export type CuratedDatasetExportTaskUpdateConnectionInput = {
 };
 
 export type CuratedDatasetExportTaskUpdateFieldInput = {
-  connect: InputMaybe<CuratedDatasetExportTaskConnectFieldInput>;
-  create: InputMaybe<CuratedDatasetExportTaskCreateFieldInput>;
-  delete: InputMaybe<CuratedDatasetExportTaskDeleteFieldInput>;
-  disconnect: InputMaybe<CuratedDatasetExportTaskDisconnectFieldInput>;
+  connect: InputMaybe<Array<CuratedDatasetExportTaskConnectFieldInput>>;
+  create: InputMaybe<Array<CuratedDatasetExportTaskCreateFieldInput>>;
+  delete: InputMaybe<Array<CuratedDatasetExportTaskDeleteFieldInput>>;
+  disconnect: InputMaybe<Array<CuratedDatasetExportTaskDisconnectFieldInput>>;
   update: InputMaybe<CuratedDatasetExportTaskUpdateConnectionInput>;
   where: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
 };
@@ -1299,7 +1305,7 @@ export type CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection 
 
 export type CuratedDatasetRelationInput = {
   dataVariables: InputMaybe<Array<CuratedDatasetDataVariablesCreateFieldInput>>;
-  exportTask: InputMaybe<CuratedDatasetExportTaskCreateFieldInput>;
+  exportTask: InputMaybe<Array<CuratedDatasetExportTaskCreateFieldInput>>;
   fieldDefinitions: InputMaybe<Array<CuratedDatasetFieldDefinitionsCreateFieldInput>>;
   funnelTask: InputMaybe<CuratedDatasetFunnelTaskCreateFieldInput>;
   generatedByRawDataset: InputMaybe<CuratedDatasetGeneratedByRawDatasetCreateFieldInput>;
@@ -1355,7 +1361,7 @@ export type CuratedDatasetUpdateInput = {
   allowedStudies_PUSH: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   dataVariables: InputMaybe<Array<CuratedDatasetDataVariablesUpdateFieldInput>>;
   description: InputMaybe<Scalars['String']>;
-  exportTask: InputMaybe<CuratedDatasetExportTaskUpdateFieldInput>;
+  exportTask: InputMaybe<Array<CuratedDatasetExportTaskUpdateFieldInput>>;
   fieldDefinitions: InputMaybe<Array<CuratedDatasetFieldDefinitionsUpdateFieldInput>>;
   funnelTask: InputMaybe<CuratedDatasetFunnelTaskUpdateFieldInput>;
   generatedByRawDataset: InputMaybe<CuratedDatasetGeneratedByRawDatasetUpdateFieldInput>;
@@ -1413,8 +1419,20 @@ export type CuratedDatasetWhere = {
   exportTask: InputMaybe<TaskWhere>;
   exportTaskAggregate: InputMaybe<CuratedDatasetExportTaskAggregateInput>;
   exportTaskConnection: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
+  exportTaskConnection_ALL: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
+  exportTaskConnection_NONE: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
   exportTaskConnection_NOT: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
+  exportTaskConnection_SINGLE: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
+  exportTaskConnection_SOME: InputMaybe<CuratedDatasetExportTaskConnectionWhere>;
+  /** Return CuratedDatasets where all of the related Tasks match this filter */
+  exportTask_ALL: InputMaybe<TaskWhere>;
+  /** Return CuratedDatasets where none of the related Tasks match this filter */
+  exportTask_NONE: InputMaybe<TaskWhere>;
   exportTask_NOT: InputMaybe<TaskWhere>;
+  /** Return CuratedDatasets where one of the related Tasks match this filter */
+  exportTask_SINGLE: InputMaybe<TaskWhere>;
+  /** Return CuratedDatasets where some of the related Tasks match this filter */
+  exportTask_SOME: InputMaybe<TaskWhere>;
   fieldDefinitions: InputMaybe<DataVariableFieldDefinitionWhere>;
   fieldDefinitionsAggregate: InputMaybe<CuratedDatasetFieldDefinitionsAggregateInput>;
   fieldDefinitionsConnection: InputMaybe<CuratedDatasetFieldDefinitionsConnectionWhere>;
@@ -3095,6 +3113,7 @@ export enum FunnelState {
   Complete = 'COMPLETE',
   Completing = 'COMPLETING',
   Configuring = 'CONFIGURING',
+  Initializing = 'INITIALIZING',
   Pending = 'PENDING',
   Queued = 'QUEUED',
   Resizing = 'RESIZING',
@@ -3669,6 +3688,7 @@ export type KeycloakUser = {
   email: Scalars['Email'];
   keycloakUserID: Scalars['ID'];
   name: Scalars['String'];
+  roles: Maybe<Array<Maybe<Scalars['String']>>>;
 };
 
 export type MinioBucket = {
@@ -3923,6 +3943,8 @@ export type MinioBucketsConnection = {
 
 export type MinioUpload = {
   __typename?: 'MinioUpload';
+  allowedSites: Maybe<Array<Maybe<Scalars['String']>>>;
+  allowedStudies: Maybe<Array<Maybe<Scalars['String']>>>;
   bucketName: Scalars['ID'];
   codeBookRawDataset: Maybe<RawDataset>;
   codeBookRawDatasetAggregate: Maybe<MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection>;
@@ -4265,6 +4287,8 @@ export type MinioUploadConnectWhere = {
 };
 
 export type MinioUploadCreateInput = {
+  allowedSites: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   bucketName: Scalars['ID'];
   codeBookRawDataset: InputMaybe<MinioUploadCodeBookRawDatasetFieldInput>;
   filename: Scalars['String'];
@@ -4484,6 +4508,8 @@ export type MinioUploadMinioUploadPairedRawdataFileNodeAggregateSelection = {
 };
 
 export type MinioUploadOnCreateInput = {
+  allowedSites: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   bucketName: Scalars['ID'];
   filename: Scalars['String'];
 };
@@ -5105,6 +5131,12 @@ export type MinioUploadUniqueWhere = {
 };
 
 export type MinioUploadUpdateInput = {
+  allowedSites: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedSites_POP: InputMaybe<Scalars['Int']>;
+  allowedSites_PUSH: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies_POP: InputMaybe<Scalars['Int']>;
+  allowedStudies_PUSH: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   bucketName: InputMaybe<Scalars['ID']>;
   codeBookRawDataset: InputMaybe<MinioUploadCodeBookRawDatasetUpdateFieldInput>;
   filename: InputMaybe<Scalars['String']>;
@@ -5118,6 +5150,14 @@ export type MinioUploadUpdateInput = {
 export type MinioUploadWhere = {
   AND: InputMaybe<Array<MinioUploadWhere>>;
   OR: InputMaybe<Array<MinioUploadWhere>>;
+  allowedSites: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedSites_INCLUDES: InputMaybe<Scalars['String']>;
+  allowedSites_NOT: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedSites_NOT_INCLUDES: InputMaybe<Scalars['String']>;
+  allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies_INCLUDES: InputMaybe<Scalars['String']>;
+  allowedStudies_NOT: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies_NOT_INCLUDES: InputMaybe<Scalars['String']>;
   bucketName: InputMaybe<Scalars['ID']>;
   bucketName_CONTAINS: InputMaybe<Scalars['ID']>;
   bucketName_ENDS_WITH: InputMaybe<Scalars['ID']>;
@@ -5296,6 +5336,7 @@ export type Mutation = {
   createMinioBuckets: CreateMinioBucketsMutationResponse;
   createMinioUploads: CreateMinioUploadsMutationResponse;
   createMismatches: CreateMismatchesMutationResponse;
+  createNeo4JUpdateStats: CreateNeo4JUpdateStatsMutationResponse;
   createOntologies: CreateOntologiesMutationResponse;
   createOntologyClasses: CreateOntologyClassesMutationResponse;
   createOntologyRelations: CreateOntologyRelationsMutationResponse;
@@ -5317,6 +5358,7 @@ export type Mutation = {
   deleteMinioBuckets: DeleteInfo;
   deleteMinioUploads: DeleteInfo;
   deleteMismatches: DeleteInfo;
+  deleteNeo4JUpdateStats: DeleteInfo;
   deleteOntologies: DeleteInfo;
   deleteOntologyClasses: DeleteInfo;
   deleteOntologyRelations: DeleteInfo;
@@ -5332,14 +5374,14 @@ export type Mutation = {
   me: Maybe<KeycloakUser>;
   minioDelete: Maybe<Scalars['Boolean']>;
   minioUploadFile: MinioUpload;
-  nestedCuratedDatasetPermissions: Maybe<Scalars['Boolean']>;
-  nestedCuratedDatasetProperty: Maybe<Scalars['Boolean']>;
-  nestedDataVariableDefinitionProperty: Maybe<Scalars['Boolean']>;
-  nestedDataVariableFieldProperty: Maybe<Scalars['Boolean']>;
-  nestedDataVariableProperty: Maybe<Scalars['Boolean']>;
-  nestedDataVariableValueProperty: Maybe<Scalars['Boolean']>;
-  nestedRawDatasetProperty: Maybe<Scalars['Boolean']>;
-  nestedStudyProperty: Maybe<Scalars['Boolean']>;
+  nestedCuratedDatasetDelete: Maybe<Neo4jUpdateStats>;
+  nestedCuratedDatasetProperty: Maybe<Neo4jUpdateStats>;
+  nestedRawDatasetDelete: Maybe<Neo4jUpdateStats>;
+  nestedRawDatasetProperty: Maybe<Neo4jUpdateStats>;
+  nestedStudyDelete: Maybe<Neo4jUpdateStats>;
+  nestedStudyProperty: Maybe<Neo4jUpdateStats>;
+  nestedSwitch: Maybe<Neo4jUpdateStats>;
+  nestedSwitchDelete: Maybe<Neo4jUpdateStats>;
   submitTask: Maybe<Task>;
   updateClientRoles: UpdateClientRolesMutationResponse;
   updateClientUsers: UpdateClientUsersMutationResponse;
@@ -5356,6 +5398,7 @@ export type Mutation = {
   updateMinioBuckets: UpdateMinioBucketsMutationResponse;
   updateMinioUploads: UpdateMinioUploadsMutationResponse;
   updateMismatches: UpdateMismatchesMutationResponse;
+  updateNeo4JUpdateStats: UpdateNeo4JUpdateStatsMutationResponse;
   updateOntologies: UpdateOntologiesMutationResponse;
   updateOntologyClasses: UpdateOntologyClassesMutationResponse;
   updateOntologyRelations: UpdateOntologyRelationsMutationResponse;
@@ -5465,6 +5508,11 @@ export type MutationCreateMismatchesArgs = {
 };
 
 
+export type MutationCreateNeo4JUpdateStatsArgs = {
+  input: Array<Neo4jUpdateStatsCreateInput>;
+};
+
+
 export type MutationCreateOntologiesArgs = {
   input: Array<OntologyCreateInput>;
 };
@@ -5481,6 +5529,8 @@ export type MutationCreateOntologyRelationsArgs = {
 
 
 export type MutationCreateRawDatasetWithMinioBucketArgs = {
+  allowedSites: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   description: Scalars['String'];
   name: Scalars['String'];
   studyID: Scalars['ID'];
@@ -5581,6 +5631,11 @@ export type MutationDeleteMismatchesArgs = {
 };
 
 
+export type MutationDeleteNeo4JUpdateStatsArgs = {
+  where: InputMaybe<Neo4jUpdateStatsWhere>;
+};
+
+
 export type MutationDeleteOntologiesArgs = {
   delete: InputMaybe<OntologyDeleteInput>;
   where: InputMaybe<OntologyWhere>;
@@ -5617,42 +5672,46 @@ export type MutationDeleteTasksArgs = {
 
 
 export type MutationFunnelTaskExportCuratedDatasetArgs = {
+  allowedSites: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   curatedDatasetID: Scalars['ID'];
   taskID: Scalars['ID'];
 };
 
 
 export type MutationFunnelTaskExportDataVariableFieldDefinitionsArgs = {
+  allowedSites: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   dataVariableFieldDefinitionIDs: Array<Scalars['ID']>;
   taskID: Scalars['ID'];
 };
 
 
 export type MutationKeycloak_Clients_CreateRoleArgs = {
-  clientID: InputMaybe<Scalars['ID']>;
-  roleName: InputMaybe<Scalars['String']>;
+  clientID: Scalars['ID'];
+  roleName: Scalars['String'];
 };
 
 
 export type MutationKeycloak_Clients_DelRoleArgs = {
-  clientID: InputMaybe<Scalars['ID']>;
-  roleName: InputMaybe<Scalars['String']>;
+  clientID: Scalars['ID'];
+  roleName: Scalars['String'];
 };
 
 
 export type MutationKeycloak_Users_AddClientRoleMappingsArgs = {
-  clientID: InputMaybe<Scalars['String']>;
-  roleID: InputMaybe<Scalars['ID']>;
-  roleName: InputMaybe<Scalars['String']>;
-  userID: InputMaybe<Scalars['ID']>;
+  clientID: Scalars['ID'];
+  roleID: Scalars['ID'];
+  roleName: Scalars['String'];
+  userID: Scalars['ID'];
 };
 
 
 export type MutationKeycloak_Users_DelClientRoleMappingsArgs = {
-  clientID: InputMaybe<Scalars['String']>;
-  roleID: InputMaybe<Scalars['ID']>;
-  roleName: InputMaybe<Scalars['String']>;
-  userID: InputMaybe<Scalars['ID']>;
+  clientID: Scalars['ID'];
+  roleID: Scalars['ID'];
+  roleName: Scalars['String'];
+  userID: Scalars['ID'];
 };
 
 
@@ -5663,77 +5722,71 @@ export type MutationMinioDeleteArgs = {
 
 
 export type MutationMinioUploadFileArgs = {
+  allowedSites: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   bucketName: Scalars['String'];
   file: Scalars['Upload'];
   rawDatasetID: Scalars['ID'];
 };
 
 
-export type MutationNestedCuratedDatasetPermissionsArgs = {
-  id: InputMaybe<Scalars['ID']>;
-  operation: InputMaybe<NestedOperations>;
-  property: InputMaybe<Scalars['String']>;
-  value: InputMaybe<Scalars['String']>;
+export type MutationNestedCuratedDatasetDeleteArgs = {
+  id: Scalars['ID'];
 };
 
 
 export type MutationNestedCuratedDatasetPropertyArgs = {
-  id: InputMaybe<Scalars['ID']>;
-  operation: InputMaybe<NestedOperations>;
-  property: InputMaybe<Scalars['String']>;
-  value: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  operation: NestedOperations;
+  property: Scalars['String'];
+  value: Scalars['String'];
 };
 
 
-export type MutationNestedDataVariableDefinitionPropertyArgs = {
-  id: InputMaybe<Scalars['ID']>;
-  operation: InputMaybe<NestedOperations>;
-  property: InputMaybe<Scalars['String']>;
-  value: InputMaybe<Scalars['String']>;
-};
-
-
-export type MutationNestedDataVariableFieldPropertyArgs = {
-  id: InputMaybe<Scalars['ID']>;
-  operation: InputMaybe<NestedOperations>;
-  property: InputMaybe<Scalars['String']>;
-  value: InputMaybe<Scalars['String']>;
-};
-
-
-export type MutationNestedDataVariablePropertyArgs = {
-  id: InputMaybe<Scalars['ID']>;
-  operation: InputMaybe<NestedOperations>;
-  property: InputMaybe<Scalars['String']>;
-  value: InputMaybe<Scalars['String']>;
-};
-
-
-export type MutationNestedDataVariableValuePropertyArgs = {
-  id: InputMaybe<Scalars['ID']>;
-  operation: InputMaybe<NestedOperations>;
-  property: InputMaybe<Scalars['String']>;
-  value: InputMaybe<Scalars['String']>;
+export type MutationNestedRawDatasetDeleteArgs = {
+  id: Scalars['ID'];
 };
 
 
 export type MutationNestedRawDatasetPropertyArgs = {
-  id: InputMaybe<Scalars['ID']>;
-  operation: InputMaybe<NestedOperations>;
-  property: InputMaybe<Scalars['String']>;
-  value: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  operation: NestedOperations;
+  property: Scalars['String'];
+  value: Scalars['String'];
+};
+
+
+export type MutationNestedStudyDeleteArgs = {
+  id: Scalars['ID'];
 };
 
 
 export type MutationNestedStudyPropertyArgs = {
-  id: InputMaybe<Scalars['ID']>;
-  operation: InputMaybe<NestedOperations>;
-  property: InputMaybe<Scalars['String']>;
-  value: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  operation: NestedOperations;
+  property: Scalars['String'];
+  value: Scalars['String'];
+};
+
+
+export type MutationNestedSwitchArgs = {
+  id: Scalars['ID'];
+  nestedSwitch: NestedSwitch;
+  operation: NestedOperations;
+  property: Scalars['String'];
+  value: Scalars['String'];
+};
+
+
+export type MutationNestedSwitchDeleteArgs = {
+  id: Scalars['ID'];
+  nestedSwitchDelete: InputMaybe<NestedSwitchDelete>;
 };
 
 
 export type MutationSubmitTaskArgs = {
+  allowedSites: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   command: InputMaybe<Scalars['String']>;
   description: InputMaybe<Scalars['String']>;
   image: InputMaybe<Scalars['String']>;
@@ -5872,6 +5925,12 @@ export type MutationUpdateMismatchesArgs = {
 };
 
 
+export type MutationUpdateNeo4JUpdateStatsArgs = {
+  update: InputMaybe<Neo4jUpdateStatsUpdateInput>;
+  where: InputMaybe<Neo4jUpdateStatsWhere>;
+};
+
+
 export type MutationUpdateOntologiesArgs = {
   connect: InputMaybe<OntologyConnectInput>;
   connectOrCreate: InputMaybe<OntologyConnectOrCreateInput>;
@@ -5951,6 +6010,232 @@ export type MutationValidateRawfileCodebookPairArgs = {
   rawDatasetIDCB: Scalars['ID'];
   rawDatasetIDRF: Scalars['ID'];
 };
+
+export type Neo4JUpdateStatsConnection = {
+  __typename?: 'Neo4JUpdateStatsConnection';
+  edges: Array<Neo4jUpdateStatsEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
+};
+
+export type Neo4jUpdateStats = {
+  __typename?: 'Neo4jUpdateStats';
+  constraintsAdded: Maybe<Scalars['Int']>;
+  constraintsRemoved: Maybe<Scalars['Int']>;
+  indexesAdded: Maybe<Scalars['Int']>;
+  indexesRemoved: Maybe<Scalars['Int']>;
+  labelsAdded: Maybe<Scalars['Int']>;
+  labelsRemoved: Maybe<Scalars['Int']>;
+  nodesCreated: Maybe<Scalars['Int']>;
+  nodesDeleted: Maybe<Scalars['Int']>;
+  propertiesSet: Maybe<Scalars['Int']>;
+  relationshipsCreated: Maybe<Scalars['Int']>;
+  relationshipsDeleted: Maybe<Scalars['Int']>;
+};
+
+export type Neo4jUpdateStatsAggregateSelection = {
+  __typename?: 'Neo4jUpdateStatsAggregateSelection';
+  constraintsAdded: IntAggregateSelectionNullable;
+  constraintsRemoved: IntAggregateSelectionNullable;
+  count: Scalars['Int'];
+  indexesAdded: IntAggregateSelectionNullable;
+  indexesRemoved: IntAggregateSelectionNullable;
+  labelsAdded: IntAggregateSelectionNullable;
+  labelsRemoved: IntAggregateSelectionNullable;
+  nodesCreated: IntAggregateSelectionNullable;
+  nodesDeleted: IntAggregateSelectionNullable;
+  propertiesSet: IntAggregateSelectionNullable;
+  relationshipsCreated: IntAggregateSelectionNullable;
+  relationshipsDeleted: IntAggregateSelectionNullable;
+};
+
+export type Neo4jUpdateStatsCreateInput = {
+  constraintsAdded: InputMaybe<Scalars['Int']>;
+  constraintsRemoved: InputMaybe<Scalars['Int']>;
+  indexesAdded: InputMaybe<Scalars['Int']>;
+  indexesRemoved: InputMaybe<Scalars['Int']>;
+  labelsAdded: InputMaybe<Scalars['Int']>;
+  labelsRemoved: InputMaybe<Scalars['Int']>;
+  nodesCreated: InputMaybe<Scalars['Int']>;
+  nodesDeleted: InputMaybe<Scalars['Int']>;
+  propertiesSet: InputMaybe<Scalars['Int']>;
+  relationshipsCreated: InputMaybe<Scalars['Int']>;
+  relationshipsDeleted: InputMaybe<Scalars['Int']>;
+};
+
+export type Neo4jUpdateStatsEdge = {
+  __typename?: 'Neo4jUpdateStatsEdge';
+  cursor: Scalars['String'];
+  node: Neo4jUpdateStats;
+};
+
+export type Neo4jUpdateStatsOptions = {
+  limit: InputMaybe<Scalars['Int']>;
+  offset: InputMaybe<Scalars['Int']>;
+  /** Specify one or more Neo4jUpdateStatsSort objects to sort Neo4JUpdateStats by. The sorts will be applied in the order in which they are arranged in the array. */
+  sort: InputMaybe<Array<Neo4jUpdateStatsSort>>;
+};
+
+/** Fields to sort Neo4JUpdateStats by. The order in which sorts are applied is not guaranteed when specifying many fields in one Neo4jUpdateStatsSort object. */
+export type Neo4jUpdateStatsSort = {
+  constraintsAdded: InputMaybe<SortDirection>;
+  constraintsRemoved: InputMaybe<SortDirection>;
+  indexesAdded: InputMaybe<SortDirection>;
+  indexesRemoved: InputMaybe<SortDirection>;
+  labelsAdded: InputMaybe<SortDirection>;
+  labelsRemoved: InputMaybe<SortDirection>;
+  nodesCreated: InputMaybe<SortDirection>;
+  nodesDeleted: InputMaybe<SortDirection>;
+  propertiesSet: InputMaybe<SortDirection>;
+  relationshipsCreated: InputMaybe<SortDirection>;
+  relationshipsDeleted: InputMaybe<SortDirection>;
+};
+
+export type Neo4jUpdateStatsUpdateInput = {
+  constraintsAdded: InputMaybe<Scalars['Int']>;
+  constraintsAdded_DECREMENT: InputMaybe<Scalars['Int']>;
+  constraintsAdded_INCREMENT: InputMaybe<Scalars['Int']>;
+  constraintsRemoved: InputMaybe<Scalars['Int']>;
+  constraintsRemoved_DECREMENT: InputMaybe<Scalars['Int']>;
+  constraintsRemoved_INCREMENT: InputMaybe<Scalars['Int']>;
+  indexesAdded: InputMaybe<Scalars['Int']>;
+  indexesAdded_DECREMENT: InputMaybe<Scalars['Int']>;
+  indexesAdded_INCREMENT: InputMaybe<Scalars['Int']>;
+  indexesRemoved: InputMaybe<Scalars['Int']>;
+  indexesRemoved_DECREMENT: InputMaybe<Scalars['Int']>;
+  indexesRemoved_INCREMENT: InputMaybe<Scalars['Int']>;
+  labelsAdded: InputMaybe<Scalars['Int']>;
+  labelsAdded_DECREMENT: InputMaybe<Scalars['Int']>;
+  labelsAdded_INCREMENT: InputMaybe<Scalars['Int']>;
+  labelsRemoved: InputMaybe<Scalars['Int']>;
+  labelsRemoved_DECREMENT: InputMaybe<Scalars['Int']>;
+  labelsRemoved_INCREMENT: InputMaybe<Scalars['Int']>;
+  nodesCreated: InputMaybe<Scalars['Int']>;
+  nodesCreated_DECREMENT: InputMaybe<Scalars['Int']>;
+  nodesCreated_INCREMENT: InputMaybe<Scalars['Int']>;
+  nodesDeleted: InputMaybe<Scalars['Int']>;
+  nodesDeleted_DECREMENT: InputMaybe<Scalars['Int']>;
+  nodesDeleted_INCREMENT: InputMaybe<Scalars['Int']>;
+  propertiesSet: InputMaybe<Scalars['Int']>;
+  propertiesSet_DECREMENT: InputMaybe<Scalars['Int']>;
+  propertiesSet_INCREMENT: InputMaybe<Scalars['Int']>;
+  relationshipsCreated: InputMaybe<Scalars['Int']>;
+  relationshipsCreated_DECREMENT: InputMaybe<Scalars['Int']>;
+  relationshipsCreated_INCREMENT: InputMaybe<Scalars['Int']>;
+  relationshipsDeleted: InputMaybe<Scalars['Int']>;
+  relationshipsDeleted_DECREMENT: InputMaybe<Scalars['Int']>;
+  relationshipsDeleted_INCREMENT: InputMaybe<Scalars['Int']>;
+};
+
+export type Neo4jUpdateStatsWhere = {
+  AND: InputMaybe<Array<Neo4jUpdateStatsWhere>>;
+  OR: InputMaybe<Array<Neo4jUpdateStatsWhere>>;
+  constraintsAdded: InputMaybe<Scalars['Int']>;
+  constraintsAdded_GT: InputMaybe<Scalars['Int']>;
+  constraintsAdded_GTE: InputMaybe<Scalars['Int']>;
+  constraintsAdded_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  constraintsAdded_LT: InputMaybe<Scalars['Int']>;
+  constraintsAdded_LTE: InputMaybe<Scalars['Int']>;
+  constraintsAdded_NOT: InputMaybe<Scalars['Int']>;
+  constraintsAdded_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  constraintsRemoved: InputMaybe<Scalars['Int']>;
+  constraintsRemoved_GT: InputMaybe<Scalars['Int']>;
+  constraintsRemoved_GTE: InputMaybe<Scalars['Int']>;
+  constraintsRemoved_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  constraintsRemoved_LT: InputMaybe<Scalars['Int']>;
+  constraintsRemoved_LTE: InputMaybe<Scalars['Int']>;
+  constraintsRemoved_NOT: InputMaybe<Scalars['Int']>;
+  constraintsRemoved_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  indexesAdded: InputMaybe<Scalars['Int']>;
+  indexesAdded_GT: InputMaybe<Scalars['Int']>;
+  indexesAdded_GTE: InputMaybe<Scalars['Int']>;
+  indexesAdded_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  indexesAdded_LT: InputMaybe<Scalars['Int']>;
+  indexesAdded_LTE: InputMaybe<Scalars['Int']>;
+  indexesAdded_NOT: InputMaybe<Scalars['Int']>;
+  indexesAdded_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  indexesRemoved: InputMaybe<Scalars['Int']>;
+  indexesRemoved_GT: InputMaybe<Scalars['Int']>;
+  indexesRemoved_GTE: InputMaybe<Scalars['Int']>;
+  indexesRemoved_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  indexesRemoved_LT: InputMaybe<Scalars['Int']>;
+  indexesRemoved_LTE: InputMaybe<Scalars['Int']>;
+  indexesRemoved_NOT: InputMaybe<Scalars['Int']>;
+  indexesRemoved_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  labelsAdded: InputMaybe<Scalars['Int']>;
+  labelsAdded_GT: InputMaybe<Scalars['Int']>;
+  labelsAdded_GTE: InputMaybe<Scalars['Int']>;
+  labelsAdded_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  labelsAdded_LT: InputMaybe<Scalars['Int']>;
+  labelsAdded_LTE: InputMaybe<Scalars['Int']>;
+  labelsAdded_NOT: InputMaybe<Scalars['Int']>;
+  labelsAdded_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  labelsRemoved: InputMaybe<Scalars['Int']>;
+  labelsRemoved_GT: InputMaybe<Scalars['Int']>;
+  labelsRemoved_GTE: InputMaybe<Scalars['Int']>;
+  labelsRemoved_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  labelsRemoved_LT: InputMaybe<Scalars['Int']>;
+  labelsRemoved_LTE: InputMaybe<Scalars['Int']>;
+  labelsRemoved_NOT: InputMaybe<Scalars['Int']>;
+  labelsRemoved_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  nodesCreated: InputMaybe<Scalars['Int']>;
+  nodesCreated_GT: InputMaybe<Scalars['Int']>;
+  nodesCreated_GTE: InputMaybe<Scalars['Int']>;
+  nodesCreated_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  nodesCreated_LT: InputMaybe<Scalars['Int']>;
+  nodesCreated_LTE: InputMaybe<Scalars['Int']>;
+  nodesCreated_NOT: InputMaybe<Scalars['Int']>;
+  nodesCreated_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  nodesDeleted: InputMaybe<Scalars['Int']>;
+  nodesDeleted_GT: InputMaybe<Scalars['Int']>;
+  nodesDeleted_GTE: InputMaybe<Scalars['Int']>;
+  nodesDeleted_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  nodesDeleted_LT: InputMaybe<Scalars['Int']>;
+  nodesDeleted_LTE: InputMaybe<Scalars['Int']>;
+  nodesDeleted_NOT: InputMaybe<Scalars['Int']>;
+  nodesDeleted_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  propertiesSet: InputMaybe<Scalars['Int']>;
+  propertiesSet_GT: InputMaybe<Scalars['Int']>;
+  propertiesSet_GTE: InputMaybe<Scalars['Int']>;
+  propertiesSet_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  propertiesSet_LT: InputMaybe<Scalars['Int']>;
+  propertiesSet_LTE: InputMaybe<Scalars['Int']>;
+  propertiesSet_NOT: InputMaybe<Scalars['Int']>;
+  propertiesSet_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  relationshipsCreated: InputMaybe<Scalars['Int']>;
+  relationshipsCreated_GT: InputMaybe<Scalars['Int']>;
+  relationshipsCreated_GTE: InputMaybe<Scalars['Int']>;
+  relationshipsCreated_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  relationshipsCreated_LT: InputMaybe<Scalars['Int']>;
+  relationshipsCreated_LTE: InputMaybe<Scalars['Int']>;
+  relationshipsCreated_NOT: InputMaybe<Scalars['Int']>;
+  relationshipsCreated_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  relationshipsDeleted: InputMaybe<Scalars['Int']>;
+  relationshipsDeleted_GT: InputMaybe<Scalars['Int']>;
+  relationshipsDeleted_GTE: InputMaybe<Scalars['Int']>;
+  relationshipsDeleted_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+  relationshipsDeleted_LT: InputMaybe<Scalars['Int']>;
+  relationshipsDeleted_LTE: InputMaybe<Scalars['Int']>;
+  relationshipsDeleted_NOT: InputMaybe<Scalars['Int']>;
+  relationshipsDeleted_NOT_IN: InputMaybe<Array<InputMaybe<Scalars['Int']>>>;
+};
+
+export enum NestedOperations {
+  Subtract = 'subtract',
+  Union = 'union'
+}
+
+export enum NestedSwitch {
+  NestedCuratedDatasetProperty = 'nestedCuratedDatasetProperty',
+  NestedRawDatasetProperty = 'nestedRawDatasetProperty',
+  NestedStudyProperty = 'nestedStudyProperty'
+}
+
+export enum NestedSwitchDelete {
+  NestedCuratedDatasetDelete = 'nestedCuratedDatasetDelete',
+  NestedRawDatasetDelete = 'nestedRawDatasetDelete',
+  NestedStudyDelete = 'nestedStudyDelete'
+}
 
 export type OntologiesConnection = {
   __typename?: 'OntologiesConnection';
@@ -6948,6 +7233,9 @@ export type Query = {
   mismatches: Array<Mismatch>;
   mismatchesAggregate: MismatchAggregateSelection;
   mismatchesConnection: MismatchesConnection;
+  neo4JUpdateStats: Array<Neo4jUpdateStats>;
+  neo4JUpdateStatsAggregate: Neo4jUpdateStatsAggregateSelection;
+  neo4JUpdateStatsConnection: Neo4JUpdateStatsConnection;
   ontologies: Array<Ontology>;
   ontologiesAggregate: OntologyAggregateSelection;
   ontologiesConnection: OntologiesConnection;
@@ -7186,21 +7474,19 @@ export type QueryHarmonizedDatasetsConnectionArgs = {
 
 
 export type QueryKeycloak_Clients_FindRoleArgs = {
-  clientID: InputMaybe<Scalars['ID']>;
-  roleName: InputMaybe<Scalars['String']>;
+  clientID: Scalars['ID'];
+  roleName: Scalars['String'];
 };
 
 
 export type QueryKeycloak_Users_ListAvailableClientRoleMappingsArgs = {
-  clientID: InputMaybe<Scalars['ID']>;
-  roleID: InputMaybe<Scalars['ID']>;
-  roleName: InputMaybe<Scalars['String']>;
+  clientID: Scalars['ID'];
   userID: InputMaybe<Scalars['ID']>;
 };
 
 
 export type QueryKeycloak_Users_ListClientRoleMappingsArgs = {
-  clientID: InputMaybe<Scalars['String']>;
+  clientID: Scalars['ID'];
   userID: InputMaybe<Scalars['ID']>;
 };
 
@@ -7259,6 +7545,25 @@ export type QueryMismatchesConnectionArgs = {
   first: InputMaybe<Scalars['Int']>;
   sort: InputMaybe<Array<InputMaybe<MismatchSort>>>;
   where: InputMaybe<MismatchWhere>;
+};
+
+
+export type QueryNeo4JUpdateStatsArgs = {
+  options: InputMaybe<Neo4jUpdateStatsOptions>;
+  where: InputMaybe<Neo4jUpdateStatsWhere>;
+};
+
+
+export type QueryNeo4JUpdateStatsAggregateArgs = {
+  where: InputMaybe<Neo4jUpdateStatsWhere>;
+};
+
+
+export type QueryNeo4JUpdateStatsConnectionArgs = {
+  after: InputMaybe<Scalars['String']>;
+  first: InputMaybe<Scalars['Int']>;
+  sort: InputMaybe<Array<InputMaybe<Neo4jUpdateStatsSort>>>;
+  where: InputMaybe<Neo4jUpdateStatsWhere>;
 };
 
 
@@ -9636,9 +9941,11 @@ export type StudyWhere = {
 
 export type Task = {
   __typename?: 'Task';
+  allowedSites: Maybe<Array<Maybe<Scalars['String']>>>;
+  allowedStudies: Maybe<Array<Maybe<Scalars['String']>>>;
   creationTime: Maybe<Scalars['String']>;
   description: Maybe<Scalars['String']>;
-  fromCuratedDataset: Maybe<Task>;
+  fromCuratedDataset: Array<Task>;
   fromCuratedDatasetAggregate: Maybe<TaskTaskFromCuratedDatasetAggregationSelection>;
   fromCuratedDatasetConnection: TaskFromCuratedDatasetConnection;
   fromRawDataset: Maybe<RawDataset>;
@@ -9755,7 +10062,7 @@ export type TaskAggregateSelection = {
 };
 
 export type TaskConnectInput = {
-  fromCuratedDataset: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
+  fromCuratedDataset: InputMaybe<Array<TaskFromCuratedDatasetConnectFieldInput>>;
   fromRawDataset: InputMaybe<TaskFromRawDatasetConnectFieldInput>;
   generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetConnectFieldInput>;
   generatedExport: InputMaybe<TaskGeneratedExportConnectFieldInput>;
@@ -9772,6 +10079,8 @@ export type TaskConnectWhere = {
 };
 
 export type TaskCreateInput = {
+  allowedSites: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   creationTime: InputMaybe<Scalars['String']>;
   description: InputMaybe<Scalars['String']>;
   fromCuratedDataset: InputMaybe<TaskFromCuratedDatasetFieldInput>;
@@ -9798,14 +10107,14 @@ export type TaskCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelection = {
 };
 
 export type TaskDeleteInput = {
-  fromCuratedDataset: InputMaybe<TaskFromCuratedDatasetDeleteFieldInput>;
+  fromCuratedDataset: InputMaybe<Array<TaskFromCuratedDatasetDeleteFieldInput>>;
   fromRawDataset: InputMaybe<TaskFromRawDatasetDeleteFieldInput>;
   generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetDeleteFieldInput>;
   generatedExport: InputMaybe<TaskGeneratedExportDeleteFieldInput>;
 };
 
 export type TaskDisconnectInput = {
-  fromCuratedDataset: InputMaybe<TaskFromCuratedDatasetDisconnectFieldInput>;
+  fromCuratedDataset: InputMaybe<Array<TaskFromCuratedDatasetDisconnectFieldInput>>;
   fromRawDataset: InputMaybe<TaskFromRawDatasetDisconnectFieldInput>;
   generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetDisconnectFieldInput>;
   generatedExport: InputMaybe<TaskGeneratedExportDisconnectFieldInput>;
@@ -9829,7 +10138,7 @@ export type TaskFromCuratedDatasetAggregateInput = {
 };
 
 export type TaskFromCuratedDatasetConnectFieldInput = {
-  connect: InputMaybe<TaskConnectInput>;
+  connect: InputMaybe<Array<TaskConnectInput>>;
   where: InputMaybe<TaskConnectWhere>;
 };
 
@@ -9866,8 +10175,8 @@ export type TaskFromCuratedDatasetDisconnectFieldInput = {
 };
 
 export type TaskFromCuratedDatasetFieldInput = {
-  connect: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
-  create: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
+  connect: InputMaybe<Array<TaskFromCuratedDatasetConnectFieldInput>>;
+  create: InputMaybe<Array<TaskFromCuratedDatasetCreateFieldInput>>;
 };
 
 export type TaskFromCuratedDatasetNodeAggregationWhereInput = {
@@ -9967,10 +10276,10 @@ export type TaskFromCuratedDatasetUpdateConnectionInput = {
 };
 
 export type TaskFromCuratedDatasetUpdateFieldInput = {
-  connect: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
-  create: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
-  delete: InputMaybe<TaskFromCuratedDatasetDeleteFieldInput>;
-  disconnect: InputMaybe<TaskFromCuratedDatasetDisconnectFieldInput>;
+  connect: InputMaybe<Array<TaskFromCuratedDatasetConnectFieldInput>>;
+  create: InputMaybe<Array<TaskFromCuratedDatasetCreateFieldInput>>;
+  delete: InputMaybe<Array<TaskFromCuratedDatasetDeleteFieldInput>>;
+  disconnect: InputMaybe<Array<TaskFromCuratedDatasetDisconnectFieldInput>>;
   update: InputMaybe<TaskFromCuratedDatasetUpdateConnectionInput>;
   where: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
 };
@@ -10393,7 +10702,7 @@ export type TaskRawDatasetFromRawDatasetNodeAggregateSelection = {
 };
 
 export type TaskRelationInput = {
-  fromCuratedDataset: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
+  fromCuratedDataset: InputMaybe<Array<TaskFromCuratedDatasetCreateFieldInput>>;
   fromRawDataset: InputMaybe<TaskFromRawDatasetCreateFieldInput>;
   generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetCreateFieldInput>;
   generatedExport: InputMaybe<TaskGeneratedExportCreateFieldInput>;
@@ -10425,9 +10734,15 @@ export type TaskTaskFromCuratedDatasetNodeAggregateSelection = {
 };
 
 export type TaskUpdateInput = {
+  allowedSites: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedSites_POP: InputMaybe<Scalars['Int']>;
+  allowedSites_PUSH: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies_POP: InputMaybe<Scalars['Int']>;
+  allowedStudies_PUSH: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   creationTime: InputMaybe<Scalars['String']>;
   description: InputMaybe<Scalars['String']>;
-  fromCuratedDataset: InputMaybe<TaskFromCuratedDatasetUpdateFieldInput>;
+  fromCuratedDataset: InputMaybe<Array<TaskFromCuratedDatasetUpdateFieldInput>>;
   fromRawDataset: InputMaybe<TaskFromRawDatasetUpdateFieldInput>;
   generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetUpdateFieldInput>;
   generatedExport: InputMaybe<TaskGeneratedExportUpdateFieldInput>;
@@ -10440,6 +10755,14 @@ export type TaskUpdateInput = {
 export type TaskWhere = {
   AND: InputMaybe<Array<TaskWhere>>;
   OR: InputMaybe<Array<TaskWhere>>;
+  allowedSites: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedSites_INCLUDES: InputMaybe<Scalars['String']>;
+  allowedSites_NOT: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedSites_NOT_INCLUDES: InputMaybe<Scalars['String']>;
+  allowedStudies: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies_INCLUDES: InputMaybe<Scalars['String']>;
+  allowedStudies_NOT: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  allowedStudies_NOT_INCLUDES: InputMaybe<Scalars['String']>;
   creationTime: InputMaybe<Scalars['String']>;
   creationTime_CONTAINS: InputMaybe<Scalars['String']>;
   creationTime_ENDS_WITH: InputMaybe<Scalars['String']>;
@@ -10463,8 +10786,20 @@ export type TaskWhere = {
   fromCuratedDataset: InputMaybe<TaskWhere>;
   fromCuratedDatasetAggregate: InputMaybe<TaskFromCuratedDatasetAggregateInput>;
   fromCuratedDatasetConnection: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
+  fromCuratedDatasetConnection_ALL: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
+  fromCuratedDatasetConnection_NONE: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
   fromCuratedDatasetConnection_NOT: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
+  fromCuratedDatasetConnection_SINGLE: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
+  fromCuratedDatasetConnection_SOME: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
+  /** Return Tasks where all of the related Tasks match this filter */
+  fromCuratedDataset_ALL: InputMaybe<TaskWhere>;
+  /** Return Tasks where none of the related Tasks match this filter */
+  fromCuratedDataset_NONE: InputMaybe<TaskWhere>;
   fromCuratedDataset_NOT: InputMaybe<TaskWhere>;
+  /** Return Tasks where one of the related Tasks match this filter */
+  fromCuratedDataset_SINGLE: InputMaybe<TaskWhere>;
+  /** Return Tasks where some of the related Tasks match this filter */
+  fromCuratedDataset_SOME: InputMaybe<TaskWhere>;
   fromRawDataset: InputMaybe<RawDatasetWhere>;
   fromRawDatasetAggregate: InputMaybe<TaskFromRawDatasetAggregateInput>;
   fromRawDatasetConnection: InputMaybe<TaskFromRawDatasetConnectionWhere>;
@@ -10616,6 +10951,12 @@ export type UpdateMismatchesMutationResponse = {
   mismatches: Array<Mismatch>;
 };
 
+export type UpdateNeo4JUpdateStatsMutationResponse = {
+  __typename?: 'UpdateNeo4JUpdateStatsMutationResponse';
+  info: UpdateInfo;
+  neo4JUpdateStats: Array<Neo4jUpdateStats>;
+};
+
 export type UpdateOntologiesMutationResponse = {
   __typename?: 'UpdateOntologiesMutationResponse';
   info: UpdateInfo;
@@ -10651,8 +10992,3 @@ export type UpdateTasksMutationResponse = {
   info: UpdateInfo;
   tasks: Array<Task>;
 };
-
-export enum NestedOperations {
-  Subtract = 'subtract',
-  Union = 'union'
-}

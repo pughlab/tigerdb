@@ -469,6 +469,7 @@ export default function DatasetDetails() {
             curatedDatasetID
             name
             exportTask {
+              taskID
               generatedExport {
                 bucketName
                 objectName
@@ -524,7 +525,7 @@ export default function DatasetDetails() {
 
   const {allowedStudies, allowedSites} = getPermissionRoles()
 
-  const [{ rawDatasetID, name, description, fromStudy, studySite, files, funnelTasks }] : [{ rawDatasetID: String, name: String, description: String, fromStudy: Study, studySite: GeographyCity, files: MinioUpload, funnelTasks: Task }]= data.rawDatasets
+  const [{ rawDatasetID, name, description, fromStudy, studySite, files, funnelTasks }] : [{ rawDatasetID: String, name: String, description: String, fromStudy: Study, studySite: GeographyCity, files: MinioUpload, funnelTasks: [Task] }]= data.rawDatasets
   
   return (
     <>
@@ -560,29 +561,34 @@ export default function DatasetDetails() {
               <List>
                 {funnelTasks &&
                   funnelTasks.map((funnelTask: Task) => {
-                
-                  const linkURL = funnelTask?.generatedCuratedDataset?.exportTask?.generatedExport?.presignedURL
-                  const linkText = funnelTask?.generatedCuratedDataset?.exportTask?.generatedExport?.filename
 
-                  // console.log(linkText)
-                  // console.log(linkURL)
+                    const exportTasks = funnelTask?.generatedCuratedDataset ?
+                                        funnelTask?.generatedCuratedDataset?.exportTask : []
+                    
+                    return (<List.Item key={`List.Item.${funnelTask.id}`}>
+                              <Button
+                                  disabled={funnelTask.state !== 'COMPLETE'}
+                                  onClick={() => { funnelTaskExportCuratedDatasetMutation({ variables: {taskID: uuidv4(), curatedDatasetID: funnelTask?.generatedCuratedDataset?.curatedDatasetID, allowedStudies, allowedSites }})}}
+                                  key={`Button.${funnelTask.id}`}
+                                  content={
+                                    `
+                                    id: ${funnelTask.id}
+                                    |state: ${funnelTask.state}
+                                    |fdCount: ${funnelTask?.generatedCuratedDataset?.fieldDefinitionsAggregate ? funnelTask?.generatedCuratedDataset?.fieldDefinitionsAggregate?.count : 0}
+                                    |dvCount: ${funnelTask?.generatedCuratedDataset?.dataVariablesAggregate ? funnelTask?.generatedCuratedDataset?.dataVariablesAggregate?.count : 0}`
+                                  }
+                                />
+                              { exportTasks.map((exportTask: Task) => {
+                                  const linkURL = exportTask?.generatedExport?.presignedURL
+                                  const linkText = exportTask?.generatedExport?.filename
 
-                  return <List.Item key={`List.Item.${funnelTask.id}`}>
-                    <Button
-                      disabled={funnelTask.state !== 'COMPLETE'}
-                      onClick={() => { funnelTaskExportCuratedDatasetMutation({ variables: {taskID: uuidv4(), curatedDatasetID: funnelTask?.generatedCuratedDataset?.curatedDatasetID, allowedStudies, allowedSites }})}}
-                      key={`Button.${funnelTask.id}`}
-                      content={
-                        `
-                        id: ${funnelTask.id}
-                        |state: ${funnelTask.state}
-                        |fdCount: ${funnelTask?.generatedCuratedDataset?.fieldDefinitionsAggregate ? funnelTask?.generatedCuratedDataset?.fieldDefinitionsAggregate?.count : 0}
-                        |dvCount: ${funnelTask?.generatedCuratedDataset?.dataVariablesAggregate ? funnelTask?.generatedCuratedDataset?.dataVariablesAggregate?.count : 0}`
-                      }
-                    />
-                    <a href={linkURL} target='_blank'>{linkText}</a>
-                  </List.Item>
-                })}
+                                  // console.log(linkText)
+                                  // console.log(linkURL)
+
+                                  return <Label><a href={linkURL} target='_blank'>{linkText}</a></Label>
+                              })}
+                            </List.Item>
+                           )})}
               </List>
             </Segment>
           </Segment>
