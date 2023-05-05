@@ -15,13 +15,13 @@ export const resolvers = {
 
         const session = driver.session()
         const existingUser = await session.run(
-          'MATCH (a:User {keycloakUserID: $keycloakUserID}) RETURN a',
+          'MATCH (a:KeycloakUser {keycloakUserID: $keycloakUserID}) RETURN a',
           { keycloakUserID }
         )
         // console.log('match result', existingUser)
         if (!existingUser.records.length) {
           const createUser = await session.run(
-            'CREATE (a:User {keycloakUserID: $keycloakUserID, name: $name, email: $email}) RETURN a',
+            'CREATE (a:KeycloakUser {keycloakUserID: $keycloakUserID, name: $name, email: $email, roles: $roles}) RETURN a',
             keycloakUser
           )
           // console.log('createUser result', createUser)

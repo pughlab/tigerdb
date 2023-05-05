@@ -1,6 +1,6 @@
 scalar Email
 
-type KeycloakUser @exclude {
+type KeycloakUser {
   keycloakUserID: ID!
   name: String!
   email: Email!
@@ -10,3 +10,15 @@ type KeycloakUser @exclude {
 type Mutation {
     me: KeycloakUser @auth
 }
+
+extend type KeycloakUser @auth(
+  rules: [{
+      isAuthenticated: true,
+      # where: {allowedRoles: "$jwt.realm_access.roles"}
+      where: {AND: [
+        # {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
+        # {allowedSites: "$jwt.resource_access.pibu-app.roles"},
+        {allowedRoles: "$jwt.resource_access.pibu-app.roles"},
+        ]}
+    }]
+)
