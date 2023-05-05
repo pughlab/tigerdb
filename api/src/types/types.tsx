@@ -336,6 +336,12 @@ export type CreateInfo = {
   relationshipsCreated: Scalars['Int'];
 };
 
+export type CreateKeycloakUsersMutationResponse = {
+  __typename?: 'CreateKeycloakUsersMutationResponse';
+  info: CreateInfo;
+  keycloakUsers: Array<KeycloakUser>;
+};
+
 export type CreateMinioBucketsMutationResponse = {
   __typename?: 'CreateMinioBucketsMutationResponse';
   info: CreateInfo;
@@ -3685,12 +3691,105 @@ export type IntAggregateSelectionNullable = {
   sum?: Maybe<Scalars['Int']>;
 };
 
+export enum KeycloakSyncOperation {
+  Add = 'add',
+  Delete = 'delete'
+}
+
+export enum KeycloakSyncSet {
+  Keycloak = 'keycloak',
+  Neo4j = 'neo4j'
+}
+
 export type KeycloakUser = {
   __typename?: 'KeycloakUser';
   email: Scalars['Email'];
   keycloakUserID: Scalars['ID'];
   name: Scalars['String'];
   roles?: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type KeycloakUserAggregateSelection = {
+  __typename?: 'KeycloakUserAggregateSelection';
+  count: Scalars['Int'];
+  keycloakUserID: IdAggregateSelectionNonNullable;
+  name: StringAggregateSelectionNonNullable;
+};
+
+export type KeycloakUserCreateInput = {
+  email: Scalars['Email'];
+  keycloakUserID: Scalars['ID'];
+  name: Scalars['String'];
+  roles?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type KeycloakUserEdge = {
+  __typename?: 'KeycloakUserEdge';
+  cursor: Scalars['String'];
+  node: KeycloakUser;
+};
+
+export type KeycloakUserOptions = {
+  limit?: InputMaybe<Scalars['Int']>;
+  offset?: InputMaybe<Scalars['Int']>;
+  /** Specify one or more KeycloakUserSort objects to sort KeycloakUsers by. The sorts will be applied in the order in which they are arranged in the array. */
+  sort?: InputMaybe<Array<KeycloakUserSort>>;
+};
+
+/** Fields to sort KeycloakUsers by. The order in which sorts are applied is not guaranteed when specifying many fields in one KeycloakUserSort object. */
+export type KeycloakUserSort = {
+  email?: InputMaybe<SortDirection>;
+  keycloakUserID?: InputMaybe<SortDirection>;
+  name?: InputMaybe<SortDirection>;
+};
+
+export type KeycloakUserUpdateInput = {
+  email?: InputMaybe<Scalars['Email']>;
+  keycloakUserID?: InputMaybe<Scalars['ID']>;
+  name?: InputMaybe<Scalars['String']>;
+  roles?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  roles_POP?: InputMaybe<Scalars['Int']>;
+  roles_PUSH?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type KeycloakUserWhere = {
+  AND?: InputMaybe<Array<KeycloakUserWhere>>;
+  OR?: InputMaybe<Array<KeycloakUserWhere>>;
+  email?: InputMaybe<Scalars['Email']>;
+  email_IN?: InputMaybe<Array<Scalars['Email']>>;
+  email_NOT?: InputMaybe<Scalars['Email']>;
+  email_NOT_IN?: InputMaybe<Array<Scalars['Email']>>;
+  keycloakUserID?: InputMaybe<Scalars['ID']>;
+  keycloakUserID_CONTAINS?: InputMaybe<Scalars['ID']>;
+  keycloakUserID_ENDS_WITH?: InputMaybe<Scalars['ID']>;
+  keycloakUserID_IN?: InputMaybe<Array<Scalars['ID']>>;
+  keycloakUserID_NOT?: InputMaybe<Scalars['ID']>;
+  keycloakUserID_NOT_CONTAINS?: InputMaybe<Scalars['ID']>;
+  keycloakUserID_NOT_ENDS_WITH?: InputMaybe<Scalars['ID']>;
+  keycloakUserID_NOT_IN?: InputMaybe<Array<Scalars['ID']>>;
+  keycloakUserID_NOT_STARTS_WITH?: InputMaybe<Scalars['ID']>;
+  keycloakUserID_STARTS_WITH?: InputMaybe<Scalars['ID']>;
+  name?: InputMaybe<Scalars['String']>;
+  name_CONTAINS?: InputMaybe<Scalars['String']>;
+  name_ENDS_WITH?: InputMaybe<Scalars['String']>;
+  name_IN?: InputMaybe<Array<Scalars['String']>>;
+  name_NOT?: InputMaybe<Scalars['String']>;
+  name_NOT_CONTAINS?: InputMaybe<Scalars['String']>;
+  name_NOT_ENDS_WITH?: InputMaybe<Scalars['String']>;
+  name_NOT_IN?: InputMaybe<Array<Scalars['String']>>;
+  name_NOT_STARTS_WITH?: InputMaybe<Scalars['String']>;
+  name_STARTS_WITH?: InputMaybe<Scalars['String']>;
+  roles?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  roles_INCLUDES?: InputMaybe<Scalars['String']>;
+  roles_NOT?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  roles_NOT_INCLUDES?: InputMaybe<Scalars['String']>;
+};
+
+export type KeycloakUsersConnection = {
+  __typename?: 'KeycloakUsersConnection';
+  edges: Array<KeycloakUserEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
 };
 
 export type MinioBucket = {
@@ -5335,6 +5434,7 @@ export type Mutation = {
   createFileValidations: CreateFileValidationsMutationResponse;
   createGeographyCities: CreateGeographyCitiesMutationResponse;
   createHarmonizedDatasets: CreateHarmonizedDatasetsMutationResponse;
+  createKeycloakUsers: CreateKeycloakUsersMutationResponse;
   createMinioBuckets: CreateMinioBucketsMutationResponse;
   createMinioUploads: CreateMinioUploadsMutationResponse;
   createMismatches: CreateMismatchesMutationResponse;
@@ -5357,6 +5457,7 @@ export type Mutation = {
   deleteFileValidations: DeleteInfo;
   deleteGeographyCities: DeleteInfo;
   deleteHarmonizedDatasets: DeleteInfo;
+  deleteKeycloakUsers: DeleteInfo;
   deleteMinioBuckets: DeleteInfo;
   deleteMinioUploads: DeleteInfo;
   deleteMismatches: DeleteInfo;
@@ -5369,10 +5470,13 @@ export type Mutation = {
   deleteTasks: DeleteInfo;
   funnelTaskExportCuratedDataset?: Maybe<Task>;
   funnelTaskExportDataVariableFieldDefinitions?: Maybe<Task>;
+  keycloakSyncUsers?: Maybe<Scalars['Boolean']>;
   keycloak_clients_createRole?: Maybe<Scalars['Boolean']>;
   keycloak_clients_delRole?: Maybe<Scalars['Boolean']>;
   keycloak_users_addClientRoleMappings?: Maybe<Scalars['Boolean']>;
+  keycloak_users_create?: Maybe<ClientUser>;
   keycloak_users_delClientRoleMappings?: Maybe<Scalars['Boolean']>;
+  keycloak_users_delete?: Maybe<Scalars['Boolean']>;
   me?: Maybe<KeycloakUser>;
   minioDelete?: Maybe<Scalars['Boolean']>;
   minioUploadFile: MinioUpload;
@@ -5397,6 +5501,7 @@ export type Mutation = {
   updateGeographyCities: UpdateGeographyCitiesMutationResponse;
   updateGeographyCityToStudy: GeographyCity;
   updateHarmonizedDatasets: UpdateHarmonizedDatasetsMutationResponse;
+  updateKeycloakUsers: UpdateKeycloakUsersMutationResponse;
   updateMinioBuckets: UpdateMinioBucketsMutationResponse;
   updateMinioUploads: UpdateMinioUploadsMutationResponse;
   updateMismatches: UpdateMismatchesMutationResponse;
@@ -5492,6 +5597,11 @@ export type MutationCreateGeographyCitiesArgs = {
 
 export type MutationCreateHarmonizedDatasetsArgs = {
   input: Array<HarmonizedDatasetCreateInput>;
+};
+
+
+export type MutationCreateKeycloakUsersArgs = {
+  input: Array<KeycloakUserCreateInput>;
 };
 
 
@@ -5616,6 +5726,11 @@ export type MutationDeleteHarmonizedDatasetsArgs = {
 };
 
 
+export type MutationDeleteKeycloakUsersArgs = {
+  where?: InputMaybe<KeycloakUserWhere>;
+};
+
+
 export type MutationDeleteMinioBucketsArgs = {
   delete?: InputMaybe<MinioBucketDeleteInput>;
   where?: InputMaybe<MinioBucketWhere>;
@@ -5689,6 +5804,12 @@ export type MutationFunnelTaskExportDataVariableFieldDefinitionsArgs = {
 };
 
 
+export type MutationKeycloakSyncUsersArgs = {
+  missingIn?: InputMaybe<KeycloakSyncSet>;
+  operation?: InputMaybe<KeycloakSyncOperation>;
+};
+
+
 export type MutationKeycloak_Clients_CreateRoleArgs = {
   clientID: Scalars['ID'];
   roleName: Scalars['String'];
@@ -5709,10 +5830,20 @@ export type MutationKeycloak_Users_AddClientRoleMappingsArgs = {
 };
 
 
+export type MutationKeycloak_Users_CreateArgs = {
+  email: Scalars['String'];
+};
+
+
 export type MutationKeycloak_Users_DelClientRoleMappingsArgs = {
   clientID: Scalars['ID'];
   roleID: Scalars['ID'];
   roleName: Scalars['String'];
+  userID: Scalars['ID'];
+};
+
+
+export type MutationKeycloak_Users_DeleteArgs = {
   userID: Scalars['ID'];
 };
 
@@ -5896,6 +6027,12 @@ export type MutationUpdateHarmonizedDatasetsArgs = {
   disconnect?: InputMaybe<HarmonizedDatasetDisconnectInput>;
   update?: InputMaybe<HarmonizedDatasetUpdateInput>;
   where?: InputMaybe<HarmonizedDatasetWhere>;
+};
+
+
+export type MutationUpdateKeycloakUsersArgs = {
+  update?: InputMaybe<KeycloakUserUpdateInput>;
+  where?: InputMaybe<KeycloakUserWhere>;
 };
 
 
@@ -7221,6 +7358,9 @@ export type Query = {
   harmonizedDatasets: Array<HarmonizedDataset>;
   harmonizedDatasetsAggregate: HarmonizedDatasetAggregateSelection;
   harmonizedDatasetsConnection: HarmonizedDatasetsConnection;
+  keycloakUsers: Array<KeycloakUser>;
+  keycloakUsersAggregate: KeycloakUserAggregateSelection;
+  keycloakUsersConnection: KeycloakUsersConnection;
   keycloak_clients_find?: Maybe<Array<Maybe<Client>>>;
   keycloak_clients_findRole?: Maybe<ClientRole>;
   keycloak_users_find?: Maybe<Array<Maybe<ClientUser>>>;
@@ -7472,6 +7612,25 @@ export type QueryHarmonizedDatasetsConnectionArgs = {
   first?: InputMaybe<Scalars['Int']>;
   sort?: InputMaybe<Array<InputMaybe<HarmonizedDatasetSort>>>;
   where?: InputMaybe<HarmonizedDatasetWhere>;
+};
+
+
+export type QueryKeycloakUsersArgs = {
+  options?: InputMaybe<KeycloakUserOptions>;
+  where?: InputMaybe<KeycloakUserWhere>;
+};
+
+
+export type QueryKeycloakUsersAggregateArgs = {
+  where?: InputMaybe<KeycloakUserWhere>;
+};
+
+
+export type QueryKeycloakUsersConnectionArgs = {
+  after?: InputMaybe<Scalars['String']>;
+  first?: InputMaybe<Scalars['Int']>;
+  sort?: InputMaybe<Array<InputMaybe<KeycloakUserSort>>>;
+  where?: InputMaybe<KeycloakUserWhere>;
 };
 
 
@@ -9947,7 +10106,7 @@ export type Task = {
   allowedStudies?: Maybe<Array<Maybe<Scalars['String']>>>;
   creationTime?: Maybe<Scalars['String']>;
   description?: Maybe<Scalars['String']>;
-  fromCuratedDataset: Array<Task>;
+  fromCuratedDataset?: Maybe<Task>;
   fromCuratedDatasetAggregate?: Maybe<TaskTaskFromCuratedDatasetAggregationSelection>;
   fromCuratedDatasetConnection: TaskFromCuratedDatasetConnection;
   fromRawDataset?: Maybe<RawDataset>;
@@ -10064,7 +10223,7 @@ export type TaskAggregateSelection = {
 };
 
 export type TaskConnectInput = {
-  fromCuratedDataset?: InputMaybe<Array<TaskFromCuratedDatasetConnectFieldInput>>;
+  fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
   fromRawDataset?: InputMaybe<TaskFromRawDatasetConnectFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetConnectFieldInput>;
   generatedExport?: InputMaybe<TaskGeneratedExportConnectFieldInput>;
@@ -10109,14 +10268,14 @@ export type TaskCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelection = {
 };
 
 export type TaskDeleteInput = {
-  fromCuratedDataset?: InputMaybe<Array<TaskFromCuratedDatasetDeleteFieldInput>>;
+  fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetDeleteFieldInput>;
   fromRawDataset?: InputMaybe<TaskFromRawDatasetDeleteFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetDeleteFieldInput>;
   generatedExport?: InputMaybe<TaskGeneratedExportDeleteFieldInput>;
 };
 
 export type TaskDisconnectInput = {
-  fromCuratedDataset?: InputMaybe<Array<TaskFromCuratedDatasetDisconnectFieldInput>>;
+  fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetDisconnectFieldInput>;
   fromRawDataset?: InputMaybe<TaskFromRawDatasetDisconnectFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetDisconnectFieldInput>;
   generatedExport?: InputMaybe<TaskGeneratedExportDisconnectFieldInput>;
@@ -10140,7 +10299,7 @@ export type TaskFromCuratedDatasetAggregateInput = {
 };
 
 export type TaskFromCuratedDatasetConnectFieldInput = {
-  connect?: InputMaybe<Array<TaskConnectInput>>;
+  connect?: InputMaybe<TaskConnectInput>;
   where?: InputMaybe<TaskConnectWhere>;
 };
 
@@ -10177,8 +10336,8 @@ export type TaskFromCuratedDatasetDisconnectFieldInput = {
 };
 
 export type TaskFromCuratedDatasetFieldInput = {
-  connect?: InputMaybe<Array<TaskFromCuratedDatasetConnectFieldInput>>;
-  create?: InputMaybe<Array<TaskFromCuratedDatasetCreateFieldInput>>;
+  connect?: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
+  create?: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
 };
 
 export type TaskFromCuratedDatasetNodeAggregationWhereInput = {
@@ -10278,10 +10437,10 @@ export type TaskFromCuratedDatasetUpdateConnectionInput = {
 };
 
 export type TaskFromCuratedDatasetUpdateFieldInput = {
-  connect?: InputMaybe<Array<TaskFromCuratedDatasetConnectFieldInput>>;
-  create?: InputMaybe<Array<TaskFromCuratedDatasetCreateFieldInput>>;
-  delete?: InputMaybe<Array<TaskFromCuratedDatasetDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<TaskFromCuratedDatasetDisconnectFieldInput>>;
+  connect?: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
+  create?: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
+  delete?: InputMaybe<TaskFromCuratedDatasetDeleteFieldInput>;
+  disconnect?: InputMaybe<TaskFromCuratedDatasetDisconnectFieldInput>;
   update?: InputMaybe<TaskFromCuratedDatasetUpdateConnectionInput>;
   where?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
 };
@@ -10704,7 +10863,7 @@ export type TaskRawDatasetFromRawDatasetNodeAggregateSelection = {
 };
 
 export type TaskRelationInput = {
-  fromCuratedDataset?: InputMaybe<Array<TaskFromCuratedDatasetCreateFieldInput>>;
+  fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
   fromRawDataset?: InputMaybe<TaskFromRawDatasetCreateFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetCreateFieldInput>;
   generatedExport?: InputMaybe<TaskGeneratedExportCreateFieldInput>;
@@ -10744,7 +10903,7 @@ export type TaskUpdateInput = {
   allowedStudies_PUSH?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   creationTime?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
-  fromCuratedDataset?: InputMaybe<Array<TaskFromCuratedDatasetUpdateFieldInput>>;
+  fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetUpdateFieldInput>;
   fromRawDataset?: InputMaybe<TaskFromRawDatasetUpdateFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetUpdateFieldInput>;
   generatedExport?: InputMaybe<TaskGeneratedExportUpdateFieldInput>;
@@ -10788,20 +10947,8 @@ export type TaskWhere = {
   fromCuratedDataset?: InputMaybe<TaskWhere>;
   fromCuratedDatasetAggregate?: InputMaybe<TaskFromCuratedDatasetAggregateInput>;
   fromCuratedDatasetConnection?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
-  fromCuratedDatasetConnection_ALL?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
-  fromCuratedDatasetConnection_NONE?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
   fromCuratedDatasetConnection_NOT?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
-  fromCuratedDatasetConnection_SINGLE?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
-  fromCuratedDatasetConnection_SOME?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
-  /** Return Tasks where all of the related Tasks match this filter */
-  fromCuratedDataset_ALL?: InputMaybe<TaskWhere>;
-  /** Return Tasks where none of the related Tasks match this filter */
-  fromCuratedDataset_NONE?: InputMaybe<TaskWhere>;
   fromCuratedDataset_NOT?: InputMaybe<TaskWhere>;
-  /** Return Tasks where one of the related Tasks match this filter */
-  fromCuratedDataset_SINGLE?: InputMaybe<TaskWhere>;
-  /** Return Tasks where some of the related Tasks match this filter */
-  fromCuratedDataset_SOME?: InputMaybe<TaskWhere>;
   fromRawDataset?: InputMaybe<RawDatasetWhere>;
   fromRawDatasetAggregate?: InputMaybe<TaskFromRawDatasetAggregateInput>;
   fromRawDatasetConnection?: InputMaybe<TaskFromRawDatasetConnectionWhere>;
@@ -10933,6 +11080,12 @@ export type UpdateInfo = {
   nodesDeleted: Scalars['Int'];
   relationshipsCreated: Scalars['Int'];
   relationshipsDeleted: Scalars['Int'];
+};
+
+export type UpdateKeycloakUsersMutationResponse = {
+  __typename?: 'UpdateKeycloakUsersMutationResponse';
+  info: UpdateInfo;
+  keycloakUsers: Array<KeycloakUser>;
 };
 
 export type UpdateMinioBucketsMutationResponse = {
@@ -11106,6 +11259,7 @@ export type ResolversTypes = {
   CreateGeographyCitiesMutationResponse: ResolverTypeWrapper<CreateGeographyCitiesMutationResponse>;
   CreateHarmonizedDatasetsMutationResponse: ResolverTypeWrapper<CreateHarmonizedDatasetsMutationResponse>;
   CreateInfo: ResolverTypeWrapper<CreateInfo>;
+  CreateKeycloakUsersMutationResponse: ResolverTypeWrapper<CreateKeycloakUsersMutationResponse>;
   CreateMinioBucketsMutationResponse: ResolverTypeWrapper<CreateMinioBucketsMutationResponse>;
   CreateMinioUploadsMutationResponse: ResolverTypeWrapper<CreateMinioUploadsMutationResponse>;
   CreateMismatchesMutationResponse: ResolverTypeWrapper<CreateMismatchesMutationResponse>;
@@ -11475,7 +11629,17 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']>;
   IntAggregateSelectionNullable: ResolverTypeWrapper<IntAggregateSelectionNullable>;
   JSON: ResolverTypeWrapper<Scalars['JSON']>;
+  KeycloakSyncOperation: KeycloakSyncOperation;
+  KeycloakSyncSet: KeycloakSyncSet;
   KeycloakUser: ResolverTypeWrapper<KeycloakUser>;
+  KeycloakUserAggregateSelection: ResolverTypeWrapper<KeycloakUserAggregateSelection>;
+  KeycloakUserCreateInput: KeycloakUserCreateInput;
+  KeycloakUserEdge: ResolverTypeWrapper<KeycloakUserEdge>;
+  KeycloakUserOptions: KeycloakUserOptions;
+  KeycloakUserSort: KeycloakUserSort;
+  KeycloakUserUpdateInput: KeycloakUserUpdateInput;
+  KeycloakUserWhere: KeycloakUserWhere;
+  KeycloakUsersConnection: ResolverTypeWrapper<KeycloakUsersConnection>;
   MinioBucket: ResolverTypeWrapper<MinioBucket>;
   MinioBucketAggregateSelection: ResolverTypeWrapper<MinioBucketAggregateSelection>;
   MinioBucketConnectInput: MinioBucketConnectInput;
@@ -12058,6 +12222,7 @@ export type ResolversTypes = {
   UpdateGeographyCitiesMutationResponse: ResolverTypeWrapper<UpdateGeographyCitiesMutationResponse>;
   UpdateHarmonizedDatasetsMutationResponse: ResolverTypeWrapper<UpdateHarmonizedDatasetsMutationResponse>;
   UpdateInfo: ResolverTypeWrapper<UpdateInfo>;
+  UpdateKeycloakUsersMutationResponse: ResolverTypeWrapper<UpdateKeycloakUsersMutationResponse>;
   UpdateMinioBucketsMutationResponse: ResolverTypeWrapper<UpdateMinioBucketsMutationResponse>;
   UpdateMinioUploadsMutationResponse: ResolverTypeWrapper<UpdateMinioUploadsMutationResponse>;
   UpdateMismatchesMutationResponse: ResolverTypeWrapper<UpdateMismatchesMutationResponse>;
@@ -12114,6 +12279,7 @@ export type ResolversParentTypes = {
   CreateGeographyCitiesMutationResponse: CreateGeographyCitiesMutationResponse;
   CreateHarmonizedDatasetsMutationResponse: CreateHarmonizedDatasetsMutationResponse;
   CreateInfo: CreateInfo;
+  CreateKeycloakUsersMutationResponse: CreateKeycloakUsersMutationResponse;
   CreateMinioBucketsMutationResponse: CreateMinioBucketsMutationResponse;
   CreateMinioUploadsMutationResponse: CreateMinioUploadsMutationResponse;
   CreateMismatchesMutationResponse: CreateMismatchesMutationResponse;
@@ -12483,6 +12649,14 @@ export type ResolversParentTypes = {
   IntAggregateSelectionNullable: IntAggregateSelectionNullable;
   JSON: Scalars['JSON'];
   KeycloakUser: KeycloakUser;
+  KeycloakUserAggregateSelection: KeycloakUserAggregateSelection;
+  KeycloakUserCreateInput: KeycloakUserCreateInput;
+  KeycloakUserEdge: KeycloakUserEdge;
+  KeycloakUserOptions: KeycloakUserOptions;
+  KeycloakUserSort: KeycloakUserSort;
+  KeycloakUserUpdateInput: KeycloakUserUpdateInput;
+  KeycloakUserWhere: KeycloakUserWhere;
+  KeycloakUsersConnection: KeycloakUsersConnection;
   MinioBucket: MinioBucket;
   MinioBucketAggregateSelection: MinioBucketAggregateSelection;
   MinioBucketConnectInput: MinioBucketConnectInput;
@@ -13061,6 +13235,7 @@ export type ResolversParentTypes = {
   UpdateGeographyCitiesMutationResponse: UpdateGeographyCitiesMutationResponse;
   UpdateHarmonizedDatasetsMutationResponse: UpdateHarmonizedDatasetsMutationResponse;
   UpdateInfo: UpdateInfo;
+  UpdateKeycloakUsersMutationResponse: UpdateKeycloakUsersMutationResponse;
   UpdateMinioBucketsMutationResponse: UpdateMinioBucketsMutationResponse;
   UpdateMinioUploadsMutationResponse: UpdateMinioUploadsMutationResponse;
   UpdateMismatchesMutationResponse: UpdateMismatchesMutationResponse;
@@ -13246,6 +13421,12 @@ export type CreateInfoResolvers<ContextType = MyContextType, ParentType extends 
   bookmark?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   nodesCreated?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   relationshipsCreated?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CreateKeycloakUsersMutationResponseResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CreateKeycloakUsersMutationResponse'] = ResolversParentTypes['CreateKeycloakUsersMutationResponse']> = {
+  info?: Resolver<ResolversTypes['CreateInfo'], ParentType, ContextType>;
+  keycloakUsers?: Resolver<Array<ResolversTypes['KeycloakUser']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -13968,6 +14149,26 @@ export type KeycloakUserResolvers<ContextType = MyContextType, ParentType extend
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type KeycloakUserAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['KeycloakUserAggregateSelection'] = ResolversParentTypes['KeycloakUserAggregateSelection']> = {
+  count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  keycloakUserID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type KeycloakUserEdgeResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['KeycloakUserEdge'] = ResolversParentTypes['KeycloakUserEdge']> = {
+  cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['KeycloakUser'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type KeycloakUsersConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['KeycloakUsersConnection'] = ResolversParentTypes['KeycloakUsersConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['KeycloakUserEdge']>, ParentType, ContextType>;
+  pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MinioBucketResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioBucket'] = ResolversParentTypes['MinioBucket']> = {
   bucketName?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   minioObjects?: Resolver<Array<ResolversTypes['MinioUpload']>, ParentType, ContextType, RequireFields<MinioBucketMinioObjectsArgs, 'directed'>>;
@@ -14279,6 +14480,7 @@ export type MutationResolvers<ContextType = MyContextType, ParentType extends Re
   createFileValidations?: Resolver<ResolversTypes['CreateFileValidationsMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateFileValidationsArgs, 'input'>>;
   createGeographyCities?: Resolver<ResolversTypes['CreateGeographyCitiesMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateGeographyCitiesArgs, 'input'>>;
   createHarmonizedDatasets?: Resolver<ResolversTypes['CreateHarmonizedDatasetsMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateHarmonizedDatasetsArgs, 'input'>>;
+  createKeycloakUsers?: Resolver<ResolversTypes['CreateKeycloakUsersMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateKeycloakUsersArgs, 'input'>>;
   createMinioBuckets?: Resolver<ResolversTypes['CreateMinioBucketsMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateMinioBucketsArgs, 'input'>>;
   createMinioUploads?: Resolver<ResolversTypes['CreateMinioUploadsMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateMinioUploadsArgs, 'input'>>;
   createMismatches?: Resolver<ResolversTypes['CreateMismatchesMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateMismatchesArgs, 'input'>>;
@@ -14301,6 +14503,7 @@ export type MutationResolvers<ContextType = MyContextType, ParentType extends Re
   deleteFileValidations?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteFileValidationsArgs>>;
   deleteGeographyCities?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteGeographyCitiesArgs>>;
   deleteHarmonizedDatasets?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteHarmonizedDatasetsArgs>>;
+  deleteKeycloakUsers?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteKeycloakUsersArgs>>;
   deleteMinioBuckets?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteMinioBucketsArgs>>;
   deleteMinioUploads?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteMinioUploadsArgs>>;
   deleteMismatches?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteMismatchesArgs>>;
@@ -14313,10 +14516,13 @@ export type MutationResolvers<ContextType = MyContextType, ParentType extends Re
   deleteTasks?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteTasksArgs>>;
   funnelTaskExportCuratedDataset?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationFunnelTaskExportCuratedDatasetArgs, 'curatedDatasetID' | 'taskID'>>;
   funnelTaskExportDataVariableFieldDefinitions?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationFunnelTaskExportDataVariableFieldDefinitionsArgs, 'dataVariableFieldDefinitionIDs' | 'taskID'>>;
+  keycloakSyncUsers?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, Partial<MutationKeycloakSyncUsersArgs>>;
   keycloak_clients_createRole?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloak_Clients_CreateRoleArgs, 'clientID' | 'roleName'>>;
   keycloak_clients_delRole?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloak_Clients_DelRoleArgs, 'clientID' | 'roleName'>>;
   keycloak_users_addClientRoleMappings?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloak_Users_AddClientRoleMappingsArgs, 'clientID' | 'roleID' | 'roleName' | 'userID'>>;
+  keycloak_users_create?: Resolver<Maybe<ResolversTypes['ClientUser']>, ParentType, ContextType, RequireFields<MutationKeycloak_Users_CreateArgs, 'email'>>;
   keycloak_users_delClientRoleMappings?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloak_Users_DelClientRoleMappingsArgs, 'clientID' | 'roleID' | 'roleName' | 'userID'>>;
+  keycloak_users_delete?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloak_Users_DeleteArgs, 'userID'>>;
   me?: Resolver<Maybe<ResolversTypes['KeycloakUser']>, ParentType, ContextType>;
   minioDelete?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationMinioDeleteArgs, 'bucketName' | 'objectName'>>;
   minioUploadFile?: Resolver<ResolversTypes['MinioUpload'], ParentType, ContextType, RequireFields<MutationMinioUploadFileArgs, 'bucketName' | 'file' | 'rawDatasetID'>>;
@@ -14341,6 +14547,7 @@ export type MutationResolvers<ContextType = MyContextType, ParentType extends Re
   updateGeographyCities?: Resolver<ResolversTypes['UpdateGeographyCitiesMutationResponse'], ParentType, ContextType, Partial<MutationUpdateGeographyCitiesArgs>>;
   updateGeographyCityToStudy?: Resolver<ResolversTypes['GeographyCity'], ParentType, ContextType, RequireFields<MutationUpdateGeographyCityToStudyArgs, 'cityID' | 'studyID'>>;
   updateHarmonizedDatasets?: Resolver<ResolversTypes['UpdateHarmonizedDatasetsMutationResponse'], ParentType, ContextType, Partial<MutationUpdateHarmonizedDatasetsArgs>>;
+  updateKeycloakUsers?: Resolver<ResolversTypes['UpdateKeycloakUsersMutationResponse'], ParentType, ContextType, Partial<MutationUpdateKeycloakUsersArgs>>;
   updateMinioBuckets?: Resolver<ResolversTypes['UpdateMinioBucketsMutationResponse'], ParentType, ContextType, Partial<MutationUpdateMinioBucketsArgs>>;
   updateMinioUploads?: Resolver<ResolversTypes['UpdateMinioUploadsMutationResponse'], ParentType, ContextType, Partial<MutationUpdateMinioUploadsArgs>>;
   updateMismatches?: Resolver<ResolversTypes['UpdateMismatchesMutationResponse'], ParentType, ContextType, Partial<MutationUpdateMismatchesArgs>>;
@@ -14615,6 +14822,9 @@ export type QueryResolvers<ContextType = MyContextType, ParentType extends Resol
   harmonizedDatasets?: Resolver<Array<ResolversTypes['HarmonizedDataset']>, ParentType, ContextType, Partial<QueryHarmonizedDatasetsArgs>>;
   harmonizedDatasetsAggregate?: Resolver<ResolversTypes['HarmonizedDatasetAggregateSelection'], ParentType, ContextType, Partial<QueryHarmonizedDatasetsAggregateArgs>>;
   harmonizedDatasetsConnection?: Resolver<ResolversTypes['HarmonizedDatasetsConnection'], ParentType, ContextType, Partial<QueryHarmonizedDatasetsConnectionArgs>>;
+  keycloakUsers?: Resolver<Array<ResolversTypes['KeycloakUser']>, ParentType, ContextType, Partial<QueryKeycloakUsersArgs>>;
+  keycloakUsersAggregate?: Resolver<ResolversTypes['KeycloakUserAggregateSelection'], ParentType, ContextType, Partial<QueryKeycloakUsersAggregateArgs>>;
+  keycloakUsersConnection?: Resolver<ResolversTypes['KeycloakUsersConnection'], ParentType, ContextType, Partial<QueryKeycloakUsersConnectionArgs>>;
   keycloak_clients_find?: Resolver<Maybe<Array<Maybe<ResolversTypes['Client']>>>, ParentType, ContextType>;
   keycloak_clients_findRole?: Resolver<Maybe<ResolversTypes['ClientRole']>, ParentType, ContextType, RequireFields<QueryKeycloak_Clients_FindRoleArgs, 'clientID' | 'roleName'>>;
   keycloak_users_find?: Resolver<Maybe<Array<Maybe<ResolversTypes['ClientUser']>>>, ParentType, ContextType>;
@@ -15035,7 +15245,7 @@ export type TaskResolvers<ContextType = MyContextType, ParentType extends Resolv
   allowedStudies?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   creationTime?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  fromCuratedDataset?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<TaskFromCuratedDatasetArgs, 'directed'>>;
+  fromCuratedDataset?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<TaskFromCuratedDatasetArgs, 'directed'>>;
   fromCuratedDatasetAggregate?: Resolver<Maybe<ResolversTypes['TaskTaskFromCuratedDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<TaskFromCuratedDatasetAggregateArgs, 'directed'>>;
   fromCuratedDatasetConnection?: Resolver<ResolversTypes['TaskFromCuratedDatasetConnection'], ParentType, ContextType, RequireFields<TaskFromCuratedDatasetConnectionArgs, 'directed'>>;
   fromRawDataset?: Resolver<Maybe<ResolversTypes['RawDataset']>, ParentType, ContextType, RequireFields<TaskFromRawDatasetArgs, 'directed'>>;
@@ -15259,6 +15469,12 @@ export type UpdateInfoResolvers<ContextType = MyContextType, ParentType extends 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateKeycloakUsersMutationResponseResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['UpdateKeycloakUsersMutationResponse'] = ResolversParentTypes['UpdateKeycloakUsersMutationResponse']> = {
+  info?: Resolver<ResolversTypes['UpdateInfo'], ParentType, ContextType>;
+  keycloakUsers?: Resolver<Array<ResolversTypes['KeycloakUser']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UpdateMinioBucketsMutationResponseResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['UpdateMinioBucketsMutationResponse'] = ResolversParentTypes['UpdateMinioBucketsMutationResponse']> = {
   info?: Resolver<ResolversTypes['UpdateInfo'], ParentType, ContextType>;
   minioBuckets?: Resolver<Array<ResolversTypes['MinioBucket']>, ParentType, ContextType>;
@@ -15349,6 +15565,7 @@ export type Resolvers<ContextType = MyContextType> = {
   CreateGeographyCitiesMutationResponse?: CreateGeographyCitiesMutationResponseResolvers<ContextType>;
   CreateHarmonizedDatasetsMutationResponse?: CreateHarmonizedDatasetsMutationResponseResolvers<ContextType>;
   CreateInfo?: CreateInfoResolvers<ContextType>;
+  CreateKeycloakUsersMutationResponse?: CreateKeycloakUsersMutationResponseResolvers<ContextType>;
   CreateMinioBucketsMutationResponse?: CreateMinioBucketsMutationResponseResolvers<ContextType>;
   CreateMinioUploadsMutationResponse?: CreateMinioUploadsMutationResponseResolvers<ContextType>;
   CreateMismatchesMutationResponse?: CreateMismatchesMutationResponseResolvers<ContextType>;
@@ -15453,6 +15670,9 @@ export type Resolvers<ContextType = MyContextType> = {
   IntAggregateSelectionNullable?: IntAggregateSelectionNullableResolvers<ContextType>;
   JSON?: GraphQLScalarType;
   KeycloakUser?: KeycloakUserResolvers<ContextType>;
+  KeycloakUserAggregateSelection?: KeycloakUserAggregateSelectionResolvers<ContextType>;
+  KeycloakUserEdge?: KeycloakUserEdgeResolvers<ContextType>;
+  KeycloakUsersConnection?: KeycloakUsersConnectionResolvers<ContextType>;
   MinioBucket?: MinioBucketResolvers<ContextType>;
   MinioBucketAggregateSelection?: MinioBucketAggregateSelectionResolvers<ContextType>;
   MinioBucketEdge?: MinioBucketEdgeResolvers<ContextType>;
@@ -15606,6 +15826,7 @@ export type Resolvers<ContextType = MyContextType> = {
   UpdateGeographyCitiesMutationResponse?: UpdateGeographyCitiesMutationResponseResolvers<ContextType>;
   UpdateHarmonizedDatasetsMutationResponse?: UpdateHarmonizedDatasetsMutationResponseResolvers<ContextType>;
   UpdateInfo?: UpdateInfoResolvers<ContextType>;
+  UpdateKeycloakUsersMutationResponse?: UpdateKeycloakUsersMutationResponseResolvers<ContextType>;
   UpdateMinioBucketsMutationResponse?: UpdateMinioBucketsMutationResponseResolvers<ContextType>;
   UpdateMinioUploadsMutationResponse?: UpdateMinioUploadsMutationResponseResolvers<ContextType>;
   UpdateMismatchesMutationResponse?: UpdateMismatchesMutationResponseResolvers<ContextType>;

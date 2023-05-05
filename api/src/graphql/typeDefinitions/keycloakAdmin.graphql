@@ -14,6 +14,16 @@ type Client {
   clientId: String
 }
 
+enum KeycloakSyncSet {
+  keycloak
+  neo4j
+}
+
+enum KeycloakSyncOperation {
+  add
+  delete
+}
+
 type Query {
   keycloak_users_find: [ClientUser] @auth @hasRole(role: "role|allowedRoles|admin")
   keycloak_clients_find: [Client] @auth @hasRole(role: "role|allowedRoles|admin")
@@ -27,4 +37,9 @@ type Mutation {
   keycloak_clients_delRole(clientID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
   keycloak_users_addClientRoleMappings(userID: ID!, clientID: ID!, roleID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
   keycloak_users_delClientRoleMappings(userID: ID!, clientID: ID!, roleID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
+
+  keycloak_users_create(email: String!): ClientUser @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloak_users_delete(userID: ID!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
+
+  keycloakSyncUsers(missingIn: KeycloakSyncSet, operation: KeycloakSyncOperation): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
 }

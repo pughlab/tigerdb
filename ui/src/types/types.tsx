@@ -334,6 +334,12 @@ export type CreateInfo = {
   relationshipsCreated: Scalars['Int'];
 };
 
+export type CreateKeycloakUsersMutationResponse = {
+  __typename?: 'CreateKeycloakUsersMutationResponse';
+  info: CreateInfo;
+  keycloakUsers: Array<KeycloakUser>;
+};
+
 export type CreateMinioBucketsMutationResponse = {
   __typename?: 'CreateMinioBucketsMutationResponse';
   info: CreateInfo;
@@ -3683,12 +3689,105 @@ export type IntAggregateSelectionNullable = {
   sum: Maybe<Scalars['Int']>;
 };
 
+export enum KeycloakSyncOperation {
+  Add = 'add',
+  Delete = 'delete'
+}
+
+export enum KeycloakSyncSet {
+  Keycloak = 'keycloak',
+  Neo4j = 'neo4j'
+}
+
 export type KeycloakUser = {
   __typename?: 'KeycloakUser';
   email: Scalars['Email'];
   keycloakUserID: Scalars['ID'];
   name: Scalars['String'];
   roles: Maybe<Array<Maybe<Scalars['String']>>>;
+};
+
+export type KeycloakUserAggregateSelection = {
+  __typename?: 'KeycloakUserAggregateSelection';
+  count: Scalars['Int'];
+  keycloakUserID: IdAggregateSelectionNonNullable;
+  name: StringAggregateSelectionNonNullable;
+};
+
+export type KeycloakUserCreateInput = {
+  email: Scalars['Email'];
+  keycloakUserID: Scalars['ID'];
+  name: Scalars['String'];
+  roles: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type KeycloakUserEdge = {
+  __typename?: 'KeycloakUserEdge';
+  cursor: Scalars['String'];
+  node: KeycloakUser;
+};
+
+export type KeycloakUserOptions = {
+  limit: InputMaybe<Scalars['Int']>;
+  offset: InputMaybe<Scalars['Int']>;
+  /** Specify one or more KeycloakUserSort objects to sort KeycloakUsers by. The sorts will be applied in the order in which they are arranged in the array. */
+  sort: InputMaybe<Array<KeycloakUserSort>>;
+};
+
+/** Fields to sort KeycloakUsers by. The order in which sorts are applied is not guaranteed when specifying many fields in one KeycloakUserSort object. */
+export type KeycloakUserSort = {
+  email: InputMaybe<SortDirection>;
+  keycloakUserID: InputMaybe<SortDirection>;
+  name: InputMaybe<SortDirection>;
+};
+
+export type KeycloakUserUpdateInput = {
+  email: InputMaybe<Scalars['Email']>;
+  keycloakUserID: InputMaybe<Scalars['ID']>;
+  name: InputMaybe<Scalars['String']>;
+  roles: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  roles_POP: InputMaybe<Scalars['Int']>;
+  roles_PUSH: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type KeycloakUserWhere = {
+  AND: InputMaybe<Array<KeycloakUserWhere>>;
+  OR: InputMaybe<Array<KeycloakUserWhere>>;
+  email: InputMaybe<Scalars['Email']>;
+  email_IN: InputMaybe<Array<Scalars['Email']>>;
+  email_NOT: InputMaybe<Scalars['Email']>;
+  email_NOT_IN: InputMaybe<Array<Scalars['Email']>>;
+  keycloakUserID: InputMaybe<Scalars['ID']>;
+  keycloakUserID_CONTAINS: InputMaybe<Scalars['ID']>;
+  keycloakUserID_ENDS_WITH: InputMaybe<Scalars['ID']>;
+  keycloakUserID_IN: InputMaybe<Array<Scalars['ID']>>;
+  keycloakUserID_NOT: InputMaybe<Scalars['ID']>;
+  keycloakUserID_NOT_CONTAINS: InputMaybe<Scalars['ID']>;
+  keycloakUserID_NOT_ENDS_WITH: InputMaybe<Scalars['ID']>;
+  keycloakUserID_NOT_IN: InputMaybe<Array<Scalars['ID']>>;
+  keycloakUserID_NOT_STARTS_WITH: InputMaybe<Scalars['ID']>;
+  keycloakUserID_STARTS_WITH: InputMaybe<Scalars['ID']>;
+  name: InputMaybe<Scalars['String']>;
+  name_CONTAINS: InputMaybe<Scalars['String']>;
+  name_ENDS_WITH: InputMaybe<Scalars['String']>;
+  name_IN: InputMaybe<Array<Scalars['String']>>;
+  name_NOT: InputMaybe<Scalars['String']>;
+  name_NOT_CONTAINS: InputMaybe<Scalars['String']>;
+  name_NOT_ENDS_WITH: InputMaybe<Scalars['String']>;
+  name_NOT_IN: InputMaybe<Array<Scalars['String']>>;
+  name_NOT_STARTS_WITH: InputMaybe<Scalars['String']>;
+  name_STARTS_WITH: InputMaybe<Scalars['String']>;
+  roles: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  roles_INCLUDES: InputMaybe<Scalars['String']>;
+  roles_NOT: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  roles_NOT_INCLUDES: InputMaybe<Scalars['String']>;
+};
+
+export type KeycloakUsersConnection = {
+  __typename?: 'KeycloakUsersConnection';
+  edges: Array<KeycloakUserEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars['Int'];
 };
 
 export type MinioBucket = {
@@ -5333,6 +5432,7 @@ export type Mutation = {
   createFileValidations: CreateFileValidationsMutationResponse;
   createGeographyCities: CreateGeographyCitiesMutationResponse;
   createHarmonizedDatasets: CreateHarmonizedDatasetsMutationResponse;
+  createKeycloakUsers: CreateKeycloakUsersMutationResponse;
   createMinioBuckets: CreateMinioBucketsMutationResponse;
   createMinioUploads: CreateMinioUploadsMutationResponse;
   createMismatches: CreateMismatchesMutationResponse;
@@ -5355,6 +5455,7 @@ export type Mutation = {
   deleteFileValidations: DeleteInfo;
   deleteGeographyCities: DeleteInfo;
   deleteHarmonizedDatasets: DeleteInfo;
+  deleteKeycloakUsers: DeleteInfo;
   deleteMinioBuckets: DeleteInfo;
   deleteMinioUploads: DeleteInfo;
   deleteMismatches: DeleteInfo;
@@ -5367,10 +5468,13 @@ export type Mutation = {
   deleteTasks: DeleteInfo;
   funnelTaskExportCuratedDataset: Maybe<Task>;
   funnelTaskExportDataVariableFieldDefinitions: Maybe<Task>;
+  keycloakSyncUsers: Maybe<Scalars['Boolean']>;
   keycloak_clients_createRole: Maybe<Scalars['Boolean']>;
   keycloak_clients_delRole: Maybe<Scalars['Boolean']>;
   keycloak_users_addClientRoleMappings: Maybe<Scalars['Boolean']>;
+  keycloak_users_create: Maybe<ClientUser>;
   keycloak_users_delClientRoleMappings: Maybe<Scalars['Boolean']>;
+  keycloak_users_delete: Maybe<Scalars['Boolean']>;
   me: Maybe<KeycloakUser>;
   minioDelete: Maybe<Scalars['Boolean']>;
   minioUploadFile: MinioUpload;
@@ -5395,6 +5499,7 @@ export type Mutation = {
   updateGeographyCities: UpdateGeographyCitiesMutationResponse;
   updateGeographyCityToStudy: GeographyCity;
   updateHarmonizedDatasets: UpdateHarmonizedDatasetsMutationResponse;
+  updateKeycloakUsers: UpdateKeycloakUsersMutationResponse;
   updateMinioBuckets: UpdateMinioBucketsMutationResponse;
   updateMinioUploads: UpdateMinioUploadsMutationResponse;
   updateMismatches: UpdateMismatchesMutationResponse;
@@ -5490,6 +5595,11 @@ export type MutationCreateGeographyCitiesArgs = {
 
 export type MutationCreateHarmonizedDatasetsArgs = {
   input: Array<HarmonizedDatasetCreateInput>;
+};
+
+
+export type MutationCreateKeycloakUsersArgs = {
+  input: Array<KeycloakUserCreateInput>;
 };
 
 
@@ -5614,6 +5724,11 @@ export type MutationDeleteHarmonizedDatasetsArgs = {
 };
 
 
+export type MutationDeleteKeycloakUsersArgs = {
+  where: InputMaybe<KeycloakUserWhere>;
+};
+
+
 export type MutationDeleteMinioBucketsArgs = {
   delete: InputMaybe<MinioBucketDeleteInput>;
   where: InputMaybe<MinioBucketWhere>;
@@ -5687,6 +5802,12 @@ export type MutationFunnelTaskExportDataVariableFieldDefinitionsArgs = {
 };
 
 
+export type MutationKeycloakSyncUsersArgs = {
+  missingIn: InputMaybe<KeycloakSyncSet>;
+  operation: InputMaybe<KeycloakSyncOperation>;
+};
+
+
 export type MutationKeycloak_Clients_CreateRoleArgs = {
   clientID: Scalars['ID'];
   roleName: Scalars['String'];
@@ -5707,10 +5828,20 @@ export type MutationKeycloak_Users_AddClientRoleMappingsArgs = {
 };
 
 
+export type MutationKeycloak_Users_CreateArgs = {
+  email: Scalars['String'];
+};
+
+
 export type MutationKeycloak_Users_DelClientRoleMappingsArgs = {
   clientID: Scalars['ID'];
   roleID: Scalars['ID'];
   roleName: Scalars['String'];
+  userID: Scalars['ID'];
+};
+
+
+export type MutationKeycloak_Users_DeleteArgs = {
   userID: Scalars['ID'];
 };
 
@@ -5894,6 +6025,12 @@ export type MutationUpdateHarmonizedDatasetsArgs = {
   disconnect: InputMaybe<HarmonizedDatasetDisconnectInput>;
   update: InputMaybe<HarmonizedDatasetUpdateInput>;
   where: InputMaybe<HarmonizedDatasetWhere>;
+};
+
+
+export type MutationUpdateKeycloakUsersArgs = {
+  update: InputMaybe<KeycloakUserUpdateInput>;
+  where: InputMaybe<KeycloakUserWhere>;
 };
 
 
@@ -7219,6 +7356,9 @@ export type Query = {
   harmonizedDatasets: Array<HarmonizedDataset>;
   harmonizedDatasetsAggregate: HarmonizedDatasetAggregateSelection;
   harmonizedDatasetsConnection: HarmonizedDatasetsConnection;
+  keycloakUsers: Array<KeycloakUser>;
+  keycloakUsersAggregate: KeycloakUserAggregateSelection;
+  keycloakUsersConnection: KeycloakUsersConnection;
   keycloak_clients_find: Maybe<Array<Maybe<Client>>>;
   keycloak_clients_findRole: Maybe<ClientRole>;
   keycloak_users_find: Maybe<Array<Maybe<ClientUser>>>;
@@ -7470,6 +7610,25 @@ export type QueryHarmonizedDatasetsConnectionArgs = {
   first: InputMaybe<Scalars['Int']>;
   sort: InputMaybe<Array<InputMaybe<HarmonizedDatasetSort>>>;
   where: InputMaybe<HarmonizedDatasetWhere>;
+};
+
+
+export type QueryKeycloakUsersArgs = {
+  options: InputMaybe<KeycloakUserOptions>;
+  where: InputMaybe<KeycloakUserWhere>;
+};
+
+
+export type QueryKeycloakUsersAggregateArgs = {
+  where: InputMaybe<KeycloakUserWhere>;
+};
+
+
+export type QueryKeycloakUsersConnectionArgs = {
+  after: InputMaybe<Scalars['String']>;
+  first: InputMaybe<Scalars['Int']>;
+  sort: InputMaybe<Array<InputMaybe<KeycloakUserSort>>>;
+  where: InputMaybe<KeycloakUserWhere>;
 };
 
 
@@ -9945,7 +10104,7 @@ export type Task = {
   allowedStudies: Maybe<Array<Maybe<Scalars['String']>>>;
   creationTime: Maybe<Scalars['String']>;
   description: Maybe<Scalars['String']>;
-  fromCuratedDataset: Array<Task>;
+  fromCuratedDataset: Maybe<Task>;
   fromCuratedDatasetAggregate: Maybe<TaskTaskFromCuratedDatasetAggregationSelection>;
   fromCuratedDatasetConnection: TaskFromCuratedDatasetConnection;
   fromRawDataset: Maybe<RawDataset>;
@@ -10062,7 +10221,7 @@ export type TaskAggregateSelection = {
 };
 
 export type TaskConnectInput = {
-  fromCuratedDataset: InputMaybe<Array<TaskFromCuratedDatasetConnectFieldInput>>;
+  fromCuratedDataset: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
   fromRawDataset: InputMaybe<TaskFromRawDatasetConnectFieldInput>;
   generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetConnectFieldInput>;
   generatedExport: InputMaybe<TaskGeneratedExportConnectFieldInput>;
@@ -10107,14 +10266,14 @@ export type TaskCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelection = {
 };
 
 export type TaskDeleteInput = {
-  fromCuratedDataset: InputMaybe<Array<TaskFromCuratedDatasetDeleteFieldInput>>;
+  fromCuratedDataset: InputMaybe<TaskFromCuratedDatasetDeleteFieldInput>;
   fromRawDataset: InputMaybe<TaskFromRawDatasetDeleteFieldInput>;
   generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetDeleteFieldInput>;
   generatedExport: InputMaybe<TaskGeneratedExportDeleteFieldInput>;
 };
 
 export type TaskDisconnectInput = {
-  fromCuratedDataset: InputMaybe<Array<TaskFromCuratedDatasetDisconnectFieldInput>>;
+  fromCuratedDataset: InputMaybe<TaskFromCuratedDatasetDisconnectFieldInput>;
   fromRawDataset: InputMaybe<TaskFromRawDatasetDisconnectFieldInput>;
   generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetDisconnectFieldInput>;
   generatedExport: InputMaybe<TaskGeneratedExportDisconnectFieldInput>;
@@ -10138,7 +10297,7 @@ export type TaskFromCuratedDatasetAggregateInput = {
 };
 
 export type TaskFromCuratedDatasetConnectFieldInput = {
-  connect: InputMaybe<Array<TaskConnectInput>>;
+  connect: InputMaybe<TaskConnectInput>;
   where: InputMaybe<TaskConnectWhere>;
 };
 
@@ -10175,8 +10334,8 @@ export type TaskFromCuratedDatasetDisconnectFieldInput = {
 };
 
 export type TaskFromCuratedDatasetFieldInput = {
-  connect: InputMaybe<Array<TaskFromCuratedDatasetConnectFieldInput>>;
-  create: InputMaybe<Array<TaskFromCuratedDatasetCreateFieldInput>>;
+  connect: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
+  create: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
 };
 
 export type TaskFromCuratedDatasetNodeAggregationWhereInput = {
@@ -10276,10 +10435,10 @@ export type TaskFromCuratedDatasetUpdateConnectionInput = {
 };
 
 export type TaskFromCuratedDatasetUpdateFieldInput = {
-  connect: InputMaybe<Array<TaskFromCuratedDatasetConnectFieldInput>>;
-  create: InputMaybe<Array<TaskFromCuratedDatasetCreateFieldInput>>;
-  delete: InputMaybe<Array<TaskFromCuratedDatasetDeleteFieldInput>>;
-  disconnect: InputMaybe<Array<TaskFromCuratedDatasetDisconnectFieldInput>>;
+  connect: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
+  create: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
+  delete: InputMaybe<TaskFromCuratedDatasetDeleteFieldInput>;
+  disconnect: InputMaybe<TaskFromCuratedDatasetDisconnectFieldInput>;
   update: InputMaybe<TaskFromCuratedDatasetUpdateConnectionInput>;
   where: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
 };
@@ -10702,7 +10861,7 @@ export type TaskRawDatasetFromRawDatasetNodeAggregateSelection = {
 };
 
 export type TaskRelationInput = {
-  fromCuratedDataset: InputMaybe<Array<TaskFromCuratedDatasetCreateFieldInput>>;
+  fromCuratedDataset: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
   fromRawDataset: InputMaybe<TaskFromRawDatasetCreateFieldInput>;
   generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetCreateFieldInput>;
   generatedExport: InputMaybe<TaskGeneratedExportCreateFieldInput>;
@@ -10742,7 +10901,7 @@ export type TaskUpdateInput = {
   allowedStudies_PUSH: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   creationTime: InputMaybe<Scalars['String']>;
   description: InputMaybe<Scalars['String']>;
-  fromCuratedDataset: InputMaybe<Array<TaskFromCuratedDatasetUpdateFieldInput>>;
+  fromCuratedDataset: InputMaybe<TaskFromCuratedDatasetUpdateFieldInput>;
   fromRawDataset: InputMaybe<TaskFromRawDatasetUpdateFieldInput>;
   generatedCuratedDataset: InputMaybe<TaskGeneratedCuratedDatasetUpdateFieldInput>;
   generatedExport: InputMaybe<TaskGeneratedExportUpdateFieldInput>;
@@ -10786,20 +10945,8 @@ export type TaskWhere = {
   fromCuratedDataset: InputMaybe<TaskWhere>;
   fromCuratedDatasetAggregate: InputMaybe<TaskFromCuratedDatasetAggregateInput>;
   fromCuratedDatasetConnection: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
-  fromCuratedDatasetConnection_ALL: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
-  fromCuratedDatasetConnection_NONE: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
   fromCuratedDatasetConnection_NOT: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
-  fromCuratedDatasetConnection_SINGLE: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
-  fromCuratedDatasetConnection_SOME: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
-  /** Return Tasks where all of the related Tasks match this filter */
-  fromCuratedDataset_ALL: InputMaybe<TaskWhere>;
-  /** Return Tasks where none of the related Tasks match this filter */
-  fromCuratedDataset_NONE: InputMaybe<TaskWhere>;
   fromCuratedDataset_NOT: InputMaybe<TaskWhere>;
-  /** Return Tasks where one of the related Tasks match this filter */
-  fromCuratedDataset_SINGLE: InputMaybe<TaskWhere>;
-  /** Return Tasks where some of the related Tasks match this filter */
-  fromCuratedDataset_SOME: InputMaybe<TaskWhere>;
   fromRawDataset: InputMaybe<RawDatasetWhere>;
   fromRawDatasetAggregate: InputMaybe<TaskFromRawDatasetAggregateInput>;
   fromRawDatasetConnection: InputMaybe<TaskFromRawDatasetConnectionWhere>;
@@ -10931,6 +11078,12 @@ export type UpdateInfo = {
   nodesDeleted: Scalars['Int'];
   relationshipsCreated: Scalars['Int'];
   relationshipsDeleted: Scalars['Int'];
+};
+
+export type UpdateKeycloakUsersMutationResponse = {
+  __typename?: 'UpdateKeycloakUsersMutationResponse';
+  info: UpdateInfo;
+  keycloakUsers: Array<KeycloakUser>;
 };
 
 export type UpdateMinioBucketsMutationResponse = {
