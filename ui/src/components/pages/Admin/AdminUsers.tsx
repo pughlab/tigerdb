@@ -219,6 +219,37 @@ export default function AdminUsers() {
   `,
   { variables: { } })
 
+  
+
+  // Create user
+  const [addUser, { dataAddUser, loadingAddUser, errorAddUser }] = useMutation(gql`
+  mutation keycloak_users_create(
+    $email: String!
+  ) {
+    keycloak_users_create(
+      email: $email
+    ) {
+      id
+      username
+      email
+    }
+  }`, {onCompleted: (data) => {
+    setUserID(data.keycloak_users_create.id)
+    setUsername(data.keycloak_users_create.username)
+    setEmail(data.keycloak_users_create.email)
+    refetchUsers()
+  }})
+
+  // Delete user
+  const [delUser, { dataDelRole, loadingDelRole, errorDelRole }] = useMutation(gql`
+  mutation keycloak_users_delete(
+    $userID: ID!
+  ) {
+    keycloak_users_delete(
+      userID: $userID
+    )
+  }`, {onCompleted: () => { refetchUsers() }})
+
 	const location = useLocation()
 	useEffect(() => {
     refetchUsers()
@@ -242,6 +273,22 @@ export default function AdminUsers() {
   return (<Grid>
     <Grid.Column  key='users' width={6}>
       <Divider horizontal content='Users' />
+      <Form key='form.UserDetails'>
+        <Form.Field>
+          {/* <Label>Create new role</Label> */}
+          <Input
+            placeholder='user@email.com'
+            value={username}
+            onChange={(e, {value}) => {
+              setEmail(value)
+              setUsername(R.find(users, u => u.email == value)?.username)
+              setUserID(R.find(users, u => u.email == value)?.id)
+            }}
+          />
+          <Button type='submit' disabled={R.find(users, u => u.email == email)} onClick={() => { addUser({variables: { email }})}}>Create user</Button>
+          <Button type='submit' disabled={!R.find(users, u => u.email == email)} onClick={() => { delUser({variables: { userID }})}}>Delete user</Button>
+        </Form.Field>
+      </Form>
       {users.map(({id, username, email}) => {
           return (<Grid.Row key={`grid.row.${id}`}>
             <Button onClick={() => { refetchUsers(); setUserID(id); setUsername(username); setEmail(email) }}>{username}</Button>
