@@ -12,7 +12,7 @@
         "build:ui": "cross-env NODE_ENV=production webpack",
         "generate:types:ui": "NODE_TLS_REJECT_UNAUTHORIZED=0 graphql-codegen --config codegen.ui.yml",
         "generate:types:api": "NODE_TLS_REJECT_UNAUTHORIZED=0 graphql-codegen --config codegen.api.yml",
-        "generate:types": "NODE_TLS_REJECT_UNAUTHORIZED=0 graphql-codegen --config codegen.yml",
+        "generate:types": "API_TOKEN=`bash ./get_keycloak_token.sh | head -n 1` NODE_TLS_REJECT_UNAUTHORIZED=0 graphql-codegen --config codegen.yml",
         "generate:types:watch": "NODE_TLS_REJECT_UNAUTHORIZED=0 graphql-codegen --config codegen.yml --watch"
     },
     "dependencies": {

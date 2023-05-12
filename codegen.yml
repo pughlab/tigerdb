@@ -1,4 +1,8 @@
-schema: "https://localhost/graphql"
+schema:
+  - "https://localhost/graphql":
+      headers:
+        Authorization: "Bearer ${API_TOKEN}"
+
 documents: [
     # "./ui/src/graphql/*.tsx",
   ]
