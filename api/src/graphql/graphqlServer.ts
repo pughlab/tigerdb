@@ -87,28 +87,35 @@ export const createApolloServer = async () => {
       });
 
 
-      // Global requirement variables
+      // Query info
       const queryString = req.body.query
       const queryObj = gql`${queryString}`
       const queryOperation = queryObj.definitions[0].operation
       const queryName = queryObj.definitions[0].selectionSet.selections[0].name.value
-      const email = kauth.accessToken.content.email
-      const sub = kauth.accessToken.content.sub
-      let roles : string[] = kauth.accessToken?.content?.resource_access['pibu-app']?.roles
-      roles = roles ? roles : []
-      const allowedWithoutApproved = ['keycloak_acceptTOS', 'me']
-      const allowedWithoutTOS = ['keycloak_acceptTOS', 'me']
 
-      // Global requirement of approved
-      if (!roles.includes('role|allowedRoles|approved')) {
-        if (!allowedWithoutApproved.includes(queryName))
-        throw new Error(`Access denied. User [${email} / ${sub}] has not been approved. Please contact your administrator to approve this account.`)
-      }
+      // Keycloak info
+      if (kauth.accessToken) {
+        const email = kauth.accessToken.content.email
+        const sub = kauth.accessToken.content.sub
+        let roles : string[] = kauth.accessToken?.content?.resource_access['pibu-app']?.roles
 
-      // Global requirement of accept TOS
-      if (!roles.includes('role|allowedRoles|acceptedTOS')) {
-        if (!allowedWithoutTOS.includes(queryName))
-        throw new Error(`Access denied. User [${email} / ${sub}] has not accepted the TOS. Please accept the TOS to gain access.`)
+        roles = roles ? roles : []
+        const allowedWithoutApproved = ['keycloak_acceptTOS', 'me']
+        const allowedWithoutTOS = ['keycloak_acceptTOS', 'me']
+
+        // Global requirement of approved
+        if (!roles.includes('role|allowedRoles|approved')) {
+          if (!allowedWithoutApproved.includes(queryName))
+          throw new Error(`Access denied. User [${email} / ${sub}] has not been approved. Please contact your administrator to approve this account.`)
+        }
+
+        // Global requirement of accept TOS
+        if (!roles.includes('role|allowedRoles|acceptedTOS')) {
+          if (!allowedWithoutTOS.includes(queryName))
+          throw new Error(`Access denied. User [${email} / ${sub}] has not accepted the TOS. Please accept the TOS to gain access.`)
+        }
+      } else {
+        throw new Error(`Access denied. Keycloak auth token required to access graphql. Please login with keycloak.`)
       }
 
 
