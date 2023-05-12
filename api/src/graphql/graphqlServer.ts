@@ -100,8 +100,8 @@ export const createApolloServer = async () => {
         let roles : string[] = kauth.accessToken?.content?.resource_access['pibu-app']?.roles
 
         roles = roles ? roles : []
-        const allowedWithoutApproved = ['keycloak_acceptTOS', 'me']
-        const allowedWithoutTOS = ['keycloak_acceptTOS', 'me']
+        const allowedWithoutApproved = ['keycloakAcceptTOS', 'me']
+        const allowedWithoutTOS = ['keycloakAcceptTOS', 'me']
 
         // Global requirement of approved
         if (!roles.includes('role|allowedRoles|approved')) {

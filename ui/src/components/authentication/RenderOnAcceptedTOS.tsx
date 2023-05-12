@@ -15,8 +15,8 @@ const RenderOnAcceptedTOS = ({ children }) => {
 
     // AcceptTOS
     const [acceptTOS, { }] = useMutation(gql`
-    mutation keycloak_acceptTOS {
-        keycloak_acceptTOS
+    mutation keycloakAcceptTOS {
+        keycloakAcceptTOS
     }`, {onCompleted: () => { keycloakRefreshToken(keycloak, setKeycloakToken) }})
 
     const isLoggedIn = keycloak.authenticated;
