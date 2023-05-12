@@ -22,13 +22,20 @@ import { useKeycloak } from '@react-keycloak/web'
 import AdminData from './pages/Admin/AdminData'
 import RenderOnApproved from './authentication/RenderOnApproved'
 import RenderOnAcceptedTOS from './authentication/RenderOnAcceptedTOS'
+import { keycloakRefreshToken } from '../common'
+import { useState } from 'react'
 
 function Layout ({}) {
   const {navigate, location, isActivePath} = useRouter()
+
   const routes = [
     {path: '/', icon: 'info circle', introID: HOME_MENU_ELEMENT_ID},
     {path: '/home', icon: 'database', introID: DATA_MENU_ELEMENT_ID},
   ]
+
+  const { keycloak } = useKeycloak()
+  const [keycloakToken, setKeycloakToken] = useState(keycloak.token)
+
   return (
     <>
     
@@ -36,7 +43,7 @@ function Layout ({}) {
       <Menu style={{margin: 0, borderRadius: 0}}>
         <Menu.Menu position='left'>
           <div>
-          <Logo size='small' />
+          <a onClick={() => keycloakRefreshToken(keycloak, setKeycloakToken) }><Logo size='small' /></a>
           {process.env.NODE_ENV !== 'production' ? process.env.NODE_ENV : ''}
           </div>
         </Menu.Menu>
