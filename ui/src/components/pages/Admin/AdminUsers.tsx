@@ -6,6 +6,7 @@ import { Button, Divider, Form, Grid, Input, Label, Radio } from 'semantic-ui-re
 
 import * as R from 'remeda'
 import { useEffect, useReducer, useState } from 'react'
+import { filterRoles, sortRoles } from '../../../common'
 
 const AdminUserDetails = ({userID, clientID, username, email}) => {
 
@@ -48,6 +49,8 @@ const AdminUserDetails = ({userID, clientID, username, email}) => {
   if (dataAvailableRoles?.keycloakUsersListAvailableClientRoleMappings) {
     availableRoles = dataAvailableRoles?.keycloakUsersListAvailableClientRoleMappings
   }
+  availableRoles = sortRoles(availableRoles)
+  availableRoles = filterRoles(availableRoles)
 
   // Assigned Roles
   const { data: dataAssignedRoles, loading: loadingAssignedRoles, error: errorAssignedRoles, refetch: refetchAssignedRoles } = useQuery(gql`
@@ -70,6 +73,8 @@ const AdminUserDetails = ({userID, clientID, username, email}) => {
   if (dataAssignedRoles?.keycloakUsersListClientRoleMappings) {
     assignedRoles = dataAssignedRoles?.keycloakUsersListClientRoleMappings
   }
+  assignedRoles = sortRoles(assignedRoles)
+  assignedRoles = filterRoles(assignedRoles)
 
   const allRoleNames = (availableRoles.concat(assignedRoles)).map(x => x.name)
 
