@@ -272,6 +272,29 @@ const keycloakSyncUsers = async (
   }
 }
 
+const keycloak_acceptTOS = async (obj, { userID, clientID, roleID, roleName }, { kcAdminClient, driver, kauth }) => {
+  try {
+
+    const userID = kauth.accessToken.content.sub
+
+    // get client id
+    const pibuClients = await keycloak_clients_find(obj, { }, { driver, kcAdminClient })
+    const clientID = pibuClients[0].id
+
+    // get keycloak role
+    const roleName = 'role|allowedRoles|acceptedTOS'
+    const role = await keycloak_clients_findRole(obj, { clientID, roleName }, { kcAdminClient })
+    const roleID = role.id
+
+    await keycloak_users_addClientRoleMappings(obj, { userID, clientID, roleID, roleName }, { kcAdminClient })
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    throw new ApolloError('mutation.keycloak_users_addClientRoleMappings error');
+  }
+}
+
 export const resolvers = {
   Query: {
     keycloak_users_find: keycloak_users_find,
@@ -288,5 +311,6 @@ export const resolvers = {
     keycloak_users_create: keycloak_users_create,
     keycloak_users_delete: keycloak_users_delete,
     keycloakSyncUsers: keycloakSyncUsers,
+    keycloak_acceptTOS: keycloak_acceptTOS,
   },
 }

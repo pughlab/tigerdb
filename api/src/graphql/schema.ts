@@ -23,7 +23,7 @@ export const neo4jSchema = new Neo4jGraphQL({
     plugins: {
         auth: new Neo4jGraphQLAuthJWTPlugin({
             secret: "super-secret",
-            rolesPath: "realm_access.roles"
+            rolesPath: "resource_access.pibu-app.roles"
         })
     }
 })

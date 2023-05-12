@@ -21,6 +21,7 @@ import PortalNavBarIntro, {HOME_MENU_ELEMENT_ID, DATA_MENU_ELEMENT_ID} from './i
 import { useKeycloak } from '@react-keycloak/web'
 import AdminData from './pages/Admin/AdminData'
 import RenderOnApproved from './authentication/RenderOnApproved'
+import RenderOnAcceptedTOS from './authentication/RenderOnAcceptedTOS'
 
 function Layout ({}) {
   const {navigate, location, isActivePath} = useRouter()
@@ -81,7 +82,13 @@ export default function Portal () {
   return (
     <Routes>
       <Route path="*"  element={<Layout />} >
-        <Route index element={<About />} />
+        <Route index element={
+          <RenderOnApproved>
+            <RenderOnAcceptedTOS>
+              <About />
+            </RenderOnAcceptedTOS>
+          </RenderOnApproved>
+        } />
         <Route key='home' path='home/*' element={
           <>
             <Segment attached='top'>
@@ -101,7 +108,13 @@ export default function Portal () {
           <Route key='index' index element={<SegmentPlaceholder text='Select a part of the process' icon='info' />} />
           {routes.map(
             ({path, icon, element}) => (
-              <Route key={path} path={`${path}/*`} element={<RenderOnApproved>{element}</RenderOnApproved>} />
+              <Route key={path} path={`${path}/*`} element={
+              <RenderOnApproved>
+                <RenderOnAcceptedTOS>
+                  {element}
+                </RenderOnAcceptedTOS>
+              </RenderOnApproved>
+            } />
             )
           )}
         </Route>

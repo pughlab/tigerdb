@@ -42,4 +42,6 @@ type Mutation {
   keycloak_users_delete(userID: ID!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
 
   keycloakSyncUsers(missingIn: KeycloakSyncSet, operation: KeycloakSyncOperation): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
+
+  keycloak_acceptTOS: Boolean @auth
 }

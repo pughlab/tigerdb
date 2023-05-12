@@ -8,6 +8,7 @@ import { currentAppContextKeycloakMe } from '../../state/appContext';
 import { shallowEqual } from 'react-redux';
 import {Logo} from '../logos'
 import {LOGIN_MENU_ELEMENT_ID} from '../intros/PortalNavBarIntro'
+import { keycloakRefreshToken } from '../../common';
 
 export default function LoginModal ({}) {
   // console.log('test')
@@ -30,17 +31,6 @@ export default function LoginModal ({}) {
   // return null
   const {name, email} = keycloakMe
 
-  const SECONDS_IN_ONE_DAY = 86400
-  const keycloakRefreshToken = () => {keycloak.updateToken(SECONDS_IN_ONE_DAY).then(function(refreshed) {
-    if (refreshed) {
-      // alert('Token was successfully refreshed');
-    } else {
-      // alert('Token is still valid');
-    }
-  }).catch(function() {
-    alert('Failed to refresh the token, or the session has expired');
-  })}
-
   return (
     <>
     <Popup size='large' flowing wide='very'
@@ -49,7 +39,7 @@ export default function LoginModal ({}) {
           id={LOGIN_MENU_ELEMENT_ID}     
           header
           icon='user'
-          onClick={() => {keycloakRefreshToken(); setOpen(!open)}}
+          onClick={() => {keycloakRefreshToken(keycloak, x => x); setOpen(!open)}}
         />
       }
     >
