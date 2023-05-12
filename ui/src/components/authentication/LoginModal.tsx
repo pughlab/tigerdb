@@ -10,6 +10,8 @@ import {Logo} from '../logos'
 import {LOGIN_MENU_ELEMENT_ID} from '../intros/PortalNavBarIntro'
 import { keycloakRefreshToken } from '../../common';
 
+import * as R from 'remeda'
+
 export default function LoginModal ({}) {
   // console.log('test')
   // const {keycloakUser} = state
@@ -39,7 +41,7 @@ export default function LoginModal ({}) {
           id={LOGIN_MENU_ELEMENT_ID}     
           header
           icon='user'
-          onClick={() => {keycloakRefreshToken(keycloak, x => x); setOpen(!open)}}
+          onClick={() => {keycloakRefreshToken(keycloak, R.identity); setOpen(!open)}}
         />
       }
     >

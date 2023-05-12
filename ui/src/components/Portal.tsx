@@ -80,47 +80,41 @@ export default function Portal () {
   }
 
   return (
-    <Routes>
-      <Route path="*"  element={<Layout />} >
-        <Route index element={
-          <RenderOnApproved>
-            <RenderOnAcceptedTOS>
-              <About />
-            </RenderOnAcceptedTOS>
-          </RenderOnApproved>
-        } />
-        <Route key='home' path='home/*' element={
-          <>
-            <Segment attached='top'>
-            <Step.Group fluid>
-              {routes.map(
-                ({path, icon}) => (
-                  <Step key={path} description={path} icon={icon} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`home/${path}`)} />
-                )
-              )}
-            </Step.Group>
-            </Segment>
-            <Segment attached='bottom'>
-              <Outlet /> 
-            </Segment>
-          </>
-        }>
-          <Route key='index' index element={<SegmentPlaceholder text='Select a part of the process' icon='info' />} />
-          {routes.map(
-            ({path, icon, element}) => (
-              <Route key={path} path={`${path}/*`} element={
-              <RenderOnApproved>
-                <RenderOnAcceptedTOS>
-                  {element}
-                </RenderOnAcceptedTOS>
-              </RenderOnApproved>
-            } />
-            )
-          )}
-        </Route>
-        <Route key='notfound' path="*" element={<SegmentPlaceholder text='Not found!' icon='meh outline' />} />
-      </Route>
-
-    </Routes>
+    <>
+      <Layout />
+      <RenderOnApproved>
+        <RenderOnAcceptedTOS>
+          <Routes>
+              <Route index element={
+                <About />
+              } />
+              <Route key='home' path='home/*' element={
+                <>
+                  <Segment attached='top'>
+                  <Step.Group fluid>
+                    {routes.map(
+                      ({path, icon}) => (
+                        <Step key={path} description={path} icon={icon} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`home/${path}`)} />
+                      )
+                    )}
+                  </Step.Group>
+                  </Segment>
+                  <Segment attached='bottom'>
+                    <Outlet /> 
+                  </Segment>
+                </>
+              }>
+                <Route key='index' index element={<SegmentPlaceholder text='Select a part of the process' icon='info' />} />
+                {routes.map(
+                  ({path, icon, element}) => (
+                    <Route key={path} path={`${path}/*`} element={element} />
+                  )
+                )}
+              </Route>
+              <Route key='notfound' path="*" element={<SegmentPlaceholder text='Not found!' icon='meh outline' />} />
+            </Routes>
+          </RenderOnAcceptedTOS>
+        </RenderOnApproved>
+    </>
   )
 }
