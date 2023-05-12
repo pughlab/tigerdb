@@ -16,6 +16,10 @@ extend type Study @auth(
       where: {AND: [
         {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
         {allowedSites: "$jwt.resource_access.pibu-app.roles"},
-        ]}
+        ]},
+      # roles: [
+      #   "role|allowedRoles|approved",
+      #   "role|allowedRoles|acceptedTOS",
+      #   ]
     }]
 )

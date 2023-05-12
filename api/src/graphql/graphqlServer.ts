@@ -19,6 +19,7 @@ import { KeycloakContext } from 'keycloak-connect-graphql'
 import { KeycloakSchemaDirectives } from 'keycloak-connect-graphql'
 
 import KcAdminClient from '@keycloak/keycloak-admin-client';
+import { gql } from 'apollo-server'
 
 // Specify host, port and path for GraphQL endpoint
 const graphqlPort = process.env.GRAPHQL_SERVER_PORT || 4001
@@ -84,6 +85,32 @@ export const createApolloServer = async () => {
       kcAdminClient.setConfig({
         realmName: keycloakrealm,
       });
+
+
+      // Global requirement variables
+      const queryString = req.body.query
+      const queryObj = gql`${queryString}`
+      const queryOperation = queryObj.definitions[0].operation
+      const queryName = queryObj.definitions[0].selectionSet.selections[0].name.value
+      const email = kauth.accessToken.content.email
+      const sub = kauth.accessToken.content.sub
+      let roles : string[] = kauth.accessToken?.content?.resource_access['pibu-app']?.roles
+      roles = roles ? roles : []
+      const allowedWithoutApproved = ['keycloak_acceptTOS', 'me']
+      const allowedWithoutTOS = ['keycloak_acceptTOS', 'me']
+
+      // Global requirement of approved
+      if (!roles.includes('role|allowedRoles|approved')) {
+        if (!allowedWithoutApproved.includes(queryName))
+        throw new Error(`Access denied. User [${email} / ${sub}] has not been approved. Please contact your administrator to approve this account.`)
+      }
+
+      // Global requirement of accept TOS
+      if (!roles.includes('role|allowedRoles|acceptedTOS')) {
+        if (!allowedWithoutTOS.includes(queryName))
+        throw new Error(`Access denied. User [${email} / ${sub}] has not accepted the TOS. Please accept the TOS to gain access.`)
+      }
+
 
       return {
         driver,
