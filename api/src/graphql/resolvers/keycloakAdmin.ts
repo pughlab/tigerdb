@@ -11,7 +11,7 @@ const keycloak_users_find = async (obj, { }, { driver, kcAdminClient }) => {
     return users
   } catch (error) {
     console.log(error)
-    throw new ApolloError('query.keycloak_users_find error')
+    throw new ApolloError('query.keycloak_users_find', error)
   }
 }
 
@@ -21,7 +21,7 @@ const keycloak_clients_find = async (obj, { }, { driver, kcAdminClient }) => {
     return clients;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('query.keycloak_clients_find error');
+    throw new ApolloError('query.keycloak_clients_find', error);
   }
 }
 
@@ -34,7 +34,7 @@ const keycloak_clients_findRole = async (obj, { clientID, roleName }, { kcAdminC
     return role;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('query.keycloak_clients_findRole error');
+    throw new ApolloError('query.keycloak_clients_findRole', error);
   }
 }
 
@@ -50,7 +50,7 @@ const keycloak_users_listAvailableClientRoleMappings = async (obj, { userID, cli
     return roles;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('query.keycloak_users_listAvailableClientRoleMappings error');
+    throw new ApolloError('query.keycloak_users_listAvailableClientRoleMappings', error);
   }
 }
 
@@ -66,7 +66,7 @@ const keycloak_users_listClientRoleMappings = async (obj, { userID, clientID }, 
     return roles;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('query.keycloak_users_listClientRoleMappings error');
+    throw new ApolloError('query.keycloak_users_listClientRoleMappings', error);
   }
 }
 
@@ -79,7 +79,7 @@ const keycloak_clients_createRole = async (obj, { clientID, roleName }, { kcAdmi
     return true;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('mutation.keycloak_clients_createRole error');
+    throw new ApolloError('mutation.keycloak_clients_createRole', error);
   }
 }
 
@@ -92,7 +92,7 @@ const keycloak_clients_delRole = async (obj, { clientID, roleName }, { kcAdminCl
     return true;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('mutation.keycloak_clients_delRole error');
+    throw new ApolloError('mutation.keycloak_clients_delRole', error);
   }
 }
 
@@ -113,7 +113,7 @@ const keycloak_users_addClientRoleMappings = async (obj, { userID, clientID, rol
     return true;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('mutation.keycloak_users_addClientRoleMappings error');
+    throw new ApolloError('mutation.keycloak_users_addClientRoleMappings', error);
   }
 }
 
@@ -134,7 +134,7 @@ const keycloak_users_delClientRoleMappings = async (obj, { userID, clientID, rol
     return true;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('mutation.keycloak_users_delClientRoleMappings error');
+    throw new ApolloError('mutation.keycloak_users_delClientRoleMappings', error);
   }
 }
 
@@ -147,7 +147,7 @@ const keycloak_users_create = async function (obj, { email }, { kcAdminClient })
     return { ...user, email, username: email };
   } catch (error) {
     console.log(error);
-    throw new ApolloError('mutation.keycloak_users_create error');
+    throw new ApolloError('mutation.keycloak_users_create', error);
   }
 }
 
@@ -159,24 +159,7 @@ const keycloak_users_delete = async (obj, { userID }, { kcAdminClient }) => {
     return true;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('mutation.keycloak_users_delete error');
-  }
-}
-
-const keycloakSyncUsersDeleteNeo4jMissingKeycloak = async (obj, { }, { kcAdminClient, driver, ogm }) => {
-  try {
-    const keycloakUsers = await keycloak_users_find(obj, {}, { kcAdminClient, driver });
-    const UserModel = ogm.model('KeycloakUser');
-    const neo4jUsers = await UserModel.find();
-
-    const user = await kcAdminClient.users.create({
-      username: email,
-      email: email,
-    });
-    return { ...user, email, username: email };
-  } catch (error) {
-    console.log(error);
-    throw new ApolloError('mutation.keycloakSyncUsersDeleteNeo4jMissingKeycloak error');
+    throw new ApolloError('mutation.keycloak_users_delete', error);
   }
 }
 
@@ -230,7 +213,7 @@ const keycloakSyncUsers = async (
           await UserModel.delete({ where: { keycloakUserID: user.keycloakUserID}})
         }
       } else {
-        throw new ApolloError('mutation.keycloakSyncUsers error');
+        throw new ApolloError('mutation.keycloakSyncUsers (invalid params)', error);
       }
     } else if (missingIn == 'neo4j') {
       const missingUsers = await Promise.all(keycloakUsers.filter(u => inKeycloakNotNeo4j.includes(u.id)).map(async u => {
@@ -259,16 +242,16 @@ const keycloakSyncUsers = async (
           await keycloak_users_delete(obj, { userID: user.keycloakUserID }, { kcAdminClient })
         }
       } else {
-        throw new ApolloError('mutation.keycloakSyncUsers error');
+        throw new ApolloError('mutation.keycloakSyncUsers (neo4j/add)', error);
       }
     } else {
-      throw new ApolloError('mutation.keycloakSyncUsers error');
+      throw new ApolloError('mutation.keycloakSyncUsers (invalid params)', error);
     }
 
     return null;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('mutation.keycloakSyncUsers error');
+    throw new ApolloError('mutation.keycloakSyncUsers', error);
   }
 }
 
@@ -291,7 +274,7 @@ const keycloak_acceptTOS = async (obj, { userID, clientID, roleID, roleName }, {
     return true;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('mutation.keycloak_users_addClientRoleMappings error');
+    throw new ApolloError('mutation.keycloak_users_addClientRoleMappings', error);
   }
 }
 

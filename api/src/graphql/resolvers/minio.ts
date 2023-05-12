@@ -110,7 +110,7 @@ export const resolvers = {
         return minioUpload.properties
       } catch (error) {
         console.log(error)
-        throw new ApolloError('mutation.minioUpload error')
+        throw new ApolloError('mutation.minioUpload', error)
       }
     },
 
@@ -125,7 +125,7 @@ export const resolvers = {
         return true
       } catch (error) {
         console.log(error)
-        throw new ApolloError('mutation.minioDelete error')
+        throw new ApolloError('mutation.minioDelete', error)
       }
     },
   
@@ -165,7 +165,7 @@ export const resolvers = {
         return {isValid, message}
       } catch (error) {
         console.log(error)
-        throw new ApolloError('query.validateRawdatafile error')
+        throw new ApolloError('query.validateRawdatafile', error)
       }
     },
     validateCodebook: async (obj, { rawDatasetID, objectName }, { driver, ogm }) => {
@@ -204,7 +204,7 @@ export const resolvers = {
         return {isValid, message}
       } catch (error) {
         console.log(error)
-        throw new ApolloError('query.validateCodebook error')
+        throw new ApolloError('query.validateCodebook', error)
       }
     },
     validateRawfileCodebookPair: async (obj, { rawDatasetIDRF, objectNameRF, rawDatasetIDCB, objectNameCB }, { driver, ogm }) => {
@@ -270,7 +270,7 @@ export const resolvers = {
         return {isValid, message, mismatches}
       } catch (error) {
         console.log(error)
-        throw new ApolloError('query.validateCodebook error')
+        throw new ApolloError('query.validateCodebook', error)
       }
     },
   },

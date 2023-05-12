@@ -47,7 +47,7 @@ const submitTask = async (obj, { name = "Hello world", description = "Demonstrat
     return subsetResult;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('mutation.submitTask error');
+    throw new ApolloError('mutation.submitTask', error);
   }
 };
 
@@ -85,7 +85,7 @@ const funnelTaskExportDataVariableFieldDefinitions = async (obj, { taskID, descr
     return result;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('mutation.funnelTaskExportDataVariableFieldDefinitions error');
+    throw new ApolloError('mutation.funnelTaskExportDataVariableFieldDefinitions', error);
   }
 };
 
@@ -104,7 +104,7 @@ const funnelTaskExportCuratedDataset = async (obj, { taskID, description, curate
     return result;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('mutation.funnelTaskExportDataVariableFieldDefinitions error');
+    throw new ApolloError('mutation.funnelTaskExportDataVariableFieldDefinitions', error);
   }
 };
 
@@ -115,7 +115,7 @@ const funnelTask = async (obj, { taskId }, { driver, kcAdminClient }) => {
     return result;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('query.funnelTasks error');
+    throw new ApolloError('query.funnelTasks', error);
   }
 };
 
@@ -126,7 +126,7 @@ const funnelTasks = async (obj, { bucketName, file }, { driver, kcAdminClient })
     return result.tasks;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('query.funnelTasks error');
+    throw new ApolloError('query.funnelTasks', error);
   }
 };
 
@@ -141,7 +141,7 @@ const cancelTask = async (obj, { taskId }, { driver, kcAdminClient }) => {
     return result;
   } catch (error) {
     console.log(error);
-    throw new ApolloError('mutation.cancelTask error');
+    throw new ApolloError('mutation.cancelTask', error);
   }
 };
 
