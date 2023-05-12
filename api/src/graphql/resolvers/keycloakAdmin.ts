@@ -5,27 +5,27 @@ import { extname } from 'path'
 import * as R from 'remeda'
 import { KeycloakSyncOperation, KeycloakSyncSet } from '../../../../ui/src/types/types';
 
-const keycloak_users_find = async (obj, { }, { driver, kcAdminClient }) => {
+const keycloakUsersFind = async (obj, { }, { driver, kcAdminClient }) => {
   try {
     const users = await kcAdminClient.users.find();
     return users
   } catch (error) {
     console.log(error)
-    throw new ApolloError(`query.keycloak_users_find (${error?.response?.data?.error})`, error)
+    throw new ApolloError(`query.keycloakUsersFind (${error?.response?.data?.error})`, error)
   }
 }
 
-const keycloak_clients_find = async (obj, { }, { driver, kcAdminClient }) => {
+const keycloakClientsFind = async (obj, { }, { driver, kcAdminClient }) => {
   try {
     const clients = await kcAdminClient.clients.find({ clientId: 'pibu-app' });
     return clients;
   } catch (error) {
     console.log(error);
-    throw new ApolloError(`query.keycloak_clients_find (${error?.response?.data?.error})`, error);
+    throw new ApolloError(`query.keycloakClientsFind (${error?.response?.data?.error})`, error);
   }
 }
 
-const keycloak_clients_findRole = async (obj, { clientID, roleName }, { kcAdminClient }) => {
+const keycloakClientsFindRole = async (obj, { clientID, roleName }, { kcAdminClient }) => {
   try {
     const role = await kcAdminClient.clients.findRole({
       id: clientID,
@@ -34,11 +34,11 @@ const keycloak_clients_findRole = async (obj, { clientID, roleName }, { kcAdminC
     return role;
   } catch (error) {
     console.log(error);
-    throw new ApolloError(`query.keycloak_clients_findRole (${error?.response?.data?.error})`, error);
+    throw new ApolloError(`query.keycloakClientsFindRole (${error?.response?.data?.error})`, error);
   }
 }
 
-const keycloak_users_listAvailableClientRoleMappings = async (obj, { userID, clientID }, { kcAdminClient }) => {
+const keycloakUsersListAvailableClientRoleMappings = async (obj, { userID, clientID }, { kcAdminClient }) => {
   try {
     if (!userID) {
       return [];
@@ -50,11 +50,11 @@ const keycloak_users_listAvailableClientRoleMappings = async (obj, { userID, cli
     return roles;
   } catch (error) {
     console.log(error);
-    throw new ApolloError(`query.keycloak_users_listAvailableClientRoleMappings (${error?.response?.data?.error})`, error);
+    throw new ApolloError(`query.keycloakUsersListAvailableClientRoleMappings (${error?.response?.data?.error})`, error);
   }
 }
 
-const keycloak_users_listClientRoleMappings = async (obj, { userID, clientID }, { kcAdminClient }) => {
+const keycloakUsersListClientRoleMappings = async (obj, { userID, clientID }, { kcAdminClient }) => {
   try {
     if (!userID) {
       return [];
@@ -66,11 +66,11 @@ const keycloak_users_listClientRoleMappings = async (obj, { userID, clientID }, 
     return roles;
   } catch (error) {
     console.log(error);
-    throw new ApolloError(`query.keycloak_users_listClientRoleMappings (${error?.response?.data?.error})`, error);
+    throw new ApolloError(`query.keycloakUsersListClientRoleMappings (${error?.response?.data?.error})`, error);
   }
 }
 
-const keycloak_clients_createRole = async (obj, { clientID, roleName }, { kcAdminClient }) => {
+const keycloakClientsCreateRole = async (obj, { clientID, roleName }, { kcAdminClient }) => {
   try {
     await kcAdminClient.clients.createRole({
       id: clientID,
@@ -79,11 +79,11 @@ const keycloak_clients_createRole = async (obj, { clientID, roleName }, { kcAdmi
     return true;
   } catch (error) {
     console.log(error);
-    throw new ApolloError(`mutation.keycloak_clients_createRole (${error?.response?.data?.error})`, error);
+    throw new ApolloError(`mutation.keycloakClientsCreateRole (${error?.response?.data?.error})`, error);
   }
 }
 
-const keycloak_clients_delRole = async (obj, { clientID, roleName }, { kcAdminClient }) => {
+const keycloakClientsDelRole = async (obj, { clientID, roleName }, { kcAdminClient }) => {
   try {
     await kcAdminClient.clients.delRole({
       id: clientID,
@@ -92,11 +92,11 @@ const keycloak_clients_delRole = async (obj, { clientID, roleName }, { kcAdminCl
     return true;
   } catch (error) {
     console.log(error);
-    throw new ApolloError(`mutation.keycloak_clients_delRole (${error?.response?.data?.error})`, error);
+    throw new ApolloError(`mutation.keycloakClientsDelRole (${error?.response?.data?.error})`, error);
   }
 }
 
-const keycloak_users_addClientRoleMappings = async (obj, { userID, clientID, roleID, roleName }, { kcAdminClient }) => {
+const keycloakUsersAddClientRoleMappings = async (obj, { userID, clientID, roleID, roleName }, { kcAdminClient }) => {
   try {
     await kcAdminClient.users.addClientRoleMappings({
       id: userID,
@@ -113,11 +113,11 @@ const keycloak_users_addClientRoleMappings = async (obj, { userID, clientID, rol
     return true;
   } catch (error) {
     console.log(error);
-    throw new ApolloError(`mutation.keycloak_users_addClientRoleMappings (${error?.response?.data?.error})`, error);
+    throw new ApolloError(`mutation.keycloakUsersAddClientRoleMappings (${error?.response?.data?.error})`, error);
   }
 }
 
-const keycloak_users_delClientRoleMappings = async (obj, { userID, clientID, roleID, roleName }, { kcAdminClient }) => {
+const keycloakUsersDelClientRoleMappings = async (obj, { userID, clientID, roleID, roleName }, { kcAdminClient }) => {
   try {
     await kcAdminClient.users.delClientRoleMappings({
       id: userID,
@@ -134,11 +134,11 @@ const keycloak_users_delClientRoleMappings = async (obj, { userID, clientID, rol
     return true;
   } catch (error) {
     console.log(error);
-    throw new ApolloError(`mutation.keycloak_users_delClientRoleMappings (${error?.response?.data?.error})`, error);
+    throw new ApolloError(`mutation.keycloakUsersDelClientRoleMappings (${error?.response?.data?.error})`, error);
   }
 }
 
-const keycloak_users_create = async function (obj, { email }, { kcAdminClient }) {
+const keycloakUsersCreate = async function (obj, { email }, { kcAdminClient }) {
   try {
     const user = await kcAdminClient.users.create({
       username: email,
@@ -147,11 +147,11 @@ const keycloak_users_create = async function (obj, { email }, { kcAdminClient })
     return { ...user, email, username: email };
   } catch (error) {
     console.log(error);
-    throw new ApolloError(`mutation.keycloak_users_create (${error?.response?.data?.error})`, error);
+    throw new ApolloError(`mutation.keycloakUsersCreate (${error?.response?.data?.error})`, error);
   }
 }
 
-const keycloak_users_delete = async (obj, { userID }, { kcAdminClient }) => {
+const keycloakUsersDelete = async (obj, { userID }, { kcAdminClient }) => {
   try {
     const ret = await kcAdminClient.users.del({
       id: userID,
@@ -159,7 +159,7 @@ const keycloak_users_delete = async (obj, { userID }, { kcAdminClient }) => {
     return true;
   } catch (error) {
     console.log(error);
-    throw new ApolloError(`mutation.keycloak_users_delete (${error?.response?.data?.error})`, error);
+    throw new ApolloError(`mutation.keycloakUsersDelete (${error?.response?.data?.error})`, error);
   }
 }
 
@@ -169,7 +169,7 @@ const keycloakSyncUsers = async (
     { kcAdminClient, driver, ogm }
   ) => {
   try {
-    const keycloakUsers = await keycloak_users_find(obj, {}, { kcAdminClient, driver });
+    const keycloakUsers = await keycloakUsersFind(obj, {}, { kcAdminClient, driver });
     const UserModel = ogm.model('KeycloakUser');
     const neo4jUsers = await UserModel.find();
 
@@ -191,21 +191,21 @@ const keycloakSyncUsers = async (
         for (const user of missingUsers) {
 
           // create user
-          const ret = await keycloak_users_create(obj, { email: user.email }, { kcAdminClient })
+          const ret = await keycloakUsersCreate(obj, { email: user.email }, { kcAdminClient })
           // update id to new id generated by keycloak
           await UserModel.update({ where: {keycloakUserID: user.keycloakUserID}, update: { keycloakUserID: ret.id }})
 
           // get client id
-          const pibuClients = await keycloak_clients_find(obj, { }, { driver, kcAdminClient })
+          const pibuClients = await keycloakClientsFind(obj, { }, { driver, kcAdminClient })
           const pibuClientID = pibuClients[0].id
 
           // get keycloak roles
-          const availableRoles = await keycloak_users_listAvailableClientRoleMappings(obj, { userID: ret.id, clientID: pibuClientID }, { kcAdminClient })
+          const availableRoles = await keycloakUsersListAvailableClientRoleMappings(obj, { userID: ret.id, clientID: pibuClientID }, { kcAdminClient })
 
           // add roles from neo4j to keycloak
           for (const roleName of user.roles) {
             const roleID = R.find(availableRoles, x => x.name == roleName).id
-            await keycloak_users_addClientRoleMappings(obj, { userID: ret.id, clientID: pibuClientID, roleID, roleName }, { kcAdminClient })
+            await keycloakUsersAddClientRoleMappings(obj, { userID: ret.id, clientID: pibuClientID, roleID, roleName }, { kcAdminClient })
           }
         }
       } else if (operation == 'delete') {
@@ -219,11 +219,11 @@ const keycloakSyncUsers = async (
       const missingUsers = await Promise.all(keycloakUsers.filter(u => inKeycloakNotNeo4j.includes(u.id)).map(async u => {
 
         // get client id
-        const pibuClients = await keycloak_clients_find(obj, { }, { driver, kcAdminClient })
+        const pibuClients = await keycloakClientsFind(obj, { }, { driver, kcAdminClient })
         const pibuClientID = pibuClients[0].id
 
         // get keycloak role
-        const roles = await keycloak_users_listClientRoleMappings(obj, { userID: u.id, clientID: pibuClientID }, { kcAdminClient })
+        const roles = await keycloakUsersListClientRoleMappings(obj, { userID: u.id, clientID: pibuClientID }, { kcAdminClient })
 
         // get role names
         const roleNames = roles.map(r => r.name)
@@ -239,7 +239,7 @@ const keycloakSyncUsers = async (
         await UserModel.create({ input: await missingUsers });
       } else if (operation == 'delete') {
         for (const user of missingUsers) {
-          await keycloak_users_delete(obj, { userID: user.keycloakUserID }, { kcAdminClient })
+          await keycloakUsersDelete(obj, { userID: user.keycloakUserID }, { kcAdminClient })
         }
       } else {
         throw new ApolloError(`mutation.keycloakSyncUsers (neo4j/add) (${error?.response?.data?.error})`, error);
@@ -255,45 +255,45 @@ const keycloakSyncUsers = async (
   }
 }
 
-const keycloak_acceptTOS = async (obj, { userID, clientID, roleID, roleName }, { kcAdminClient, driver, kauth }) => {
+const keycloakAcceptTOS = async (obj, { userID, clientID, roleID, roleName }, { kcAdminClient, driver, kauth }) => {
   try {
 
     const userID = kauth.accessToken.content.sub
 
     // get client id
-    const pibuClients = await keycloak_clients_find(obj, { }, { driver, kcAdminClient })
+    const pibuClients = await keycloakClientsFind(obj, { }, { driver, kcAdminClient })
     const clientID = pibuClients[0].id
 
     // get keycloak role
     const roleName = 'role|allowedRoles|acceptedTOS'
-    const role = await keycloak_clients_findRole(obj, { clientID, roleName }, { kcAdminClient })
+    const role = await keycloakClientsFindRole(obj, { clientID, roleName }, { kcAdminClient })
     const roleID = role.id
 
-    await keycloak_users_addClientRoleMappings(obj, { userID, clientID, roleID, roleName }, { kcAdminClient })
+    await keycloakUsersAddClientRoleMappings(obj, { userID, clientID, roleID, roleName }, { kcAdminClient })
 
     return true;
   } catch (error) {
     console.log(error);
-    throw new ApolloError(`mutation.keycloak_users_addClientRoleMappings (${error?.response?.data?.error})`, error);
+    throw new ApolloError(`mutation.keycloakUsersAddClientRoleMappings (${error?.response?.data?.error})`, error);
   }
 }
 
 export const resolvers = {
   Query: {
-    keycloak_users_find: keycloak_users_find,
-    keycloak_clients_find: keycloak_clients_find,
-    keycloak_clients_findRole: keycloak_clients_findRole,
-    keycloak_users_listAvailableClientRoleMappings: keycloak_users_listAvailableClientRoleMappings,
-    keycloak_users_listClientRoleMappings: keycloak_users_listClientRoleMappings,
+    keycloakUsersFind: keycloakUsersFind,
+    keycloakClientsFind: keycloakClientsFind,
+    keycloakClientsFindRole: keycloakClientsFindRole,
+    keycloakUsersListAvailableClientRoleMappings: keycloakUsersListAvailableClientRoleMappings,
+    keycloakUsersListClientRoleMappings: keycloakUsersListClientRoleMappings,
   },
   Mutation: {
-    keycloak_clients_createRole: keycloak_clients_createRole,
-    keycloak_clients_delRole: keycloak_clients_delRole,
-    keycloak_users_addClientRoleMappings: keycloak_users_addClientRoleMappings,
-    keycloak_users_delClientRoleMappings: keycloak_users_delClientRoleMappings,
-    keycloak_users_create: keycloak_users_create,
-    keycloak_users_delete: keycloak_users_delete,
+    keycloakClientsCreateRole: keycloakClientsCreateRole,
+    keycloakClientsDelRole: keycloakClientsDelRole,
+    keycloakUsersAddClientRoleMappings: keycloakUsersAddClientRoleMappings,
+    keycloakUsersDelClientRoleMappings: keycloakUsersDelClientRoleMappings,
+    keycloakUsersCreate: keycloakUsersCreate,
+    keycloakUsersDelete: keycloakUsersDelete,
     keycloakSyncUsers: keycloakSyncUsers,
-    keycloak_acceptTOS: keycloak_acceptTOS,
+    keycloakAcceptTOS: keycloakAcceptTOS,
   },
 }

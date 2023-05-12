@@ -25,23 +25,23 @@ enum KeycloakSyncOperation {
 }
 
 type Query {
-  keycloak_users_find: [ClientUser] @auth @hasRole(role: "role|allowedRoles|admin")
-  keycloak_clients_find: [Client] @auth @hasRole(role: "role|allowedRoles|admin")
-  keycloak_clients_findRole(clientID: ID!, roleName: String!): ClientRole @auth @hasRole(role: "role|allowedRoles|admin")
-  keycloak_users_listAvailableClientRoleMappings(userID: ID, clientID: ID!): [ClientRole] @auth @hasRole(role: "role|allowedRoles|admin")
-  keycloak_users_listClientRoleMappings(userID: ID, clientID: ID!): [ClientRole] @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloakUsersFind: [ClientUser] @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloakClientsFind: [Client] @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloakClientsFindRole(clientID: ID!, roleName: String!): ClientRole @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloakUsersListAvailableClientRoleMappings(userID: ID, clientID: ID!): [ClientRole] @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloakUsersListClientRoleMappings(userID: ID, clientID: ID!): [ClientRole] @auth @hasRole(role: "role|allowedRoles|admin")
 }
 
 type Mutation {
-  keycloak_clients_createRole(clientID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
-  keycloak_clients_delRole(clientID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
-  keycloak_users_addClientRoleMappings(userID: ID!, clientID: ID!, roleID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
-  keycloak_users_delClientRoleMappings(userID: ID!, clientID: ID!, roleID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloakClientsCreateRole(clientID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloakClientsDelRole(clientID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloakUsersAddClientRoleMappings(userID: ID!, clientID: ID!, roleID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloakUsersDelClientRoleMappings(userID: ID!, clientID: ID!, roleID: ID!, roleName: String!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
 
-  keycloak_users_create(email: String!): ClientUser @auth @hasRole(role: "role|allowedRoles|admin")
-  keycloak_users_delete(userID: ID!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloakUsersCreate(email: String!): ClientUser @auth @hasRole(role: "role|allowedRoles|admin")
+  keycloakUsersDelete(userID: ID!): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
 
   keycloakSyncUsers(missingIn: KeycloakSyncSet, operation: KeycloakSyncOperation): Boolean @auth @hasRole(role: "role|allowedRoles|admin")
 
-  keycloak_acceptTOS: Boolean @auth
+  keycloakAcceptTOS: Boolean @auth
 }

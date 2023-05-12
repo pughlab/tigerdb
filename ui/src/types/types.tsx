@@ -5468,13 +5468,14 @@ export type Mutation = {
   deleteTasks: DeleteInfo;
   funnelTaskExportCuratedDataset: Maybe<Task>;
   funnelTaskExportDataVariableFieldDefinitions: Maybe<Task>;
+  keycloakAcceptTOS: Maybe<Scalars['Boolean']>;
+  keycloakClientsCreateRole: Maybe<Scalars['Boolean']>;
+  keycloakClientsDelRole: Maybe<Scalars['Boolean']>;
   keycloakSyncUsers: Maybe<Scalars['Boolean']>;
-  keycloak_clients_createRole: Maybe<Scalars['Boolean']>;
-  keycloak_clients_delRole: Maybe<Scalars['Boolean']>;
-  keycloak_users_addClientRoleMappings: Maybe<Scalars['Boolean']>;
-  keycloak_users_create: Maybe<ClientUser>;
-  keycloak_users_delClientRoleMappings: Maybe<Scalars['Boolean']>;
-  keycloak_users_delete: Maybe<Scalars['Boolean']>;
+  keycloakUsersAddClientRoleMappings: Maybe<Scalars['Boolean']>;
+  keycloakUsersCreate: Maybe<ClientUser>;
+  keycloakUsersDelClientRoleMappings: Maybe<Scalars['Boolean']>;
+  keycloakUsersDelete: Maybe<Scalars['Boolean']>;
   me: Maybe<KeycloakUser>;
   minioDelete: Maybe<Scalars['Boolean']>;
   minioUploadFile: MinioUpload;
@@ -5802,25 +5803,25 @@ export type MutationFunnelTaskExportDataVariableFieldDefinitionsArgs = {
 };
 
 
+export type MutationKeycloakClientsCreateRoleArgs = {
+  clientID: Scalars['ID'];
+  roleName: Scalars['String'];
+};
+
+
+export type MutationKeycloakClientsDelRoleArgs = {
+  clientID: Scalars['ID'];
+  roleName: Scalars['String'];
+};
+
+
 export type MutationKeycloakSyncUsersArgs = {
   missingIn: InputMaybe<KeycloakSyncSet>;
   operation: InputMaybe<KeycloakSyncOperation>;
 };
 
 
-export type MutationKeycloak_Clients_CreateRoleArgs = {
-  clientID: Scalars['ID'];
-  roleName: Scalars['String'];
-};
-
-
-export type MutationKeycloak_Clients_DelRoleArgs = {
-  clientID: Scalars['ID'];
-  roleName: Scalars['String'];
-};
-
-
-export type MutationKeycloak_Users_AddClientRoleMappingsArgs = {
+export type MutationKeycloakUsersAddClientRoleMappingsArgs = {
   clientID: Scalars['ID'];
   roleID: Scalars['ID'];
   roleName: Scalars['String'];
@@ -5828,12 +5829,12 @@ export type MutationKeycloak_Users_AddClientRoleMappingsArgs = {
 };
 
 
-export type MutationKeycloak_Users_CreateArgs = {
+export type MutationKeycloakUsersCreateArgs = {
   email: Scalars['String'];
 };
 
 
-export type MutationKeycloak_Users_DelClientRoleMappingsArgs = {
+export type MutationKeycloakUsersDelClientRoleMappingsArgs = {
   clientID: Scalars['ID'];
   roleID: Scalars['ID'];
   roleName: Scalars['String'];
@@ -5841,7 +5842,7 @@ export type MutationKeycloak_Users_DelClientRoleMappingsArgs = {
 };
 
 
-export type MutationKeycloak_Users_DeleteArgs = {
+export type MutationKeycloakUsersDeleteArgs = {
   userID: Scalars['ID'];
 };
 
@@ -7356,14 +7357,14 @@ export type Query = {
   harmonizedDatasets: Array<HarmonizedDataset>;
   harmonizedDatasetsAggregate: HarmonizedDatasetAggregateSelection;
   harmonizedDatasetsConnection: HarmonizedDatasetsConnection;
+  keycloakClientsFind: Maybe<Array<Maybe<Client>>>;
+  keycloakClientsFindRole: Maybe<ClientRole>;
   keycloakUsers: Array<KeycloakUser>;
   keycloakUsersAggregate: KeycloakUserAggregateSelection;
   keycloakUsersConnection: KeycloakUsersConnection;
-  keycloak_clients_find: Maybe<Array<Maybe<Client>>>;
-  keycloak_clients_findRole: Maybe<ClientRole>;
-  keycloak_users_find: Maybe<Array<Maybe<ClientUser>>>;
-  keycloak_users_listAvailableClientRoleMappings: Maybe<Array<Maybe<ClientRole>>>;
-  keycloak_users_listClientRoleMappings: Maybe<Array<Maybe<ClientRole>>>;
+  keycloakUsersFind: Maybe<Array<Maybe<ClientUser>>>;
+  keycloakUsersListAvailableClientRoleMappings: Maybe<Array<Maybe<ClientRole>>>;
+  keycloakUsersListClientRoleMappings: Maybe<Array<Maybe<ClientRole>>>;
   minioBuckets: Array<MinioBucket>;
   minioBucketsAggregate: MinioBucketAggregateSelection;
   minioBucketsConnection: MinioBucketsConnection;
@@ -7613,6 +7614,12 @@ export type QueryHarmonizedDatasetsConnectionArgs = {
 };
 
 
+export type QueryKeycloakClientsFindRoleArgs = {
+  clientID: Scalars['ID'];
+  roleName: Scalars['String'];
+};
+
+
 export type QueryKeycloakUsersArgs = {
   options: InputMaybe<KeycloakUserOptions>;
   where: InputMaybe<KeycloakUserWhere>;
@@ -7632,19 +7639,13 @@ export type QueryKeycloakUsersConnectionArgs = {
 };
 
 
-export type QueryKeycloak_Clients_FindRoleArgs = {
-  clientID: Scalars['ID'];
-  roleName: Scalars['String'];
-};
-
-
-export type QueryKeycloak_Users_ListAvailableClientRoleMappingsArgs = {
+export type QueryKeycloakUsersListAvailableClientRoleMappingsArgs = {
   clientID: Scalars['ID'];
   userID: InputMaybe<Scalars['ID']>;
 };
 
 
-export type QueryKeycloak_Users_ListClientRoleMappingsArgs = {
+export type QueryKeycloakUsersListClientRoleMappingsArgs = {
   clientID: Scalars['ID'];
   userID: InputMaybe<Scalars['ID']>;
 };

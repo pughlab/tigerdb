@@ -35,8 +35,8 @@ const AdminUserDetails = ({userID, clientID, username, email}) => {
 
   // Available Roles
   const { data: dataAvailableRoles, loading: loadingAvailableRoles, error: errorAvailableRoles, refetch: refetchAvailableRoles } = useQuery(gql`
-  query keycloak_users_listAvailableClientRoleMappings($userID: ID, $clientID: ID!) {
-    keycloak_users_listAvailableClientRoleMappings(userID: $userID, clientID: $clientID) {
+  query keycloakUsersListAvailableClientRoleMappings($userID: ID, $clientID: ID!) {
+    keycloakUsersListAvailableClientRoleMappings(userID: $userID, clientID: $clientID) {
       id
       name
     }
@@ -45,14 +45,14 @@ const AdminUserDetails = ({userID, clientID, username, email}) => {
   { variables: { userID, clientID }, fetchPolicy: 'network-only' })
 
   let availableRoles = []
-  if (dataAvailableRoles?.keycloak_users_listAvailableClientRoleMappings) {
-    availableRoles = dataAvailableRoles?.keycloak_users_listAvailableClientRoleMappings
+  if (dataAvailableRoles?.keycloakUsersListAvailableClientRoleMappings) {
+    availableRoles = dataAvailableRoles?.keycloakUsersListAvailableClientRoleMappings
   }
 
   // Assigned Roles
   const { data: dataAssignedRoles, loading: loadingAssignedRoles, error: errorAssignedRoles, refetch: refetchAssignedRoles } = useQuery(gql`
-  query keycloak_users_listClientRoleMappings($userID: ID, $clientID: ID!) {
-    keycloak_users_listClientRoleMappings(userID: $userID, clientID: $clientID) {
+  query keycloakUsersListClientRoleMappings($userID: ID, $clientID: ID!) {
+    keycloakUsersListClientRoleMappings(userID: $userID, clientID: $clientID) {
       id
       name
     }
@@ -67,21 +67,21 @@ const AdminUserDetails = ({userID, clientID, username, email}) => {
 	}, [location.key])
 
   let assignedRoles = []
-  if (dataAssignedRoles?.keycloak_users_listClientRoleMappings) {
-    assignedRoles = dataAssignedRoles?.keycloak_users_listClientRoleMappings
+  if (dataAssignedRoles?.keycloakUsersListClientRoleMappings) {
+    assignedRoles = dataAssignedRoles?.keycloakUsersListClientRoleMappings
   }
 
   const allRoleNames = (availableRoles.concat(assignedRoles)).map(x => x.name)
 
   // Assign a role
   const [addRole, { dataAddRole, loadingAddRole, errorAddRole }] = useMutation(gql`
-  mutation keycloak_users_addClientRoleMappings(
+  mutation keycloakUsersAddClientRoleMappings(
     $userID: ID!
     $clientID: ID!
     $roleID: ID!
     $roleName: String!
   ) {
-    keycloak_users_addClientRoleMappings(
+    keycloakUsersAddClientRoleMappings(
       userID: $userID
       clientID: $clientID
       roleID: $roleID
@@ -91,13 +91,13 @@ const AdminUserDetails = ({userID, clientID, username, email}) => {
 
 // UnAssign a role
 const [delRole, { dataDelRole, loadingDelRole, errorDelRole }] = useMutation(gql`
-mutation keycloak_users_delClientRoleMappings(
+mutation keycloakUsersDelClientRoleMappings(
   $userID: ID!
   $clientID: ID!
   $roleID: ID!
   $roleName: String!
 ) {
-  keycloak_users_delClientRoleMappings(
+  keycloakUsersDelClientRoleMappings(
     userID: $userID
     clientID: $clientID
     roleID: $roleID
@@ -107,11 +107,11 @@ mutation keycloak_users_delClientRoleMappings(
 
 // Create a client role
 const [createClientRole, { dataCreateClientRole, loadingCreateClientRole, errorCreateClientRole }] = useMutation(gql`
-mutation keycloak_clients_createRole(
+mutation keycloakClientsCreateRole(
   $clientID: ID!
   $roleName: String!
 ) {
-  keycloak_clients_createRole(
+  keycloakClientsCreateRole(
     clientID: $clientID
     roleName: $roleName
   )
@@ -119,11 +119,11 @@ mutation keycloak_clients_createRole(
 
 // Remove a client role
 const [removeClientRole, { dataRemoveClientRole, loadingRemoveClientRole, errorRemoveClientRole }] = useMutation(gql`
-mutation keycloak_clients_delRole(
+mutation keycloakClientsDelRole(
   $clientID: ID!
   $roleName: String!
 ) {
-  keycloak_clients_delRole(
+  keycloakClientsDelRole(
     clientID: $clientID
     roleName: $roleName
   )
@@ -199,8 +199,8 @@ export default function AdminUsers() {
   const [email, setEmail] = useState(null)
 
   const { data: dataClients, loading: loadingClients, error: errorClients } = useQuery(gql`
-  query keycloak_clients_find {
-    keycloak_clients_find {
+  query keycloakClientsFind {
+    keycloakClientsFind {
       id
       clientId
     }
@@ -209,8 +209,8 @@ export default function AdminUsers() {
   { variables: { } })
 
   const { data: dataUsers, loading: loadingUsers, error: errorUsers, refetch: refetchUsers } = useQuery(gql`
-  query keycloak_users_find {
-    keycloak_users_find {
+  query keycloakUsersFind {
+    keycloakUsersFind {
       id
       username
       email
@@ -223,10 +223,10 @@ export default function AdminUsers() {
 
   // Create user
   const [addUser, { dataAddUser, loadingAddUser, errorAddUser }] = useMutation(gql`
-  mutation keycloak_users_create(
+  mutation keycloakUsersCreate(
     $email: String!
   ) {
-    keycloak_users_create(
+    keycloakUsersCreate(
       email: $email
     ) {
       id
@@ -234,18 +234,18 @@ export default function AdminUsers() {
       email
     }
   }`, {onCompleted: (data) => {
-    setUserID(data.keycloak_users_create.id)
-    setUsername(data.keycloak_users_create.username)
-    setEmail(data.keycloak_users_create.email)
+    setUserID(data.keycloakUsersCreate.id)
+    setUsername(data.keycloakUsersCreate.username)
+    setEmail(data.keycloakUsersCreate.email)
     refetchUsers()
   }})
 
   // Delete user
   const [delUser, { dataDelRole, loadingDelRole, errorDelRole }] = useMutation(gql`
-  mutation keycloak_users_delete(
+  mutation keycloakUsersDelete(
     $userID: ID!
   ) {
-    keycloak_users_delete(
+    keycloakUsersDelete(
       userID: $userID
     )
   }`, {onCompleted: () => { refetchUsers() }})
@@ -257,18 +257,18 @@ export default function AdminUsers() {
 
   let users
   
-  if (!dataClients?.keycloak_clients_find) {
+  if (!dataClients?.keycloakClientsFind) {
     return null
   }
 
-  if (!dataUsers?.keycloak_users_find) {
+  if (!dataUsers?.keycloakUsersFind) {
     users = []
   } else {
-    users = dataUsers.keycloak_users_find
+    users = dataUsers.keycloakUsersFind
   }
 
   const const_appName = 'pibu-app'
-  const appID = R.find(dataClients.keycloak_clients_find, ({clientId}) => clientId === const_appName)['id']
+  const appID = R.find(dataClients.keycloakClientsFind, ({clientId}) => clientId === const_appName)['id']
 
   return (<Grid>
     <Grid.Column  key='users' width={6}>

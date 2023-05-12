@@ -5470,13 +5470,14 @@ export type Mutation = {
   deleteTasks: DeleteInfo;
   funnelTaskExportCuratedDataset?: Maybe<Task>;
   funnelTaskExportDataVariableFieldDefinitions?: Maybe<Task>;
+  keycloakAcceptTOS?: Maybe<Scalars['Boolean']>;
+  keycloakClientsCreateRole?: Maybe<Scalars['Boolean']>;
+  keycloakClientsDelRole?: Maybe<Scalars['Boolean']>;
   keycloakSyncUsers?: Maybe<Scalars['Boolean']>;
-  keycloak_clients_createRole?: Maybe<Scalars['Boolean']>;
-  keycloak_clients_delRole?: Maybe<Scalars['Boolean']>;
-  keycloak_users_addClientRoleMappings?: Maybe<Scalars['Boolean']>;
-  keycloak_users_create?: Maybe<ClientUser>;
-  keycloak_users_delClientRoleMappings?: Maybe<Scalars['Boolean']>;
-  keycloak_users_delete?: Maybe<Scalars['Boolean']>;
+  keycloakUsersAddClientRoleMappings?: Maybe<Scalars['Boolean']>;
+  keycloakUsersCreate?: Maybe<ClientUser>;
+  keycloakUsersDelClientRoleMappings?: Maybe<Scalars['Boolean']>;
+  keycloakUsersDelete?: Maybe<Scalars['Boolean']>;
   me?: Maybe<KeycloakUser>;
   minioDelete?: Maybe<Scalars['Boolean']>;
   minioUploadFile: MinioUpload;
@@ -5804,25 +5805,25 @@ export type MutationFunnelTaskExportDataVariableFieldDefinitionsArgs = {
 };
 
 
+export type MutationKeycloakClientsCreateRoleArgs = {
+  clientID: Scalars['ID'];
+  roleName: Scalars['String'];
+};
+
+
+export type MutationKeycloakClientsDelRoleArgs = {
+  clientID: Scalars['ID'];
+  roleName: Scalars['String'];
+};
+
+
 export type MutationKeycloakSyncUsersArgs = {
   missingIn?: InputMaybe<KeycloakSyncSet>;
   operation?: InputMaybe<KeycloakSyncOperation>;
 };
 
 
-export type MutationKeycloak_Clients_CreateRoleArgs = {
-  clientID: Scalars['ID'];
-  roleName: Scalars['String'];
-};
-
-
-export type MutationKeycloak_Clients_DelRoleArgs = {
-  clientID: Scalars['ID'];
-  roleName: Scalars['String'];
-};
-
-
-export type MutationKeycloak_Users_AddClientRoleMappingsArgs = {
+export type MutationKeycloakUsersAddClientRoleMappingsArgs = {
   clientID: Scalars['ID'];
   roleID: Scalars['ID'];
   roleName: Scalars['String'];
@@ -5830,12 +5831,12 @@ export type MutationKeycloak_Users_AddClientRoleMappingsArgs = {
 };
 
 
-export type MutationKeycloak_Users_CreateArgs = {
+export type MutationKeycloakUsersCreateArgs = {
   email: Scalars['String'];
 };
 
 
-export type MutationKeycloak_Users_DelClientRoleMappingsArgs = {
+export type MutationKeycloakUsersDelClientRoleMappingsArgs = {
   clientID: Scalars['ID'];
   roleID: Scalars['ID'];
   roleName: Scalars['String'];
@@ -5843,7 +5844,7 @@ export type MutationKeycloak_Users_DelClientRoleMappingsArgs = {
 };
 
 
-export type MutationKeycloak_Users_DeleteArgs = {
+export type MutationKeycloakUsersDeleteArgs = {
   userID: Scalars['ID'];
 };
 
@@ -7358,14 +7359,14 @@ export type Query = {
   harmonizedDatasets: Array<HarmonizedDataset>;
   harmonizedDatasetsAggregate: HarmonizedDatasetAggregateSelection;
   harmonizedDatasetsConnection: HarmonizedDatasetsConnection;
+  keycloakClientsFind?: Maybe<Array<Maybe<Client>>>;
+  keycloakClientsFindRole?: Maybe<ClientRole>;
   keycloakUsers: Array<KeycloakUser>;
   keycloakUsersAggregate: KeycloakUserAggregateSelection;
   keycloakUsersConnection: KeycloakUsersConnection;
-  keycloak_clients_find?: Maybe<Array<Maybe<Client>>>;
-  keycloak_clients_findRole?: Maybe<ClientRole>;
-  keycloak_users_find?: Maybe<Array<Maybe<ClientUser>>>;
-  keycloak_users_listAvailableClientRoleMappings?: Maybe<Array<Maybe<ClientRole>>>;
-  keycloak_users_listClientRoleMappings?: Maybe<Array<Maybe<ClientRole>>>;
+  keycloakUsersFind?: Maybe<Array<Maybe<ClientUser>>>;
+  keycloakUsersListAvailableClientRoleMappings?: Maybe<Array<Maybe<ClientRole>>>;
+  keycloakUsersListClientRoleMappings?: Maybe<Array<Maybe<ClientRole>>>;
   minioBuckets: Array<MinioBucket>;
   minioBucketsAggregate: MinioBucketAggregateSelection;
   minioBucketsConnection: MinioBucketsConnection;
@@ -7615,6 +7616,12 @@ export type QueryHarmonizedDatasetsConnectionArgs = {
 };
 
 
+export type QueryKeycloakClientsFindRoleArgs = {
+  clientID: Scalars['ID'];
+  roleName: Scalars['String'];
+};
+
+
 export type QueryKeycloakUsersArgs = {
   options?: InputMaybe<KeycloakUserOptions>;
   where?: InputMaybe<KeycloakUserWhere>;
@@ -7634,19 +7641,13 @@ export type QueryKeycloakUsersConnectionArgs = {
 };
 
 
-export type QueryKeycloak_Clients_FindRoleArgs = {
-  clientID: Scalars['ID'];
-  roleName: Scalars['String'];
-};
-
-
-export type QueryKeycloak_Users_ListAvailableClientRoleMappingsArgs = {
+export type QueryKeycloakUsersListAvailableClientRoleMappingsArgs = {
   clientID: Scalars['ID'];
   userID?: InputMaybe<Scalars['ID']>;
 };
 
 
-export type QueryKeycloak_Users_ListClientRoleMappingsArgs = {
+export type QueryKeycloakUsersListClientRoleMappingsArgs = {
   clientID: Scalars['ID'];
   userID?: InputMaybe<Scalars['ID']>;
 };
@@ -14516,13 +14517,14 @@ export type MutationResolvers<ContextType = MyContextType, ParentType extends Re
   deleteTasks?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteTasksArgs>>;
   funnelTaskExportCuratedDataset?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationFunnelTaskExportCuratedDatasetArgs, 'curatedDatasetID' | 'taskID'>>;
   funnelTaskExportDataVariableFieldDefinitions?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationFunnelTaskExportDataVariableFieldDefinitionsArgs, 'dataVariableFieldDefinitionIDs' | 'taskID'>>;
+  keycloakAcceptTOS?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  keycloakClientsCreateRole?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloakClientsCreateRoleArgs, 'clientID' | 'roleName'>>;
+  keycloakClientsDelRole?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloakClientsDelRoleArgs, 'clientID' | 'roleName'>>;
   keycloakSyncUsers?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, Partial<MutationKeycloakSyncUsersArgs>>;
-  keycloak_clients_createRole?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloak_Clients_CreateRoleArgs, 'clientID' | 'roleName'>>;
-  keycloak_clients_delRole?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloak_Clients_DelRoleArgs, 'clientID' | 'roleName'>>;
-  keycloak_users_addClientRoleMappings?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloak_Users_AddClientRoleMappingsArgs, 'clientID' | 'roleID' | 'roleName' | 'userID'>>;
-  keycloak_users_create?: Resolver<Maybe<ResolversTypes['ClientUser']>, ParentType, ContextType, RequireFields<MutationKeycloak_Users_CreateArgs, 'email'>>;
-  keycloak_users_delClientRoleMappings?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloak_Users_DelClientRoleMappingsArgs, 'clientID' | 'roleID' | 'roleName' | 'userID'>>;
-  keycloak_users_delete?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloak_Users_DeleteArgs, 'userID'>>;
+  keycloakUsersAddClientRoleMappings?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloakUsersAddClientRoleMappingsArgs, 'clientID' | 'roleID' | 'roleName' | 'userID'>>;
+  keycloakUsersCreate?: Resolver<Maybe<ResolversTypes['ClientUser']>, ParentType, ContextType, RequireFields<MutationKeycloakUsersCreateArgs, 'email'>>;
+  keycloakUsersDelClientRoleMappings?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloakUsersDelClientRoleMappingsArgs, 'clientID' | 'roleID' | 'roleName' | 'userID'>>;
+  keycloakUsersDelete?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloakUsersDeleteArgs, 'userID'>>;
   me?: Resolver<Maybe<ResolversTypes['KeycloakUser']>, ParentType, ContextType>;
   minioDelete?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationMinioDeleteArgs, 'bucketName' | 'objectName'>>;
   minioUploadFile?: Resolver<ResolversTypes['MinioUpload'], ParentType, ContextType, RequireFields<MutationMinioUploadFileArgs, 'bucketName' | 'file' | 'rawDatasetID'>>;
@@ -14822,14 +14824,14 @@ export type QueryResolvers<ContextType = MyContextType, ParentType extends Resol
   harmonizedDatasets?: Resolver<Array<ResolversTypes['HarmonizedDataset']>, ParentType, ContextType, Partial<QueryHarmonizedDatasetsArgs>>;
   harmonizedDatasetsAggregate?: Resolver<ResolversTypes['HarmonizedDatasetAggregateSelection'], ParentType, ContextType, Partial<QueryHarmonizedDatasetsAggregateArgs>>;
   harmonizedDatasetsConnection?: Resolver<ResolversTypes['HarmonizedDatasetsConnection'], ParentType, ContextType, Partial<QueryHarmonizedDatasetsConnectionArgs>>;
+  keycloakClientsFind?: Resolver<Maybe<Array<Maybe<ResolversTypes['Client']>>>, ParentType, ContextType>;
+  keycloakClientsFindRole?: Resolver<Maybe<ResolversTypes['ClientRole']>, ParentType, ContextType, RequireFields<QueryKeycloakClientsFindRoleArgs, 'clientID' | 'roleName'>>;
   keycloakUsers?: Resolver<Array<ResolversTypes['KeycloakUser']>, ParentType, ContextType, Partial<QueryKeycloakUsersArgs>>;
   keycloakUsersAggregate?: Resolver<ResolversTypes['KeycloakUserAggregateSelection'], ParentType, ContextType, Partial<QueryKeycloakUsersAggregateArgs>>;
   keycloakUsersConnection?: Resolver<ResolversTypes['KeycloakUsersConnection'], ParentType, ContextType, Partial<QueryKeycloakUsersConnectionArgs>>;
-  keycloak_clients_find?: Resolver<Maybe<Array<Maybe<ResolversTypes['Client']>>>, ParentType, ContextType>;
-  keycloak_clients_findRole?: Resolver<Maybe<ResolversTypes['ClientRole']>, ParentType, ContextType, RequireFields<QueryKeycloak_Clients_FindRoleArgs, 'clientID' | 'roleName'>>;
-  keycloak_users_find?: Resolver<Maybe<Array<Maybe<ResolversTypes['ClientUser']>>>, ParentType, ContextType>;
-  keycloak_users_listAvailableClientRoleMappings?: Resolver<Maybe<Array<Maybe<ResolversTypes['ClientRole']>>>, ParentType, ContextType, RequireFields<QueryKeycloak_Users_ListAvailableClientRoleMappingsArgs, 'clientID'>>;
-  keycloak_users_listClientRoleMappings?: Resolver<Maybe<Array<Maybe<ResolversTypes['ClientRole']>>>, ParentType, ContextType, RequireFields<QueryKeycloak_Users_ListClientRoleMappingsArgs, 'clientID'>>;
+  keycloakUsersFind?: Resolver<Maybe<Array<Maybe<ResolversTypes['ClientUser']>>>, ParentType, ContextType>;
+  keycloakUsersListAvailableClientRoleMappings?: Resolver<Maybe<Array<Maybe<ResolversTypes['ClientRole']>>>, ParentType, ContextType, RequireFields<QueryKeycloakUsersListAvailableClientRoleMappingsArgs, 'clientID'>>;
+  keycloakUsersListClientRoleMappings?: Resolver<Maybe<Array<Maybe<ResolversTypes['ClientRole']>>>, ParentType, ContextType, RequireFields<QueryKeycloakUsersListClientRoleMappingsArgs, 'clientID'>>;
   minioBuckets?: Resolver<Array<ResolversTypes['MinioBucket']>, ParentType, ContextType, Partial<QueryMinioBucketsArgs>>;
   minioBucketsAggregate?: Resolver<ResolversTypes['MinioBucketAggregateSelection'], ParentType, ContextType, Partial<QueryMinioBucketsAggregateArgs>>;
   minioBucketsConnection?: Resolver<ResolversTypes['MinioBucketsConnection'], ParentType, ContextType, Partial<QueryMinioBucketsConnectionArgs>>;
