@@ -61,8 +61,8 @@ services:
     working_dir: /usr/src/service
     command: >
       sh -c "npm run start:ui"
-    expose:
-      - 3001
+    ports:
+      - 3001:3001
     environment:
       - CI=true
       - REACT_APP_GRAPHQL_URI=${GRAPHQL_SERVER_PATH}

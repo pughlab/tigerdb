@@ -62,7 +62,7 @@
             "type": "chrome",
             "request": "attach",
             "name": "Launch Chrome against localhost",
-            "url": "https://localhost/dev",
+            "url": "https://localhost:3001",
             "webRoot": "${workspaceFolder}/",
             // "runtimeArgs": ["--auto-open-devtools-for-tabs",
             //                 "--remote-debugging-port=9222"],
