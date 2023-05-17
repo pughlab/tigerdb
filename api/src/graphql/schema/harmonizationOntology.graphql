@@ -1,0 +1,69 @@
+enum OntologyConceptType {
+    # Describes different data variable categories based on ontology
+    REFERENCE # Required for a data variable and must be unique across dataset (e.g. subjectID)
+    COLLECTED # Any data collected from sites that is not reference
+    DERIVED # Data derived from computations on collected data
+}
+
+type Ontology {
+    id: ID! @id
+    name: String!
+    concepts: [OntologyConcept!]!
+}
+
+type OntologyConcept {
+    id: ID! @id
+    properties: OntologyConceptProperties!
+    type: OntologyConceptType!
+}
+
+enum OntologyVariableType {
+    CHAR
+    NUMERIC
+    INTEGER
+    # To be added in new spec
+    # BINARY
+    # FACTOR
+}
+
+# Unused for now since they may change/expand, saved as 'Category' string for now
+# enum OntolologyConceptCategory {
+#     STUDY
+#     CHILD_CHARACTERISTICS
+#     MATERNAL_CHARACTERISTICS
+#     HOME_CHARACTERISTICS
+#     SOCIOECONOMIC_STATUS
+#     HOUSEHOLD_SECURITY_INDEX
+#     TIMING
+#     MATERNAL_COVARIATES
+#     MATERNAL_COMORBITIES
+#     MATERNAL_DELIVERY_OUTCOME
+#     MATERNAL_DIETRY_ASSESSMENTS
+#     CHILD_ANTHROPOMETRY
+#     CHILD_FEEDING
+#     CHILD_COMORBIDITIES
+#     CHILD_CLINICAL_DATA
+#     MATERNAL_BIOMARKERS
+# }
+
+# This will need to change if the headers of the harmonization master spec changes
+type OntologyConceptProperties {
+    id: ID! @id
+    # category: OntologyConceptCategory!
+    category: String!
+    # From harmonization spec
+    varName: String!
+    varLabel: String!
+    varDescription: String!
+    varType: OntologyVariableType!
+    relate: Int! #clarify this
+    longitudinal: Boolean!
+    essential: Boolean!
+    # Means different things for different variable types
+    length: Int 
+    decimal: Int
+    # KI team related notes
+    programmingNote: String
+    additionalNote: String
+
+}
