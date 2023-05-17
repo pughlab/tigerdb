@@ -8,7 +8,7 @@ enum OntologyConceptType {
 type Ontology {
     id: ID! @id
     name: String!
-    concepts: [OntologyConcept!]!
+    concepts: [OntologyConcept!]! @relation(name: "HAS_CONCEPT", direction: "OUT")
 }
 
 type OntologyConcept {
@@ -18,7 +18,7 @@ type OntologyConcept {
 }
 
 enum OntologyVariableType {
-    CHAR
+    CHARACTER
     NUMERIC
     INTEGER
     # To be added in new spec
