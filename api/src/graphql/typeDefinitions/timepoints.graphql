@@ -1,0 +1,63 @@
+type TimePoint {
+  id: ID!
+  value: TimePointValue @relation(name: "HAS_VALUE", direction: OUT)
+  timelines: [Timeline] @relation(name: "BELONGS_TO", direction: IN)
+}
+
+type TimePointValue {
+  id: ID!
+  days: Int!
+  weeks: Int!
+  years: Int!
+  timePoint: TimePoint @relation(name: "HAS_VALUE", direction: IN)
+}
+
+input TimePointValueInput {
+  days: Int!
+  weeks: Int!
+  years: Int!
+}
+
+type Timeline {
+  id: ID!
+  name: String!
+  startDate: DateTime!
+  endDate: DateTime!
+  timePoints: [TimePoint] @relation(name: "BELONGS_TO", direction: OUT)
+  fromStudy: Study @relation(name: "HAS_TIMELINE", direction: IN)
+}
+
+type Query {
+    searchTimePoints(startValue: TimeValueInput!, endValue: TimeValueInput!): [TimePoint] @cypher(statement: """
+        WITH $startValue AS startValue, $endValue AS endValue
+        WITH startValue.days + startValue.weeks * 7 + startValue.years * 365 AS startDuration,
+                endValue.days + endValue.weeks * 7 + endValue.years * 365 AS endDuration
+        MATCH (tp:TimePoint)-[:HAS_VALUE]->(value:TimePointValue)
+        WHERE value.days + value.weeks * 7 + value.years * 365 >= startDuration
+            AND value.days + value.weeks * 7 + value.years * 365 <= endDuration
+        RETURN tp { .id, value { .days, .weeks, .years }, .data } AS timePoint
+    """)
+
+  searchTimelines(startValue: TimeValueInput!, endValue: TimeValueInput!): [Timeline] @cypher(statement: """
+        WITH $startValue AS startValue, $endValue AS endValue
+        WITH startValue.days + startValue.weeks * 7 + startValue.years * 365 AS startDuration,
+            endValue.days + endValue.weeks * 7 + endValue.years * 365 AS endDuration
+        MATCH (tp:TimePoint)-[:BELONGS_TO]->(timeline:Timeline)-[:HAS_VALUE]->(value:TimePointValue)
+        WHERE value.days + value.weeks * 7 + value.years * 365 >= startDuration
+            AND value.days + value.weeks * 7 + value.years * 365 <= endDuration
+        RETURN timeline {
+            .id,
+            timePoints: collect(tp { .id, value { .days, .weeks, .years }, .data })
+        } AS timeline
+    """)
+
+    searchStudiesByTimePoints(startValue: TimeValueInput!, endValue: TimeValueInput!): [Study] @cypher(statement: """
+        WITH $startValue AS startValue, $endValue AS endValue
+        WITH startValue.days + startValue.weeks * 7 + startValue.years * 365 AS startDuration,
+            endValue.days + endValue.weeks * 7 + endValue.years * 365 AS endDuration
+        MATCH (tp:TimePoint)-[:BELONGS_TO]->(timeline:Timeline)-[:HAS_VALUE]->(value:TimePointValue)
+        WHERE value.days + value.weeks * 7 + value.years * 365 >= startDuration
+        AND value.days + value.weeks * 7 + value.years * 365 <= endDuration
+        RETURN DISTINCT timeline.fromStudy AS study
+    """)
+}

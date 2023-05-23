@@ -7,6 +7,10 @@ type Study {
   description: String!
   rawDatasets: [RawDataset!]! @relationship(type: "HAS_RAW_DATASET", direction: OUT)
   studySites: [GeographyCity!]! @relationship(type: "HAS_STUDY_SITE", direction: OUT)
+
+  # For searching data
+  timeline: Timeline! @relationship(type: "HAS_TIMELINE", direction: OUT)
+  ontologies: Ontology! @relationship(type: "HAS_ONTOLOGY", direction: OUT)
 }
 
 extend type Study @auth(
