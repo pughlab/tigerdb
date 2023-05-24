@@ -8,12 +8,12 @@ enum OntologyConceptType {
 type Ontology {
     id: ID! @id
     name: String!
-    concepts: [OntologyConcept!]! @relation(name: "HAS_CONCEPT", direction: "OUT")
+    concepts: [OntologyConcept!]! @relationship(type: "HAS_CONCEPT", direction: OUT)
 }
 
 type OntologyConcept {
     id: ID! @id
-    properties: OntologyConceptProperties!
+    properties: OntologyConceptProperties! @relationship(type: "HAS_PROPERTIES", direction: OUT)
     type: OntologyConceptType!
 }
 
@@ -54,9 +54,9 @@ type OntologyConceptProperties {
     # From harmonization spec
     varName: String!
     varLabel: String!
-    varDescription: String!
+    varDescription: String
     varType: OntologyVariableType!
-    relate: Int! #clarify this
+    relate: Int #clarify this
     longitudinal: Boolean!
     essential: Boolean!
     # Means different things for different variable types
