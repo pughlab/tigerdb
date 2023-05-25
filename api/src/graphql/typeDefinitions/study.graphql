@@ -10,7 +10,7 @@ type Study {
 
   # For searching data
   timeline: Timeline! @relationship(type: "HAS_TIMELINE", direction: OUT)
-  ontologies: Ontology! @relationship(type: "HAS_ONTOLOGY", direction: OUT)
+  ontology: Ontology! @relationship(type: "HAS_ONTOLOGY", direction: OUT)
 }
 
 extend type Study @auth(

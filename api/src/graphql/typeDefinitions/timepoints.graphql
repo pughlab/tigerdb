@@ -1,7 +1,8 @@
 type TimePoint {
   id: ID!
-  value: TimePointValue @relation(name: "HAS_VALUE", direction: OUT)
-  timelines: [Timeline] @relation(name: "BELONGS_TO", direction: IN)
+  label: String!
+  value: TimePointValue @relationship(name: "HAS_VALUE", direction: OUT)
+  timelines: [Timeline] @relationship(name: "BELONGS_TO", direction: IN)
 }
 
 type TimePointValue {
@@ -9,9 +10,10 @@ type TimePointValue {
   days: Int!
   weeks: Int!
   years: Int!
-  timePoint: TimePoint @relation(name: "HAS_VALUE", direction: IN)
+  timePoint: TimePoint @relationship(name: "HAS_VALUE", direction: IN)
 }
 
+# (0,0,0) is birth
 input TimePointValueInput {
   days: Int!
   weeks: Int!
@@ -23,8 +25,8 @@ type Timeline {
   name: String!
   startDate: DateTime!
   endDate: DateTime!
-  timePoints: [TimePoint] @relation(name: "BELONGS_TO", direction: OUT)
-  fromStudy: Study @relation(name: "HAS_TIMELINE", direction: IN)
+  timePoints: [TimePoint] @relationship(name: "BELONGS_TO", direction: OUT)
+  fromStudy: Study @relationship(name: "HAS_TIMELINE", direction: IN)
 }
 
 type Query {
