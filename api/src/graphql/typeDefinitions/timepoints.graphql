@@ -1,8 +1,8 @@
 type TimePoint {
   id: ID!
   label: String!
-  value: TimePointValue @relationship(name: "HAS_VALUE", direction: OUT)
-  timelines: [Timeline] @relationship(name: "BELONGS_TO", direction: IN)
+  value: TimePointValue @relationship(type: "HAS_VALUE", direction: OUT)
+  timelines: [Timeline!]! @relationship(type: "BELONGS_TO", direction: IN)
 }
 
 type TimePointValue {
@@ -10,7 +10,7 @@ type TimePointValue {
   days: Int!
   weeks: Int!
   years: Int!
-  timePoint: TimePoint @relationship(name: "HAS_VALUE", direction: IN)
+  timePoint: TimePoint @relationship(type: "HAS_VALUE", direction: IN)
 }
 
 # (0,0,0) is birth
@@ -25,12 +25,12 @@ type Timeline {
   name: String!
   startDate: DateTime!
   endDate: DateTime!
-  timePoints: [TimePoint] @relationship(name: "BELONGS_TO", direction: OUT)
-  fromStudy: Study @relationship(name: "HAS_TIMELINE", direction: IN)
+  timePoints: [TimePoint!]! @relationship(type: "BELONGS_TO", direction: OUT)
+  fromStudy: Study @relationship(type: "HAS_TIMELINE", direction: IN)
 }
 
 type Query {
-    searchTimePoints(startValue: TimeValueInput!, endValue: TimeValueInput!): [TimePoint] @cypher(statement: """
+    searchTimePoints(startValue: TimePointValueInput!, endValue: TimePointValueInput!): [TimePoint] @cypher(statement: """
         WITH $startValue AS startValue, $endValue AS endValue
         WITH startValue.days + startValue.weeks * 7 + startValue.years * 365 AS startDuration,
                 endValue.days + endValue.weeks * 7 + endValue.years * 365 AS endDuration
@@ -40,7 +40,7 @@ type Query {
         RETURN tp { .id, value { .days, .weeks, .years }, .data } AS timePoint
     """)
 
-  searchTimelines(startValue: TimeValueInput!, endValue: TimeValueInput!): [Timeline] @cypher(statement: """
+  searchTimelines(startValue: TimePointValueInput!, endValue: TimePointValueInput!): [Timeline] @cypher(statement: """
         WITH $startValue AS startValue, $endValue AS endValue
         WITH startValue.days + startValue.weeks * 7 + startValue.years * 365 AS startDuration,
             endValue.days + endValue.weeks * 7 + endValue.years * 365 AS endDuration
@@ -53,7 +53,7 @@ type Query {
         } AS timeline
     """)
 
-    searchStudiesByTimePoints(startValue: TimeValueInput!, endValue: TimeValueInput!): [Study] @cypher(statement: """
+    searchStudiesByTimePoints(startValue: TimePointValueInput!, endValue: TimePointValueInput!): [Study] @cypher(statement: """
         WITH $startValue AS startValue, $endValue AS endValue
         WITH startValue.days + startValue.weeks * 7 + startValue.years * 365 AS startDuration,
             endValue.days + endValue.weeks * 7 + endValue.years * 365 AS endDuration
