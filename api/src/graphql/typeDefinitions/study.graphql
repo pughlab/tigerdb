@@ -13,6 +13,16 @@ type Study {
   ontology: Ontology! @relationship(type: "HAS_ONTOLOGY", direction: OUT)
 }
 
+type Mutation {
+  createStudyWithTimeline(
+    fullName: String!
+    shortName: String!
+    description: String!
+    allowedStudies: [String]
+    allowedSites: [String]
+  ): Study! 
+}
+
 extend type Study @auth(
   rules: [{
       isAuthenticated: true,
