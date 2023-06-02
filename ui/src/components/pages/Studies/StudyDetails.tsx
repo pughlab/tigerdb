@@ -11,61 +11,9 @@ import useStudyDetailsQuery from '../../../hooks/useStudyDetailsQuery'
 import useSearchGeographyCitiesQuery from '../../../hooks/useSearchGeographyCitiesQuery'
 import useUpdateGeographyCityToStudy from '../../../hooks/useUpdateGeographyCityToStudy'
 
-function AddStudySiteModal () {
-	return (
-		<Modal
-			size='large'
-			trigger={
-				<Button size='tiny' content='If a study site does not yet exist in the database, click here to add' />
-			}
-		>
-			<Modal.Content>
-				<Form>
-					<Form.Group widths={2}>
-					<Form.Field
-						key='country'
-						control={Input}
-						label='Country'
-						placeholder='Country name'
-						// value={fullName}
-						// onChange={(e, { value }) => setFullName(value)}
-					/>
-					<Form.Field
-						key='city'
-						control={Input}
-						label='City'
-						placeholder='City name'
-						// value={shortName}
-						// onChange={(e, { value }) => setShortName(value)}
-					/>
-					</Form.Group>
-					<Form.Group widths={2}>
-					<Form.Field
-						key='latitude'
-						control={Input}
-						label='Latitude'
-						placeholder='Latitude of city'
-						// value={description}
-						// onChange={(e, { value }) => setDescription(value)}
-					/>
-					<Form.Field
-						key='longitude'
-						control={Input}
-						label='Longitude'
-						placeholder='Longitude of city'
-						// value={description}
-						// onChange={(e, { value }) => setDescription(value)}
-					/>
-					</Form.Group>
-				</Form>
-			</Modal.Content>
-			<Modal.Actions>
-				<Button content='Cancel' />
-				<Button content='Add study site' />
-			</Modal.Actions>
-		</Modal>
-	)
-}
+import AddGeographyCityModal from './AddGeographyCityModal'
+import EditTimelineModal from '../Metadata/TimePoints/EditTimelineModal'
+import AddStudySiteModal from './AddStudySiteModal'
 
 
 export default function StudyDetails() {
@@ -99,29 +47,14 @@ export default function StudyDetails() {
 				<Message>
 					A study must have at least one study site in order to start uploading datasets.
 					<Divider horizontal />
+					<AddGeographyCityModal />
+					<Divider horizontal />
 					<AddStudySiteModal />
 				</Message>
-				<Form as={Segment} loading={searchLoading || detailsLoading || addCityLoading}>
-					<Divider horizontal>
-						Add a site to this study						
-					</Divider>
-					<Form.Field
-						control={Input}
-						// label='Search study site cities'
-						placeholder='Search city names'
-						value={searchText}
-						onChange={(e, { value }) => dispatch({ type: 'updateSearchText', payload: { searchText: value } })}
-					/>
-					<List selection celled>
-						{results.map(({cityID, city, country, latitude, longitude }) => (
-							<List.Item key={cityID}
-								onClick={() => {updateGeographyCityToStudy({variables: {cityID, studyID}})}}
-							>
-								{`${city} (${country}) [${latitude}, ${longitude}]`}
-							</List.Item>
-						))}
-					</List>
-				</Form>
+				<Message>
+					<Divider horizontal />
+					<EditTimelineModal timelineStudyID={studyID}/>
+				</Message>
 
 			</Grid.Column>
 			<Grid.Column>
