@@ -13,9 +13,51 @@ function useRawDatasetDataVariablesQuery({ rawDatasetID }) {
   return {}
 }
 
+function AddTimePointToDataset({ }) {
+
+  const [open, setOpen] = useState(false)
+
+  return (
+    <Modal
+      open={open}
+      onOpen={() => setOpen(true)}
+      onClose={() => setOpen(false)}
+      trigger={<Button>Add Time Point</Button>}
+    >
+      <Modal.Header>Assign time point to this dataset</Modal.Header>
+      <Modal.Content>
+        <Form>
+          <Form.Field>
+            <label>Select which time point this dataset is from</label>
+            <Dropdown
+              placeholder="Select time point"
+              fluid
+              selection
+              options={[{key: 'birth', value: 'birth', text: 'Birth'}]}
+            // onChange={handleDropdownChange}
+            // value={selectedOption}
+            />
+          </Form.Field>
+        </Form>
+      </Modal.Content>
+      <Modal.Actions>
+        <Button color="black" >
+          Close
+        </Button>
+        <Button
+          positive
+          icon="checkmark"
+          labelPosition="right"
+          content="Save"
+        />
+      </Modal.Actions>
+    </Modal>
+  )
+}
+
 function DatasetTransformationSubmit({ rawDatasetID }) {
   const bucketName = `raw-dataset-${rawDatasetID}`
-  
+
   function usevalidateCodebookReducer() {
     // const studiesQuery = useStudiesQuery({})
 
@@ -28,22 +70,22 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
               isValid
               message
             }
-          }`, 
-          {
-            errorPolicy: 'none',
-            onCompleted: () => { rawDatasetDetailsRefetch() },
-          }
-          )
+          }`,
+      {
+        errorPolicy: 'none',
+        onCompleted: () => { rawDatasetDetailsRefetch() },
+      }
+    )
 
     const initialState = { objectName: null, rawDatasetID: rawDatasetID }
     const [validateCodebookState, validateCodebookDispatch] = useReducer((state, action) => {
-        const { type, payload } = action
-        switch (type) {
-            case 'setObjectName':
-                const { objectName } = payload
-                return { ...state, objectName }
-        }
-        return state
+      const { type, payload } = action
+      switch (type) {
+        case 'setObjectName':
+          const { objectName } = payload
+          return { ...state, objectName }
+      }
+      return state
     }, initialState)
     return { validateCodebookState, validateCodebookDispatch, validateCodebookMutation, validateCodebookMutationState }
   }
@@ -65,21 +107,21 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
               isValid
               message
             }
-          }`, 
-          {
-            errorPolicy: 'none',
-            onCompleted: () => { rawDatasetDetailsRefetch() },
-          })
+          }`,
+      {
+        errorPolicy: 'none',
+        onCompleted: () => { rawDatasetDetailsRefetch() },
+      })
 
     const initialState = { objectName: null, rawDatasetID: rawDatasetID }
     const [validateRawdatafileState, validateRawdatafileDispatch] = useReducer((state, action) => {
-        const { type, payload } = action
-        switch (type) {
-            case 'setObjectName':
-                const { objectName } = payload
-                return { ...state, objectName }
-        }
-        return state
+      const { type, payload } = action
+      switch (type) {
+        case 'setObjectName':
+          const { objectName } = payload
+          return { ...state, objectName }
+      }
+      return state
     }, initialState)
     return { validateRawdatafileState, validateRawdatafileDispatch, validateRawdatafileMutation, validateRawdatafileMutationState }
   }
@@ -108,24 +150,24 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
                 fileB
               }
             }
-          }`, 
-          {
-            errorPolicy: 'none',
-            onCompleted: () => { rawDatasetDetailsRefetch() },
-          })
+          }`,
+      {
+        errorPolicy: 'none',
+        onCompleted: () => { rawDatasetDetailsRefetch() },
+      })
 
     const initialState = { rawDatasetIDRF: rawDatasetID, objectNameRF: null, rawDatasetIDCB: rawDatasetID, objectNameCB: null }
     const [validateRawfileCodebookPairState, validateRawfileCodebookPairDispatch] = useReducer((state, action) => {
-        const { type, payload } = action
-        switch (type) {
-            case 'objectNameRF':
-                const { objectNameRF } = payload
-                return { ...state, objectNameRF }
-            case 'objectNameCB':
-                const { objectNameCB } = payload
-                return { ...state, objectNameCB }
-        }
-        return state
+      const { type, payload } = action
+      switch (type) {
+        case 'objectNameRF':
+          const { objectNameRF } = payload
+          return { ...state, objectNameRF }
+        case 'objectNameCB':
+          const { objectNameCB } = payload
+          return { ...state, objectNameCB }
+      }
+      return state
     }, initialState)
     return { validateRawfileCodebookPairState, validateRawfileCodebookPairDispatch, validateRawfileCodebookPairMutation, validateRawfileCodebookPairMutationState }
   }
@@ -138,7 +180,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
   function useFunnelLoadReducer() {
     // const studiesQuery = useStudiesQuery({})
     const const_image = `funnel-base`
-    const {allowedStudies, allowedSites} = getPermissionRoles()
+    const { allowedStudies, allowedSites } = getPermissionRoles()
 
     const [funnelLoadMutation, funnelLoadMutationState] = useMutation(gql`
           mutation submitTask($name: String!, $image: String!, $description: String!, $taskID: String!, $command: String!, $allowedStudies: [String], $allowedSites: [String]) {
@@ -175,31 +217,31 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
       return command
     }
 
-    const initialState = { name: uuidv4(), description: rawDatasetID, taskID: uuidv4(), image: const_image, objectNameRF:null, objectNameCB: null, command: null, allowedStudies, allowedSites }
+    const initialState = { name: uuidv4(), description: rawDatasetID, taskID: uuidv4(), image: const_image, objectNameRF: null, objectNameCB: null, command: null, allowedStudies, allowedSites }
     const [funnelLoadState, funnelLoadDispatch] = useReducer((state, action) => {
-        const { type, payload } = action
-        let objectNameRF, objectNameCB, command, taskID
-        switch (type) {
-            case 'taskID':
-              ({ objectNameRF } = state);
-              ({ objectNameCB } = state);
-              ({ taskID } = payload);
-              command = setCommand(objectNameRF, objectNameCB, taskID)
-              return { ...state, objectNameCB, command, taskID }
-            case 'objectNameRF':
-                ({ objectNameRF } = payload);
-                ({ objectNameCB } = state);
-                ({ taskID } = state);
-                command = setCommand(objectNameRF, objectNameCB, taskID)
-                return { ...state, objectNameRF, command, taskID }
-            case 'objectNameCB':
-                ({ objectNameRF } = state);
-                ({ objectNameCB } = payload);
-                ({ taskID } = state);
-                command = setCommand(objectNameRF, objectNameCB, taskID)
-                return { ...state, objectNameCB, command, taskID }
-        }
-        return state
+      const { type, payload } = action
+      let objectNameRF, objectNameCB, command, taskID
+      switch (type) {
+        case 'taskID':
+          ({ objectNameRF } = state);
+          ({ objectNameCB } = state);
+          ({ taskID } = payload);
+          command = setCommand(objectNameRF, objectNameCB, taskID)
+          return { ...state, objectNameCB, command, taskID }
+        case 'objectNameRF':
+          ({ objectNameRF } = payload);
+          ({ objectNameCB } = state);
+          ({ taskID } = state);
+          command = setCommand(objectNameRF, objectNameCB, taskID)
+          return { ...state, objectNameRF, command, taskID }
+        case 'objectNameCB':
+          ({ objectNameRF } = state);
+          ({ objectNameCB } = payload);
+          ({ taskID } = state);
+          command = setCommand(objectNameRF, objectNameCB, taskID)
+          return { ...state, objectNameCB, command, taskID }
+      }
+      return state
     }, initialState)
     return { funnelLoadState, funnelLoadDispatch, funnelLoadMutation, funnelLoadMutationState }
   }
@@ -211,26 +253,26 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
 
   function useFunnelConnectedDataReducer() {
 
-    const initialState = { codebook: null, rawDataset:null, codebookPair: null, rawDataPair: null }
+    const initialState = { codebook: null, rawDataset: null, codebookPair: null, rawDataPair: null }
     const [funnelConnectedDataState, funnelConnectedDataDispatch] = useReducer((state, action) => {
-        const { type, payload } = action
-        switch (type) {
-            case 'codebook':
-                const { codebook } = payload
-                return { ...state, codebook }
-            case 'rawDataset':
-              const { rawDataset } = payload
-                return { ...state, rawDataset }
-            case 'codebookPair':
-              const { codebookPair } = payload
-                return { ...state, codebookPair }
-            case 'rawDataPair':
-              const { rawDataPair } = payload
-                return { ...state, rawDataPair }
-        }
-        return state
+      const { type, payload } = action
+      switch (type) {
+        case 'codebook':
+          const { codebook } = payload
+          return { ...state, codebook }
+        case 'rawDataset':
+          const { rawDataset } = payload
+          return { ...state, rawDataset }
+        case 'codebookPair':
+          const { codebookPair } = payload
+          return { ...state, codebookPair }
+        case 'rawDataPair':
+          const { rawDataPair } = payload
+          return { ...state, rawDataPair }
+      }
+      return state
     }, initialState)
-  
+
     const { data: rawDatasetDetailsData, loading: rawDatasetDetailsLoading, error: rawDatasetDetailsError, refetch: rawDatasetDetailsRefetch } = useQuery(gql`
     query RawDatasetDetails($rawDatasetID: ID!) {
         rawDatasets(where:
@@ -258,38 +300,38 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
           }
       }
     }`,
-    { 
-      variables: { rawDatasetID: rawDatasetID },
-      fetchPolicy: 'network-only',
-      onCompleted: (data) => {
-        let codebook = null
-        let rawDataset = null
-        let codebookPair = null
-        let rawDataPair = null
-  
-        codebook = (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].codeBook) && (data.rawDatasets[0].codeBook.objectName) ? data.rawDatasets[0].codeBook.objectName : null
-        funnelConnectedDataDispatch({ type: 'codebook', payload: {codebook} })
-  
-        rawDataset = (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].rawdataFile) && (data.rawDatasets[0].rawdataFile.objectName) ? data.rawDatasets[0].rawdataFile.objectName : null
-        funnelConnectedDataDispatch({ type: 'rawDataset', payload: {rawDataset} })
-  
-        codebookPair = (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].codeBook) && (data.rawDatasets[0].codeBook.pairedRawdataFile) && (data.rawDatasets[0].codeBook.pairedRawdataFile.objectName) ? data.rawDatasets[0].codeBook.pairedRawdataFile.objectName : null
-        funnelConnectedDataDispatch({ type: 'codebookPair', payload: {codebookPair} })
-  
-        rawDataPair = (data) && (data.rawDatasets[0]) &&(data.rawDatasets[0].rawdataFile) && (data.rawDatasets[0].rawdataFile.pairedCodebook) && (data.rawDatasets[0].rawdataFile.pairedCodebook.objectName) ? data.rawDatasets[0].rawdataFile.pairedCodebook.objectName : null
-        funnelConnectedDataDispatch({ type: 'rawDataPair', payload: {rawDataPair} })
-  
-        funnelLoadDispatch({ type: 'objectNameCB', payload: {objectNameCB: codebook} });
-        funnelLoadDispatch({ type: 'objectNameRF', payload: {objectNameRF: rawDataset} });
+      {
+        variables: { rawDatasetID: rawDatasetID },
+        fetchPolicy: 'network-only',
+        onCompleted: (data) => {
+          let codebook = null
+          let rawDataset = null
+          let codebookPair = null
+          let rawDataPair = null
 
-        validateRawfileCodebookPairDispatch({ type: 'objectNameCB', payload: {objectNameCB: codebook} });validateRawfileCodebookPairDispatch({ type: 'objectNameRF', payload: {objectNameRF: rawDataset} });
-  
-      }
-    })
+          codebook = (data) && (data.rawDatasets[0]) && (data.rawDatasets[0].codeBook) && (data.rawDatasets[0].codeBook.objectName) ? data.rawDatasets[0].codeBook.objectName : null
+          funnelConnectedDataDispatch({ type: 'codebook', payload: { codebook } })
+
+          rawDataset = (data) && (data.rawDatasets[0]) && (data.rawDatasets[0].rawdataFile) && (data.rawDatasets[0].rawdataFile.objectName) ? data.rawDatasets[0].rawdataFile.objectName : null
+          funnelConnectedDataDispatch({ type: 'rawDataset', payload: { rawDataset } })
+
+          codebookPair = (data) && (data.rawDatasets[0]) && (data.rawDatasets[0].codeBook) && (data.rawDatasets[0].codeBook.pairedRawdataFile) && (data.rawDatasets[0].codeBook.pairedRawdataFile.objectName) ? data.rawDatasets[0].codeBook.pairedRawdataFile.objectName : null
+          funnelConnectedDataDispatch({ type: 'codebookPair', payload: { codebookPair } })
+
+          rawDataPair = (data) && (data.rawDatasets[0]) && (data.rawDatasets[0].rawdataFile) && (data.rawDatasets[0].rawdataFile.pairedCodebook) && (data.rawDatasets[0].rawdataFile.pairedCodebook.objectName) ? data.rawDatasets[0].rawdataFile.pairedCodebook.objectName : null
+          funnelConnectedDataDispatch({ type: 'rawDataPair', payload: { rawDataPair } })
+
+          funnelLoadDispatch({ type: 'objectNameCB', payload: { objectNameCB: codebook } });
+          funnelLoadDispatch({ type: 'objectNameRF', payload: { objectNameRF: rawDataset } });
+
+          validateRawfileCodebookPairDispatch({ type: 'objectNameCB', payload: { objectNameCB: codebook } }); validateRawfileCodebookPairDispatch({ type: 'objectNameRF', payload: { objectNameRF: rawDataset } });
+
+        }
+      })
 
     return { funnelConnectedDataState, funnelConnectedDataDispatch, rawDatasetDetailsData, rawDatasetDetailsLoading, rawDatasetDetailsError, rawDatasetDetailsRefetch }
   }
-  
+
   const { funnelConnectedDataState, funnelConnectedDataDispatch, rawDatasetDetailsData, rawDatasetDetailsLoading, rawDatasetDetailsError, rawDatasetDetailsRefetch } = useFunnelConnectedDataReducer()
 
 
@@ -342,7 +384,7 @@ function DatasetTransformationSubmit({ rawDatasetID }) {
       }
   }`)
 
-const [disconnectPairedRawdataFileMutation, disconnectCodebookPairState] = useMutation(gql`
+  const [disconnectPairedRawdataFileMutation, disconnectCodebookPairState] = useMutation(gql`
   mutation disconnectPairedRawdataFile($objectNameRF: ID!, $objectNameCB: ID!) {
     updateMinioUploads(
       where: { objectName: $objectNameRF }
@@ -377,9 +419,9 @@ const [disconnectPairedRawdataFileMutation, disconnectCodebookPairState] = useMu
           fluid search selection
           options={dropdownOptions}
           // This will be the minioUpload.objectName from above
-          onChange={(e, { value }) => { validateCodebookDispatch({ type: 'setObjectName', payload: {objectName: value} }) }}
+          onChange={(e, { value }) => { validateCodebookDispatch({ type: 'setObjectName', payload: { objectName: value } }) }}
         />
-        <Button fluid content='Validate Codebook' onClick={() => { validateCodebookMutation({ variables: validateCodebookState })}} />
+        <Button fluid content='Validate Codebook' onClick={() => { validateCodebookMutation({ variables: validateCodebookState }) }} />
         {/* TODO: add checker to disable buttons in order of validation (e.g. raw data validation only after codebook), can be checked from RawDataset  */}
         {
           (validateCodebookMutationData) && (validateCodebookMutationData.validateCodebook) && (validateCodebookMutationData.validateCodebook.message) &&
@@ -390,49 +432,49 @@ const [disconnectPairedRawdataFileMutation, disconnectCodebookPairState] = useMu
           placeholder='Select raw data file'
           fluid search selection
           options={dropdownOptions}
-          onChange={(e, { value }) => { validateRawdatafileDispatch({ type: 'setObjectName', payload: {objectName: value} }) }}
+          onChange={(e, { value }) => { validateRawdatafileDispatch({ type: 'setObjectName', payload: { objectName: value } }) }}
         />
-        <Button fluid content='Validate Raw Data' onClick={() => { validateRawdatafileMutation({ variables: validateRawdatafileState })}} />
+        <Button fluid content='Validate Raw Data' onClick={() => { validateRawdatafileMutation({ variables: validateRawdatafileState }) }} />
         {
           (validateRawdatafileMutationData) && (validateRawdatafileMutationData.validateRawdatafile) && (validateRawdatafileMutationData.validateRawdatafile.message) &&
           <Message>{validateRawdatafileMutationData.validateRawdatafile.message}</Message>
         }
         <Divider horizontal content='Validate rawdata codebook pair' />
-        <Button disabled={funnelConnectedDataState && !(funnelConnectedDataState.codebook && funnelConnectedDataState.rawDataset)} fluid content='Validate rawdata codebook pair' onClick={() => { validateRawfileCodebookPairMutation({ variables: validateRawfileCodebookPairState })}} />
+        <Button disabled={funnelConnectedDataState && !(funnelConnectedDataState.codebook && funnelConnectedDataState.rawDataset)} fluid content='Validate rawdata codebook pair' onClick={() => { validateRawfileCodebookPairMutation({ variables: validateRawfileCodebookPairState }) }} />
         {
           (validateRawfileCodebookPairMutationData) && (validateRawfileCodebookPairMutationData.validateRawfileCodebookPair) && (validateRawfileCodebookPairMutationData.validateRawfileCodebookPair.message) &&
           <Message>{validateRawfileCodebookPairMutationData.validateRawfileCodebookPair.message}</Message>
         }
         <Divider horizontal />
-        <Button disabled={funnelConnectedDataState && !(funnelConnectedDataState.codebook && funnelConnectedDataState.rawDataset && funnelConnectedDataState.codebookPair && funnelConnectedDataState.rawDataPair)} fluid content='Submit'  onClick={ async () => { await funnelLoadDispatch({ type: 'taskID', payload: {taskID: uuidv4()} }); funnelLoadMutation({ variables: funnelLoadState })}}/>
+        <Button disabled={funnelConnectedDataState && !(funnelConnectedDataState.codebook && funnelConnectedDataState.rawDataset && funnelConnectedDataState.codebookPair && funnelConnectedDataState.rawDataPair)} fluid content='Submit' onClick={async () => { await funnelLoadDispatch({ type: 'taskID', payload: { taskID: uuidv4() } }); funnelLoadMutation({ variables: funnelLoadState }) }} />
         {
-          
-            <Message>
-              codebook: {funnelConnectedDataState && funnelConnectedDataState.codebook ? 
+
+          <Message>
+            codebook: {funnelConnectedDataState && funnelConnectedDataState.codebook ?
               <Popup content='Click to unlink codebook'
-              trigger={<Button onClick={() => { disconnectCodebookMutation({ variables: { rawDatasetID, objectName: funnelConnectedDataState.codebook } }); rawDatasetDetailsRefetch() }}>{funnelConnectedDataState.codebook}</Button>} />
-               : 'No file'}
-              <br/>
+                trigger={<Button onClick={() => { disconnectCodebookMutation({ variables: { rawDatasetID, objectName: funnelConnectedDataState.codebook } }); rawDatasetDetailsRefetch() }}>{funnelConnectedDataState.codebook}</Button>} />
+              : 'No file'}
+            <br />
 
-              rawdata: {funnelConnectedDataState && funnelConnectedDataState.rawDataset ? 
+            rawdata: {funnelConnectedDataState && funnelConnectedDataState.rawDataset ?
               <Popup content='Click to unlink rawdata'
-              trigger={<Button onClick={() => { disconnectRawdataFileMutation({ variables: { rawDatasetID, objectName: funnelConnectedDataState.rawDataset } }); rawDatasetDetailsRefetch() }}>{funnelConnectedDataState.rawDataset}</Button>} />
-               : 'No file'}
-              <br/>
+                trigger={<Button onClick={() => { disconnectRawdataFileMutation({ variables: { rawDatasetID, objectName: funnelConnectedDataState.rawDataset } }); rawDatasetDetailsRefetch() }}>{funnelConnectedDataState.rawDataset}</Button>} />
+              : 'No file'}
+            <br />
 
-              codebook pair: {funnelConnectedDataState && funnelConnectedDataState.codebookPair ? 
+            codebook pair: {funnelConnectedDataState && funnelConnectedDataState.codebookPair ?
               <Popup content='Click to unlink codebook pair'
-              trigger={<Button onClick={() => { disconnectPairedCodebookMutation({ variables: { objectNameRF: funnelConnectedDataState.codebookPair, objectNameCB: funnelConnectedDataState.codebook } }); rawDatasetDetailsRefetch() }}>{funnelConnectedDataState.codebookPair}</Button>} />
-               : 'No file'}
-              <br/>
+                trigger={<Button onClick={() => { disconnectPairedCodebookMutation({ variables: { objectNameRF: funnelConnectedDataState.codebookPair, objectNameCB: funnelConnectedDataState.codebook } }); rawDatasetDetailsRefetch() }}>{funnelConnectedDataState.codebookPair}</Button>} />
+              : 'No file'}
+            <br />
 
-              rawdata pair: {funnelConnectedDataState && funnelConnectedDataState.rawDataPair ? 
+            rawdata pair: {funnelConnectedDataState && funnelConnectedDataState.rawDataPair ?
               <Popup content='Click to unlink rawdata pair'
-              trigger={<Button onClick={() => { disconnectPairedRawdataFileMutation({ variables: { objectNameRF: funnelConnectedDataState.rawDataset, objectNameCB: funnelConnectedDataState.rawDataPair } }); rawDatasetDetailsRefetch() }}>{funnelConnectedDataState.rawDataPair}</Button>} />
-               : 'No file'}
-              <br/>
+                trigger={<Button onClick={() => { disconnectPairedRawdataFileMutation({ variables: { objectNameRF: funnelConnectedDataState.rawDataset, objectNameCB: funnelConnectedDataState.rawDataPair } }); rawDatasetDetailsRefetch() }}>{funnelConnectedDataState.rawDataPair}</Button>} />
+              : 'No file'}
+            <br />
 
-            </Message>
+          </Message>
         }
       </Segment>
     </>
@@ -514,19 +556,19 @@ export default function DatasetDetails() {
       name
       state
     }
-  }`, 
-  {
-    errorPolicy: 'none',
-  })
+  }`,
+    {
+      errorPolicy: 'none',
+    })
 
   if (!data?.rawDatasets) {
     return null
   }
 
-  const {allowedStudies, allowedSites} = getPermissionRoles()
+  const { allowedStudies, allowedSites } = getPermissionRoles()
 
-  const [{ rawDatasetID, name, description, fromStudy, studySite, files, funnelTasks }] : [{ rawDatasetID: String, name: String, description: String, fromStudy: Study, studySite: GeographyCity, files: MinioUpload, funnelTasks: [Task] }]= data.rawDatasets
-  
+  const [{ rawDatasetID, name, description, fromStudy, studySite, files, funnelTasks }]: [{ rawDatasetID: String, name: String, description: String, fromStudy: Study, studySite: GeographyCity, files: MinioUpload, funnelTasks: [Task] }] = data.rawDatasets
+
   return (
     <>
       <Grid>
@@ -540,8 +582,9 @@ export default function DatasetDetails() {
               <Label.Detail content={fromStudy.shortName} />
               {/* TODO: every raw dataset can be assumed to have study site, remove this check? */}
               {!!studySite && <Label.Detail content={`${studySite.city} (${studySite.country})`} />}
-
             </Label>
+            <Divider horizontal />
+            <AddTimePointToDataset />
           </Message>
         </Grid.Column>
         <Grid.Row divided>
@@ -550,61 +593,62 @@ export default function DatasetDetails() {
             <MinioBucket rawDatasetID={`${rawDatasetID}`} />
           </Grid.Column>
           <Grid.Column width={6}>
-            <DatasetTransformationSubmit {...{rawDatasetID}} />
+            <DatasetTransformationSubmit {...{ rawDatasetID }} />
           </Grid.Column>
         </Grid.Row>
-        
+
         <Grid.Column width={16}>
           <Segment>
-            <Divider horizontal content='Funnel Tasks...' />
+            <Divider horizontal content='Funnel Tasks' />
             <Segment>
               <List>
                 {funnelTasks &&
                   funnelTasks.map((funnelTask: Task) => {
 
                     const exportTasks = funnelTask?.generatedCuratedDataset ?
-                                        funnelTask?.generatedCuratedDataset?.exportTask : []
-                    
+                      funnelTask?.generatedCuratedDataset?.exportTask : []
+
                     return (<List.Item key={`List.Item.${funnelTask.id}`}>
-                              <Button
-                                  disabled={funnelTask.state !== 'COMPLETE'}
-                                  onClick={() => { funnelTaskExportCuratedDatasetMutation({ variables: {taskID: uuidv4(), curatedDatasetID: funnelTask?.generatedCuratedDataset?.curatedDatasetID, allowedStudies, allowedSites }})}}
-                                  key={`Button.${funnelTask.id}`}
-                                  content={
-                                    `
+                      <Button
+                        disabled={funnelTask.state !== 'COMPLETE'}
+                        onClick={() => { funnelTaskExportCuratedDatasetMutation({ variables: { taskID: uuidv4(), curatedDatasetID: funnelTask?.generatedCuratedDataset?.curatedDatasetID, allowedStudies, allowedSites } }) }}
+                        key={`Button.${funnelTask.id}`}
+                        content={
+                          `
                                     id: ${funnelTask.id}
                                     |state: ${funnelTask.state}
                                     |fdCount: ${funnelTask?.generatedCuratedDataset?.fieldDefinitionsAggregate ? funnelTask?.generatedCuratedDataset?.fieldDefinitionsAggregate?.count : 0}
                                     |dvCount: ${funnelTask?.generatedCuratedDataset?.dataVariablesAggregate ? funnelTask?.generatedCuratedDataset?.dataVariablesAggregate?.count : 0}`
-                                  }
-                                />
-                              { exportTasks.map((exportTask: Task) => {
-                                  const linkURL = exportTask?.generatedExport?.presignedURL
-                                  const linkText = exportTask?.generatedExport?.filename
+                        }
+                      />
+                      {exportTasks.map((exportTask: Task) => {
+                        const linkURL = exportTask?.generatedExport?.presignedURL
+                        const linkText = exportTask?.generatedExport?.filename
 
-                                  // console.log(linkText)
-                                  // console.log(linkURL)
+                        // console.log(linkText)
+                        // console.log(linkURL)
 
-                                  return <Label><a href={linkURL} target='_blank'>{linkText}</a></Label>
-                              })}
-                            </List.Item>
-                           )})}
+                        return <Label><a href={linkURL} target='_blank'>{linkText}</a></Label>
+                      })}
+                    </List.Item>
+                    )
+                  })}
               </List>
             </Segment>
           </Segment>
         </Grid.Column>
 
-        <Grid.Column width={16}>
+        {/* <Grid.Column width={16}>
           <Segment>
-            <Divider horizontal content='If transformation is successful...' />
+            <Divider horizontal content='If transformation is successful' />
             <Segment>
               <>
-                {/* <DownloadDataVariables data={data.dataVariables} /> */}
-                {/* <DataVariableTable data={[]} /> */}
+                <DownloadDataVariables data={data.dataVariables} />
+                <DataVariableTable data={[]} />
               </>
             </Segment>
           </Segment>
-        </Grid.Column>
+        </Grid.Column> */}
       </Grid>
     </>
   )

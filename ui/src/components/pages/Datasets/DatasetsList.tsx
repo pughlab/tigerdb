@@ -43,7 +43,7 @@ export default function DatasetsList({ }) {
     <>
       <Container>
         <Message>
-          Some text about rd and hd
+          
 
           <Divider horizontal />
           <AddDatasetModal refetch={refetch} />
