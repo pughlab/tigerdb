@@ -4,7 +4,7 @@ import { useEffect, useReducer, useState } from 'react'
 import { Button, Form, Header, Label, Input, Segment, Dropdown, Message, List, Divider, Modal, Grid } from 'semantic-ui-react'
 import { useKeycloak } from '@react-keycloak/web'
 import { getPermissionRoles } from '../../../state/appContext'
-
+import { v4 as uuidv4 } from 'uuid';
 
 export default function AddStudyModal({
 	refetch
@@ -14,16 +14,17 @@ export default function AddStudyModal({
 	const [description, setDescription] = useState('')
 	const [open, setOpen] = useState(false)
 
-	const {allowedStudies, allowedSites} = getPermissionRoles()
+	const { allowedStudies, allowedSites } = getPermissionRoles()
+	console.log(allowedStudies, allowedSites)
 
 	const [createStudy, { data, loading, error }] = useMutation(gql`
 		mutation createStudy($fullName: String!, $shortName: String!, $description: String!, $allowedStudies: [String], $allowedSites: [String]) {
-			createStudies(input: [{
-															fullName: $fullName, shortName: $shortName,
-															description: $description,
-															allowedStudies: $allowedStudies,
-															allowedSites: $allowedSites,
-													 }]) {
+			createStudies(input:[{
+									fullName: $fullName, shortName: $shortName,
+									description: $description,
+									allowedStudies: $allowedStudies,
+									allowedSites: $allowedSites,
+								}]) {
 				studies {
 					studyID
 					fullName
@@ -34,7 +35,7 @@ export default function AddStudyModal({
 				}
 			}
 		}
-	`, {onCompleted: () => { refetch() }})
+	`, { onCompleted: () => { refetch() } })
 	return (
 		<Modal
 			open={open}
@@ -74,7 +75,7 @@ export default function AddStudyModal({
 
 			</Modal.Content>
 			<Modal.Actions>
-				<Button content='Add study' loading={loading} onClick={() => {createStudy({ variables: { fullName, shortName, description, allowedStudies, allowedSites } }); setOpen(!open) }} />
+				<Button content='Add study' loading={loading} onClick={() => { createStudy({ variables: { fullName, shortName, description, allowedStudies, allowedSites } }); setOpen(!open) }} />
 			</Modal.Actions>
 		</Modal>
 	)

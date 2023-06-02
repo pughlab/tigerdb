@@ -38,7 +38,7 @@ export const createQueryMachine = ({srcInvoker, initialVariables = {}}: {srcInvo
     const updateVariablesAction = assign({
         variables: (context: QueryMachineContext, event: any) => {
             // console.log(event)
-            return event.variables
+            return event.variables 
         }
     })
     const machine = createMachine({

@@ -7,6 +7,20 @@ type Study {
   description: String!
   rawDatasets: [RawDataset!]! @relationship(type: "HAS_RAW_DATASET", direction: OUT)
   studySites: [GeographyCity!]! @relationship(type: "HAS_STUDY_SITE", direction: OUT)
+
+  # For searching data
+  timeline: Timeline! @relationship(type: "HAS_TIMELINE", direction: OUT)
+  ontology: Ontology! @relationship(type: "HAS_ONTOLOGY", direction: OUT)
+}
+
+type Mutation {
+  createStudyWithTimeline(
+    fullName: String!
+    shortName: String!
+    description: String!
+    allowedStudies: [String]
+    allowedSites: [String]
+  ): Study! 
 }
 
 extend type Study @auth(

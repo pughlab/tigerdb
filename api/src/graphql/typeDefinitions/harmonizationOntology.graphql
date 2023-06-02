@@ -9,6 +9,9 @@ type Ontology {
     id: ID! @id
     name: String!
     concepts: [OntologyConcept!]! @relationship(type: "HAS_CONCEPT", direction: OUT)
+    
+    # Which studies use these ontologies, double check in/out vs returning single/array
+    studies: [Study!]! @relationship(type: "HAS_ONTOLOGY", direction: IN)
 }
 
 type OntologyConcept {
@@ -54,7 +57,8 @@ type OntologyConceptProperties {
     # From harmonization spec
     varName: String!
     varLabel: String!
-    varDescription: String
+    # Where it is empty in the spec sheet, use an empty string instead of making this nullable
+    varDescription: String!
     varType: OntologyVariableType!
     relate: Int #clarify this
     longitudinal: Boolean!
@@ -66,4 +70,12 @@ type OntologyConceptProperties {
     programmingNote: String
     additionalNote: String
 
+}
+
+type Query {
+  searchStudiesByOntologyConcepts(ontologyConceptIds: [ID!]!): [Study] @cypher(statement: """
+    MATCH (study:Study)-[:HAS_ONTOLOGY]->(ontology:Ontology)-[:HAS_CONCEPT]->(concept:OntologyConcept)
+    WHERE concept.id IN $ontologyConceptIds
+    RETURN study
+  """)
 }
