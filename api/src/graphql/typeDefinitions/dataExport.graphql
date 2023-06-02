@@ -1,0 +1,7 @@
+type DataExport {
+    id: ID! @id
+    name: String!
+    description: String!
+
+    # need relationship to data variables
+}
