@@ -18,7 +18,7 @@ ENV NODE_ENV production
 RUN npm run build:ui
 
 WORKDIR /usr/src/app/imic_docs
-RUN npm install
+RUN npm install --force
 RUN npm run clean
 RUN npm run build
 
