@@ -3,6 +3,7 @@ type Message {
   content: String!
   sender: KeycloakUser @relationship(type: "SENT_BY", direction: IN)
   chat: Chat @relationship(type: "PART_OF", direction: IN)
+  # TODO: add createdAt timestamps for other documents
   createdAt: DateTime! @timestamp(operations: [CREATE])
 }
 
