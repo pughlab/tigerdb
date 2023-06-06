@@ -1,0 +1,27 @@
+type Message {
+  id: ID! @id
+  content: String!
+  sender: KeycloakUser @relationship(type: "SENT_BY", direction: IN)
+  chat: Chat @relationship(type: "PART_OF", direction: IN)
+  createdAt: DateTime! @timestamp(operations: [CREATE])
+}
+
+type Chat {
+  id: ID! @id
+  name: String!
+  messages: [Message] @relationship(type: "PART_OF", direction: OUT)
+}
+
+
+
+# type Mutation {
+
+  
+#   sendMessage(chatId: ID!, senderId: ID!, content: String!): Message @cypher(statement: """
+#     MATCH (sender:KeycloakUser {id: $senderId}), (chat:Chat {id: $chatId})
+#     CREATE (message:Message {content: $content})
+#     CREATE (sender)-[:SENT_BY]->(message)
+#     CREATE (chat)-[:PART_OF]->(message)
+#     RETURN message
+#   """)
+# }

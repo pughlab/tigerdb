@@ -6,6 +6,7 @@ type KeycloakUser {
   email: Email!
   roles: [String]
   notifications: [Notification!]! @relationship(type: "RECEIVED_NOTIFICATION", direction: IN)
+  sentMessages: [Message!] @relationship(type: "SENT_BY", direction: OUT)
 }
 
 type Mutation {

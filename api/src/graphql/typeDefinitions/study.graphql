@@ -5,6 +5,10 @@ type Study {
   fullName: String!
   shortName: String!
   description: String!
+
+  # TODO: add to other document types that may require markdown notes
+  markdownNote: Markdown # keep optional to create after initial creation if needed
+
   rawDatasets: [RawDataset!]! @relationship(type: "HAS_RAW_DATASET", direction: OUT)
   studySites: [GeographyCity!]! @relationship(type: "HAS_STUDY_SITE", direction: OUT)
 
