@@ -10,7 +10,7 @@ type Message {
 type Chat {
   id: ID! @id
   name: String!
-  messages: [Message] @relationship(type: "PART_OF", direction: OUT)
+  messages: [Message!]! @relationship(type: "PART_OF", direction: OUT)
 }
 
 
