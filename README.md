@@ -7,8 +7,9 @@ cp sample.env .env
 cp ui/sample.ui.env ui/.env
 ```
 
-Need to spin up to get values for editing the .env files.
+Need to spin up to get values for editing the .env files, but first set your Gitlab access token
 ```
+export GITLAB_AUTH_TOKEN=your_token_from_gitlab
 make setup-volumes
 make dev
 ```
@@ -26,12 +27,13 @@ KEYCLOAK_SERVER_PUBLIC_KEY=key_from_keycloak_admin_console
 
 MINIO_IP=your_local_machine_ip_from_internet_settings
 ```
-As well as in `ui/.env`
+As well as in `ui/.env`. The variable `WEBPACK_PUBLIC_IP` is used for development. 
 ```
 KEYCLOAK_SERVER_HOST_AND_PORT=your_local_machine_ip_from_internet_settings
 ...
 WEBPACK_PUBLIC_IP=your_local_machine_ip_from_internet_settings
 ```
+
 
 Keycloak `Valid Redirect URIs` must also be changed.
 Go into `Keycloak console > Clients > pibu-app > Settings > Valid Redirect URIs` and add
@@ -61,8 +63,9 @@ role|allowedRoles|admin
 role|allowedSites|admin
 role|allowedStudies|admin
 ```
+These should be imported by the `realm-export.json` but if they're not you need to go to `Keycloak console > Clients > pibu-app > Roles` and add each one. If new roles are to be introduced this is where you'd need to start (and make sure its here since Keycloak API will check this source of truth, even though the `roles` of a `KeycloakUser` should reflect these values).
 
-    During development and you're using Chrome and it prevents you from opening the page due to certificate validation, type `thisisunsafe` to skip.
+During development and you're using Chrome and it prevents you from opening the page due to certificate validation, type [thisisunsafe](https://stackoverflow.com/questions/35274659/when-you-use-badidea-or-thisisunsafe-to-bypass-a-chrome-certificate-hsts-err)" to skip.
 
 React dev app: `https://localhost:3001`
 
