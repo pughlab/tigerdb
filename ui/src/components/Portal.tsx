@@ -16,6 +16,7 @@ import Explore from './pages/Explore'
 import DataExports from './pages/DataExports'
 import Metadata from './pages/Metadata'
 import AdminUsers from './pages/Admin/AdminUsers'
+import Annotations from './pages/Annotations'
 
 import PortalNavBarIntro, {HOME_MENU_ELEMENT_ID, DATA_MENU_ELEMENT_ID} from './intros/PortalNavBarIntro'
 import { useKeycloak } from '@react-keycloak/web'
@@ -73,9 +74,10 @@ export default function Portal () {
   let routes = [
     {path: 'studies', icon: 'stethoscope', element: <Studies />},
     {path: 'datasets', icon: 'database', element: <Datasets />},
-    {path: 'explore', icon: 'search', element: <Explore />},
-    {path: 'export', icon: 'download', element: <DataExports />},
-    {path: 'metadata', icon: 'search plus', element: <Metadata />},
+    // {path: 'explore', icon: 'search', element: <Explore />},
+    // {path: 'export', icon: 'download', element: <DataExports />},
+    // {path: 'metadata', icon: 'search plus', element: <Metadata />},
+    {path: 'annotations', icon: 'certificate', element: <Annotations/>}
   ]
 
   const const_adminRole = 'role|allowedRoles|admin'
