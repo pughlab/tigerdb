@@ -19,20 +19,23 @@ export default function AddStudyModal({
 
 	const [createStudy, { data, loading, error }] = useMutation(gql`
 		mutation createStudy($fullName: String!, $shortName: String!, $description: String!, $allowedStudies: [String], $allowedSites: [String]) {
-			createStudies(input:[{
-									fullName: $fullName, shortName: $shortName,
-									description: $description,
-									allowedStudies: $allowedStudies,
-									allowedSites: $allowedSites,
-								}]) {
-				studies {
+			# createStudies(input:[{
+			# 						fullName: $fullName, shortName: $shortName,
+			# 						description: $description,
+			# 						allowedStudies: $allowedStudies,
+			# 						allowedSites: $allowedSites,
+			# 					}]) {
+			createStudyWithTimeline(fullName: $fullName, shortName: $shortName,
+								description: $description,
+								allowedStudies: $allowedStudies,
+								allowedSites: $allowedSites) {
+				
 					studyID
 					fullName
 					shortName
 					description
 					allowedStudies
 					allowedSites
-				}
 			}
 		}
 	`, { onCompleted: () => { refetch() } })
