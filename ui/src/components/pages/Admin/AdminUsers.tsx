@@ -145,7 +145,7 @@ mutation keycloakClientsDelRole(
             value={adminUserDetailsState.newRole}
             onChange={(e, {value}) => {adminUserDetailsDispatch({type: 'setNewRole', payload: {newRole: value}})}}
           />
-          <Button type='submit' disabled={allRoleNames.includes(adminUserDetailsState.newRole)} onClick={() => { createClientRole({variables: {clientID, roleName: adminUserDetailsState.newRole}})}}>Create client role</Button>
+          <Button type='submit' disabled={!adminUserDetailsState.newRole || R.equals(adminUserDetailsState.newRole, '') || allRoleNames.includes(adminUserDetailsState.newRole)} onClick={() => { createClientRole({variables: {clientID, roleName: adminUserDetailsState.newRole}})}}>Create client role</Button>
           <Button type='submit' disabled={!allRoleNames.includes(adminUserDetailsState.newRole)} onClick={() => { removeClientRole({variables: {clientID, roleName: adminUserDetailsState.newRole}})}}>Remove client role</Button>
         </Form.Field>
       </Form>
@@ -290,7 +290,7 @@ export default function AdminUsers() {
               setUserID(R.find(users, u => u.email == value)?.id)
             }}
           />
-          <Button type='submit' disabled={R.find(users, u => u.email == email)} onClick={() => { addUser({variables: { email }})}}>Create user</Button>
+          <Button type='submit' disabled={!email || R.equals(email, '') || R.find(users, u => u.email == email)} onClick={() => { addUser({variables: { email }})}}>Create user</Button>
           <Button type='submit' disabled={!R.find(users, u => u.email == email)} onClick={() => { delUser({variables: { userID }})}}>Delete user</Button>
         </Form.Field>
       </Form>

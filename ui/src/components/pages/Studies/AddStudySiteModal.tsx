@@ -5,10 +5,13 @@ import { Button, Form, Header, Label, Input, Segment, Dropdown, Message, List, D
 
 import useSearchGeographyCitiesQuery from '../../../hooks/useSearchGeographyCitiesQuery'
 import useUpdateGeographyCityToStudy from '../../../hooks/useUpdateGeographyCityToStudy'
+import { useParams } from 'react-router-dom'
 
 export default function AddStudySiteModal () {
-    const { state: { searchText, results }, dispatch, loading: searchLoading } = useSearchGeographyCitiesQuery({})
+  const { state: { searchText, results }, dispatch, loading: searchLoading } = useSearchGeographyCitiesQuery({})
 	const {mutation: updateGeographyCityToStudy, loading: addCityLoading} = useUpdateGeographyCityToStudy({})
+	const { studyID } = useParams()
+
 	return (
 		<Modal
 			size='large'

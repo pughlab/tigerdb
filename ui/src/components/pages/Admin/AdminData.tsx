@@ -204,7 +204,7 @@ mutation nestedSwitchDelete(
             value={state.studyPermission}
             onChange={(e, {value}) => {dispatch({type: 'setPayload', payload: {studyPermission: value}})}}
           />
-          <Button disabled={studyPermissions.includes(state.studyPermission)} onClick={() => { nestedSwitch({variables: {id: state.lastID, operation: 'union', property: 'allowedStudies', value: state.studyPermission, nestedSwitch: state.nestedSwitch}}) }}>Add permission</Button>
+          <Button disabled={!state.studyPermission || R.equals(state.studyPermission, '') || studyPermissions.includes(state.studyPermission)} onClick={() => { nestedSwitch({variables: {id: state.lastID, operation: 'union', property: 'allowedStudies', value: state.studyPermission, nestedSwitch: state.nestedSwitch}}) }}>Add permission</Button>
           <Button disabled={!studyPermissions.includes(state.studyPermission)} onClick={() => { nestedSwitch({variables: {id: state.lastID, operation: 'subtract', property: 'allowedStudies', value: state.studyPermission, nestedSwitch: state.nestedSwitch}}) }}>Remove permission</Button>
           <Form>
           {studyPermissions.filter(x => x != 'admin').map((studyPermission) => {
@@ -228,7 +228,7 @@ mutation nestedSwitchDelete(
             value={state.sitePermission}
             onChange={(e, {value}) => {dispatch({type: 'setPayload', payload: {sitePermission: value}})}}
           />
-          <Button disabled={sitePermissions.includes(state.sitePermission)} onClick={() => { nestedSwitch({variables: {id: state.lastID, operation: 'union', property: 'allowedSites', value: state.sitePermission, nestedSwitch: state.nestedSwitch}}) }}>Add permission</Button>
+          <Button disabled={!state.sitePermission || R.equals(state.sitePermission, '') || sitePermissions.includes(state.sitePermission)} onClick={() => { nestedSwitch({variables: {id: state.lastID, operation: 'union', property: 'allowedSites', value: state.sitePermission, nestedSwitch: state.nestedSwitch}}) }}>Add permission</Button>
           <Button disabled={!sitePermissions.includes(state.sitePermission)} onClick={() => { nestedSwitch({variables: {id: state.lastID, operation: 'subtract', property: 'allowedSites', value: state.sitePermission, nestedSwitch: state.nestedSwitch}}) }}>Remove permission</Button>
           <Form>
           {sitePermissions.filter(x => x != 'admin').map((sitePermission) => {
