@@ -10,9 +10,9 @@ export default function About() {
       <Segment>
         <AboutPortal />
       </Segment>
-      <Segment>
+      {/* <Segment>
         <CalendarHeatmapVisualization />
-      </Segment>
+      </Segment> */}
 
     </Container>
   );

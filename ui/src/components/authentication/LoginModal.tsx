@@ -58,7 +58,7 @@ export default function LoginModal ({}) {
       {/* put logout here */}
         <Segment.Group>
           <Segment>
-            <Logo />
+            <Logo centered />
           </Segment>
           <Segment>
           {

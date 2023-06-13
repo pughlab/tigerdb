@@ -16,18 +16,10 @@ export function AboutPortal ({}) {
           <Header as='h1'>
             {/* <Icon name='tint' color='red' size='big' /> */}
             <Header.Content>
-              IMiC
-              <Header.Subheader>
-                <a href="https://www.milcresearch.com/imic.html" target='_blank'>
-                International Milk Composition Consortium
-                </a>
-              </Header.Subheader>
+              TCRdb
             </Header.Content>
           </Header>
         </Divider>
-        <Segment color='black' size='big'>
-        The International Milk Composition (IMiC) Consortium was established in 2020 to unite maternal-child health and human milk researchers with statistical experts to co-develop a harmonized approach to human milk analysis.
-        </Segment>
       </Container>
     )
   }
