@@ -21,15 +21,15 @@ export const resolvers = {
 
         const session = driver.session()
 
-        const bucketObjects = (await listBucketObjects(minioClient, bucketName)).map(({ name }) => name)
-        // console.log(bucketObjects)
-        const presignedURL = await makePresignedURL(minioClient, bucketName, bucketObjects.slice(-1)[0])
-        // console.log(presignedURL)
+        // const bucketObjects = (await listBucketObjects(minioClient, bucketName)).map(({ name }) => name)
+        // // console.log(bucketObjects)
+        // const presignedURL = await makePresignedURL(minioClient, bucketName, bucketObjects.slice(-1)[0])
+        // // console.log(presignedURL)
         
         // original api with datavariables containing chr,start,end,datavalue
         const createCuratedAnnotationFromRawDataset = await session.run(
-          `CALL apoc.periodic.iterate(\'CALL apoc.load.csv($presignedURL, {sep: \" \", compression: \"GZIP\"}) YIELD list\', \'MATCH (b:CuratedAnnotation {curatedAnnotationID: $curatedAnnotationID}) CREATE (a:DataVariable {dataVariableID: apoc.create.uuid(), chromosome: list[0], start: toInteger(list[1]), end: toInteger(list[2]), datavalue: toFloat(list[3]) }), (b)-[:HAS_DATA_VARIABLE]->(a) RETURN a\', { batchSize:10000, iterateList: true, parallel:true, params:{curatedAnnotationID: $curatedAnnotationID, presignedURL: $presignedURL}})`,
-          {curatedAnnotationID: curatedAnnotationID, presignedURL: presignedURL}
+          `CALL apoc.periodic.iterate(\'CALL apoc.load.csv($presignedURL, {sep: \"TAB\"}) YIELD list\', \'MATCH (b:CuratedAnnotation {curatedAnnotationID: $curatedAnnotationID}) CREATE (a:AnnotationVariable {annotationVariableID: apoc.create.uuid(), locus: list[0], cdr3b: list[1], trbv: list[2], trbj: list[3], mhc: list[4], mhcClass: list[5], epitope: list[6], epitopeGene: list[7], epitopeSpecies: list[8], reference: list[9] }), (b)-[:HAS_ANNOTATION_VARIABLE]->(a) RETURN a\', { batchSize:10000, iterateList: true, parallel:true, params:{curatedAnnotationID: $curatedAnnotationID, presignedURL: $presignedURL}})`,
+          {curatedAnnotationID: curatedAnnotationID, presignedURL: 'file:///VDJdb_MinimalScoreConfidence3_VersionII.tsv'}
         )
         // const createCuratedDatasetFromRawDataset = await session.run(
         //   `CALL apoc.periodic.iterate(
