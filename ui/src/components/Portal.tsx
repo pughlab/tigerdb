@@ -30,7 +30,7 @@ function Layout ({}) {
   const {navigate, location, isActivePath} = useRouter()
 
   const routes = [
-    {path: '/', icon: 'info circle', introID: HOME_MENU_ELEMENT_ID},
+    // {path: '/', icon: 'info circle', introID: HOME_MENU_ELEMENT_ID},
     {path: '/home', icon: 'database', introID: DATA_MENU_ELEMENT_ID},
   ]
 
@@ -45,7 +45,7 @@ function Layout ({}) {
         <Menu.Menu position='left'>
           <div>
           <a onClick={() => keycloakRefreshToken(keycloak, setKeycloakToken) }><Logo size='small' /></a>
-          {process.env.NODE_ENV !== 'production' ? process.env.NODE_ENV : ''}
+          {/* {process.env.NODE_ENV !== 'production' ? process.env.NODE_ENV : ''} */}
           </div>
         </Menu.Menu>
         
