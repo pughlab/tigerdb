@@ -29,7 +29,7 @@ type CuratedAnnotation {
     # updatedAt: DateTime! @timestamp(operations: [UPDATE])
     name: String!
     description: String!
-    dataVariables: [DataVariable!]! @relationship(type: "HAS_DATA_VARIABLE", direction: OUT)
+    annotationVariables: [AnnotationVariable!]! @relationship(type: "HAS_ANNOTATION_VARIABLE", direction: OUT)
 
     generatedByRawDataset: RawDataset! @relationship(type: "GENERATED_CURATED_ANNOTATION", direction: IN)
 }
@@ -42,12 +42,12 @@ type Mutation {
     ): CuratedAnnotation!
 }
 
-extend type CuratedAnnotation @auth(
-  rules: [{
-      isAuthenticated: true,
-      where: {AND: [
-        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
-        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
-        ]}
-    }]
-)
+# extend type CuratedAnnotation @auth(
+#   rules: [{
+#       isAuthenticated: true,
+#       where: {AND: [
+#         {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
+#         {allowedSites: "$jwt.resource_access.pibu-app.roles"},
+#         ]}
+#     }]
+# )
