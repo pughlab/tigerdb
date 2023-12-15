@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Sticky, Menu, Image, Divider, Container, Segment, Step } from 'semantic-ui-react'
+import { Sticky, Menu, Header, Divider, Container, Segment, Step } from 'semantic-ui-react'
 import useKeycloakMeMutation from '../hooks/useKeycloakMeMutation'
 import {Routes, Route, Outlet, useNavigate, useLocation, matchPath, Link} from 'react-router-dom'
 
@@ -41,13 +41,19 @@ function Layout ({}) {
     <>
     
     <Sticky>
-      <Menu style={{margin: 0, borderRadius: 0}}>
-        <Menu.Menu position='left'>
+      <Menu size='huge'>
+        <Menu.Menu position='left' >
           <div>
           <a onClick={() => keycloakRefreshToken(keycloak, setKeycloakToken) }><Logo size='small' /></a>
           {/* {process.env.NODE_ENV !== 'production' ? process.env.NODE_ENV : ''} */}
           </div>
         </Menu.Menu>
+        <Menu.Menu position='right'>
+        <Header style={{margin: 10}}>
+          TCR-DB
+        </Header>
+        </Menu.Menu>
+
         
         <Menu.Menu position='right'>
           {routes.map(
