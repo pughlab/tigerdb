@@ -40,20 +40,36 @@
 import { gql, useMutation, useLazyQuery } from '@apollo/client'
 import { useCallback, useState } from 'react'
 
-export default function useAnnotationVariablesQuery({ }) {
+export default function useAnnotationVariablesQuery(dropdownFilters: any) {
   const [searchText, setSearchText] = useState('')
+
+  const constructWhereClause = (filters: any) => {
+    let where = {};
+    Object.entries(filters).forEach(([key, value]) => {
+      if (Array.isArray(value) && value.some(item => item !== null)) {
+        // Filter out null values from the array
+        const filteredValues = value.filter(item => item !== null);
+        if (filteredValues.length > 0) {
+          where = {...where, [`${key}_IN`]: filteredValues}
+        }
+      }
+    });
+    console.log(where)
+    return where;
+  };
+
+  const where = constructWhereClause(dropdownFilters);
   const [runQuery, { loading, data, error, called }]  = useLazyQuery(gql`
-  query AnnotationVariables($searchText: String!) {
+  query AnnotationVariables($where: AnnotationVariableWhere) {
     curatedAnnotations {
       curatedAnnotationID
       name
       description
-      annotationVariables(
-        where: {cdr3b_CONTAINS: $searchText}
-      ) {
+      annotationVariables(where: $where) 
+      {
         annotationVariableID
         locus
-        cdr3b
+        cdr3b 
         trbv
         trbj
         mhc
@@ -64,7 +80,10 @@ export default function useAnnotationVariablesQuery({ }) {
         reference
       }
     }
-  }`, { fetchPolicy: 'network-only' })
+  }`, { 
+    variables: {where: where},
+    fetchPolicy: 'network-only' 
+  })
   
   return { data, loading, error, called, searchText, setSearchText, runQuery }
 }
