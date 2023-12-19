@@ -20,6 +20,7 @@ services:
       - pibu_neo4j_volume:/var/lib/neo4j/data
       - ./neo4j/plugins:/var/lib/neo4j/plugins
       - ./neo4j/import:/var/lib/neo4j/import
+      # - ./neo4j/data:/var/lib/neo4j/data
       # - ./api/src/cql/neo4j.conf:/var/lib/neo4j/conf/neo4j.conf
 
   api:
@@ -180,6 +181,63 @@ services:
     entrypoint: >
       nginx -g "daemon off;"
 
+  # graphene: 
+  #   image: crescentdev/graphene
+  #   privileged: true
+  #   # build: graphene
+  #   container_name: graphene
+  #   expose:
+  #     - ${GRAPHENE_PORT}
+  #   ports:
+  #     - "${GRAPHENE_PORT}:${GRAPHENE_PORT}"
+  #   environment:
+  #     - MINIO_HOST_PORT=${MINIO_HOST_PORT}
+  #     - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+  #     - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+  #     - MONGO_URL=${MONGO_URL}
+  #     - WES_PORT=${WES_PORT}
+  #     - WES_SERVER=${WES_SERVER}
+  #     - GRAPHENE_DEV=${GRAPHENE_DEV}
+  #   volumes:
+  #     - ./graphene/src:/app/src
+  #     - ./minio:/app/minio
+  #     - ./crescent:/app/crescent
+  #   working_dir: /app/src
+  #   depends_on:
+  #     - minio 
+  #     - mongo      
+  #   command: uvicorn main:app --host 0.0.0.0 --port ${GRAPHENE_PORT} --reload
+
+  # wes-server:
+  #   build: wes
+  #   # image: kevin/wes-server
+  #   container_name: "wes-server"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:rw
+  #     - /var/lib/docker/volumes:/var/lib/docker/volumes:rw
+  #     - /tmp:/tmp:rw
+  #     - /var/lib/toil:/var/lib/toil:rw
+  #     - ./wes/workflows:/root/workflows:rw
+  #     - ./wes/logs:/root/logs:rw
+  #   ports:
+  #     - "${WES_PORT}:8081"
+  #   environment:
+  #     - MINIO_HOST_PORT=${MINIO_HOST_PORT}
+  #     - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+  #     - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+  #   entrypoint: /root/mesos-wes.sh
+  #   command:
+  #     - --port=8081
+  #     - --backend=${WES_BACKEND}
+  #     - --opt=runner=${WES_CWL_RUNNER}
+  #     - --opt=extra=--cleanWorkDir=never
+  #     - --opt=extra=--writeLogs=/root/logs
+  #     - --opt=extra=--writeLogsFromAllJobs
+  #     - --opt=extra=--maxLogFileSize=0 
+  #     - --opt=extra=--realTimeLogging
+  #     - --opt=extra=--retryCount=0
+
+
   # mongo:
   #   image: mongo:5.0.17
   #   ports:
@@ -204,7 +262,7 @@ services:
   #     - pibu_mariadb_volume:/var/lib/mysql
   #   ports:
   #     - "3306:3306"
-      
+
 
 volumes:
   pibu_minio_volume:
