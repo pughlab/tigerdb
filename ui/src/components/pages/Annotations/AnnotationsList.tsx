@@ -1,10 +1,12 @@
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { useCallback, useEffect, useState } from 'react'
 import * as React from 'react'
-import { Button, Form, Header, Label, Input, Segment, Container, Message, List, Divider, Dropdown, Grid, Card, Icon } from 'semantic-ui-react'
+import { Button, Form, Header, Label, Input, Segment, Container, Message, List, Divider, Dropdown, Grid, Card, Icon, Popup } from 'semantic-ui-react'
 import useRouter from '../../../hooks/useRouter'
 import useAnnotationVariablesQuery from '../../../hooks/pages/useAnnotationVariablesQuery'
 import { useDebounce } from 'use-debounce'
+import { CSVLink } from 'react-csv';
+import { v4 as uuidv4 } from 'uuid';
 
 // import AddDatasetModal from './AddDatasetModal'
 import { useLocation } from 'react-router-dom'
@@ -468,6 +470,34 @@ export default function AnnotationsList({ }) {
                 <Segment loading={loadingResults}>
                     {
                         data &&
+                        <>
+                        
+                        {/* <CSVLink data={searchResults.flatMap(searchResult => {
+                            const { __typename, annotationVariableID, ...item } = searchResult.item; // Destructure and remove propertyToRemove
+                            const additionalFields = {
+                                score: (1 - searchResult.score) * 100
+                            }
+
+                            // Merge item and additionalFields into a single object
+                            return {
+                                ...additionalFields,
+                                ...item
+                            }
+                        })} 
+                        filename={`${uuidv4()}_tigerdb_query_export.csv`}
+                        >
+                        <Popup
+                            flowing
+                            on='hover'
+                            inverted
+                            position='top center'
+                            trigger={
+                                <Button basic color='green' fluid icon='file excel' content={`Export Results as CSV`} />
+                            }
+                            content='Click to download'
+                        >
+                        </Popup>
+                        </CSVLink> */}
                         <Divider horizontal>
                             <Header as="h4">
                                 <Button.Group size='massive'>
@@ -503,6 +533,7 @@ export default function AnnotationsList({ }) {
 
                             </Header>
                         </Divider>
+                    </>
                     }
                     {/* <List selection size='massive' key='annotationVariable'>
                         {!!data?.curatedAnnotations &&
