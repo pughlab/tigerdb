@@ -12,9 +12,9 @@ export default function LoadingAuthentication ({}) {
       <Logo />
       <Card.Content extra textAlign='center'>
         <a>
-          <Icon name='key' />
-          {`Redirecting from Keycloak `}
-          <Icon name='user' />
+          {/* <Icon name='key' /> */}
+          {`Loading TIGERdb... `}
+          <Icon name='spinner' loading />
         </a>
       </Card.Content>
     </Card>
