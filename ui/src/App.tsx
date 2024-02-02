@@ -34,9 +34,9 @@ const App = () => {
         <ReduxProvider {...{store: reduxStore}}>
           <ApolloProvider {...{client: apolloClient}}>
           <BrowserRouter>
-            <RenderOnAuthenticated>
-              <Portal />
-            </RenderOnAuthenticated>
+            <RenderOnAuthenticated/>
+              {/* <Portal /> */}
+            {/* </RenderOnAuthenticated> */}
           </BrowserRouter>
           </ApolloProvider>
         </ReduxProvider>
