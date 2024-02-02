@@ -13,3 +13,5 @@ zzz.tmp.csv
 
 api/src/funnel/inputs
 neo4j
+nginx/certs
+minio
