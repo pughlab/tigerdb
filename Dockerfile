@@ -9,9 +9,9 @@ WORKDIR /usr/src/app
 COPY package.json .
 COPY package-lock.json .
 COPY .npmrc .
-RUN GITLAB_AUTH_TOKEN=${GITLAB_AUTH_TOKEN} npm install --force graphql-ws
+# RUN GITLAB_AUTH_TOKEN=${GITLAB_AUTH_TOKEN} npm install --force graphql-ws
 RUN GITLAB_AUTH_TOKEN=${GITLAB_AUTH_TOKEN} npm i --force
-RUN GITLAB_AUTH_TOKEN=${GITLAB_AUTH_TOKEN} npm --force ci
+# RUN GITLAB_AUTH_TOKEN=${GITLAB_AUTH_TOKEN} npm --force ci
 
 COPY . .
 ENV NODE_ENV production
