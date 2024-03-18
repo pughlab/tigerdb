@@ -4,6 +4,7 @@ import logo from './logo.png'
 import tigerdbLogo from './tigerdb-logo.png'
 import { Image, Container, Message, Header, Button, Divider, Grid } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
+import BarChart from '../visualizations/bar/BarChart';
 
 export function Logo ({size='medium', ... props}) {
     return (
@@ -35,6 +36,9 @@ export function AboutPortal ({}) {
           <Image size='large' src={tigerdbLogo} centered />
 
           </Button>
+        </Message>
+        <Message positive>
+          <BarChart />
         </Message>
         </Container>
     )

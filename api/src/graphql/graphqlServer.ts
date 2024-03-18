@@ -114,9 +114,9 @@ export const createApolloServer = async () => {
           if (!allowedWithoutTOS.includes(queryName))
           throw new Error(`Access denied. User [${email} / ${sub}] has not accepted the TOS. Please accept the TOS to gain access.`)
         }
-      } else {
-        throw new Error(`Access denied. Keycloak auth token required to access graphql. Please login with keycloak.`)
-      }
+      } //else {
+        //throw new Error(`Access denied. Keycloak auth token required to access graphql. Please login with keycloak.`)
+      //}
 
 
       return {

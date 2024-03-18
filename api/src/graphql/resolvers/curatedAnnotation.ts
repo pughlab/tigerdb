@@ -6,7 +6,28 @@ import zlib from 'zlib'
 
 export const resolvers = {
   Query: {
+    countEpitopeSpecies: async (_parent, _args, { driver }) => {
+      const session = driver.session()
+      const epitopeSpeciesList = await session.run("MATCH (a:AnnotationVariable) RETURN DISTINCT a.epitopeSpecies AS e")
+      const annotationVariables = await session.run("MATCH (a:AnnotationVariable) RETURN a")
+      const results = []
+      
+      const epitopeSpeciesCount = {}
+      epitopeSpeciesList.records.map((species) => {
+        epitopeSpeciesCount[species.get('e')] = 0
+      })
 
+      annotationVariables.records.forEach((variable) => {
+        const species = variable.get('a').properties['epitopeSpecies']
+        epitopeSpeciesCount[species]++
+      })
+
+      Object.keys(epitopeSpeciesCount).forEach((key) => {
+        results.push({ "epitopeSpecies": key, "count": epitopeSpeciesCount[key] })
+      })
+
+      return results
+    }
   },
   Mutation: {
     createCuratedAnnotationFromRawDataset: async (parent, { name, description, rawDatasetID }, { driver, ogm, minioClient }) => {

@@ -34,12 +34,21 @@ type CuratedAnnotation {
     generatedByRawDataset: RawDataset! @relationship(type: "GENERATED_CURATED_ANNOTATION", direction: IN)
 }
 
+type EpitopeSpeciesCount {
+    epitopeSpecies: String!
+    count: Int!
+}
+
 type Mutation {
     createCuratedAnnotationFromRawDataset(
         name: String!
         description: String!
         rawDatasetID: ID!
     ): CuratedAnnotation!
+}
+
+type Query {
+    countEpitopeSpecies: [EpitopeSpeciesCount]!
 }
 
 # extend type CuratedAnnotation @auth(
