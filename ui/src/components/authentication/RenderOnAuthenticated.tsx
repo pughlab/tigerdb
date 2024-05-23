@@ -1,11 +1,16 @@
 import { useKeycloak } from "@react-keycloak/web";
+import React from 'react'
+
 //Checking if user is logged in on Keycloak
-const RenderOnAuthenticated = ({ children }) => {
+
+import Portal from '../Portal'
+import PublicPortal from '../PublicPortal'
+const RenderOnAuthenticated = () => {
     const { keycloak } = useKeycloak();
 
     const isLoggedIn = keycloak.authenticated;
 
-    return isLoggedIn ? children : null;
+    return isLoggedIn ? <Portal/> : <PublicPortal/>;
 };
 
 export default RenderOnAuthenticated;

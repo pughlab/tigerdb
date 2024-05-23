@@ -18,20 +18,20 @@ export default function LoginModal ({}) {
   // const {name, email} = keycloakUser
   const [open, setOpen] = useState(false)
   const { keycloak, initialized } = useKeycloak()
-  const keycloakMe = useAppSelector(currentAppContextKeycloakMe, shallowEqual)
+  // const keycloakMe = useAppSelector(currentAppContextKeycloakMe, shallowEqual)
   // console.log(keycloakMe)
-  if (!keycloakMe) {
-    return (
-      <Menu.Item
-        header
-        icon={<Icon name='spinner' loading />}
-        onClick={() => setOpen(!open)}
-      />
-    )
-  }
-  // console.log(context)
-  // return null
-  const {name, email} = keycloakMe
+  // if (!keycloakMe) {
+  //   return (
+  //     <Menu.Item
+  //       header
+  //       // icon={<Icon name='spinner' loading />}
+  //       onClick={() => setOpen(!open)}
+  //     />
+  //   )
+  // }
+  // // console.log(context)
+  // // return null
+  // const {name, email} = keycloakMe
 
   return (
     <>
@@ -40,12 +40,12 @@ export default function LoginModal ({}) {
         <Menu.Item
           id={LOGIN_MENU_ELEMENT_ID}     
           header
-          icon='user'
-          onClick={() => {keycloakRefreshToken(keycloak, R.identity); setOpen(!open)}}
+          icon='user close'
+          onClick={() => {setOpen(!open)}}
         />
       }
     >
-      {`Logged in as  `}<Label basic content={name} detail={email} />
+      {`Not Logged In`}
     </Popup>
     
     <Modal
@@ -63,16 +63,15 @@ export default function LoginModal ({}) {
           <Segment>
           {
             <Header textAlign='center'>
-              {name}
-              <Header.Subheader content={email} />
+              No user info found! Please login to save data.
             </Header>
           }
           </Segment>
           <Segment>
             <Button
-              fluid color='grey' size='massive'
-              content='Logout'
-              onClick={() => keycloak.logout()}
+              fluid color='blue' size='massive'
+              content='Login'
+              onClick={() => keycloak.login()}
             />
           </Segment>
         </Segment.Group>

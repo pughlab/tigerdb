@@ -1,0 +1,62 @@
+# type Subject {
+#     subjectID: ID! @id
+#     childID: ID!
+# }
+
+
+
+# type DataVariableDefinition {
+#     dataVariable: DataVariable! @relationship(type: "HAS_DEFINITION", direction: IN)
+#     dataVariableDefinitionID: ID! @id
+#     label: String!
+# }
+
+# type DataVariableSample {
+#     dataVariableSampleID: ID! @id
+#     # value: JSON
+#     currentValueState: DataVariableSampleState! @relationship(type: "HAS_DEFINITION", direction: IN)
+#     previousValueStates: [DataVariableSampleState!]! @relationship(type: "HAS_DEFINITION", direction: IN)
+# }
+
+# # For time versioning
+# type DataVariableSampleState {
+#     value: JSON
+# }
+
+type CuratedAnnotation {
+    curatedAnnotationID: ID! @id
+    # createdAt: DateTime! @timestamp(operations: [CREATE])
+    # updatedAt: DateTime! @timestamp(operations: [UPDATE])
+    name: String!
+    description: String!
+    annotationVariables: [AnnotationVariable!]! @relationship(type: "HAS_ANNOTATION_VARIABLE", direction: OUT)
+
+    generatedByRawDataset: RawDataset! @relationship(type: "GENERATED_CURATED_ANNOTATION", direction: IN)
+}
+
+type EpitopeSpeciesCount {
+    epitopeSpecies: String!
+    count: Int!
+}
+
+type Mutation {
+    createCuratedAnnotationFromRawDataset(
+        name: String!
+        description: String!
+        rawDatasetID: ID!
+    ): CuratedAnnotation!
+}
+
+type Query {
+    countEpitopeSpecies: [EpitopeSpeciesCount]!
+}
+
+# extend type CuratedAnnotation @auth(
+#   rules: [{
+#       isAuthenticated: true,
+#       where: {AND: [
+#         {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
+#         {allowedSites: "$jwt.resource_access.pibu-app.roles"},
+#         ]}
+#     }]
+# )

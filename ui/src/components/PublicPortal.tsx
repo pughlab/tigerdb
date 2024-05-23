@@ -9,7 +9,7 @@ import {Logo} from './logos'
 
 import useRouter from '../hooks/useRouter'
 import About from './pages/About'
-import LoginModal from './authentication/LoginModal'
+import PublicLoginModal from './authentication/PublicLoginModal'
 import Studies from './pages/Studies'
 import Datasets from './pages/Datasets'
 import Explore from './pages/Explore'
@@ -31,11 +31,11 @@ function Layout ({}) {
 
   const routes = [
     // {path: '/', icon: 'info circle', introID: HOME_MENU_ELEMENT_ID},
-    {path: '/home', icon: 'database', introID: DATA_MENU_ELEMENT_ID},
+    {path: '/public', icon: 'database', introID: DATA_MENU_ELEMENT_ID},
   ]
 
-  const { keycloak } = useKeycloak()
-  const [keycloakToken, setKeycloakToken] = useState(keycloak.token)
+  // const { keycloak } = useKeycloak()
+  // const [keycloakToken, setKeycloakToken] = useState(keycloak.token)
 
   return (
     <>
@@ -44,13 +44,16 @@ function Layout ({}) {
       <Menu size='huge'>
         <Menu.Menu position='left' >
           <div>
-          <a onClick={() => keycloakRefreshToken(keycloak, setKeycloakToken) }><Logo size='small' /></a>
+          <Link to="/">
+          <Logo size='small' />
+
+          </Link>
           {/* {process.env.NODE_ENV !== 'production' ? process.env.NODE_ENV : ''} */}
           </div>
         </Menu.Menu>
         <Menu.Menu position='right'>
         <Header style={{margin: 10}}>
-          TCR-DB
+          TIGERdb
         </Header>
         </Menu.Menu>
 
@@ -59,7 +62,7 @@ function Layout ({}) {
           {routes.map(
             ({path, icon, introID}) => <Menu.Item id={introID} key={path} {...{header: true, icon, active: isActivePath(path), onClick: (e, d) => navigate(path)}} />
           )}
-          <LoginModal />
+          <PublicLoginModal />
           <PortalNavBarIntro />
         </Menu.Menu>
       </Menu>
@@ -73,43 +76,27 @@ function Layout ({}) {
   )
 }
 
-export default function Portal () {
+export default function PublicPortal () {
   const {navigate, location, isActivePathElement} = useRouter()
   // console.log(location)
-  const [meMutationState] = useKeycloakMeMutation()
   let routes = [
-    {path: 'studies', icon: 'stethoscope', element: <Studies />},
-    {path: 'datasets', icon: 'database', element: <Datasets />},
-    // {path: 'explore', icon: 'search', element: <Explore />},
-    // {path: 'export', icon: 'download', element: <DataExports />},
-    // {path: 'metadata', icon: 'search plus', element: <Metadata />},
     {path: 'annotations', icon: 'certificate', element: <Annotations/>}
   ]
-
-  const const_adminRole = 'role|allowedRoles|admin'
-  const const_resource = 'pibu-app'
-  const { keycloak } = useKeycloak()
-  if (keycloak.hasResourceRole(const_adminRole, const_resource)) {
-    routes.push({path: 'adminUsers', icon: 'chain', element: <AdminUsers />})
-    routes.push({path: 'adminData', icon: 'dot circle', element: <AdminData />})
-  }
 
   return (
     <>
       <Layout />
-      <RenderOnApproved>
-        <RenderOnAcceptedTOS>
           <Routes>
               <Route index element={
                 <About />
               } />
-              <Route key='home' path='home/*' element={
+              <Route key='/public' path='public/*' element={
                 <>
                   <Segment attached='top'>
                   <Step.Group fluid>
                     {routes.map(
                       ({path, icon}) => (
-                        <Step key={path} description={path} icon={icon} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`home/${path}`)} />
+                        <Step key={path} description={path} icon={icon} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`public/${path}`)} />
                       )
                     )}
                   </Step.Group>
@@ -128,8 +115,6 @@ export default function Portal () {
               </Route>
               <Route key='notfound' path="*" element={<SegmentPlaceholder text='Not found!' icon='meh outline' />} />
             </Routes>
-          </RenderOnAcceptedTOS>
-        </RenderOnApproved>
     </>
   )
 }

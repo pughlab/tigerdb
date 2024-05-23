@@ -9,7 +9,8 @@ const tokenLogger = (tokens: any) => {
 }
 
 const initOptions = { 
-  onLoad: "login-required",
+  onLoad: "check-sso",
+  // onLoad: "login-required",
   checkLoginIframe: false,
   enableLogging: true
 }
