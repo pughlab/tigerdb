@@ -34,11 +34,11 @@ type CuratedDataset {
     dataVariables: [DataVariable!]! @relationship(type: "HAS_DATA_VARIABLE", direction: OUT)
     fieldDefinitions: [DataVariableFieldDefinition!]! @relationship(type: "HAS_FIELD_DEFINITION", direction: OUT)
 
-    funnelTask: Task @relationship(type: "FROM_FUNNEL_TASK", direction: IN)
+    # funnelTask: Task @relationship(type: "FROM_FUNNEL_TASK", direction: IN)
 
-    generatedByRawDataset: RawDataset @relationship(type: "GENERATED_CURATED_DATASET", direction: IN)
+    generatedByRawDataset: Dataset @relationship(type: "GENERATED_CURATED_DATASET", direction: IN)
 
-    exportTask: [Task!]! @relationship(type: "HAS_FUNNEL_TASK", direction: OUT)
+    # exportTask: [Task!]! @relationship(type: "HAS_FUNNEL_TASK", direction: OUT)
 }
 
 type Mutation {

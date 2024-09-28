@@ -1,0 +1,44 @@
+type Dataset {
+    datasetID: ID! @id
+    name: String!
+    size: Int
+    filename: String
+    minioBucket: MinioBucket @relationship(type: "HAS_MINIO_BUCKET", direction: OUT)
+
+    # custom createDatasetWithUploads makes adding timestamps difficult for autogeneration
+    createdOn: DateTime! @timestamp(operations: [CREATE])
+    tags: [String]
+    runs: [Run!]! @relationship(type: "HAS_RUN", direction: OUT)
+    projects: [Project!]! @relationship(type: "HAS_DATASET", direction: OUT)
+    # updatedAt: DateTime! @timestamp(operations: [UPDATE])
+
+}
+
+input DatasetInput {
+    datasetID: ID!
+    name: String
+    filename: String
+    tags: [String]
+}
+
+type Mutation {
+    # Custom resolver for uploading files and creating nodes to account for them
+    createDataset(
+        projectID: ID!
+        name: String!
+        filename: String
+        tags: [String]
+    ): Dataset!,
+    updateDataset(
+        datasetID: ID!
+        name: String
+        description: String
+        tags: [String]
+    ): Dataset!
+}
+
+extend type Dataset @auth(
+    rules: [{
+        isAuthenticated: true,
+    }]
+)

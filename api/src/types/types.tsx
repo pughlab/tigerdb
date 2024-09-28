@@ -384,16 +384,16 @@ export type CreateOntologyRelationsMutationResponse = {
   ontologyRelations: Array<OntologyRelation>;
 };
 
-export type CreateRawDatasetsMutationResponse = {
-  __typename?: 'CreateRawDatasetsMutationResponse';
+export type CreateDatasetsMutationResponse = {
+  __typename?: 'CreateDatasetsMutationResponse';
   info: CreateInfo;
-  rawDatasets: Array<RawDataset>;
+  Datasets: Array<Dataset>;
 };
 
 export type CreateStudiesMutationResponse = {
   __typename?: 'CreateStudiesMutationResponse';
   info: CreateInfo;
-  studies: Array<Study>;
+  studies: Array<Project>;
 };
 
 export type CreateTasksMutationResponse = {
@@ -420,9 +420,9 @@ export type CuratedDataset = {
   funnelTask?: Maybe<Task>;
   funnelTaskAggregate?: Maybe<CuratedDatasetTaskFunnelTaskAggregationSelection>;
   funnelTaskConnection: CuratedDatasetFunnelTaskConnection;
-  generatedByRawDataset?: Maybe<RawDataset>;
-  generatedByRawDatasetAggregate?: Maybe<CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection>;
-  generatedByRawDatasetConnection: CuratedDatasetGeneratedByRawDatasetConnection;
+  generatedByDataset?: Maybe<Dataset>;
+  generatedByDatasetAggregate?: Maybe<CuratedDatasetDatasetGeneratedByDatasetAggregationSelection>;
+  generatedByDatasetConnection: CuratedDatasetGeneratedByDatasetConnection;
   name: Scalars['String'];
 };
 
@@ -515,25 +515,25 @@ export type CuratedDatasetFunnelTaskConnectionArgs = {
 };
 
 
-export type CuratedDatasetGeneratedByRawDatasetArgs = {
+export type CuratedDatasetGeneratedByDatasetArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  options?: InputMaybe<RawDatasetOptions>;
-  where?: InputMaybe<RawDatasetWhere>;
+  options?: InputMaybe<DatasetOptions>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type CuratedDatasetGeneratedByRawDatasetAggregateArgs = {
+export type CuratedDatasetGeneratedByDatasetAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  where?: InputMaybe<RawDatasetWhere>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type CuratedDatasetGeneratedByRawDatasetConnectionArgs = {
+export type CuratedDatasetGeneratedByDatasetConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<CuratedDatasetGeneratedByRawDatasetConnectionSort>>;
-  where?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectionWhere>;
+  sort?: InputMaybe<Array<CuratedDatasetGeneratedByDatasetConnectionSort>>;
+  where?: InputMaybe<CuratedDatasetGeneratedByDatasetConnectionWhere>;
 };
 
 export type CuratedDatasetAggregateSelection = {
@@ -549,13 +549,13 @@ export type CuratedDatasetConnectInput = {
   exportTask?: InputMaybe<Array<CuratedDatasetExportTaskConnectFieldInput>>;
   fieldDefinitions?: InputMaybe<Array<CuratedDatasetFieldDefinitionsConnectFieldInput>>;
   funnelTask?: InputMaybe<CuratedDatasetFunnelTaskConnectFieldInput>;
-  generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectFieldInput>;
+  generatedByDataset?: InputMaybe<CuratedDatasetGeneratedByDatasetConnectFieldInput>;
 };
 
 export type CuratedDatasetConnectOrCreateInput = {
   dataVariables?: InputMaybe<Array<CuratedDatasetDataVariablesConnectOrCreateFieldInput>>;
   fieldDefinitions?: InputMaybe<Array<CuratedDatasetFieldDefinitionsConnectOrCreateFieldInput>>;
-  generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInput>;
+  generatedByDataset?: InputMaybe<CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInput>;
 };
 
 export type CuratedDatasetConnectOrCreateWhere = {
@@ -574,7 +574,7 @@ export type CuratedDatasetCreateInput = {
   exportTask?: InputMaybe<CuratedDatasetExportTaskFieldInput>;
   fieldDefinitions?: InputMaybe<CuratedDatasetFieldDefinitionsFieldInput>;
   funnelTask?: InputMaybe<CuratedDatasetFunnelTaskFieldInput>;
-  generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetFieldInput>;
+  generatedByDataset?: InputMaybe<CuratedDatasetGeneratedByDatasetFieldInput>;
   name: Scalars['String'];
 };
 
@@ -696,7 +696,7 @@ export type CuratedDatasetDeleteInput = {
   exportTask?: InputMaybe<Array<CuratedDatasetExportTaskDeleteFieldInput>>;
   fieldDefinitions?: InputMaybe<Array<CuratedDatasetFieldDefinitionsDeleteFieldInput>>;
   funnelTask?: InputMaybe<CuratedDatasetFunnelTaskDeleteFieldInput>;
-  generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetDeleteFieldInput>;
+  generatedByDataset?: InputMaybe<CuratedDatasetGeneratedByDatasetDeleteFieldInput>;
 };
 
 export type CuratedDatasetDisconnectInput = {
@@ -704,7 +704,7 @@ export type CuratedDatasetDisconnectInput = {
   exportTask?: InputMaybe<Array<CuratedDatasetExportTaskDisconnectFieldInput>>;
   fieldDefinitions?: InputMaybe<Array<CuratedDatasetFieldDefinitionsDisconnectFieldInput>>;
   funnelTask?: InputMaybe<CuratedDatasetFunnelTaskDisconnectFieldInput>;
-  generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetDisconnectFieldInput>;
+  generatedByDataset?: InputMaybe<CuratedDatasetGeneratedByDatasetDisconnectFieldInput>;
 };
 
 export type CuratedDatasetEdge = {
@@ -1139,72 +1139,72 @@ export type CuratedDatasetFunnelTaskUpdateFieldInput = {
   where?: InputMaybe<CuratedDatasetFunnelTaskConnectionWhere>;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetAggregateInput = {
-  AND?: InputMaybe<Array<CuratedDatasetGeneratedByRawDatasetAggregateInput>>;
-  OR?: InputMaybe<Array<CuratedDatasetGeneratedByRawDatasetAggregateInput>>;
+export type CuratedDatasetGeneratedByDatasetAggregateInput = {
+  AND?: InputMaybe<Array<CuratedDatasetGeneratedByDatasetAggregateInput>>;
+  OR?: InputMaybe<Array<CuratedDatasetGeneratedByDatasetAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<CuratedDatasetGeneratedByRawDatasetNodeAggregationWhereInput>;
+  node?: InputMaybe<CuratedDatasetGeneratedByDatasetNodeAggregationWhereInput>;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetConnectFieldInput = {
-  connect?: InputMaybe<RawDatasetConnectInput>;
-  where?: InputMaybe<RawDatasetConnectWhere>;
+export type CuratedDatasetGeneratedByDatasetConnectFieldInput = {
+  connect?: InputMaybe<DatasetConnectInput>;
+  where?: InputMaybe<DatasetConnectWhere>;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInput = {
-  onCreate: CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInputOnCreate;
-  where: RawDatasetConnectOrCreateWhere;
+export type CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInput = {
+  onCreate: CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInputOnCreate;
+  where: DatasetConnectOrCreateWhere;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInputOnCreate = {
-  node: RawDatasetOnCreateInput;
+export type CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInputOnCreate = {
+  node: DatasetOnCreateInput;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetConnection = {
-  __typename?: 'CuratedDatasetGeneratedByRawDatasetConnection';
-  edges: Array<CuratedDatasetGeneratedByRawDatasetRelationship>;
+export type CuratedDatasetGeneratedByDatasetConnection = {
+  __typename?: 'CuratedDatasetGeneratedByDatasetConnection';
+  edges: Array<CuratedDatasetGeneratedByDatasetRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type CuratedDatasetGeneratedByRawDatasetConnectionSort = {
-  node?: InputMaybe<RawDatasetSort>;
+export type CuratedDatasetGeneratedByDatasetConnectionSort = {
+  node?: InputMaybe<DatasetSort>;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetConnectionWhere = {
-  AND?: InputMaybe<Array<CuratedDatasetGeneratedByRawDatasetConnectionWhere>>;
-  OR?: InputMaybe<Array<CuratedDatasetGeneratedByRawDatasetConnectionWhere>>;
-  node?: InputMaybe<RawDatasetWhere>;
-  node_NOT?: InputMaybe<RawDatasetWhere>;
+export type CuratedDatasetGeneratedByDatasetConnectionWhere = {
+  AND?: InputMaybe<Array<CuratedDatasetGeneratedByDatasetConnectionWhere>>;
+  OR?: InputMaybe<Array<CuratedDatasetGeneratedByDatasetConnectionWhere>>;
+  node?: InputMaybe<DatasetWhere>;
+  node_NOT?: InputMaybe<DatasetWhere>;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetCreateFieldInput = {
-  node: RawDatasetCreateInput;
+export type CuratedDatasetGeneratedByDatasetCreateFieldInput = {
+  node: DatasetCreateInput;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetDeleteFieldInput = {
-  delete?: InputMaybe<RawDatasetDeleteInput>;
-  where?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectionWhere>;
+export type CuratedDatasetGeneratedByDatasetDeleteFieldInput = {
+  delete?: InputMaybe<DatasetDeleteInput>;
+  where?: InputMaybe<CuratedDatasetGeneratedByDatasetConnectionWhere>;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetDisconnectFieldInput = {
-  disconnect?: InputMaybe<RawDatasetDisconnectInput>;
-  where?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectionWhere>;
+export type CuratedDatasetGeneratedByDatasetDisconnectFieldInput = {
+  disconnect?: InputMaybe<DatasetDisconnectInput>;
+  where?: InputMaybe<CuratedDatasetGeneratedByDatasetConnectionWhere>;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetFieldInput = {
-  connect?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectFieldInput>;
-  connectOrCreate?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInput>;
-  create?: InputMaybe<CuratedDatasetGeneratedByRawDatasetCreateFieldInput>;
+export type CuratedDatasetGeneratedByDatasetFieldInput = {
+  connect?: InputMaybe<CuratedDatasetGeneratedByDatasetConnectFieldInput>;
+  connectOrCreate?: InputMaybe<CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInput>;
+  create?: InputMaybe<CuratedDatasetGeneratedByDatasetCreateFieldInput>;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<CuratedDatasetGeneratedByRawDatasetNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<CuratedDatasetGeneratedByRawDatasetNodeAggregationWhereInput>>;
+export type CuratedDatasetGeneratedByDatasetNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<CuratedDatasetGeneratedByDatasetNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<CuratedDatasetGeneratedByDatasetNodeAggregationWhereInput>>;
   createdAt_EQUAL?: InputMaybe<Scalars['DateTime']>;
   createdAt_GT?: InputMaybe<Scalars['DateTime']>;
   createdAt_GTE?: InputMaybe<Scalars['DateTime']>;
@@ -1260,27 +1260,27 @@ export type CuratedDatasetGeneratedByRawDatasetNodeAggregationWhereInput = {
   name_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
-  rawDatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
+  DatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetRelationship = {
-  __typename?: 'CuratedDatasetGeneratedByRawDatasetRelationship';
+export type CuratedDatasetGeneratedByDatasetRelationship = {
+  __typename?: 'CuratedDatasetGeneratedByDatasetRelationship';
   cursor: Scalars['String'];
-  node: RawDataset;
+  node: Dataset;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetUpdateConnectionInput = {
-  node?: InputMaybe<RawDatasetUpdateInput>;
+export type CuratedDatasetGeneratedByDatasetUpdateConnectionInput = {
+  node?: InputMaybe<DatasetUpdateInput>;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetUpdateFieldInput = {
-  connect?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectFieldInput>;
-  connectOrCreate?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInput>;
-  create?: InputMaybe<CuratedDatasetGeneratedByRawDatasetCreateFieldInput>;
-  delete?: InputMaybe<CuratedDatasetGeneratedByRawDatasetDeleteFieldInput>;
-  disconnect?: InputMaybe<CuratedDatasetGeneratedByRawDatasetDisconnectFieldInput>;
-  update?: InputMaybe<CuratedDatasetGeneratedByRawDatasetUpdateConnectionInput>;
-  where?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectionWhere>;
+export type CuratedDatasetGeneratedByDatasetUpdateFieldInput = {
+  connect?: InputMaybe<CuratedDatasetGeneratedByDatasetConnectFieldInput>;
+  connectOrCreate?: InputMaybe<CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInput>;
+  create?: InputMaybe<CuratedDatasetGeneratedByDatasetCreateFieldInput>;
+  delete?: InputMaybe<CuratedDatasetGeneratedByDatasetDeleteFieldInput>;
+  disconnect?: InputMaybe<CuratedDatasetGeneratedByDatasetDisconnectFieldInput>;
+  update?: InputMaybe<CuratedDatasetGeneratedByDatasetUpdateConnectionInput>;
+  where?: InputMaybe<CuratedDatasetGeneratedByDatasetConnectionWhere>;
 };
 
 export type CuratedDatasetOnCreateInput = {
@@ -1297,18 +1297,18 @@ export type CuratedDatasetOptions = {
   sort?: InputMaybe<Array<CuratedDatasetSort>>;
 };
 
-export type CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection = {
-  __typename?: 'CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection';
+export type CuratedDatasetDatasetGeneratedByDatasetAggregationSelection = {
+  __typename?: 'CuratedDatasetDatasetGeneratedByDatasetAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection>;
+  node?: Maybe<CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelection>;
 };
 
-export type CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection = {
-  __typename?: 'CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection';
+export type CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelection = {
+  __typename?: 'CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelection';
   createdAt: DateTimeAggregateSelectionNonNullable;
   description: StringAggregateSelectionNonNullable;
   name: StringAggregateSelectionNonNullable;
-  rawDatasetID: IdAggregateSelectionNonNullable;
+  DatasetID: IdAggregateSelectionNonNullable;
 };
 
 export type CuratedDatasetRelationInput = {
@@ -1316,7 +1316,7 @@ export type CuratedDatasetRelationInput = {
   exportTask?: InputMaybe<Array<CuratedDatasetExportTaskCreateFieldInput>>;
   fieldDefinitions?: InputMaybe<Array<CuratedDatasetFieldDefinitionsCreateFieldInput>>;
   funnelTask?: InputMaybe<CuratedDatasetFunnelTaskCreateFieldInput>;
-  generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetCreateFieldInput>;
+  generatedByDataset?: InputMaybe<CuratedDatasetGeneratedByDatasetCreateFieldInput>;
 };
 
 /** Fields to sort CuratedDatasets by. The order in which sorts are applied is not guaranteed when specifying many fields in one CuratedDatasetSort object. */
@@ -1372,7 +1372,7 @@ export type CuratedDatasetUpdateInput = {
   exportTask?: InputMaybe<Array<CuratedDatasetExportTaskUpdateFieldInput>>;
   fieldDefinitions?: InputMaybe<Array<CuratedDatasetFieldDefinitionsUpdateFieldInput>>;
   funnelTask?: InputMaybe<CuratedDatasetFunnelTaskUpdateFieldInput>;
-  generatedByRawDataset?: InputMaybe<CuratedDatasetGeneratedByRawDatasetUpdateFieldInput>;
+  generatedByDataset?: InputMaybe<CuratedDatasetGeneratedByDatasetUpdateFieldInput>;
   name?: InputMaybe<Scalars['String']>;
 };
 
@@ -1463,11 +1463,11 @@ export type CuratedDatasetWhere = {
   funnelTaskConnection?: InputMaybe<CuratedDatasetFunnelTaskConnectionWhere>;
   funnelTaskConnection_NOT?: InputMaybe<CuratedDatasetFunnelTaskConnectionWhere>;
   funnelTask_NOT?: InputMaybe<TaskWhere>;
-  generatedByRawDataset?: InputMaybe<RawDatasetWhere>;
-  generatedByRawDatasetAggregate?: InputMaybe<CuratedDatasetGeneratedByRawDatasetAggregateInput>;
-  generatedByRawDatasetConnection?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectionWhere>;
-  generatedByRawDatasetConnection_NOT?: InputMaybe<CuratedDatasetGeneratedByRawDatasetConnectionWhere>;
-  generatedByRawDataset_NOT?: InputMaybe<RawDatasetWhere>;
+  generatedByDataset?: InputMaybe<DatasetWhere>;
+  generatedByDatasetAggregate?: InputMaybe<CuratedDatasetGeneratedByDatasetAggregateInput>;
+  generatedByDatasetConnection?: InputMaybe<CuratedDatasetGeneratedByDatasetConnectionWhere>;
+  generatedByDatasetConnection_NOT?: InputMaybe<CuratedDatasetGeneratedByDatasetConnectionWhere>;
+  generatedByDataset_NOT?: InputMaybe<DatasetWhere>;
   name?: InputMaybe<Scalars['String']>;
   name_CONTAINS?: InputMaybe<Scalars['String']>;
   name_ENDS_WITH?: InputMaybe<Scalars['String']>;
@@ -3289,31 +3289,31 @@ export type HarmonizedDataset = {
   __typename?: 'HarmonizedDataset';
   harmonizedDatasetID: Scalars['ID'];
   name: Scalars['String'];
-  rawDatasets: Array<RawDataset>;
-  rawDatasetsAggregate?: Maybe<HarmonizedDatasetRawDatasetRawDatasetsAggregationSelection>;
-  rawDatasetsConnection: HarmonizedDatasetRawDatasetsConnection;
+  Datasets: Array<Dataset>;
+  DatasetsAggregate?: Maybe<HarmonizedDatasetDatasetDatasetsAggregationSelection>;
+  DatasetsConnection: HarmonizedDatasetDatasetsConnection;
 };
 
 
-export type HarmonizedDatasetRawDatasetsArgs = {
+export type HarmonizedDatasetDatasetsArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  options?: InputMaybe<RawDatasetOptions>;
-  where?: InputMaybe<RawDatasetWhere>;
+  options?: InputMaybe<DatasetOptions>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type HarmonizedDatasetRawDatasetsAggregateArgs = {
+export type HarmonizedDatasetDatasetsAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  where?: InputMaybe<RawDatasetWhere>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type HarmonizedDatasetRawDatasetsConnectionArgs = {
+export type HarmonizedDatasetDatasetsConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<HarmonizedDatasetRawDatasetsConnectionSort>>;
-  where?: InputMaybe<HarmonizedDatasetRawDatasetsConnectionWhere>;
+  sort?: InputMaybe<Array<HarmonizedDatasetDatasetsConnectionSort>>;
+  where?: InputMaybe<HarmonizedDatasetDatasetsConnectionWhere>;
 };
 
 export type HarmonizedDatasetAggregateSelection = {
@@ -3324,24 +3324,24 @@ export type HarmonizedDatasetAggregateSelection = {
 };
 
 export type HarmonizedDatasetConnectInput = {
-  rawDatasets?: InputMaybe<Array<HarmonizedDatasetRawDatasetsConnectFieldInput>>;
+  Datasets?: InputMaybe<Array<HarmonizedDatasetDatasetsConnectFieldInput>>;
 };
 
 export type HarmonizedDatasetConnectOrCreateInput = {
-  rawDatasets?: InputMaybe<Array<HarmonizedDatasetRawDatasetsConnectOrCreateFieldInput>>;
+  Datasets?: InputMaybe<Array<HarmonizedDatasetDatasetsConnectOrCreateFieldInput>>;
 };
 
 export type HarmonizedDatasetCreateInput = {
   name: Scalars['String'];
-  rawDatasets?: InputMaybe<HarmonizedDatasetRawDatasetsFieldInput>;
+  Datasets?: InputMaybe<HarmonizedDatasetDatasetsFieldInput>;
 };
 
 export type HarmonizedDatasetDeleteInput = {
-  rawDatasets?: InputMaybe<Array<HarmonizedDatasetRawDatasetsDeleteFieldInput>>;
+  Datasets?: InputMaybe<Array<HarmonizedDatasetDatasetsDeleteFieldInput>>;
 };
 
 export type HarmonizedDatasetDisconnectInput = {
-  rawDatasets?: InputMaybe<Array<HarmonizedDatasetRawDatasetsDisconnectFieldInput>>;
+  Datasets?: InputMaybe<Array<HarmonizedDatasetDatasetsDisconnectFieldInput>>;
 };
 
 export type HarmonizedDatasetEdge = {
@@ -3357,86 +3357,86 @@ export type HarmonizedDatasetOptions = {
   sort?: InputMaybe<Array<HarmonizedDatasetSort>>;
 };
 
-export type HarmonizedDatasetRawDatasetRawDatasetsAggregationSelection = {
-  __typename?: 'HarmonizedDatasetRawDatasetRawDatasetsAggregationSelection';
+export type HarmonizedDatasetDatasetDatasetsAggregationSelection = {
+  __typename?: 'HarmonizedDatasetDatasetDatasetsAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelection>;
+  node?: Maybe<HarmonizedDatasetDatasetDatasetsNodeAggregateSelection>;
 };
 
-export type HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelection = {
-  __typename?: 'HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelection';
+export type HarmonizedDatasetDatasetDatasetsNodeAggregateSelection = {
+  __typename?: 'HarmonizedDatasetDatasetDatasetsNodeAggregateSelection';
   createdAt: DateTimeAggregateSelectionNonNullable;
   description: StringAggregateSelectionNonNullable;
   name: StringAggregateSelectionNonNullable;
-  rawDatasetID: IdAggregateSelectionNonNullable;
+  DatasetID: IdAggregateSelectionNonNullable;
 };
 
-export type HarmonizedDatasetRawDatasetsAggregateInput = {
-  AND?: InputMaybe<Array<HarmonizedDatasetRawDatasetsAggregateInput>>;
-  OR?: InputMaybe<Array<HarmonizedDatasetRawDatasetsAggregateInput>>;
+export type HarmonizedDatasetDatasetsAggregateInput = {
+  AND?: InputMaybe<Array<HarmonizedDatasetDatasetsAggregateInput>>;
+  OR?: InputMaybe<Array<HarmonizedDatasetDatasetsAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<HarmonizedDatasetRawDatasetsNodeAggregationWhereInput>;
+  node?: InputMaybe<HarmonizedDatasetDatasetsNodeAggregationWhereInput>;
 };
 
-export type HarmonizedDatasetRawDatasetsConnectFieldInput = {
-  connect?: InputMaybe<Array<RawDatasetConnectInput>>;
-  where?: InputMaybe<RawDatasetConnectWhere>;
+export type HarmonizedDatasetDatasetsConnectFieldInput = {
+  connect?: InputMaybe<Array<DatasetConnectInput>>;
+  where?: InputMaybe<DatasetConnectWhere>;
 };
 
-export type HarmonizedDatasetRawDatasetsConnectOrCreateFieldInput = {
-  onCreate: HarmonizedDatasetRawDatasetsConnectOrCreateFieldInputOnCreate;
-  where: RawDatasetConnectOrCreateWhere;
+export type HarmonizedDatasetDatasetsConnectOrCreateFieldInput = {
+  onCreate: HarmonizedDatasetDatasetsConnectOrCreateFieldInputOnCreate;
+  where: DatasetConnectOrCreateWhere;
 };
 
-export type HarmonizedDatasetRawDatasetsConnectOrCreateFieldInputOnCreate = {
-  node: RawDatasetOnCreateInput;
+export type HarmonizedDatasetDatasetsConnectOrCreateFieldInputOnCreate = {
+  node: DatasetOnCreateInput;
 };
 
-export type HarmonizedDatasetRawDatasetsConnection = {
-  __typename?: 'HarmonizedDatasetRawDatasetsConnection';
-  edges: Array<HarmonizedDatasetRawDatasetsRelationship>;
+export type HarmonizedDatasetDatasetsConnection = {
+  __typename?: 'HarmonizedDatasetDatasetsConnection';
+  edges: Array<HarmonizedDatasetDatasetsRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type HarmonizedDatasetRawDatasetsConnectionSort = {
-  node?: InputMaybe<RawDatasetSort>;
+export type HarmonizedDatasetDatasetsConnectionSort = {
+  node?: InputMaybe<DatasetSort>;
 };
 
-export type HarmonizedDatasetRawDatasetsConnectionWhere = {
-  AND?: InputMaybe<Array<HarmonizedDatasetRawDatasetsConnectionWhere>>;
-  OR?: InputMaybe<Array<HarmonizedDatasetRawDatasetsConnectionWhere>>;
-  node?: InputMaybe<RawDatasetWhere>;
-  node_NOT?: InputMaybe<RawDatasetWhere>;
+export type HarmonizedDatasetDatasetsConnectionWhere = {
+  AND?: InputMaybe<Array<HarmonizedDatasetDatasetsConnectionWhere>>;
+  OR?: InputMaybe<Array<HarmonizedDatasetDatasetsConnectionWhere>>;
+  node?: InputMaybe<DatasetWhere>;
+  node_NOT?: InputMaybe<DatasetWhere>;
 };
 
-export type HarmonizedDatasetRawDatasetsCreateFieldInput = {
-  node: RawDatasetCreateInput;
+export type HarmonizedDatasetDatasetsCreateFieldInput = {
+  node: DatasetCreateInput;
 };
 
-export type HarmonizedDatasetRawDatasetsDeleteFieldInput = {
-  delete?: InputMaybe<RawDatasetDeleteInput>;
-  where?: InputMaybe<HarmonizedDatasetRawDatasetsConnectionWhere>;
+export type HarmonizedDatasetDatasetsDeleteFieldInput = {
+  delete?: InputMaybe<DatasetDeleteInput>;
+  where?: InputMaybe<HarmonizedDatasetDatasetsConnectionWhere>;
 };
 
-export type HarmonizedDatasetRawDatasetsDisconnectFieldInput = {
-  disconnect?: InputMaybe<RawDatasetDisconnectInput>;
-  where?: InputMaybe<HarmonizedDatasetRawDatasetsConnectionWhere>;
+export type HarmonizedDatasetDatasetsDisconnectFieldInput = {
+  disconnect?: InputMaybe<DatasetDisconnectInput>;
+  where?: InputMaybe<HarmonizedDatasetDatasetsConnectionWhere>;
 };
 
-export type HarmonizedDatasetRawDatasetsFieldInput = {
-  connect?: InputMaybe<Array<HarmonizedDatasetRawDatasetsConnectFieldInput>>;
-  connectOrCreate?: InputMaybe<Array<HarmonizedDatasetRawDatasetsConnectOrCreateFieldInput>>;
-  create?: InputMaybe<Array<HarmonizedDatasetRawDatasetsCreateFieldInput>>;
+export type HarmonizedDatasetDatasetsFieldInput = {
+  connect?: InputMaybe<Array<HarmonizedDatasetDatasetsConnectFieldInput>>;
+  connectOrCreate?: InputMaybe<Array<HarmonizedDatasetDatasetsConnectOrCreateFieldInput>>;
+  create?: InputMaybe<Array<HarmonizedDatasetDatasetsCreateFieldInput>>;
 };
 
-export type HarmonizedDatasetRawDatasetsNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<HarmonizedDatasetRawDatasetsNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<HarmonizedDatasetRawDatasetsNodeAggregationWhereInput>>;
+export type HarmonizedDatasetDatasetsNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<HarmonizedDatasetDatasetsNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<HarmonizedDatasetDatasetsNodeAggregationWhereInput>>;
   createdAt_EQUAL?: InputMaybe<Scalars['DateTime']>;
   createdAt_GT?: InputMaybe<Scalars['DateTime']>;
   createdAt_GTE?: InputMaybe<Scalars['DateTime']>;
@@ -3492,31 +3492,31 @@ export type HarmonizedDatasetRawDatasetsNodeAggregationWhereInput = {
   name_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
-  rawDatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
+  DatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type HarmonizedDatasetRawDatasetsRelationship = {
-  __typename?: 'HarmonizedDatasetRawDatasetsRelationship';
+export type HarmonizedDatasetDatasetsRelationship = {
+  __typename?: 'HarmonizedDatasetDatasetsRelationship';
   cursor: Scalars['String'];
-  node: RawDataset;
+  node: Dataset;
 };
 
-export type HarmonizedDatasetRawDatasetsUpdateConnectionInput = {
-  node?: InputMaybe<RawDatasetUpdateInput>;
+export type HarmonizedDatasetDatasetsUpdateConnectionInput = {
+  node?: InputMaybe<DatasetUpdateInput>;
 };
 
-export type HarmonizedDatasetRawDatasetsUpdateFieldInput = {
-  connect?: InputMaybe<Array<HarmonizedDatasetRawDatasetsConnectFieldInput>>;
-  connectOrCreate?: InputMaybe<Array<HarmonizedDatasetRawDatasetsConnectOrCreateFieldInput>>;
-  create?: InputMaybe<Array<HarmonizedDatasetRawDatasetsCreateFieldInput>>;
-  delete?: InputMaybe<Array<HarmonizedDatasetRawDatasetsDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<HarmonizedDatasetRawDatasetsDisconnectFieldInput>>;
-  update?: InputMaybe<HarmonizedDatasetRawDatasetsUpdateConnectionInput>;
-  where?: InputMaybe<HarmonizedDatasetRawDatasetsConnectionWhere>;
+export type HarmonizedDatasetDatasetsUpdateFieldInput = {
+  connect?: InputMaybe<Array<HarmonizedDatasetDatasetsConnectFieldInput>>;
+  connectOrCreate?: InputMaybe<Array<HarmonizedDatasetDatasetsConnectOrCreateFieldInput>>;
+  create?: InputMaybe<Array<HarmonizedDatasetDatasetsCreateFieldInput>>;
+  delete?: InputMaybe<Array<HarmonizedDatasetDatasetsDeleteFieldInput>>;
+  disconnect?: InputMaybe<Array<HarmonizedDatasetDatasetsDisconnectFieldInput>>;
+  update?: InputMaybe<HarmonizedDatasetDatasetsUpdateConnectionInput>;
+  where?: InputMaybe<HarmonizedDatasetDatasetsConnectionWhere>;
 };
 
 export type HarmonizedDatasetRelationInput = {
-  rawDatasets?: InputMaybe<Array<HarmonizedDatasetRawDatasetsCreateFieldInput>>;
+  Datasets?: InputMaybe<Array<HarmonizedDatasetDatasetsCreateFieldInput>>;
 };
 
 /** Fields to sort HarmonizedDatasets by. The order in which sorts are applied is not guaranteed when specifying many fields in one HarmonizedDatasetSort object. */
@@ -3527,7 +3527,7 @@ export type HarmonizedDatasetSort = {
 
 export type HarmonizedDatasetUpdateInput = {
   name?: InputMaybe<Scalars['String']>;
-  rawDatasets?: InputMaybe<Array<HarmonizedDatasetRawDatasetsUpdateFieldInput>>;
+  Datasets?: InputMaybe<Array<HarmonizedDatasetDatasetsUpdateFieldInput>>;
 };
 
 export type HarmonizedDatasetWhere = {
@@ -3553,23 +3553,23 @@ export type HarmonizedDatasetWhere = {
   name_NOT_IN?: InputMaybe<Array<Scalars['String']>>;
   name_NOT_STARTS_WITH?: InputMaybe<Scalars['String']>;
   name_STARTS_WITH?: InputMaybe<Scalars['String']>;
-  rawDatasets?: InputMaybe<RawDatasetWhere>;
-  rawDatasetsAggregate?: InputMaybe<HarmonizedDatasetRawDatasetsAggregateInput>;
-  rawDatasetsConnection?: InputMaybe<HarmonizedDatasetRawDatasetsConnectionWhere>;
-  rawDatasetsConnection_ALL?: InputMaybe<HarmonizedDatasetRawDatasetsConnectionWhere>;
-  rawDatasetsConnection_NONE?: InputMaybe<HarmonizedDatasetRawDatasetsConnectionWhere>;
-  rawDatasetsConnection_NOT?: InputMaybe<HarmonizedDatasetRawDatasetsConnectionWhere>;
-  rawDatasetsConnection_SINGLE?: InputMaybe<HarmonizedDatasetRawDatasetsConnectionWhere>;
-  rawDatasetsConnection_SOME?: InputMaybe<HarmonizedDatasetRawDatasetsConnectionWhere>;
-  /** Return HarmonizedDatasets where all of the related RawDatasets match this filter */
-  rawDatasets_ALL?: InputMaybe<RawDatasetWhere>;
-  /** Return HarmonizedDatasets where none of the related RawDatasets match this filter */
-  rawDatasets_NONE?: InputMaybe<RawDatasetWhere>;
-  rawDatasets_NOT?: InputMaybe<RawDatasetWhere>;
-  /** Return HarmonizedDatasets where one of the related RawDatasets match this filter */
-  rawDatasets_SINGLE?: InputMaybe<RawDatasetWhere>;
-  /** Return HarmonizedDatasets where some of the related RawDatasets match this filter */
-  rawDatasets_SOME?: InputMaybe<RawDatasetWhere>;
+  Datasets?: InputMaybe<DatasetWhere>;
+  DatasetsAggregate?: InputMaybe<HarmonizedDatasetDatasetsAggregateInput>;
+  DatasetsConnection?: InputMaybe<HarmonizedDatasetDatasetsConnectionWhere>;
+  DatasetsConnection_ALL?: InputMaybe<HarmonizedDatasetDatasetsConnectionWhere>;
+  DatasetsConnection_NONE?: InputMaybe<HarmonizedDatasetDatasetsConnectionWhere>;
+  DatasetsConnection_NOT?: InputMaybe<HarmonizedDatasetDatasetsConnectionWhere>;
+  DatasetsConnection_SINGLE?: InputMaybe<HarmonizedDatasetDatasetsConnectionWhere>;
+  DatasetsConnection_SOME?: InputMaybe<HarmonizedDatasetDatasetsConnectionWhere>;
+  /** Return HarmonizedDatasets where all of the related Datasets match this filter */
+  Datasets_ALL?: InputMaybe<DatasetWhere>;
+  /** Return HarmonizedDatasets where none of the related Datasets match this filter */
+  Datasets_NONE?: InputMaybe<DatasetWhere>;
+  Datasets_NOT?: InputMaybe<DatasetWhere>;
+  /** Return HarmonizedDatasets where one of the related Datasets match this filter */
+  Datasets_SINGLE?: InputMaybe<DatasetWhere>;
+  /** Return HarmonizedDatasets where some of the related Datasets match this filter */
+  Datasets_SOME?: InputMaybe<DatasetWhere>;
 };
 
 export type HarmonizedDatasetsConnection = {
@@ -4047,9 +4047,9 @@ export type MinioUpload = {
   allowedSites?: Maybe<Array<Maybe<Scalars['String']>>>;
   allowedStudies?: Maybe<Array<Maybe<Scalars['String']>>>;
   bucketName: Scalars['ID'];
-  codeBookRawDataset?: Maybe<RawDataset>;
-  codeBookRawDatasetAggregate?: Maybe<MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection>;
-  codeBookRawDatasetConnection: MinioUploadCodeBookRawDatasetConnection;
+  codeBookDataset?: Maybe<Dataset>;
+  codeBookDatasetAggregate?: Maybe<MinioUploadDatasetCodeBookDatasetAggregationSelection>;
+  codeBookDatasetConnection: MinioUploadCodeBookDatasetConnection;
   filename: Scalars['String'];
   fromExportTask?: Maybe<Task>;
   fromExportTaskAggregate?: Maybe<MinioUploadTaskFromExportTaskAggregationSelection>;
@@ -4062,34 +4062,34 @@ export type MinioUpload = {
   pairedRawdataFileAggregate?: Maybe<MinioUploadMinioUploadPairedRawdataFileAggregationSelection>;
   pairedRawdataFileConnection: MinioUploadPairedRawdataFileConnection;
   presignedURL?: Maybe<Scalars['String']>;
-  rawDataset?: Maybe<RawDataset>;
-  rawDatasetAggregate?: Maybe<MinioUploadRawDatasetRawDatasetAggregationSelection>;
-  rawDatasetConnection: MinioUploadRawDatasetConnection;
-  rawdataFileRawDataset?: Maybe<RawDataset>;
-  rawdataFileRawDatasetAggregate?: Maybe<MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelection>;
-  rawdataFileRawDatasetConnection: MinioUploadRawdataFileRawDatasetConnection;
+  Dataset?: Maybe<Dataset>;
+  DatasetAggregate?: Maybe<MinioUploadDatasetDatasetAggregationSelection>;
+  DatasetConnection: MinioUploadDatasetConnection;
+  rawdataFileDataset?: Maybe<Dataset>;
+  rawdataFileDatasetAggregate?: Maybe<MinioUploadDatasetRawdataFileDatasetAggregationSelection>;
+  rawdataFileDatasetConnection: MinioUploadRawdataFileDatasetConnection;
 };
 
 
-export type MinioUploadCodeBookRawDatasetArgs = {
+export type MinioUploadCodeBookDatasetArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  options?: InputMaybe<RawDatasetOptions>;
-  where?: InputMaybe<RawDatasetWhere>;
+  options?: InputMaybe<DatasetOptions>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type MinioUploadCodeBookRawDatasetAggregateArgs = {
+export type MinioUploadCodeBookDatasetAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  where?: InputMaybe<RawDatasetWhere>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type MinioUploadCodeBookRawDatasetConnectionArgs = {
+export type MinioUploadCodeBookDatasetConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<MinioUploadCodeBookRawDatasetConnectionSort>>;
-  where?: InputMaybe<MinioUploadCodeBookRawDatasetConnectionWhere>;
+  sort?: InputMaybe<Array<MinioUploadCodeBookDatasetConnectionSort>>;
+  where?: InputMaybe<MinioUploadCodeBookDatasetConnectionWhere>;
 };
 
 
@@ -4159,47 +4159,47 @@ export type MinioUploadPairedRawdataFileConnectionArgs = {
 };
 
 
-export type MinioUploadRawDatasetArgs = {
+export type MinioUploadDatasetArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  options?: InputMaybe<RawDatasetOptions>;
-  where?: InputMaybe<RawDatasetWhere>;
+  options?: InputMaybe<DatasetOptions>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type MinioUploadRawDatasetAggregateArgs = {
+export type MinioUploadDatasetAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  where?: InputMaybe<RawDatasetWhere>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type MinioUploadRawDatasetConnectionArgs = {
+export type MinioUploadDatasetConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<MinioUploadRawDatasetConnectionSort>>;
-  where?: InputMaybe<MinioUploadRawDatasetConnectionWhere>;
+  sort?: InputMaybe<Array<MinioUploadDatasetConnectionSort>>;
+  where?: InputMaybe<MinioUploadDatasetConnectionWhere>;
 };
 
 
-export type MinioUploadRawdataFileRawDatasetArgs = {
+export type MinioUploadRawdataFileDatasetArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  options?: InputMaybe<RawDatasetOptions>;
-  where?: InputMaybe<RawDatasetWhere>;
+  options?: InputMaybe<DatasetOptions>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type MinioUploadRawdataFileRawDatasetAggregateArgs = {
+export type MinioUploadRawdataFileDatasetAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  where?: InputMaybe<RawDatasetWhere>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type MinioUploadRawdataFileRawDatasetConnectionArgs = {
+export type MinioUploadRawdataFileDatasetConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<MinioUploadRawdataFileRawDatasetConnectionSort>>;
-  where?: InputMaybe<MinioUploadRawdataFileRawDatasetConnectionWhere>;
+  sort?: InputMaybe<Array<MinioUploadRawdataFileDatasetConnectionSort>>;
+  where?: InputMaybe<MinioUploadRawdataFileDatasetConnectionWhere>;
 };
 
 export type MinioUploadAggregateSelection = {
@@ -4210,78 +4210,78 @@ export type MinioUploadAggregateSelection = {
   objectName: IdAggregateSelectionNonNullable;
 };
 
-export type MinioUploadCodeBookRawDatasetAggregateInput = {
-  AND?: InputMaybe<Array<MinioUploadCodeBookRawDatasetAggregateInput>>;
-  OR?: InputMaybe<Array<MinioUploadCodeBookRawDatasetAggregateInput>>;
+export type MinioUploadCodeBookDatasetAggregateInput = {
+  AND?: InputMaybe<Array<MinioUploadCodeBookDatasetAggregateInput>>;
+  OR?: InputMaybe<Array<MinioUploadCodeBookDatasetAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<MinioUploadCodeBookRawDatasetNodeAggregationWhereInput>;
+  node?: InputMaybe<MinioUploadCodeBookDatasetNodeAggregationWhereInput>;
 };
 
-export type MinioUploadCodeBookRawDatasetConnectFieldInput = {
-  connect?: InputMaybe<RawDatasetConnectInput>;
+export type MinioUploadCodeBookDatasetConnectFieldInput = {
+  connect?: InputMaybe<DatasetConnectInput>;
   edge: HasCodebookCreateInput;
-  where?: InputMaybe<RawDatasetConnectWhere>;
+  where?: InputMaybe<DatasetConnectWhere>;
 };
 
-export type MinioUploadCodeBookRawDatasetConnectOrCreateFieldInput = {
-  onCreate: MinioUploadCodeBookRawDatasetConnectOrCreateFieldInputOnCreate;
-  where: RawDatasetConnectOrCreateWhere;
+export type MinioUploadCodeBookDatasetConnectOrCreateFieldInput = {
+  onCreate: MinioUploadCodeBookDatasetConnectOrCreateFieldInputOnCreate;
+  where: DatasetConnectOrCreateWhere;
 };
 
-export type MinioUploadCodeBookRawDatasetConnectOrCreateFieldInputOnCreate = {
+export type MinioUploadCodeBookDatasetConnectOrCreateFieldInputOnCreate = {
   edge: HasCodebookCreateInput;
-  node: RawDatasetOnCreateInput;
+  node: DatasetOnCreateInput;
 };
 
-export type MinioUploadCodeBookRawDatasetConnection = {
-  __typename?: 'MinioUploadCodeBookRawDatasetConnection';
-  edges: Array<MinioUploadCodeBookRawDatasetRelationship>;
+export type MinioUploadCodeBookDatasetConnection = {
+  __typename?: 'MinioUploadCodeBookDatasetConnection';
+  edges: Array<MinioUploadCodeBookDatasetRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type MinioUploadCodeBookRawDatasetConnectionSort = {
+export type MinioUploadCodeBookDatasetConnectionSort = {
   edge?: InputMaybe<HasCodebookSort>;
-  node?: InputMaybe<RawDatasetSort>;
+  node?: InputMaybe<DatasetSort>;
 };
 
-export type MinioUploadCodeBookRawDatasetConnectionWhere = {
-  AND?: InputMaybe<Array<MinioUploadCodeBookRawDatasetConnectionWhere>>;
-  OR?: InputMaybe<Array<MinioUploadCodeBookRawDatasetConnectionWhere>>;
+export type MinioUploadCodeBookDatasetConnectionWhere = {
+  AND?: InputMaybe<Array<MinioUploadCodeBookDatasetConnectionWhere>>;
+  OR?: InputMaybe<Array<MinioUploadCodeBookDatasetConnectionWhere>>;
   edge?: InputMaybe<HasCodebookWhere>;
   edge_NOT?: InputMaybe<HasCodebookWhere>;
-  node?: InputMaybe<RawDatasetWhere>;
-  node_NOT?: InputMaybe<RawDatasetWhere>;
+  node?: InputMaybe<DatasetWhere>;
+  node_NOT?: InputMaybe<DatasetWhere>;
 };
 
-export type MinioUploadCodeBookRawDatasetCreateFieldInput = {
+export type MinioUploadCodeBookDatasetCreateFieldInput = {
   edge: HasCodebookCreateInput;
-  node: RawDatasetCreateInput;
+  node: DatasetCreateInput;
 };
 
-export type MinioUploadCodeBookRawDatasetDeleteFieldInput = {
-  delete?: InputMaybe<RawDatasetDeleteInput>;
-  where?: InputMaybe<MinioUploadCodeBookRawDatasetConnectionWhere>;
+export type MinioUploadCodeBookDatasetDeleteFieldInput = {
+  delete?: InputMaybe<DatasetDeleteInput>;
+  where?: InputMaybe<MinioUploadCodeBookDatasetConnectionWhere>;
 };
 
-export type MinioUploadCodeBookRawDatasetDisconnectFieldInput = {
-  disconnect?: InputMaybe<RawDatasetDisconnectInput>;
-  where?: InputMaybe<MinioUploadCodeBookRawDatasetConnectionWhere>;
+export type MinioUploadCodeBookDatasetDisconnectFieldInput = {
+  disconnect?: InputMaybe<DatasetDisconnectInput>;
+  where?: InputMaybe<MinioUploadCodeBookDatasetConnectionWhere>;
 };
 
-export type MinioUploadCodeBookRawDatasetFieldInput = {
-  connect?: InputMaybe<MinioUploadCodeBookRawDatasetConnectFieldInput>;
-  connectOrCreate?: InputMaybe<MinioUploadCodeBookRawDatasetConnectOrCreateFieldInput>;
-  create?: InputMaybe<MinioUploadCodeBookRawDatasetCreateFieldInput>;
+export type MinioUploadCodeBookDatasetFieldInput = {
+  connect?: InputMaybe<MinioUploadCodeBookDatasetConnectFieldInput>;
+  connectOrCreate?: InputMaybe<MinioUploadCodeBookDatasetConnectOrCreateFieldInput>;
+  create?: InputMaybe<MinioUploadCodeBookDatasetCreateFieldInput>;
 };
 
-export type MinioUploadCodeBookRawDatasetNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<MinioUploadCodeBookRawDatasetNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<MinioUploadCodeBookRawDatasetNodeAggregationWhereInput>>;
+export type MinioUploadCodeBookDatasetNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<MinioUploadCodeBookDatasetNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<MinioUploadCodeBookDatasetNodeAggregationWhereInput>>;
   createdAt_EQUAL?: InputMaybe<Scalars['DateTime']>;
   createdAt_GT?: InputMaybe<Scalars['DateTime']>;
   createdAt_GTE?: InputMaybe<Scalars['DateTime']>;
@@ -4337,46 +4337,46 @@ export type MinioUploadCodeBookRawDatasetNodeAggregationWhereInput = {
   name_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
-  rawDatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
+  DatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type MinioUploadCodeBookRawDatasetRelationship = HasCodebook & {
-  __typename?: 'MinioUploadCodeBookRawDatasetRelationship';
+export type MinioUploadCodeBookDatasetRelationship = HasCodebook & {
+  __typename?: 'MinioUploadCodeBookDatasetRelationship';
   cursor: Scalars['String'];
-  node: RawDataset;
+  node: Dataset;
   validated: Scalars['Boolean'];
 };
 
-export type MinioUploadCodeBookRawDatasetUpdateConnectionInput = {
+export type MinioUploadCodeBookDatasetUpdateConnectionInput = {
   edge?: InputMaybe<HasCodebookUpdateInput>;
-  node?: InputMaybe<RawDatasetUpdateInput>;
+  node?: InputMaybe<DatasetUpdateInput>;
 };
 
-export type MinioUploadCodeBookRawDatasetUpdateFieldInput = {
-  connect?: InputMaybe<MinioUploadCodeBookRawDatasetConnectFieldInput>;
-  connectOrCreate?: InputMaybe<MinioUploadCodeBookRawDatasetConnectOrCreateFieldInput>;
-  create?: InputMaybe<MinioUploadCodeBookRawDatasetCreateFieldInput>;
-  delete?: InputMaybe<MinioUploadCodeBookRawDatasetDeleteFieldInput>;
-  disconnect?: InputMaybe<MinioUploadCodeBookRawDatasetDisconnectFieldInput>;
-  update?: InputMaybe<MinioUploadCodeBookRawDatasetUpdateConnectionInput>;
-  where?: InputMaybe<MinioUploadCodeBookRawDatasetConnectionWhere>;
+export type MinioUploadCodeBookDatasetUpdateFieldInput = {
+  connect?: InputMaybe<MinioUploadCodeBookDatasetConnectFieldInput>;
+  connectOrCreate?: InputMaybe<MinioUploadCodeBookDatasetConnectOrCreateFieldInput>;
+  create?: InputMaybe<MinioUploadCodeBookDatasetCreateFieldInput>;
+  delete?: InputMaybe<MinioUploadCodeBookDatasetDeleteFieldInput>;
+  disconnect?: InputMaybe<MinioUploadCodeBookDatasetDisconnectFieldInput>;
+  update?: InputMaybe<MinioUploadCodeBookDatasetUpdateConnectionInput>;
+  where?: InputMaybe<MinioUploadCodeBookDatasetConnectionWhere>;
 };
 
 export type MinioUploadConnectInput = {
-  codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetConnectFieldInput>;
+  codeBookDataset?: InputMaybe<MinioUploadCodeBookDatasetConnectFieldInput>;
   fromExportTask?: InputMaybe<MinioUploadFromExportTaskConnectFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookConnectFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileConnectFieldInput>;
-  rawDataset?: InputMaybe<MinioUploadRawDatasetConnectFieldInput>;
-  rawdataFileRawDataset?: InputMaybe<MinioUploadRawdataFileRawDatasetConnectFieldInput>;
+  Dataset?: InputMaybe<MinioUploadDatasetConnectFieldInput>;
+  rawdataFileDataset?: InputMaybe<MinioUploadRawdataFileDatasetConnectFieldInput>;
 };
 
 export type MinioUploadConnectOrCreateInput = {
-  codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetConnectOrCreateFieldInput>;
+  codeBookDataset?: InputMaybe<MinioUploadCodeBookDatasetConnectOrCreateFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookConnectOrCreateFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileConnectOrCreateFieldInput>;
-  rawDataset?: InputMaybe<MinioUploadRawDatasetConnectOrCreateFieldInput>;
-  rawdataFileRawDataset?: InputMaybe<MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInput>;
+  Dataset?: InputMaybe<MinioUploadDatasetConnectOrCreateFieldInput>;
+  rawdataFileDataset?: InputMaybe<MinioUploadRawdataFileDatasetConnectOrCreateFieldInput>;
 };
 
 export type MinioUploadConnectOrCreateWhere = {
@@ -4391,31 +4391,31 @@ export type MinioUploadCreateInput = {
   allowedSites?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   allowedStudies?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   bucketName: Scalars['ID'];
-  codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetFieldInput>;
+  codeBookDataset?: InputMaybe<MinioUploadCodeBookDatasetFieldInput>;
   filename: Scalars['String'];
   fromExportTask?: InputMaybe<MinioUploadFromExportTaskFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileFieldInput>;
-  rawDataset?: InputMaybe<MinioUploadRawDatasetFieldInput>;
-  rawdataFileRawDataset?: InputMaybe<MinioUploadRawdataFileRawDatasetFieldInput>;
+  Dataset?: InputMaybe<MinioUploadDatasetFieldInput>;
+  rawdataFileDataset?: InputMaybe<MinioUploadRawdataFileDatasetFieldInput>;
 };
 
 export type MinioUploadDeleteInput = {
-  codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetDeleteFieldInput>;
+  codeBookDataset?: InputMaybe<MinioUploadCodeBookDatasetDeleteFieldInput>;
   fromExportTask?: InputMaybe<MinioUploadFromExportTaskDeleteFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookDeleteFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileDeleteFieldInput>;
-  rawDataset?: InputMaybe<MinioUploadRawDatasetDeleteFieldInput>;
-  rawdataFileRawDataset?: InputMaybe<MinioUploadRawdataFileRawDatasetDeleteFieldInput>;
+  Dataset?: InputMaybe<MinioUploadDatasetDeleteFieldInput>;
+  rawdataFileDataset?: InputMaybe<MinioUploadRawdataFileDatasetDeleteFieldInput>;
 };
 
 export type MinioUploadDisconnectInput = {
-  codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetDisconnectFieldInput>;
+  codeBookDataset?: InputMaybe<MinioUploadCodeBookDatasetDisconnectFieldInput>;
   fromExportTask?: InputMaybe<MinioUploadFromExportTaskDisconnectFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookDisconnectFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileDisconnectFieldInput>;
-  rawDataset?: InputMaybe<MinioUploadRawDatasetDisconnectFieldInput>;
-  rawdataFileRawDataset?: InputMaybe<MinioUploadRawdataFileRawDatasetDisconnectFieldInput>;
+  Dataset?: InputMaybe<MinioUploadDatasetDisconnectFieldInput>;
+  rawdataFileDataset?: InputMaybe<MinioUploadRawdataFileDatasetDisconnectFieldInput>;
 };
 
 export type MinioUploadEdge = {
@@ -4858,86 +4858,86 @@ export type MinioUploadPairedRawdataFileUpdateFieldInput = {
   where?: InputMaybe<MinioUploadPairedRawdataFileConnectionWhere>;
 };
 
-export type MinioUploadRawDatasetAggregateInput = {
-  AND?: InputMaybe<Array<MinioUploadRawDatasetAggregateInput>>;
-  OR?: InputMaybe<Array<MinioUploadRawDatasetAggregateInput>>;
+export type MinioUploadDatasetAggregateInput = {
+  AND?: InputMaybe<Array<MinioUploadDatasetAggregateInput>>;
+  OR?: InputMaybe<Array<MinioUploadDatasetAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<MinioUploadRawDatasetNodeAggregationWhereInput>;
+  node?: InputMaybe<MinioUploadDatasetNodeAggregationWhereInput>;
 };
 
-export type MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection = {
-  __typename?: 'MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection';
+export type MinioUploadDatasetCodeBookDatasetAggregationSelection = {
+  __typename?: 'MinioUploadDatasetCodeBookDatasetAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection>;
+  node?: Maybe<MinioUploadDatasetCodeBookDatasetNodeAggregateSelection>;
 };
 
-export type MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection = {
-  __typename?: 'MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection';
+export type MinioUploadDatasetCodeBookDatasetNodeAggregateSelection = {
+  __typename?: 'MinioUploadDatasetCodeBookDatasetNodeAggregateSelection';
   createdAt: DateTimeAggregateSelectionNonNullable;
   description: StringAggregateSelectionNonNullable;
   name: StringAggregateSelectionNonNullable;
-  rawDatasetID: IdAggregateSelectionNonNullable;
+  DatasetID: IdAggregateSelectionNonNullable;
 };
 
-export type MinioUploadRawDatasetConnectFieldInput = {
-  connect?: InputMaybe<RawDatasetConnectInput>;
-  where?: InputMaybe<RawDatasetConnectWhere>;
+export type MinioUploadDatasetConnectFieldInput = {
+  connect?: InputMaybe<DatasetConnectInput>;
+  where?: InputMaybe<DatasetConnectWhere>;
 };
 
-export type MinioUploadRawDatasetConnectOrCreateFieldInput = {
-  onCreate: MinioUploadRawDatasetConnectOrCreateFieldInputOnCreate;
-  where: RawDatasetConnectOrCreateWhere;
+export type MinioUploadDatasetConnectOrCreateFieldInput = {
+  onCreate: MinioUploadDatasetConnectOrCreateFieldInputOnCreate;
+  where: DatasetConnectOrCreateWhere;
 };
 
-export type MinioUploadRawDatasetConnectOrCreateFieldInputOnCreate = {
-  node: RawDatasetOnCreateInput;
+export type MinioUploadDatasetConnectOrCreateFieldInputOnCreate = {
+  node: DatasetOnCreateInput;
 };
 
-export type MinioUploadRawDatasetConnection = {
-  __typename?: 'MinioUploadRawDatasetConnection';
-  edges: Array<MinioUploadRawDatasetRelationship>;
+export type MinioUploadDatasetConnection = {
+  __typename?: 'MinioUploadDatasetConnection';
+  edges: Array<MinioUploadDatasetRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type MinioUploadRawDatasetConnectionSort = {
-  node?: InputMaybe<RawDatasetSort>;
+export type MinioUploadDatasetConnectionSort = {
+  node?: InputMaybe<DatasetSort>;
 };
 
-export type MinioUploadRawDatasetConnectionWhere = {
-  AND?: InputMaybe<Array<MinioUploadRawDatasetConnectionWhere>>;
-  OR?: InputMaybe<Array<MinioUploadRawDatasetConnectionWhere>>;
-  node?: InputMaybe<RawDatasetWhere>;
-  node_NOT?: InputMaybe<RawDatasetWhere>;
+export type MinioUploadDatasetConnectionWhere = {
+  AND?: InputMaybe<Array<MinioUploadDatasetConnectionWhere>>;
+  OR?: InputMaybe<Array<MinioUploadDatasetConnectionWhere>>;
+  node?: InputMaybe<DatasetWhere>;
+  node_NOT?: InputMaybe<DatasetWhere>;
 };
 
-export type MinioUploadRawDatasetCreateFieldInput = {
-  node: RawDatasetCreateInput;
+export type MinioUploadDatasetCreateFieldInput = {
+  node: DatasetCreateInput;
 };
 
-export type MinioUploadRawDatasetDeleteFieldInput = {
-  delete?: InputMaybe<RawDatasetDeleteInput>;
-  where?: InputMaybe<MinioUploadRawDatasetConnectionWhere>;
+export type MinioUploadDatasetDeleteFieldInput = {
+  delete?: InputMaybe<DatasetDeleteInput>;
+  where?: InputMaybe<MinioUploadDatasetConnectionWhere>;
 };
 
-export type MinioUploadRawDatasetDisconnectFieldInput = {
-  disconnect?: InputMaybe<RawDatasetDisconnectInput>;
-  where?: InputMaybe<MinioUploadRawDatasetConnectionWhere>;
+export type MinioUploadDatasetDisconnectFieldInput = {
+  disconnect?: InputMaybe<DatasetDisconnectInput>;
+  where?: InputMaybe<MinioUploadDatasetConnectionWhere>;
 };
 
-export type MinioUploadRawDatasetFieldInput = {
-  connect?: InputMaybe<MinioUploadRawDatasetConnectFieldInput>;
-  connectOrCreate?: InputMaybe<MinioUploadRawDatasetConnectOrCreateFieldInput>;
-  create?: InputMaybe<MinioUploadRawDatasetCreateFieldInput>;
+export type MinioUploadDatasetFieldInput = {
+  connect?: InputMaybe<MinioUploadDatasetConnectFieldInput>;
+  connectOrCreate?: InputMaybe<MinioUploadDatasetConnectOrCreateFieldInput>;
+  create?: InputMaybe<MinioUploadDatasetCreateFieldInput>;
 };
 
-export type MinioUploadRawDatasetNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<MinioUploadRawDatasetNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<MinioUploadRawDatasetNodeAggregationWhereInput>>;
+export type MinioUploadDatasetNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<MinioUploadDatasetNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<MinioUploadDatasetNodeAggregationWhereInput>>;
   createdAt_EQUAL?: InputMaybe<Scalars['DateTime']>;
   createdAt_GT?: InputMaybe<Scalars['DateTime']>;
   createdAt_GTE?: InputMaybe<Scalars['DateTime']>;
@@ -4993,129 +4993,129 @@ export type MinioUploadRawDatasetNodeAggregationWhereInput = {
   name_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
-  rawDatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
+  DatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type MinioUploadRawDatasetRawDatasetAggregationSelection = {
-  __typename?: 'MinioUploadRawDatasetRawDatasetAggregationSelection';
+export type MinioUploadDatasetDatasetAggregationSelection = {
+  __typename?: 'MinioUploadDatasetDatasetAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<MinioUploadRawDatasetRawDatasetNodeAggregateSelection>;
+  node?: Maybe<MinioUploadDatasetDatasetNodeAggregateSelection>;
 };
 
-export type MinioUploadRawDatasetRawDatasetNodeAggregateSelection = {
-  __typename?: 'MinioUploadRawDatasetRawDatasetNodeAggregateSelection';
+export type MinioUploadDatasetDatasetNodeAggregateSelection = {
+  __typename?: 'MinioUploadDatasetDatasetNodeAggregateSelection';
   createdAt: DateTimeAggregateSelectionNonNullable;
   description: StringAggregateSelectionNonNullable;
   name: StringAggregateSelectionNonNullable;
-  rawDatasetID: IdAggregateSelectionNonNullable;
+  DatasetID: IdAggregateSelectionNonNullable;
 };
 
-export type MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelection = {
-  __typename?: 'MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelection';
+export type MinioUploadDatasetRawdataFileDatasetAggregationSelection = {
+  __typename?: 'MinioUploadDatasetRawdataFileDatasetAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelection>;
+  node?: Maybe<MinioUploadDatasetRawdataFileDatasetNodeAggregateSelection>;
 };
 
-export type MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelection = {
-  __typename?: 'MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelection';
+export type MinioUploadDatasetRawdataFileDatasetNodeAggregateSelection = {
+  __typename?: 'MinioUploadDatasetRawdataFileDatasetNodeAggregateSelection';
   createdAt: DateTimeAggregateSelectionNonNullable;
   description: StringAggregateSelectionNonNullable;
   name: StringAggregateSelectionNonNullable;
-  rawDatasetID: IdAggregateSelectionNonNullable;
+  DatasetID: IdAggregateSelectionNonNullable;
 };
 
-export type MinioUploadRawDatasetRelationship = {
-  __typename?: 'MinioUploadRawDatasetRelationship';
+export type MinioUploadDatasetRelationship = {
+  __typename?: 'MinioUploadDatasetRelationship';
   cursor: Scalars['String'];
-  node: RawDataset;
+  node: Dataset;
 };
 
-export type MinioUploadRawDatasetUpdateConnectionInput = {
-  node?: InputMaybe<RawDatasetUpdateInput>;
+export type MinioUploadDatasetUpdateConnectionInput = {
+  node?: InputMaybe<DatasetUpdateInput>;
 };
 
-export type MinioUploadRawDatasetUpdateFieldInput = {
-  connect?: InputMaybe<MinioUploadRawDatasetConnectFieldInput>;
-  connectOrCreate?: InputMaybe<MinioUploadRawDatasetConnectOrCreateFieldInput>;
-  create?: InputMaybe<MinioUploadRawDatasetCreateFieldInput>;
-  delete?: InputMaybe<MinioUploadRawDatasetDeleteFieldInput>;
-  disconnect?: InputMaybe<MinioUploadRawDatasetDisconnectFieldInput>;
-  update?: InputMaybe<MinioUploadRawDatasetUpdateConnectionInput>;
-  where?: InputMaybe<MinioUploadRawDatasetConnectionWhere>;
+export type MinioUploadDatasetUpdateFieldInput = {
+  connect?: InputMaybe<MinioUploadDatasetConnectFieldInput>;
+  connectOrCreate?: InputMaybe<MinioUploadDatasetConnectOrCreateFieldInput>;
+  create?: InputMaybe<MinioUploadDatasetCreateFieldInput>;
+  delete?: InputMaybe<MinioUploadDatasetDeleteFieldInput>;
+  disconnect?: InputMaybe<MinioUploadDatasetDisconnectFieldInput>;
+  update?: InputMaybe<MinioUploadDatasetUpdateConnectionInput>;
+  where?: InputMaybe<MinioUploadDatasetConnectionWhere>;
 };
 
-export type MinioUploadRawdataFileRawDatasetAggregateInput = {
-  AND?: InputMaybe<Array<MinioUploadRawdataFileRawDatasetAggregateInput>>;
-  OR?: InputMaybe<Array<MinioUploadRawdataFileRawDatasetAggregateInput>>;
+export type MinioUploadRawdataFileDatasetAggregateInput = {
+  AND?: InputMaybe<Array<MinioUploadRawdataFileDatasetAggregateInput>>;
+  OR?: InputMaybe<Array<MinioUploadRawdataFileDatasetAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<MinioUploadRawdataFileRawDatasetNodeAggregationWhereInput>;
+  node?: InputMaybe<MinioUploadRawdataFileDatasetNodeAggregationWhereInput>;
 };
 
-export type MinioUploadRawdataFileRawDatasetConnectFieldInput = {
-  connect?: InputMaybe<RawDatasetConnectInput>;
+export type MinioUploadRawdataFileDatasetConnectFieldInput = {
+  connect?: InputMaybe<DatasetConnectInput>;
   edge: HasRawdatafileCreateInput;
-  where?: InputMaybe<RawDatasetConnectWhere>;
+  where?: InputMaybe<DatasetConnectWhere>;
 };
 
-export type MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInput = {
-  onCreate: MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInputOnCreate;
-  where: RawDatasetConnectOrCreateWhere;
+export type MinioUploadRawdataFileDatasetConnectOrCreateFieldInput = {
+  onCreate: MinioUploadRawdataFileDatasetConnectOrCreateFieldInputOnCreate;
+  where: DatasetConnectOrCreateWhere;
 };
 
-export type MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInputOnCreate = {
+export type MinioUploadRawdataFileDatasetConnectOrCreateFieldInputOnCreate = {
   edge: HasRawdatafileCreateInput;
-  node: RawDatasetOnCreateInput;
+  node: DatasetOnCreateInput;
 };
 
-export type MinioUploadRawdataFileRawDatasetConnection = {
-  __typename?: 'MinioUploadRawdataFileRawDatasetConnection';
-  edges: Array<MinioUploadRawdataFileRawDatasetRelationship>;
+export type MinioUploadRawdataFileDatasetConnection = {
+  __typename?: 'MinioUploadRawdataFileDatasetConnection';
+  edges: Array<MinioUploadRawdataFileDatasetRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type MinioUploadRawdataFileRawDatasetConnectionSort = {
+export type MinioUploadRawdataFileDatasetConnectionSort = {
   edge?: InputMaybe<HasRawdatafileSort>;
-  node?: InputMaybe<RawDatasetSort>;
+  node?: InputMaybe<DatasetSort>;
 };
 
-export type MinioUploadRawdataFileRawDatasetConnectionWhere = {
-  AND?: InputMaybe<Array<MinioUploadRawdataFileRawDatasetConnectionWhere>>;
-  OR?: InputMaybe<Array<MinioUploadRawdataFileRawDatasetConnectionWhere>>;
+export type MinioUploadRawdataFileDatasetConnectionWhere = {
+  AND?: InputMaybe<Array<MinioUploadRawdataFileDatasetConnectionWhere>>;
+  OR?: InputMaybe<Array<MinioUploadRawdataFileDatasetConnectionWhere>>;
   edge?: InputMaybe<HasRawdatafileWhere>;
   edge_NOT?: InputMaybe<HasRawdatafileWhere>;
-  node?: InputMaybe<RawDatasetWhere>;
-  node_NOT?: InputMaybe<RawDatasetWhere>;
+  node?: InputMaybe<DatasetWhere>;
+  node_NOT?: InputMaybe<DatasetWhere>;
 };
 
-export type MinioUploadRawdataFileRawDatasetCreateFieldInput = {
+export type MinioUploadRawdataFileDatasetCreateFieldInput = {
   edge: HasRawdatafileCreateInput;
-  node: RawDatasetCreateInput;
+  node: DatasetCreateInput;
 };
 
-export type MinioUploadRawdataFileRawDatasetDeleteFieldInput = {
-  delete?: InputMaybe<RawDatasetDeleteInput>;
-  where?: InputMaybe<MinioUploadRawdataFileRawDatasetConnectionWhere>;
+export type MinioUploadRawdataFileDatasetDeleteFieldInput = {
+  delete?: InputMaybe<DatasetDeleteInput>;
+  where?: InputMaybe<MinioUploadRawdataFileDatasetConnectionWhere>;
 };
 
-export type MinioUploadRawdataFileRawDatasetDisconnectFieldInput = {
-  disconnect?: InputMaybe<RawDatasetDisconnectInput>;
-  where?: InputMaybe<MinioUploadRawdataFileRawDatasetConnectionWhere>;
+export type MinioUploadRawdataFileDatasetDisconnectFieldInput = {
+  disconnect?: InputMaybe<DatasetDisconnectInput>;
+  where?: InputMaybe<MinioUploadRawdataFileDatasetConnectionWhere>;
 };
 
-export type MinioUploadRawdataFileRawDatasetFieldInput = {
-  connect?: InputMaybe<MinioUploadRawdataFileRawDatasetConnectFieldInput>;
-  connectOrCreate?: InputMaybe<MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInput>;
-  create?: InputMaybe<MinioUploadRawdataFileRawDatasetCreateFieldInput>;
+export type MinioUploadRawdataFileDatasetFieldInput = {
+  connect?: InputMaybe<MinioUploadRawdataFileDatasetConnectFieldInput>;
+  connectOrCreate?: InputMaybe<MinioUploadRawdataFileDatasetConnectOrCreateFieldInput>;
+  create?: InputMaybe<MinioUploadRawdataFileDatasetCreateFieldInput>;
 };
 
-export type MinioUploadRawdataFileRawDatasetNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<MinioUploadRawdataFileRawDatasetNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<MinioUploadRawdataFileRawDatasetNodeAggregationWhereInput>>;
+export type MinioUploadRawdataFileDatasetNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<MinioUploadRawdataFileDatasetNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<MinioUploadRawdataFileDatasetNodeAggregationWhereInput>>;
   createdAt_EQUAL?: InputMaybe<Scalars['DateTime']>;
   createdAt_GT?: InputMaybe<Scalars['DateTime']>;
   createdAt_GTE?: InputMaybe<Scalars['DateTime']>;
@@ -5171,38 +5171,38 @@ export type MinioUploadRawdataFileRawDatasetNodeAggregationWhereInput = {
   name_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
-  rawDatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
+  DatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type MinioUploadRawdataFileRawDatasetRelationship = HasRawdatafile & {
-  __typename?: 'MinioUploadRawdataFileRawDatasetRelationship';
+export type MinioUploadRawdataFileDatasetRelationship = HasRawdatafile & {
+  __typename?: 'MinioUploadRawdataFileDatasetRelationship';
   cursor: Scalars['String'];
-  node: RawDataset;
+  node: Dataset;
   validated: Scalars['Boolean'];
 };
 
-export type MinioUploadRawdataFileRawDatasetUpdateConnectionInput = {
+export type MinioUploadRawdataFileDatasetUpdateConnectionInput = {
   edge?: InputMaybe<HasRawdatafileUpdateInput>;
-  node?: InputMaybe<RawDatasetUpdateInput>;
+  node?: InputMaybe<DatasetUpdateInput>;
 };
 
-export type MinioUploadRawdataFileRawDatasetUpdateFieldInput = {
-  connect?: InputMaybe<MinioUploadRawdataFileRawDatasetConnectFieldInput>;
-  connectOrCreate?: InputMaybe<MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInput>;
-  create?: InputMaybe<MinioUploadRawdataFileRawDatasetCreateFieldInput>;
-  delete?: InputMaybe<MinioUploadRawdataFileRawDatasetDeleteFieldInput>;
-  disconnect?: InputMaybe<MinioUploadRawdataFileRawDatasetDisconnectFieldInput>;
-  update?: InputMaybe<MinioUploadRawdataFileRawDatasetUpdateConnectionInput>;
-  where?: InputMaybe<MinioUploadRawdataFileRawDatasetConnectionWhere>;
+export type MinioUploadRawdataFileDatasetUpdateFieldInput = {
+  connect?: InputMaybe<MinioUploadRawdataFileDatasetConnectFieldInput>;
+  connectOrCreate?: InputMaybe<MinioUploadRawdataFileDatasetConnectOrCreateFieldInput>;
+  create?: InputMaybe<MinioUploadRawdataFileDatasetCreateFieldInput>;
+  delete?: InputMaybe<MinioUploadRawdataFileDatasetDeleteFieldInput>;
+  disconnect?: InputMaybe<MinioUploadRawdataFileDatasetDisconnectFieldInput>;
+  update?: InputMaybe<MinioUploadRawdataFileDatasetUpdateConnectionInput>;
+  where?: InputMaybe<MinioUploadRawdataFileDatasetConnectionWhere>;
 };
 
 export type MinioUploadRelationInput = {
-  codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetCreateFieldInput>;
+  codeBookDataset?: InputMaybe<MinioUploadCodeBookDatasetCreateFieldInput>;
   fromExportTask?: InputMaybe<MinioUploadFromExportTaskCreateFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookCreateFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileCreateFieldInput>;
-  rawDataset?: InputMaybe<MinioUploadRawDatasetCreateFieldInput>;
-  rawdataFileRawDataset?: InputMaybe<MinioUploadRawdataFileRawDatasetCreateFieldInput>;
+  Dataset?: InputMaybe<MinioUploadDatasetCreateFieldInput>;
+  rawdataFileDataset?: InputMaybe<MinioUploadRawdataFileDatasetCreateFieldInput>;
 };
 
 /** Fields to sort MinioUploads by. The order in which sorts are applied is not guaranteed when specifying many fields in one MinioUploadSort object. */
@@ -5239,13 +5239,13 @@ export type MinioUploadUpdateInput = {
   allowedStudies_POP?: InputMaybe<Scalars['Int']>;
   allowedStudies_PUSH?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   bucketName?: InputMaybe<Scalars['ID']>;
-  codeBookRawDataset?: InputMaybe<MinioUploadCodeBookRawDatasetUpdateFieldInput>;
+  codeBookDataset?: InputMaybe<MinioUploadCodeBookDatasetUpdateFieldInput>;
   filename?: InputMaybe<Scalars['String']>;
   fromExportTask?: InputMaybe<MinioUploadFromExportTaskUpdateFieldInput>;
   pairedCodebook?: InputMaybe<MinioUploadPairedCodebookUpdateFieldInput>;
   pairedRawdataFile?: InputMaybe<MinioUploadPairedRawdataFileUpdateFieldInput>;
-  rawDataset?: InputMaybe<MinioUploadRawDatasetUpdateFieldInput>;
-  rawdataFileRawDataset?: InputMaybe<MinioUploadRawdataFileRawDatasetUpdateFieldInput>;
+  Dataset?: InputMaybe<MinioUploadDatasetUpdateFieldInput>;
+  rawdataFileDataset?: InputMaybe<MinioUploadRawdataFileDatasetUpdateFieldInput>;
 };
 
 export type MinioUploadWhere = {
@@ -5269,11 +5269,11 @@ export type MinioUploadWhere = {
   bucketName_NOT_IN?: InputMaybe<Array<Scalars['ID']>>;
   bucketName_NOT_STARTS_WITH?: InputMaybe<Scalars['ID']>;
   bucketName_STARTS_WITH?: InputMaybe<Scalars['ID']>;
-  codeBookRawDataset?: InputMaybe<RawDatasetWhere>;
-  codeBookRawDatasetAggregate?: InputMaybe<MinioUploadCodeBookRawDatasetAggregateInput>;
-  codeBookRawDatasetConnection?: InputMaybe<MinioUploadCodeBookRawDatasetConnectionWhere>;
-  codeBookRawDatasetConnection_NOT?: InputMaybe<MinioUploadCodeBookRawDatasetConnectionWhere>;
-  codeBookRawDataset_NOT?: InputMaybe<RawDatasetWhere>;
+  codeBookDataset?: InputMaybe<DatasetWhere>;
+  codeBookDatasetAggregate?: InputMaybe<MinioUploadCodeBookDatasetAggregateInput>;
+  codeBookDatasetConnection?: InputMaybe<MinioUploadCodeBookDatasetConnectionWhere>;
+  codeBookDatasetConnection_NOT?: InputMaybe<MinioUploadCodeBookDatasetConnectionWhere>;
+  codeBookDataset_NOT?: InputMaybe<DatasetWhere>;
   filename?: InputMaybe<Scalars['String']>;
   filename_CONTAINS?: InputMaybe<Scalars['String']>;
   filename_ENDS_WITH?: InputMaybe<Scalars['String']>;
@@ -5309,16 +5309,16 @@ export type MinioUploadWhere = {
   pairedRawdataFileConnection?: InputMaybe<MinioUploadPairedRawdataFileConnectionWhere>;
   pairedRawdataFileConnection_NOT?: InputMaybe<MinioUploadPairedRawdataFileConnectionWhere>;
   pairedRawdataFile_NOT?: InputMaybe<MinioUploadWhere>;
-  rawDataset?: InputMaybe<RawDatasetWhere>;
-  rawDatasetAggregate?: InputMaybe<MinioUploadRawDatasetAggregateInput>;
-  rawDatasetConnection?: InputMaybe<MinioUploadRawDatasetConnectionWhere>;
-  rawDatasetConnection_NOT?: InputMaybe<MinioUploadRawDatasetConnectionWhere>;
-  rawDataset_NOT?: InputMaybe<RawDatasetWhere>;
-  rawdataFileRawDataset?: InputMaybe<RawDatasetWhere>;
-  rawdataFileRawDatasetAggregate?: InputMaybe<MinioUploadRawdataFileRawDatasetAggregateInput>;
-  rawdataFileRawDatasetConnection?: InputMaybe<MinioUploadRawdataFileRawDatasetConnectionWhere>;
-  rawdataFileRawDatasetConnection_NOT?: InputMaybe<MinioUploadRawdataFileRawDatasetConnectionWhere>;
-  rawdataFileRawDataset_NOT?: InputMaybe<RawDatasetWhere>;
+  Dataset?: InputMaybe<DatasetWhere>;
+  DatasetAggregate?: InputMaybe<MinioUploadDatasetAggregateInput>;
+  DatasetConnection?: InputMaybe<MinioUploadDatasetConnectionWhere>;
+  DatasetConnection_NOT?: InputMaybe<MinioUploadDatasetConnectionWhere>;
+  Dataset_NOT?: InputMaybe<DatasetWhere>;
+  rawdataFileDataset?: InputMaybe<DatasetWhere>;
+  rawdataFileDatasetAggregate?: InputMaybe<MinioUploadRawdataFileDatasetAggregateInput>;
+  rawdataFileDatasetConnection?: InputMaybe<MinioUploadRawdataFileDatasetConnectionWhere>;
+  rawdataFileDatasetConnection_NOT?: InputMaybe<MinioUploadRawdataFileDatasetConnectionWhere>;
+  rawdataFileDataset_NOT?: InputMaybe<DatasetWhere>;
 };
 
 export type MinioUploadsConnection = {
@@ -5424,8 +5424,8 @@ export type Mutation = {
   createClientUsers: CreateClientUsersMutationResponse;
   createClients: CreateClientsMutationResponse;
   createCuratedDatasetFromCSVCodebook: Scalars['Boolean'];
-  createCuratedDatasetFromRawDataset: CuratedDataset;
-  createCuratedDatasetFromRawDatasetNew?: Maybe<CuratedDataset>;
+  createCuratedDatasetFromDataset: CuratedDataset;
+  createCuratedDatasetFromDatasetNew?: Maybe<CuratedDataset>;
   createCuratedDatasets: CreateCuratedDatasetsMutationResponse;
   createDataVariableFieldDefinitions: CreateDataVariableFieldDefinitionsMutationResponse;
   createDataVariableFields: CreateDataVariableFieldsMutationResponse;
@@ -5442,8 +5442,8 @@ export type Mutation = {
   createOntologies: CreateOntologiesMutationResponse;
   createOntologyClasses: CreateOntologyClassesMutationResponse;
   createOntologyRelations: CreateOntologyRelationsMutationResponse;
-  createRawDatasetWithMinioBucket: RawDataset;
-  createRawDatasets: CreateRawDatasetsMutationResponse;
+  createDataset: Dataset;
+  createDatasets: CreateDatasetsMutationResponse;
   createStudies: CreateStudiesMutationResponse;
   createTasks: CreateTasksMutationResponse;
   deleteClientRoles: DeleteInfo;
@@ -5465,7 +5465,7 @@ export type Mutation = {
   deleteOntologies: DeleteInfo;
   deleteOntologyClasses: DeleteInfo;
   deleteOntologyRelations: DeleteInfo;
-  deleteRawDatasets: DeleteInfo;
+  deleteDatasets: DeleteInfo;
   deleteStudies: DeleteInfo;
   deleteTasks: DeleteInfo;
   funnelTaskExportCuratedDataset?: Maybe<Task>;
@@ -5483,8 +5483,8 @@ export type Mutation = {
   minioUploadFile: MinioUpload;
   nestedCuratedDatasetDelete?: Maybe<Neo4jUpdateStats>;
   nestedCuratedDatasetProperty?: Maybe<Neo4jUpdateStats>;
-  nestedRawDatasetDelete?: Maybe<Neo4jUpdateStats>;
-  nestedRawDatasetProperty?: Maybe<Neo4jUpdateStats>;
+  nestedDatasetDelete?: Maybe<Neo4jUpdateStats>;
+  nestedDatasetProperty?: Maybe<Neo4jUpdateStats>;
   nestedStudyDelete?: Maybe<Neo4jUpdateStats>;
   nestedStudyProperty?: Maybe<Neo4jUpdateStats>;
   nestedSwitch?: Maybe<Neo4jUpdateStats>;
@@ -5510,7 +5510,7 @@ export type Mutation = {
   updateOntologies: UpdateOntologiesMutationResponse;
   updateOntologyClasses: UpdateOntologyClassesMutationResponse;
   updateOntologyRelations: UpdateOntologyRelationsMutationResponse;
-  updateRawDatasets: UpdateRawDatasetsMutationResponse;
+  updateDatasets: UpdateDatasetsMutationResponse;
   updateStudies: UpdateStudiesMutationResponse;
   updateTasks: UpdateTasksMutationResponse;
   validateCodebook?: Maybe<FileValidation>;
@@ -5543,20 +5543,20 @@ export type MutationCreateCuratedDatasetFromCsvCodebookArgs = {
   allowedSite: Scalars['String'];
   allowedStudy: Scalars['String'];
   name: Scalars['String'];
-  rawDatasetID: Scalars['ID'];
+  DatasetID: Scalars['ID'];
 };
 
 
-export type MutationCreateCuratedDatasetFromRawDatasetArgs = {
+export type MutationCreateCuratedDatasetFromDatasetArgs = {
   description: Scalars['String'];
   name: Scalars['String'];
-  rawDatasetID: Scalars['ID'];
+  DatasetID: Scalars['ID'];
 };
 
 
-export type MutationCreateCuratedDatasetFromRawDatasetNewArgs = {
+export type MutationCreateCuratedDatasetFromDatasetNewArgs = {
   codebookObjectName: Scalars['String'];
-  rawDatasetID: Scalars['ID'];
+  DatasetID: Scalars['ID'];
   rawObjectName: Scalars['String'];
 };
 
@@ -5641,7 +5641,7 @@ export type MutationCreateOntologyRelationsArgs = {
 };
 
 
-export type MutationCreateRawDatasetWithMinioBucketArgs = {
+export type MutationcreateDatasetArgs = {
   allowedSites?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   allowedStudies?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   description: Scalars['String'];
@@ -5651,8 +5651,8 @@ export type MutationCreateRawDatasetWithMinioBucketArgs = {
 };
 
 
-export type MutationCreateRawDatasetsArgs = {
-  input: Array<RawDatasetCreateInput>;
+export type MutationCreateDatasetsArgs = {
+  input: Array<DatasetCreateInput>;
 };
 
 
@@ -5771,9 +5771,9 @@ export type MutationDeleteOntologyRelationsArgs = {
 };
 
 
-export type MutationDeleteRawDatasetsArgs = {
-  delete?: InputMaybe<RawDatasetDeleteInput>;
-  where?: InputMaybe<RawDatasetWhere>;
+export type MutationDeleteDatasetsArgs = {
+  delete?: InputMaybe<DatasetDeleteInput>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
@@ -5860,7 +5860,7 @@ export type MutationMinioUploadFileArgs = {
   allowedStudies?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   bucketName: Scalars['String'];
   file: Scalars['Upload'];
-  rawDatasetID: Scalars['ID'];
+  DatasetID: Scalars['ID'];
 };
 
 
@@ -5877,12 +5877,12 @@ export type MutationNestedCuratedDatasetPropertyArgs = {
 };
 
 
-export type MutationNestedRawDatasetDeleteArgs = {
+export type MutationNestedDatasetDeleteArgs = {
   id: Scalars['ID'];
 };
 
 
-export type MutationNestedRawDatasetPropertyArgs = {
+export type MutationNestedDatasetPropertyArgs = {
   id: Scalars['ID'];
   operation: NestedOperations;
   property: Scalars['String'];
@@ -6099,14 +6099,14 @@ export type MutationUpdateOntologyRelationsArgs = {
 };
 
 
-export type MutationUpdateRawDatasetsArgs = {
-  connect?: InputMaybe<RawDatasetConnectInput>;
-  connectOrCreate?: InputMaybe<RawDatasetConnectOrCreateInput>;
-  create?: InputMaybe<RawDatasetRelationInput>;
-  delete?: InputMaybe<RawDatasetDeleteInput>;
-  disconnect?: InputMaybe<RawDatasetDisconnectInput>;
-  update?: InputMaybe<RawDatasetUpdateInput>;
-  where?: InputMaybe<RawDatasetWhere>;
+export type MutationUpdateDatasetsArgs = {
+  connect?: InputMaybe<DatasetConnectInput>;
+  connectOrCreate?: InputMaybe<DatasetConnectOrCreateInput>;
+  create?: InputMaybe<DatasetRelationInput>;
+  delete?: InputMaybe<DatasetDeleteInput>;
+  disconnect?: InputMaybe<DatasetDisconnectInput>;
+  update?: InputMaybe<DatasetUpdateInput>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
@@ -6134,21 +6134,21 @@ export type MutationUpdateTasksArgs = {
 
 export type MutationValidateCodebookArgs = {
   objectName: Scalars['ID'];
-  rawDatasetID: Scalars['ID'];
+  DatasetID: Scalars['ID'];
 };
 
 
 export type MutationValidateRawdatafileArgs = {
   objectName: Scalars['ID'];
-  rawDatasetID: Scalars['ID'];
+  DatasetID: Scalars['ID'];
 };
 
 
 export type MutationValidateRawfileCodebookPairArgs = {
   objectNameCB: Scalars['ID'];
   objectNameRF: Scalars['ID'];
-  rawDatasetIDCB: Scalars['ID'];
-  rawDatasetIDRF: Scalars['ID'];
+  DatasetIDCB: Scalars['ID'];
+  DatasetIDRF: Scalars['ID'];
 };
 
 export type Neo4JUpdateStatsConnection = {
@@ -6367,13 +6367,13 @@ export enum NestedOperations {
 
 export enum NestedSwitch {
   NestedCuratedDatasetProperty = 'nestedCuratedDatasetProperty',
-  NestedRawDatasetProperty = 'nestedRawDatasetProperty',
+  NestedDatasetProperty = 'nestedDatasetProperty',
   NestedStudyProperty = 'nestedStudyProperty'
 }
 
 export enum NestedSwitchDelete {
   NestedCuratedDatasetDelete = 'nestedCuratedDatasetDelete',
-  NestedRawDatasetDelete = 'nestedRawDatasetDelete',
+  NestedDatasetDelete = 'nestedDatasetDelete',
   NestedStudyDelete = 'nestedStudyDelete'
 }
 
@@ -7388,12 +7388,12 @@ export type Query = {
   ontologyRelations: Array<OntologyRelation>;
   ontologyRelationsAggregate: OntologyRelationAggregateSelection;
   ontologyRelationsConnection: OntologyRelationsConnection;
-  rawDatasetCalendarHeatmap: Array<CalendarHeatmapDatum>;
-  rawDatasets: Array<RawDataset>;
-  rawDatasetsAggregate: RawDatasetAggregateSelection;
-  rawDatasetsConnection: RawDatasetsConnection;
+  DatasetCalendarHeatmap: Array<CalendarHeatmapDatum>;
+  datasets: Array<Dataset>;
+  DatasetsAggregate: DatasetAggregateSelection;
+  DatasetsConnection: DatasetsConnection;
   searchGeographyCities: Array<GeographyCity>;
-  studies: Array<Study>;
+  studies: Array<Project>;
   studiesAggregate: StudyAggregateSelection;
   studiesConnection: StudiesConnection;
   tasks: Array<Task>;
@@ -7786,28 +7786,28 @@ export type QueryOntologyRelationsConnectionArgs = {
 };
 
 
-export type QueryRawDatasetCalendarHeatmapArgs = {
+export type QueryDatasetCalendarHeatmapArgs = {
   endDate: Scalars['Date'];
   startDate: Scalars['Date'];
 };
 
 
-export type QueryRawDatasetsArgs = {
-  options?: InputMaybe<RawDatasetOptions>;
-  where?: InputMaybe<RawDatasetWhere>;
+export type QueryDatasetsArgs = {
+  options?: InputMaybe<DatasetOptions>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type QueryRawDatasetsAggregateArgs = {
-  where?: InputMaybe<RawDatasetWhere>;
+export type QueryDatasetsAggregateArgs = {
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type QueryRawDatasetsConnectionArgs = {
+export type QueryDatasetsConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<InputMaybe<RawDatasetSort>>>;
-  where?: InputMaybe<RawDatasetWhere>;
+  sort?: InputMaybe<Array<InputMaybe<DatasetSort>>>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
@@ -7853,297 +7853,297 @@ export type QueryTasksConnectionArgs = {
   where?: InputMaybe<TaskWhere>;
 };
 
-export type RawDataset = {
-  __typename?: 'RawDataset';
+export type Dataset = {
+  __typename?: 'Dataset';
   allowedSites?: Maybe<Array<Maybe<Scalars['String']>>>;
   allowedStudies?: Maybe<Array<Maybe<Scalars['String']>>>;
   codeBook?: Maybe<MinioUpload>;
-  codeBookAggregate?: Maybe<RawDatasetMinioUploadCodeBookAggregationSelection>;
-  codeBookConnection: RawDatasetCodeBookConnection;
+  codeBookAggregate?: Maybe<DatasetMinioUploadCodeBookAggregationSelection>;
+  codeBookConnection: DatasetCodeBookConnection;
   createdAt: Scalars['DateTime'];
   description: Scalars['String'];
   files: Array<MinioUpload>;
-  filesAggregate?: Maybe<RawDatasetMinioUploadFilesAggregationSelection>;
-  filesConnection: RawDatasetFilesConnection;
-  fromStudy?: Maybe<Study>;
-  fromStudyAggregate?: Maybe<RawDatasetStudyFromStudyAggregationSelection>;
-  fromStudyConnection: RawDatasetFromStudyConnection;
+  filesAggregate?: Maybe<DatasetMinioUploadFilesAggregationSelection>;
+  filesConnection: DatasetFilesConnection;
+  fromStudy?: Maybe<Project>;
+  fromStudyAggregate?: Maybe<DatasetStudyFromStudyAggregationSelection>;
+  fromStudyConnection: DatasetFromStudyConnection;
   funnelTasks: Array<Task>;
-  funnelTasksAggregate?: Maybe<RawDatasetTaskFunnelTasksAggregationSelection>;
-  funnelTasksConnection: RawDatasetFunnelTasksConnection;
+  funnelTasksAggregate?: Maybe<DatasetTaskFunnelTasksAggregationSelection>;
+  funnelTasksConnection: DatasetFunnelTasksConnection;
   generatedCuratedDatasets: Array<CuratedDataset>;
-  generatedCuratedDatasetsAggregate?: Maybe<RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection>;
-  generatedCuratedDatasetsConnection: RawDatasetGeneratedCuratedDatasetsConnection;
+  generatedCuratedDatasetsAggregate?: Maybe<DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection>;
+  generatedCuratedDatasetsConnection: DatasetGeneratedCuratedDatasetsConnection;
   minioBucket?: Maybe<MinioBucket>;
-  minioBucketAggregate?: Maybe<RawDatasetMinioBucketMinioBucketAggregationSelection>;
-  minioBucketConnection: RawDatasetMinioBucketConnection;
+  minioBucketAggregate?: Maybe<DatasetMinioBucketMinioBucketAggregationSelection>;
+  minioBucketConnection: DatasetMinioBucketConnection;
   name: Scalars['String'];
-  rawDatasetID: Scalars['ID'];
+  DatasetID: Scalars['ID'];
   rawdataFile?: Maybe<MinioUpload>;
-  rawdataFileAggregate?: Maybe<RawDatasetMinioUploadRawdataFileAggregationSelection>;
-  rawdataFileConnection: RawDatasetRawdataFileConnection;
+  rawdataFileAggregate?: Maybe<DatasetMinioUploadRawdataFileAggregationSelection>;
+  rawdataFileConnection: DatasetRawdataFileConnection;
   studySite?: Maybe<GeographyCity>;
-  studySiteAggregate?: Maybe<RawDatasetGeographyCityStudySiteAggregationSelection>;
-  studySiteConnection: RawDatasetStudySiteConnection;
+  studySiteAggregate?: Maybe<DatasetGeographyCityStudySiteAggregationSelection>;
+  studySiteConnection: DatasetStudySiteConnection;
 };
 
 
-export type RawDatasetCodeBookArgs = {
+export type DatasetCodeBookArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   options?: InputMaybe<MinioUploadOptions>;
   where?: InputMaybe<MinioUploadWhere>;
 };
 
 
-export type RawDatasetCodeBookAggregateArgs = {
+export type DatasetCodeBookAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   where?: InputMaybe<MinioUploadWhere>;
 };
 
 
-export type RawDatasetCodeBookConnectionArgs = {
+export type DatasetCodeBookConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<RawDatasetCodeBookConnectionSort>>;
-  where?: InputMaybe<RawDatasetCodeBookConnectionWhere>;
+  sort?: InputMaybe<Array<DatasetCodeBookConnectionSort>>;
+  where?: InputMaybe<DatasetCodeBookConnectionWhere>;
 };
 
 
-export type RawDatasetFilesArgs = {
+export type DatasetFilesArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   options?: InputMaybe<MinioUploadOptions>;
   where?: InputMaybe<MinioUploadWhere>;
 };
 
 
-export type RawDatasetFilesAggregateArgs = {
+export type DatasetFilesAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   where?: InputMaybe<MinioUploadWhere>;
 };
 
 
-export type RawDatasetFilesConnectionArgs = {
+export type DatasetFilesConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<RawDatasetFilesConnectionSort>>;
-  where?: InputMaybe<RawDatasetFilesConnectionWhere>;
+  sort?: InputMaybe<Array<DatasetFilesConnectionSort>>;
+  where?: InputMaybe<DatasetFilesConnectionWhere>;
 };
 
 
-export type RawDatasetFromStudyArgs = {
+export type DatasetFromStudyArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   options?: InputMaybe<StudyOptions>;
   where?: InputMaybe<StudyWhere>;
 };
 
 
-export type RawDatasetFromStudyAggregateArgs = {
+export type DatasetFromStudyAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   where?: InputMaybe<StudyWhere>;
 };
 
 
-export type RawDatasetFromStudyConnectionArgs = {
+export type DatasetFromStudyConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<RawDatasetFromStudyConnectionSort>>;
-  where?: InputMaybe<RawDatasetFromStudyConnectionWhere>;
+  sort?: InputMaybe<Array<DatasetFromStudyConnectionSort>>;
+  where?: InputMaybe<DatasetFromStudyConnectionWhere>;
 };
 
 
-export type RawDatasetFunnelTasksArgs = {
+export type DatasetFunnelTasksArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   options?: InputMaybe<TaskOptions>;
   where?: InputMaybe<TaskWhere>;
 };
 
 
-export type RawDatasetFunnelTasksAggregateArgs = {
+export type DatasetFunnelTasksAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   where?: InputMaybe<TaskWhere>;
 };
 
 
-export type RawDatasetFunnelTasksConnectionArgs = {
+export type DatasetFunnelTasksConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<RawDatasetFunnelTasksConnectionSort>>;
-  where?: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+  sort?: InputMaybe<Array<DatasetFunnelTasksConnectionSort>>;
+  where?: InputMaybe<DatasetFunnelTasksConnectionWhere>;
 };
 
 
-export type RawDatasetGeneratedCuratedDatasetsArgs = {
+export type DatasetGeneratedCuratedDatasetsArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   options?: InputMaybe<CuratedDatasetOptions>;
   where?: InputMaybe<CuratedDatasetWhere>;
 };
 
 
-export type RawDatasetGeneratedCuratedDatasetsAggregateArgs = {
+export type DatasetGeneratedCuratedDatasetsAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   where?: InputMaybe<CuratedDatasetWhere>;
 };
 
 
-export type RawDatasetGeneratedCuratedDatasetsConnectionArgs = {
+export type DatasetGeneratedCuratedDatasetsConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectionSort>>;
-  where?: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
+  sort?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsConnectionSort>>;
+  where?: InputMaybe<DatasetGeneratedCuratedDatasetsConnectionWhere>;
 };
 
 
-export type RawDatasetMinioBucketArgs = {
+export type DatasetMinioBucketArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   options?: InputMaybe<MinioBucketOptions>;
   where?: InputMaybe<MinioBucketWhere>;
 };
 
 
-export type RawDatasetMinioBucketAggregateArgs = {
+export type DatasetMinioBucketAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   where?: InputMaybe<MinioBucketWhere>;
 };
 
 
-export type RawDatasetMinioBucketConnectionArgs = {
+export type DatasetMinioBucketConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<RawDatasetMinioBucketConnectionSort>>;
-  where?: InputMaybe<RawDatasetMinioBucketConnectionWhere>;
+  sort?: InputMaybe<Array<DatasetMinioBucketConnectionSort>>;
+  where?: InputMaybe<DatasetMinioBucketConnectionWhere>;
 };
 
 
-export type RawDatasetRawdataFileArgs = {
+export type DatasetRawdataFileArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   options?: InputMaybe<MinioUploadOptions>;
   where?: InputMaybe<MinioUploadWhere>;
 };
 
 
-export type RawDatasetRawdataFileAggregateArgs = {
+export type DatasetRawdataFileAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   where?: InputMaybe<MinioUploadWhere>;
 };
 
 
-export type RawDatasetRawdataFileConnectionArgs = {
+export type DatasetRawdataFileConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<RawDatasetRawdataFileConnectionSort>>;
-  where?: InputMaybe<RawDatasetRawdataFileConnectionWhere>;
+  sort?: InputMaybe<Array<DatasetRawdataFileConnectionSort>>;
+  where?: InputMaybe<DatasetRawdataFileConnectionWhere>;
 };
 
 
-export type RawDatasetStudySiteArgs = {
+export type DatasetStudySiteArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   options?: InputMaybe<GeographyCityOptions>;
   where?: InputMaybe<GeographyCityWhere>;
 };
 
 
-export type RawDatasetStudySiteAggregateArgs = {
+export type DatasetStudySiteAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
   where?: InputMaybe<GeographyCityWhere>;
 };
 
 
-export type RawDatasetStudySiteConnectionArgs = {
+export type DatasetStudySiteConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<RawDatasetStudySiteConnectionSort>>;
-  where?: InputMaybe<RawDatasetStudySiteConnectionWhere>;
+  sort?: InputMaybe<Array<DatasetStudySiteConnectionSort>>;
+  where?: InputMaybe<DatasetStudySiteConnectionWhere>;
 };
 
-export type RawDatasetAggregateSelection = {
-  __typename?: 'RawDatasetAggregateSelection';
+export type DatasetAggregateSelection = {
+  __typename?: 'DatasetAggregateSelection';
   count: Scalars['Int'];
   createdAt: DateTimeAggregateSelectionNonNullable;
   description: StringAggregateSelectionNonNullable;
   name: StringAggregateSelectionNonNullable;
-  rawDatasetID: IdAggregateSelectionNonNullable;
+  DatasetID: IdAggregateSelectionNonNullable;
 };
 
-export type RawDatasetCodeBookAggregateInput = {
-  AND?: InputMaybe<Array<RawDatasetCodeBookAggregateInput>>;
-  OR?: InputMaybe<Array<RawDatasetCodeBookAggregateInput>>;
+export type DatasetCodeBookAggregateInput = {
+  AND?: InputMaybe<Array<DatasetCodeBookAggregateInput>>;
+  OR?: InputMaybe<Array<DatasetCodeBookAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<RawDatasetCodeBookNodeAggregationWhereInput>;
+  node?: InputMaybe<DatasetCodeBookNodeAggregationWhereInput>;
 };
 
-export type RawDatasetCodeBookConnectFieldInput = {
+export type DatasetCodeBookConnectFieldInput = {
   connect?: InputMaybe<MinioUploadConnectInput>;
   edge: HasCodebookCreateInput;
   where?: InputMaybe<MinioUploadConnectWhere>;
 };
 
-export type RawDatasetCodeBookConnectOrCreateFieldInput = {
-  onCreate: RawDatasetCodeBookConnectOrCreateFieldInputOnCreate;
+export type DatasetCodeBookConnectOrCreateFieldInput = {
+  onCreate: DatasetCodeBookConnectOrCreateFieldInputOnCreate;
   where: MinioUploadConnectOrCreateWhere;
 };
 
-export type RawDatasetCodeBookConnectOrCreateFieldInputOnCreate = {
+export type DatasetCodeBookConnectOrCreateFieldInputOnCreate = {
   edge: HasCodebookCreateInput;
   node: MinioUploadOnCreateInput;
 };
 
-export type RawDatasetCodeBookConnection = {
-  __typename?: 'RawDatasetCodeBookConnection';
-  edges: Array<RawDatasetCodeBookRelationship>;
+export type DatasetCodeBookConnection = {
+  __typename?: 'DatasetCodeBookConnection';
+  edges: Array<DatasetCodeBookRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type RawDatasetCodeBookConnectionSort = {
+export type DatasetCodeBookConnectionSort = {
   edge?: InputMaybe<HasCodebookSort>;
   node?: InputMaybe<MinioUploadSort>;
 };
 
-export type RawDatasetCodeBookConnectionWhere = {
-  AND?: InputMaybe<Array<RawDatasetCodeBookConnectionWhere>>;
-  OR?: InputMaybe<Array<RawDatasetCodeBookConnectionWhere>>;
+export type DatasetCodeBookConnectionWhere = {
+  AND?: InputMaybe<Array<DatasetCodeBookConnectionWhere>>;
+  OR?: InputMaybe<Array<DatasetCodeBookConnectionWhere>>;
   edge?: InputMaybe<HasCodebookWhere>;
   edge_NOT?: InputMaybe<HasCodebookWhere>;
   node?: InputMaybe<MinioUploadWhere>;
   node_NOT?: InputMaybe<MinioUploadWhere>;
 };
 
-export type RawDatasetCodeBookCreateFieldInput = {
+export type DatasetCodeBookCreateFieldInput = {
   edge: HasCodebookCreateInput;
   node: MinioUploadCreateInput;
 };
 
-export type RawDatasetCodeBookDeleteFieldInput = {
+export type DatasetCodeBookDeleteFieldInput = {
   delete?: InputMaybe<MinioUploadDeleteInput>;
-  where?: InputMaybe<RawDatasetCodeBookConnectionWhere>;
+  where?: InputMaybe<DatasetCodeBookConnectionWhere>;
 };
 
-export type RawDatasetCodeBookDisconnectFieldInput = {
+export type DatasetCodeBookDisconnectFieldInput = {
   disconnect?: InputMaybe<MinioUploadDisconnectInput>;
-  where?: InputMaybe<RawDatasetCodeBookConnectionWhere>;
+  where?: InputMaybe<DatasetCodeBookConnectionWhere>;
 };
 
-export type RawDatasetCodeBookFieldInput = {
-  connect?: InputMaybe<RawDatasetCodeBookConnectFieldInput>;
-  connectOrCreate?: InputMaybe<RawDatasetCodeBookConnectOrCreateFieldInput>;
-  create?: InputMaybe<RawDatasetCodeBookCreateFieldInput>;
+export type DatasetCodeBookFieldInput = {
+  connect?: InputMaybe<DatasetCodeBookConnectFieldInput>;
+  connectOrCreate?: InputMaybe<DatasetCodeBookConnectOrCreateFieldInput>;
+  create?: InputMaybe<DatasetCodeBookCreateFieldInput>;
 };
 
-export type RawDatasetCodeBookNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<RawDatasetCodeBookNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<RawDatasetCodeBookNodeAggregationWhereInput>>;
+export type DatasetCodeBookNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<DatasetCodeBookNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<DatasetCodeBookNodeAggregationWhereInput>>;
   bucketName_EQUAL?: InputMaybe<Scalars['ID']>;
   filename_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
   filename_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
@@ -8168,178 +8168,178 @@ export type RawDatasetCodeBookNodeAggregationWhereInput = {
   objectName_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type RawDatasetCodeBookRelationship = HasCodebook & {
-  __typename?: 'RawDatasetCodeBookRelationship';
+export type DatasetCodeBookRelationship = HasCodebook & {
+  __typename?: 'DatasetCodeBookRelationship';
   cursor: Scalars['String'];
   node: MinioUpload;
   validated: Scalars['Boolean'];
 };
 
-export type RawDatasetCodeBookUpdateConnectionInput = {
+export type DatasetCodeBookUpdateConnectionInput = {
   edge?: InputMaybe<HasCodebookUpdateInput>;
   node?: InputMaybe<MinioUploadUpdateInput>;
 };
 
-export type RawDatasetCodeBookUpdateFieldInput = {
-  connect?: InputMaybe<RawDatasetCodeBookConnectFieldInput>;
-  connectOrCreate?: InputMaybe<RawDatasetCodeBookConnectOrCreateFieldInput>;
-  create?: InputMaybe<RawDatasetCodeBookCreateFieldInput>;
-  delete?: InputMaybe<RawDatasetCodeBookDeleteFieldInput>;
-  disconnect?: InputMaybe<RawDatasetCodeBookDisconnectFieldInput>;
-  update?: InputMaybe<RawDatasetCodeBookUpdateConnectionInput>;
-  where?: InputMaybe<RawDatasetCodeBookConnectionWhere>;
+export type DatasetCodeBookUpdateFieldInput = {
+  connect?: InputMaybe<DatasetCodeBookConnectFieldInput>;
+  connectOrCreate?: InputMaybe<DatasetCodeBookConnectOrCreateFieldInput>;
+  create?: InputMaybe<DatasetCodeBookCreateFieldInput>;
+  delete?: InputMaybe<DatasetCodeBookDeleteFieldInput>;
+  disconnect?: InputMaybe<DatasetCodeBookDisconnectFieldInput>;
+  update?: InputMaybe<DatasetCodeBookUpdateConnectionInput>;
+  where?: InputMaybe<DatasetCodeBookConnectionWhere>;
 };
 
-export type RawDatasetConnectInput = {
-  codeBook?: InputMaybe<RawDatasetCodeBookConnectFieldInput>;
-  files?: InputMaybe<Array<RawDatasetFilesConnectFieldInput>>;
-  fromStudy?: InputMaybe<RawDatasetFromStudyConnectFieldInput>;
-  funnelTasks?: InputMaybe<Array<RawDatasetFunnelTasksConnectFieldInput>>;
-  generatedCuratedDatasets?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectFieldInput>>;
-  minioBucket?: InputMaybe<RawDatasetMinioBucketConnectFieldInput>;
-  rawdataFile?: InputMaybe<RawDatasetRawdataFileConnectFieldInput>;
-  studySite?: InputMaybe<RawDatasetStudySiteConnectFieldInput>;
+export type DatasetConnectInput = {
+  codeBook?: InputMaybe<DatasetCodeBookConnectFieldInput>;
+  files?: InputMaybe<Array<DatasetFilesConnectFieldInput>>;
+  fromStudy?: InputMaybe<DatasetFromStudyConnectFieldInput>;
+  funnelTasks?: InputMaybe<Array<DatasetFunnelTasksConnectFieldInput>>;
+  generatedCuratedDatasets?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsConnectFieldInput>>;
+  minioBucket?: InputMaybe<DatasetMinioBucketConnectFieldInput>;
+  rawdataFile?: InputMaybe<DatasetRawdataFileConnectFieldInput>;
+  studySite?: InputMaybe<DatasetStudySiteConnectFieldInput>;
 };
 
-export type RawDatasetConnectOrCreateInput = {
-  codeBook?: InputMaybe<RawDatasetCodeBookConnectOrCreateFieldInput>;
-  files?: InputMaybe<Array<RawDatasetFilesConnectOrCreateFieldInput>>;
-  fromStudy?: InputMaybe<RawDatasetFromStudyConnectOrCreateFieldInput>;
-  generatedCuratedDatasets?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput>>;
-  rawdataFile?: InputMaybe<RawDatasetRawdataFileConnectOrCreateFieldInput>;
-  studySite?: InputMaybe<RawDatasetStudySiteConnectOrCreateFieldInput>;
+export type DatasetConnectOrCreateInput = {
+  codeBook?: InputMaybe<DatasetCodeBookConnectOrCreateFieldInput>;
+  files?: InputMaybe<Array<DatasetFilesConnectOrCreateFieldInput>>;
+  fromStudy?: InputMaybe<DatasetFromStudyConnectOrCreateFieldInput>;
+  generatedCuratedDatasets?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput>>;
+  rawdataFile?: InputMaybe<DatasetRawdataFileConnectOrCreateFieldInput>;
+  studySite?: InputMaybe<DatasetStudySiteConnectOrCreateFieldInput>;
 };
 
-export type RawDatasetConnectOrCreateWhere = {
-  node: RawDatasetUniqueWhere;
+export type DatasetConnectOrCreateWhere = {
+  node: DatasetUniqueWhere;
 };
 
-export type RawDatasetConnectWhere = {
-  node: RawDatasetWhere;
+export type DatasetConnectWhere = {
+  node: DatasetWhere;
 };
 
-export type RawDatasetCreateInput = {
+export type DatasetCreateInput = {
   allowedSites?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   allowedStudies?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  codeBook?: InputMaybe<RawDatasetCodeBookFieldInput>;
+  codeBook?: InputMaybe<DatasetCodeBookFieldInput>;
   description: Scalars['String'];
-  files?: InputMaybe<RawDatasetFilesFieldInput>;
-  fromStudy?: InputMaybe<RawDatasetFromStudyFieldInput>;
-  funnelTasks?: InputMaybe<RawDatasetFunnelTasksFieldInput>;
-  generatedCuratedDatasets?: InputMaybe<RawDatasetGeneratedCuratedDatasetsFieldInput>;
-  minioBucket?: InputMaybe<RawDatasetMinioBucketFieldInput>;
+  files?: InputMaybe<DatasetFilesFieldInput>;
+  fromStudy?: InputMaybe<DatasetFromStudyFieldInput>;
+  funnelTasks?: InputMaybe<DatasetFunnelTasksFieldInput>;
+  generatedCuratedDatasets?: InputMaybe<DatasetGeneratedCuratedDatasetsFieldInput>;
+  minioBucket?: InputMaybe<DatasetMinioBucketFieldInput>;
   name: Scalars['String'];
-  rawdataFile?: InputMaybe<RawDatasetRawdataFileFieldInput>;
-  studySite?: InputMaybe<RawDatasetStudySiteFieldInput>;
+  rawdataFile?: InputMaybe<DatasetRawdataFileFieldInput>;
+  studySite?: InputMaybe<DatasetStudySiteFieldInput>;
 };
 
-export type RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection = {
-  __typename?: 'RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection';
+export type DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection = {
+  __typename?: 'DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection>;
+  node?: Maybe<DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection>;
 };
 
-export type RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection = {
-  __typename?: 'RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection';
+export type DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection = {
+  __typename?: 'DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection';
   curatedDatasetID: IdAggregateSelectionNonNullable;
   description: StringAggregateSelectionNonNullable;
   name: StringAggregateSelectionNonNullable;
 };
 
-export type RawDatasetDeleteInput = {
-  codeBook?: InputMaybe<RawDatasetCodeBookDeleteFieldInput>;
-  files?: InputMaybe<Array<RawDatasetFilesDeleteFieldInput>>;
-  fromStudy?: InputMaybe<RawDatasetFromStudyDeleteFieldInput>;
-  funnelTasks?: InputMaybe<Array<RawDatasetFunnelTasksDeleteFieldInput>>;
-  generatedCuratedDatasets?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsDeleteFieldInput>>;
-  minioBucket?: InputMaybe<RawDatasetMinioBucketDeleteFieldInput>;
-  rawdataFile?: InputMaybe<RawDatasetRawdataFileDeleteFieldInput>;
-  studySite?: InputMaybe<RawDatasetStudySiteDeleteFieldInput>;
+export type DatasetDeleteInput = {
+  codeBook?: InputMaybe<DatasetCodeBookDeleteFieldInput>;
+  files?: InputMaybe<Array<DatasetFilesDeleteFieldInput>>;
+  fromStudy?: InputMaybe<DatasetFromStudyDeleteFieldInput>;
+  funnelTasks?: InputMaybe<Array<DatasetFunnelTasksDeleteFieldInput>>;
+  generatedCuratedDatasets?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsDeleteFieldInput>>;
+  minioBucket?: InputMaybe<DatasetMinioBucketDeleteFieldInput>;
+  rawdataFile?: InputMaybe<DatasetRawdataFileDeleteFieldInput>;
+  studySite?: InputMaybe<DatasetStudySiteDeleteFieldInput>;
 };
 
-export type RawDatasetDisconnectInput = {
-  codeBook?: InputMaybe<RawDatasetCodeBookDisconnectFieldInput>;
-  files?: InputMaybe<Array<RawDatasetFilesDisconnectFieldInput>>;
-  fromStudy?: InputMaybe<RawDatasetFromStudyDisconnectFieldInput>;
-  funnelTasks?: InputMaybe<Array<RawDatasetFunnelTasksDisconnectFieldInput>>;
-  generatedCuratedDatasets?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsDisconnectFieldInput>>;
-  minioBucket?: InputMaybe<RawDatasetMinioBucketDisconnectFieldInput>;
-  rawdataFile?: InputMaybe<RawDatasetRawdataFileDisconnectFieldInput>;
-  studySite?: InputMaybe<RawDatasetStudySiteDisconnectFieldInput>;
+export type DatasetDisconnectInput = {
+  codeBook?: InputMaybe<DatasetCodeBookDisconnectFieldInput>;
+  files?: InputMaybe<Array<DatasetFilesDisconnectFieldInput>>;
+  fromStudy?: InputMaybe<DatasetFromStudyDisconnectFieldInput>;
+  funnelTasks?: InputMaybe<Array<DatasetFunnelTasksDisconnectFieldInput>>;
+  generatedCuratedDatasets?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsDisconnectFieldInput>>;
+  minioBucket?: InputMaybe<DatasetMinioBucketDisconnectFieldInput>;
+  rawdataFile?: InputMaybe<DatasetRawdataFileDisconnectFieldInput>;
+  studySite?: InputMaybe<DatasetStudySiteDisconnectFieldInput>;
 };
 
-export type RawDatasetEdge = {
-  __typename?: 'RawDatasetEdge';
+export type DatasetEdge = {
+  __typename?: 'DatasetEdge';
   cursor: Scalars['String'];
-  node: RawDataset;
+  node: Dataset;
 };
 
-export type RawDatasetFilesAggregateInput = {
-  AND?: InputMaybe<Array<RawDatasetFilesAggregateInput>>;
-  OR?: InputMaybe<Array<RawDatasetFilesAggregateInput>>;
+export type DatasetFilesAggregateInput = {
+  AND?: InputMaybe<Array<DatasetFilesAggregateInput>>;
+  OR?: InputMaybe<Array<DatasetFilesAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<RawDatasetFilesNodeAggregationWhereInput>;
+  node?: InputMaybe<DatasetFilesNodeAggregationWhereInput>;
 };
 
-export type RawDatasetFilesConnectFieldInput = {
+export type DatasetFilesConnectFieldInput = {
   connect?: InputMaybe<Array<MinioUploadConnectInput>>;
   where?: InputMaybe<MinioUploadConnectWhere>;
 };
 
-export type RawDatasetFilesConnectOrCreateFieldInput = {
-  onCreate: RawDatasetFilesConnectOrCreateFieldInputOnCreate;
+export type DatasetFilesConnectOrCreateFieldInput = {
+  onCreate: DatasetFilesConnectOrCreateFieldInputOnCreate;
   where: MinioUploadConnectOrCreateWhere;
 };
 
-export type RawDatasetFilesConnectOrCreateFieldInputOnCreate = {
+export type DatasetFilesConnectOrCreateFieldInputOnCreate = {
   node: MinioUploadOnCreateInput;
 };
 
-export type RawDatasetFilesConnection = {
-  __typename?: 'RawDatasetFilesConnection';
-  edges: Array<RawDatasetFilesRelationship>;
+export type DatasetFilesConnection = {
+  __typename?: 'DatasetFilesConnection';
+  edges: Array<DatasetFilesRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type RawDatasetFilesConnectionSort = {
+export type DatasetFilesConnectionSort = {
   node?: InputMaybe<MinioUploadSort>;
 };
 
-export type RawDatasetFilesConnectionWhere = {
-  AND?: InputMaybe<Array<RawDatasetFilesConnectionWhere>>;
-  OR?: InputMaybe<Array<RawDatasetFilesConnectionWhere>>;
+export type DatasetFilesConnectionWhere = {
+  AND?: InputMaybe<Array<DatasetFilesConnectionWhere>>;
+  OR?: InputMaybe<Array<DatasetFilesConnectionWhere>>;
   node?: InputMaybe<MinioUploadWhere>;
   node_NOT?: InputMaybe<MinioUploadWhere>;
 };
 
-export type RawDatasetFilesCreateFieldInput = {
+export type DatasetFilesCreateFieldInput = {
   node: MinioUploadCreateInput;
 };
 
-export type RawDatasetFilesDeleteFieldInput = {
+export type DatasetFilesDeleteFieldInput = {
   delete?: InputMaybe<MinioUploadDeleteInput>;
-  where?: InputMaybe<RawDatasetFilesConnectionWhere>;
+  where?: InputMaybe<DatasetFilesConnectionWhere>;
 };
 
-export type RawDatasetFilesDisconnectFieldInput = {
+export type DatasetFilesDisconnectFieldInput = {
   disconnect?: InputMaybe<MinioUploadDisconnectInput>;
-  where?: InputMaybe<RawDatasetFilesConnectionWhere>;
+  where?: InputMaybe<DatasetFilesConnectionWhere>;
 };
 
-export type RawDatasetFilesFieldInput = {
-  connect?: InputMaybe<Array<RawDatasetFilesConnectFieldInput>>;
-  connectOrCreate?: InputMaybe<Array<RawDatasetFilesConnectOrCreateFieldInput>>;
-  create?: InputMaybe<Array<RawDatasetFilesCreateFieldInput>>;
+export type DatasetFilesFieldInput = {
+  connect?: InputMaybe<Array<DatasetFilesConnectFieldInput>>;
+  connectOrCreate?: InputMaybe<Array<DatasetFilesConnectOrCreateFieldInput>>;
+  create?: InputMaybe<Array<DatasetFilesCreateFieldInput>>;
 };
 
-export type RawDatasetFilesNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<RawDatasetFilesNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<RawDatasetFilesNodeAggregationWhereInput>>;
+export type DatasetFilesNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<DatasetFilesNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<DatasetFilesNodeAggregationWhereInput>>;
   bucketName_EQUAL?: InputMaybe<Scalars['ID']>;
   filename_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
   filename_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
@@ -8364,92 +8364,92 @@ export type RawDatasetFilesNodeAggregationWhereInput = {
   objectName_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type RawDatasetFilesRelationship = {
-  __typename?: 'RawDatasetFilesRelationship';
+export type DatasetFilesRelationship = {
+  __typename?: 'DatasetFilesRelationship';
   cursor: Scalars['String'];
   node: MinioUpload;
 };
 
-export type RawDatasetFilesUpdateConnectionInput = {
+export type DatasetFilesUpdateConnectionInput = {
   node?: InputMaybe<MinioUploadUpdateInput>;
 };
 
-export type RawDatasetFilesUpdateFieldInput = {
-  connect?: InputMaybe<Array<RawDatasetFilesConnectFieldInput>>;
-  connectOrCreate?: InputMaybe<Array<RawDatasetFilesConnectOrCreateFieldInput>>;
-  create?: InputMaybe<Array<RawDatasetFilesCreateFieldInput>>;
-  delete?: InputMaybe<Array<RawDatasetFilesDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<RawDatasetFilesDisconnectFieldInput>>;
-  update?: InputMaybe<RawDatasetFilesUpdateConnectionInput>;
-  where?: InputMaybe<RawDatasetFilesConnectionWhere>;
+export type DatasetFilesUpdateFieldInput = {
+  connect?: InputMaybe<Array<DatasetFilesConnectFieldInput>>;
+  connectOrCreate?: InputMaybe<Array<DatasetFilesConnectOrCreateFieldInput>>;
+  create?: InputMaybe<Array<DatasetFilesCreateFieldInput>>;
+  delete?: InputMaybe<Array<DatasetFilesDeleteFieldInput>>;
+  disconnect?: InputMaybe<Array<DatasetFilesDisconnectFieldInput>>;
+  update?: InputMaybe<DatasetFilesUpdateConnectionInput>;
+  where?: InputMaybe<DatasetFilesConnectionWhere>;
 };
 
-export type RawDatasetFromStudyAggregateInput = {
-  AND?: InputMaybe<Array<RawDatasetFromStudyAggregateInput>>;
-  OR?: InputMaybe<Array<RawDatasetFromStudyAggregateInput>>;
+export type DatasetFromStudyAggregateInput = {
+  AND?: InputMaybe<Array<DatasetFromStudyAggregateInput>>;
+  OR?: InputMaybe<Array<DatasetFromStudyAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<RawDatasetFromStudyNodeAggregationWhereInput>;
+  node?: InputMaybe<DatasetFromStudyNodeAggregationWhereInput>;
 };
 
-export type RawDatasetFromStudyConnectFieldInput = {
+export type DatasetFromStudyConnectFieldInput = {
   connect?: InputMaybe<StudyConnectInput>;
   where?: InputMaybe<StudyConnectWhere>;
 };
 
-export type RawDatasetFromStudyConnectOrCreateFieldInput = {
-  onCreate: RawDatasetFromStudyConnectOrCreateFieldInputOnCreate;
+export type DatasetFromStudyConnectOrCreateFieldInput = {
+  onCreate: DatasetFromStudyConnectOrCreateFieldInputOnCreate;
   where: StudyConnectOrCreateWhere;
 };
 
-export type RawDatasetFromStudyConnectOrCreateFieldInputOnCreate = {
+export type DatasetFromStudyConnectOrCreateFieldInputOnCreate = {
   node: StudyOnCreateInput;
 };
 
-export type RawDatasetFromStudyConnection = {
-  __typename?: 'RawDatasetFromStudyConnection';
-  edges: Array<RawDatasetFromStudyRelationship>;
+export type DatasetFromStudyConnection = {
+  __typename?: 'DatasetFromStudyConnection';
+  edges: Array<DatasetFromStudyRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type RawDatasetFromStudyConnectionSort = {
+export type DatasetFromStudyConnectionSort = {
   node?: InputMaybe<StudySort>;
 };
 
-export type RawDatasetFromStudyConnectionWhere = {
-  AND?: InputMaybe<Array<RawDatasetFromStudyConnectionWhere>>;
-  OR?: InputMaybe<Array<RawDatasetFromStudyConnectionWhere>>;
+export type DatasetFromStudyConnectionWhere = {
+  AND?: InputMaybe<Array<DatasetFromStudyConnectionWhere>>;
+  OR?: InputMaybe<Array<DatasetFromStudyConnectionWhere>>;
   node?: InputMaybe<StudyWhere>;
   node_NOT?: InputMaybe<StudyWhere>;
 };
 
-export type RawDatasetFromStudyCreateFieldInput = {
+export type DatasetFromStudyCreateFieldInput = {
   node: StudyCreateInput;
 };
 
-export type RawDatasetFromStudyDeleteFieldInput = {
+export type DatasetFromStudyDeleteFieldInput = {
   delete?: InputMaybe<StudyDeleteInput>;
-  where?: InputMaybe<RawDatasetFromStudyConnectionWhere>;
+  where?: InputMaybe<DatasetFromStudyConnectionWhere>;
 };
 
-export type RawDatasetFromStudyDisconnectFieldInput = {
+export type DatasetFromStudyDisconnectFieldInput = {
   disconnect?: InputMaybe<StudyDisconnectInput>;
-  where?: InputMaybe<RawDatasetFromStudyConnectionWhere>;
+  where?: InputMaybe<DatasetFromStudyConnectionWhere>;
 };
 
-export type RawDatasetFromStudyFieldInput = {
-  connect?: InputMaybe<RawDatasetFromStudyConnectFieldInput>;
-  connectOrCreate?: InputMaybe<RawDatasetFromStudyConnectOrCreateFieldInput>;
-  create?: InputMaybe<RawDatasetFromStudyCreateFieldInput>;
+export type DatasetFromStudyFieldInput = {
+  connect?: InputMaybe<DatasetFromStudyConnectFieldInput>;
+  connectOrCreate?: InputMaybe<DatasetFromStudyConnectOrCreateFieldInput>;
+  create?: InputMaybe<DatasetFromStudyCreateFieldInput>;
 };
 
-export type RawDatasetFromStudyNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<RawDatasetFromStudyNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<RawDatasetFromStudyNodeAggregationWhereInput>>;
+export type DatasetFromStudyNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<DatasetFromStudyNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<DatasetFromStudyNodeAggregationWhereInput>>;
   description_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
   description_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
   description_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
@@ -8513,82 +8513,82 @@ export type RawDatasetFromStudyNodeAggregationWhereInput = {
   studyID_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type RawDatasetFromStudyRelationship = {
-  __typename?: 'RawDatasetFromStudyRelationship';
+export type DatasetFromStudyRelationship = {
+  __typename?: 'DatasetFromStudyRelationship';
   cursor: Scalars['String'];
-  node: Study;
+  node: Project;
 };
 
-export type RawDatasetFromStudyUpdateConnectionInput = {
+export type DatasetFromStudyUpdateConnectionInput = {
   node?: InputMaybe<StudyUpdateInput>;
 };
 
-export type RawDatasetFromStudyUpdateFieldInput = {
-  connect?: InputMaybe<RawDatasetFromStudyConnectFieldInput>;
-  connectOrCreate?: InputMaybe<RawDatasetFromStudyConnectOrCreateFieldInput>;
-  create?: InputMaybe<RawDatasetFromStudyCreateFieldInput>;
-  delete?: InputMaybe<RawDatasetFromStudyDeleteFieldInput>;
-  disconnect?: InputMaybe<RawDatasetFromStudyDisconnectFieldInput>;
-  update?: InputMaybe<RawDatasetFromStudyUpdateConnectionInput>;
-  where?: InputMaybe<RawDatasetFromStudyConnectionWhere>;
+export type DatasetFromStudyUpdateFieldInput = {
+  connect?: InputMaybe<DatasetFromStudyConnectFieldInput>;
+  connectOrCreate?: InputMaybe<DatasetFromStudyConnectOrCreateFieldInput>;
+  create?: InputMaybe<DatasetFromStudyCreateFieldInput>;
+  delete?: InputMaybe<DatasetFromStudyDeleteFieldInput>;
+  disconnect?: InputMaybe<DatasetFromStudyDisconnectFieldInput>;
+  update?: InputMaybe<DatasetFromStudyUpdateConnectionInput>;
+  where?: InputMaybe<DatasetFromStudyConnectionWhere>;
 };
 
-export type RawDatasetFunnelTasksAggregateInput = {
-  AND?: InputMaybe<Array<RawDatasetFunnelTasksAggregateInput>>;
-  OR?: InputMaybe<Array<RawDatasetFunnelTasksAggregateInput>>;
+export type DatasetFunnelTasksAggregateInput = {
+  AND?: InputMaybe<Array<DatasetFunnelTasksAggregateInput>>;
+  OR?: InputMaybe<Array<DatasetFunnelTasksAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<RawDatasetFunnelTasksNodeAggregationWhereInput>;
+  node?: InputMaybe<DatasetFunnelTasksNodeAggregationWhereInput>;
 };
 
-export type RawDatasetFunnelTasksConnectFieldInput = {
+export type DatasetFunnelTasksConnectFieldInput = {
   connect?: InputMaybe<Array<TaskConnectInput>>;
   where?: InputMaybe<TaskConnectWhere>;
 };
 
-export type RawDatasetFunnelTasksConnection = {
-  __typename?: 'RawDatasetFunnelTasksConnection';
-  edges: Array<RawDatasetFunnelTasksRelationship>;
+export type DatasetFunnelTasksConnection = {
+  __typename?: 'DatasetFunnelTasksConnection';
+  edges: Array<DatasetFunnelTasksRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type RawDatasetFunnelTasksConnectionSort = {
+export type DatasetFunnelTasksConnectionSort = {
   node?: InputMaybe<TaskSort>;
 };
 
-export type RawDatasetFunnelTasksConnectionWhere = {
-  AND?: InputMaybe<Array<RawDatasetFunnelTasksConnectionWhere>>;
-  OR?: InputMaybe<Array<RawDatasetFunnelTasksConnectionWhere>>;
+export type DatasetFunnelTasksConnectionWhere = {
+  AND?: InputMaybe<Array<DatasetFunnelTasksConnectionWhere>>;
+  OR?: InputMaybe<Array<DatasetFunnelTasksConnectionWhere>>;
   node?: InputMaybe<TaskWhere>;
   node_NOT?: InputMaybe<TaskWhere>;
 };
 
-export type RawDatasetFunnelTasksCreateFieldInput = {
+export type DatasetFunnelTasksCreateFieldInput = {
   node: TaskCreateInput;
 };
 
-export type RawDatasetFunnelTasksDeleteFieldInput = {
+export type DatasetFunnelTasksDeleteFieldInput = {
   delete?: InputMaybe<TaskDeleteInput>;
-  where?: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+  where?: InputMaybe<DatasetFunnelTasksConnectionWhere>;
 };
 
-export type RawDatasetFunnelTasksDisconnectFieldInput = {
+export type DatasetFunnelTasksDisconnectFieldInput = {
   disconnect?: InputMaybe<TaskDisconnectInput>;
-  where?: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+  where?: InputMaybe<DatasetFunnelTasksConnectionWhere>;
 };
 
-export type RawDatasetFunnelTasksFieldInput = {
-  connect?: InputMaybe<Array<RawDatasetFunnelTasksConnectFieldInput>>;
-  create?: InputMaybe<Array<RawDatasetFunnelTasksCreateFieldInput>>;
+export type DatasetFunnelTasksFieldInput = {
+  connect?: InputMaybe<Array<DatasetFunnelTasksConnectFieldInput>>;
+  create?: InputMaybe<Array<DatasetFunnelTasksCreateFieldInput>>;
 };
 
-export type RawDatasetFunnelTasksNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<RawDatasetFunnelTasksNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<RawDatasetFunnelTasksNodeAggregationWhereInput>>;
+export type DatasetFunnelTasksNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<DatasetFunnelTasksNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<DatasetFunnelTasksNodeAggregationWhereInput>>;
   creationTime_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
   creationTime_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
   creationTime_AVERAGE_GTE?: InputMaybe<Scalars['Float']>;
@@ -8672,91 +8672,91 @@ export type RawDatasetFunnelTasksNodeAggregationWhereInput = {
   taskID_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type RawDatasetFunnelTasksRelationship = {
-  __typename?: 'RawDatasetFunnelTasksRelationship';
+export type DatasetFunnelTasksRelationship = {
+  __typename?: 'DatasetFunnelTasksRelationship';
   cursor: Scalars['String'];
   node: Task;
 };
 
-export type RawDatasetFunnelTasksUpdateConnectionInput = {
+export type DatasetFunnelTasksUpdateConnectionInput = {
   node?: InputMaybe<TaskUpdateInput>;
 };
 
-export type RawDatasetFunnelTasksUpdateFieldInput = {
-  connect?: InputMaybe<Array<RawDatasetFunnelTasksConnectFieldInput>>;
-  create?: InputMaybe<Array<RawDatasetFunnelTasksCreateFieldInput>>;
-  delete?: InputMaybe<Array<RawDatasetFunnelTasksDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<RawDatasetFunnelTasksDisconnectFieldInput>>;
-  update?: InputMaybe<RawDatasetFunnelTasksUpdateConnectionInput>;
-  where?: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
+export type DatasetFunnelTasksUpdateFieldInput = {
+  connect?: InputMaybe<Array<DatasetFunnelTasksConnectFieldInput>>;
+  create?: InputMaybe<Array<DatasetFunnelTasksCreateFieldInput>>;
+  delete?: InputMaybe<Array<DatasetFunnelTasksDeleteFieldInput>>;
+  disconnect?: InputMaybe<Array<DatasetFunnelTasksDisconnectFieldInput>>;
+  update?: InputMaybe<DatasetFunnelTasksUpdateConnectionInput>;
+  where?: InputMaybe<DatasetFunnelTasksConnectionWhere>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsAggregateInput = {
-  AND?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsAggregateInput>>;
-  OR?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsAggregateInput>>;
+export type DatasetGeneratedCuratedDatasetsAggregateInput = {
+  AND?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsAggregateInput>>;
+  OR?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput>;
+  node?: InputMaybe<DatasetGeneratedCuratedDatasetsNodeAggregationWhereInput>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsConnectFieldInput = {
+export type DatasetGeneratedCuratedDatasetsConnectFieldInput = {
   connect?: InputMaybe<Array<CuratedDatasetConnectInput>>;
   where?: InputMaybe<CuratedDatasetConnectWhere>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput = {
-  onCreate: RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate;
+export type DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput = {
+  onCreate: DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate;
   where: CuratedDatasetConnectOrCreateWhere;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate = {
+export type DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate = {
   node: CuratedDatasetOnCreateInput;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsConnection = {
-  __typename?: 'RawDatasetGeneratedCuratedDatasetsConnection';
-  edges: Array<RawDatasetGeneratedCuratedDatasetsRelationship>;
+export type DatasetGeneratedCuratedDatasetsConnection = {
+  __typename?: 'DatasetGeneratedCuratedDatasetsConnection';
+  edges: Array<DatasetGeneratedCuratedDatasetsRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type RawDatasetGeneratedCuratedDatasetsConnectionSort = {
+export type DatasetGeneratedCuratedDatasetsConnectionSort = {
   node?: InputMaybe<CuratedDatasetSort>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsConnectionWhere = {
-  AND?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectionWhere>>;
-  OR?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectionWhere>>;
+export type DatasetGeneratedCuratedDatasetsConnectionWhere = {
+  AND?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsConnectionWhere>>;
+  OR?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsConnectionWhere>>;
   node?: InputMaybe<CuratedDatasetWhere>;
   node_NOT?: InputMaybe<CuratedDatasetWhere>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsCreateFieldInput = {
+export type DatasetGeneratedCuratedDatasetsCreateFieldInput = {
   node: CuratedDatasetCreateInput;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsDeleteFieldInput = {
+export type DatasetGeneratedCuratedDatasetsDeleteFieldInput = {
   delete?: InputMaybe<CuratedDatasetDeleteInput>;
-  where?: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
+  where?: InputMaybe<DatasetGeneratedCuratedDatasetsConnectionWhere>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsDisconnectFieldInput = {
+export type DatasetGeneratedCuratedDatasetsDisconnectFieldInput = {
   disconnect?: InputMaybe<CuratedDatasetDisconnectInput>;
-  where?: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
+  where?: InputMaybe<DatasetGeneratedCuratedDatasetsConnectionWhere>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsFieldInput = {
-  connect?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectFieldInput>>;
-  connectOrCreate?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput>>;
-  create?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsCreateFieldInput>>;
+export type DatasetGeneratedCuratedDatasetsFieldInput = {
+  connect?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsConnectFieldInput>>;
+  connectOrCreate?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput>>;
+  create?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsCreateFieldInput>>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput>>;
+export type DatasetGeneratedCuratedDatasetsNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsNodeAggregationWhereInput>>;
   curatedDatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
   description_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
   description_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
@@ -8800,34 +8800,34 @@ export type RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput = {
   name_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsRelationship = {
-  __typename?: 'RawDatasetGeneratedCuratedDatasetsRelationship';
+export type DatasetGeneratedCuratedDatasetsRelationship = {
+  __typename?: 'DatasetGeneratedCuratedDatasetsRelationship';
   cursor: Scalars['String'];
   node: CuratedDataset;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsUpdateConnectionInput = {
+export type DatasetGeneratedCuratedDatasetsUpdateConnectionInput = {
   node?: InputMaybe<CuratedDatasetUpdateInput>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsUpdateFieldInput = {
-  connect?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectFieldInput>>;
-  connectOrCreate?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput>>;
-  create?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsCreateFieldInput>>;
-  delete?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsDisconnectFieldInput>>;
-  update?: InputMaybe<RawDatasetGeneratedCuratedDatasetsUpdateConnectionInput>;
-  where?: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
+export type DatasetGeneratedCuratedDatasetsUpdateFieldInput = {
+  connect?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsConnectFieldInput>>;
+  connectOrCreate?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput>>;
+  create?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsCreateFieldInput>>;
+  delete?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsDeleteFieldInput>>;
+  disconnect?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsDisconnectFieldInput>>;
+  update?: InputMaybe<DatasetGeneratedCuratedDatasetsUpdateConnectionInput>;
+  where?: InputMaybe<DatasetGeneratedCuratedDatasetsConnectionWhere>;
 };
 
-export type RawDatasetGeographyCityStudySiteAggregationSelection = {
-  __typename?: 'RawDatasetGeographyCityStudySiteAggregationSelection';
+export type DatasetGeographyCityStudySiteAggregationSelection = {
+  __typename?: 'DatasetGeographyCityStudySiteAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<RawDatasetGeographyCityStudySiteNodeAggregateSelection>;
+  node?: Maybe<DatasetGeographyCityStudySiteNodeAggregateSelection>;
 };
 
-export type RawDatasetGeographyCityStudySiteNodeAggregateSelection = {
-  __typename?: 'RawDatasetGeographyCityStudySiteNodeAggregateSelection';
+export type DatasetGeographyCityStudySiteNodeAggregateSelection = {
+  __typename?: 'DatasetGeographyCityStudySiteNodeAggregateSelection';
   city: StringAggregateSelectionNonNullable;
   cityID: IdAggregateSelectionNonNullable;
   country: StringAggregateSelectionNonNullable;
@@ -8836,220 +8836,220 @@ export type RawDatasetGeographyCityStudySiteNodeAggregateSelection = {
   longitude: FloatAggregateSelectionNonNullable;
 };
 
-export type RawDatasetMinioBucketAggregateInput = {
-  AND?: InputMaybe<Array<RawDatasetMinioBucketAggregateInput>>;
-  OR?: InputMaybe<Array<RawDatasetMinioBucketAggregateInput>>;
+export type DatasetMinioBucketAggregateInput = {
+  AND?: InputMaybe<Array<DatasetMinioBucketAggregateInput>>;
+  OR?: InputMaybe<Array<DatasetMinioBucketAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<RawDatasetMinioBucketNodeAggregationWhereInput>;
+  node?: InputMaybe<DatasetMinioBucketNodeAggregationWhereInput>;
 };
 
-export type RawDatasetMinioBucketConnectFieldInput = {
+export type DatasetMinioBucketConnectFieldInput = {
   connect?: InputMaybe<MinioBucketConnectInput>;
   where?: InputMaybe<MinioBucketConnectWhere>;
 };
 
-export type RawDatasetMinioBucketConnection = {
-  __typename?: 'RawDatasetMinioBucketConnection';
-  edges: Array<RawDatasetMinioBucketRelationship>;
+export type DatasetMinioBucketConnection = {
+  __typename?: 'DatasetMinioBucketConnection';
+  edges: Array<DatasetMinioBucketRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type RawDatasetMinioBucketConnectionSort = {
+export type DatasetMinioBucketConnectionSort = {
   node?: InputMaybe<MinioBucketSort>;
 };
 
-export type RawDatasetMinioBucketConnectionWhere = {
-  AND?: InputMaybe<Array<RawDatasetMinioBucketConnectionWhere>>;
-  OR?: InputMaybe<Array<RawDatasetMinioBucketConnectionWhere>>;
+export type DatasetMinioBucketConnectionWhere = {
+  AND?: InputMaybe<Array<DatasetMinioBucketConnectionWhere>>;
+  OR?: InputMaybe<Array<DatasetMinioBucketConnectionWhere>>;
   node?: InputMaybe<MinioBucketWhere>;
   node_NOT?: InputMaybe<MinioBucketWhere>;
 };
 
-export type RawDatasetMinioBucketCreateFieldInput = {
+export type DatasetMinioBucketCreateFieldInput = {
   node: MinioBucketCreateInput;
 };
 
-export type RawDatasetMinioBucketDeleteFieldInput = {
+export type DatasetMinioBucketDeleteFieldInput = {
   delete?: InputMaybe<MinioBucketDeleteInput>;
-  where?: InputMaybe<RawDatasetMinioBucketConnectionWhere>;
+  where?: InputMaybe<DatasetMinioBucketConnectionWhere>;
 };
 
-export type RawDatasetMinioBucketDisconnectFieldInput = {
+export type DatasetMinioBucketDisconnectFieldInput = {
   disconnect?: InputMaybe<MinioBucketDisconnectInput>;
-  where?: InputMaybe<RawDatasetMinioBucketConnectionWhere>;
+  where?: InputMaybe<DatasetMinioBucketConnectionWhere>;
 };
 
-export type RawDatasetMinioBucketFieldInput = {
-  connect?: InputMaybe<RawDatasetMinioBucketConnectFieldInput>;
-  create?: InputMaybe<RawDatasetMinioBucketCreateFieldInput>;
+export type DatasetMinioBucketFieldInput = {
+  connect?: InputMaybe<DatasetMinioBucketConnectFieldInput>;
+  create?: InputMaybe<DatasetMinioBucketCreateFieldInput>;
 };
 
-export type RawDatasetMinioBucketMinioBucketAggregationSelection = {
-  __typename?: 'RawDatasetMinioBucketMinioBucketAggregationSelection';
+export type DatasetMinioBucketMinioBucketAggregationSelection = {
+  __typename?: 'DatasetMinioBucketMinioBucketAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<RawDatasetMinioBucketMinioBucketNodeAggregateSelection>;
+  node?: Maybe<DatasetMinioBucketMinioBucketNodeAggregateSelection>;
 };
 
-export type RawDatasetMinioBucketMinioBucketNodeAggregateSelection = {
-  __typename?: 'RawDatasetMinioBucketMinioBucketNodeAggregateSelection';
+export type DatasetMinioBucketMinioBucketNodeAggregateSelection = {
+  __typename?: 'DatasetMinioBucketMinioBucketNodeAggregateSelection';
   bucketName: IdAggregateSelectionNonNullable;
 };
 
-export type RawDatasetMinioBucketNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<RawDatasetMinioBucketNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<RawDatasetMinioBucketNodeAggregationWhereInput>>;
+export type DatasetMinioBucketNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<DatasetMinioBucketNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<DatasetMinioBucketNodeAggregationWhereInput>>;
   bucketName_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type RawDatasetMinioBucketRelationship = {
-  __typename?: 'RawDatasetMinioBucketRelationship';
+export type DatasetMinioBucketRelationship = {
+  __typename?: 'DatasetMinioBucketRelationship';
   cursor: Scalars['String'];
   node: MinioBucket;
 };
 
-export type RawDatasetMinioBucketUpdateConnectionInput = {
+export type DatasetMinioBucketUpdateConnectionInput = {
   node?: InputMaybe<MinioBucketUpdateInput>;
 };
 
-export type RawDatasetMinioBucketUpdateFieldInput = {
-  connect?: InputMaybe<RawDatasetMinioBucketConnectFieldInput>;
-  create?: InputMaybe<RawDatasetMinioBucketCreateFieldInput>;
-  delete?: InputMaybe<RawDatasetMinioBucketDeleteFieldInput>;
-  disconnect?: InputMaybe<RawDatasetMinioBucketDisconnectFieldInput>;
-  update?: InputMaybe<RawDatasetMinioBucketUpdateConnectionInput>;
-  where?: InputMaybe<RawDatasetMinioBucketConnectionWhere>;
+export type DatasetMinioBucketUpdateFieldInput = {
+  connect?: InputMaybe<DatasetMinioBucketConnectFieldInput>;
+  create?: InputMaybe<DatasetMinioBucketCreateFieldInput>;
+  delete?: InputMaybe<DatasetMinioBucketDeleteFieldInput>;
+  disconnect?: InputMaybe<DatasetMinioBucketDisconnectFieldInput>;
+  update?: InputMaybe<DatasetMinioBucketUpdateConnectionInput>;
+  where?: InputMaybe<DatasetMinioBucketConnectionWhere>;
 };
 
-export type RawDatasetMinioUploadCodeBookAggregationSelection = {
-  __typename?: 'RawDatasetMinioUploadCodeBookAggregationSelection';
+export type DatasetMinioUploadCodeBookAggregationSelection = {
+  __typename?: 'DatasetMinioUploadCodeBookAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<RawDatasetMinioUploadCodeBookNodeAggregateSelection>;
+  node?: Maybe<DatasetMinioUploadCodeBookNodeAggregateSelection>;
 };
 
-export type RawDatasetMinioUploadCodeBookNodeAggregateSelection = {
-  __typename?: 'RawDatasetMinioUploadCodeBookNodeAggregateSelection';
+export type DatasetMinioUploadCodeBookNodeAggregateSelection = {
+  __typename?: 'DatasetMinioUploadCodeBookNodeAggregateSelection';
   bucketName: IdAggregateSelectionNonNullable;
   filename: StringAggregateSelectionNonNullable;
   objectName: IdAggregateSelectionNonNullable;
 };
 
-export type RawDatasetMinioUploadFilesAggregationSelection = {
-  __typename?: 'RawDatasetMinioUploadFilesAggregationSelection';
+export type DatasetMinioUploadFilesAggregationSelection = {
+  __typename?: 'DatasetMinioUploadFilesAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<RawDatasetMinioUploadFilesNodeAggregateSelection>;
+  node?: Maybe<DatasetMinioUploadFilesNodeAggregateSelection>;
 };
 
-export type RawDatasetMinioUploadFilesNodeAggregateSelection = {
-  __typename?: 'RawDatasetMinioUploadFilesNodeAggregateSelection';
+export type DatasetMinioUploadFilesNodeAggregateSelection = {
+  __typename?: 'DatasetMinioUploadFilesNodeAggregateSelection';
   bucketName: IdAggregateSelectionNonNullable;
   filename: StringAggregateSelectionNonNullable;
   objectName: IdAggregateSelectionNonNullable;
 };
 
-export type RawDatasetMinioUploadRawdataFileAggregationSelection = {
-  __typename?: 'RawDatasetMinioUploadRawdataFileAggregationSelection';
+export type DatasetMinioUploadRawdataFileAggregationSelection = {
+  __typename?: 'DatasetMinioUploadRawdataFileAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<RawDatasetMinioUploadRawdataFileNodeAggregateSelection>;
+  node?: Maybe<DatasetMinioUploadRawdataFileNodeAggregateSelection>;
 };
 
-export type RawDatasetMinioUploadRawdataFileNodeAggregateSelection = {
-  __typename?: 'RawDatasetMinioUploadRawdataFileNodeAggregateSelection';
+export type DatasetMinioUploadRawdataFileNodeAggregateSelection = {
+  __typename?: 'DatasetMinioUploadRawdataFileNodeAggregateSelection';
   bucketName: IdAggregateSelectionNonNullable;
   filename: StringAggregateSelectionNonNullable;
   objectName: IdAggregateSelectionNonNullable;
 };
 
-export type RawDatasetOnCreateInput = {
+export type DatasetOnCreateInput = {
   allowedSites?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   allowedStudies?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   description: Scalars['String'];
   name: Scalars['String'];
 };
 
-export type RawDatasetOptions = {
+export type DatasetOptions = {
   limit?: InputMaybe<Scalars['Int']>;
   offset?: InputMaybe<Scalars['Int']>;
-  /** Specify one or more RawDatasetSort objects to sort RawDatasets by. The sorts will be applied in the order in which they are arranged in the array. */
-  sort?: InputMaybe<Array<RawDatasetSort>>;
+  /** Specify one or more DatasetSort objects to sort Datasets by. The sorts will be applied in the order in which they are arranged in the array. */
+  sort?: InputMaybe<Array<DatasetSort>>;
 };
 
-export type RawDatasetRawdataFileAggregateInput = {
-  AND?: InputMaybe<Array<RawDatasetRawdataFileAggregateInput>>;
-  OR?: InputMaybe<Array<RawDatasetRawdataFileAggregateInput>>;
+export type DatasetRawdataFileAggregateInput = {
+  AND?: InputMaybe<Array<DatasetRawdataFileAggregateInput>>;
+  OR?: InputMaybe<Array<DatasetRawdataFileAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<RawDatasetRawdataFileNodeAggregationWhereInput>;
+  node?: InputMaybe<DatasetRawdataFileNodeAggregationWhereInput>;
 };
 
-export type RawDatasetRawdataFileConnectFieldInput = {
+export type DatasetRawdataFileConnectFieldInput = {
   connect?: InputMaybe<MinioUploadConnectInput>;
   edge: HasRawdatafileCreateInput;
   where?: InputMaybe<MinioUploadConnectWhere>;
 };
 
-export type RawDatasetRawdataFileConnectOrCreateFieldInput = {
-  onCreate: RawDatasetRawdataFileConnectOrCreateFieldInputOnCreate;
+export type DatasetRawdataFileConnectOrCreateFieldInput = {
+  onCreate: DatasetRawdataFileConnectOrCreateFieldInputOnCreate;
   where: MinioUploadConnectOrCreateWhere;
 };
 
-export type RawDatasetRawdataFileConnectOrCreateFieldInputOnCreate = {
+export type DatasetRawdataFileConnectOrCreateFieldInputOnCreate = {
   edge: HasRawdatafileCreateInput;
   node: MinioUploadOnCreateInput;
 };
 
-export type RawDatasetRawdataFileConnection = {
-  __typename?: 'RawDatasetRawdataFileConnection';
-  edges: Array<RawDatasetRawdataFileRelationship>;
+export type DatasetRawdataFileConnection = {
+  __typename?: 'DatasetRawdataFileConnection';
+  edges: Array<DatasetRawdataFileRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type RawDatasetRawdataFileConnectionSort = {
+export type DatasetRawdataFileConnectionSort = {
   edge?: InputMaybe<HasRawdatafileSort>;
   node?: InputMaybe<MinioUploadSort>;
 };
 
-export type RawDatasetRawdataFileConnectionWhere = {
-  AND?: InputMaybe<Array<RawDatasetRawdataFileConnectionWhere>>;
-  OR?: InputMaybe<Array<RawDatasetRawdataFileConnectionWhere>>;
+export type DatasetRawdataFileConnectionWhere = {
+  AND?: InputMaybe<Array<DatasetRawdataFileConnectionWhere>>;
+  OR?: InputMaybe<Array<DatasetRawdataFileConnectionWhere>>;
   edge?: InputMaybe<HasRawdatafileWhere>;
   edge_NOT?: InputMaybe<HasRawdatafileWhere>;
   node?: InputMaybe<MinioUploadWhere>;
   node_NOT?: InputMaybe<MinioUploadWhere>;
 };
 
-export type RawDatasetRawdataFileCreateFieldInput = {
+export type DatasetRawdataFileCreateFieldInput = {
   edge: HasRawdatafileCreateInput;
   node: MinioUploadCreateInput;
 };
 
-export type RawDatasetRawdataFileDeleteFieldInput = {
+export type DatasetRawdataFileDeleteFieldInput = {
   delete?: InputMaybe<MinioUploadDeleteInput>;
-  where?: InputMaybe<RawDatasetRawdataFileConnectionWhere>;
+  where?: InputMaybe<DatasetRawdataFileConnectionWhere>;
 };
 
-export type RawDatasetRawdataFileDisconnectFieldInput = {
+export type DatasetRawdataFileDisconnectFieldInput = {
   disconnect?: InputMaybe<MinioUploadDisconnectInput>;
-  where?: InputMaybe<RawDatasetRawdataFileConnectionWhere>;
+  where?: InputMaybe<DatasetRawdataFileConnectionWhere>;
 };
 
-export type RawDatasetRawdataFileFieldInput = {
-  connect?: InputMaybe<RawDatasetRawdataFileConnectFieldInput>;
-  connectOrCreate?: InputMaybe<RawDatasetRawdataFileConnectOrCreateFieldInput>;
-  create?: InputMaybe<RawDatasetRawdataFileCreateFieldInput>;
+export type DatasetRawdataFileFieldInput = {
+  connect?: InputMaybe<DatasetRawdataFileConnectFieldInput>;
+  connectOrCreate?: InputMaybe<DatasetRawdataFileConnectOrCreateFieldInput>;
+  create?: InputMaybe<DatasetRawdataFileCreateFieldInput>;
 };
 
-export type RawDatasetRawdataFileNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<RawDatasetRawdataFileNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<RawDatasetRawdataFileNodeAggregationWhereInput>>;
+export type DatasetRawdataFileNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<DatasetRawdataFileNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<DatasetRawdataFileNodeAggregationWhereInput>>;
   bucketName_EQUAL?: InputMaybe<Scalars['ID']>;
   filename_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
   filename_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
@@ -9074,124 +9074,124 @@ export type RawDatasetRawdataFileNodeAggregationWhereInput = {
   objectName_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type RawDatasetRawdataFileRelationship = HasRawdatafile & {
-  __typename?: 'RawDatasetRawdataFileRelationship';
+export type DatasetRawdataFileRelationship = HasRawdatafile & {
+  __typename?: 'DatasetRawdataFileRelationship';
   cursor: Scalars['String'];
   node: MinioUpload;
   validated: Scalars['Boolean'];
 };
 
-export type RawDatasetRawdataFileUpdateConnectionInput = {
+export type DatasetRawdataFileUpdateConnectionInput = {
   edge?: InputMaybe<HasRawdatafileUpdateInput>;
   node?: InputMaybe<MinioUploadUpdateInput>;
 };
 
-export type RawDatasetRawdataFileUpdateFieldInput = {
-  connect?: InputMaybe<RawDatasetRawdataFileConnectFieldInput>;
-  connectOrCreate?: InputMaybe<RawDatasetRawdataFileConnectOrCreateFieldInput>;
-  create?: InputMaybe<RawDatasetRawdataFileCreateFieldInput>;
-  delete?: InputMaybe<RawDatasetRawdataFileDeleteFieldInput>;
-  disconnect?: InputMaybe<RawDatasetRawdataFileDisconnectFieldInput>;
-  update?: InputMaybe<RawDatasetRawdataFileUpdateConnectionInput>;
-  where?: InputMaybe<RawDatasetRawdataFileConnectionWhere>;
+export type DatasetRawdataFileUpdateFieldInput = {
+  connect?: InputMaybe<DatasetRawdataFileConnectFieldInput>;
+  connectOrCreate?: InputMaybe<DatasetRawdataFileConnectOrCreateFieldInput>;
+  create?: InputMaybe<DatasetRawdataFileCreateFieldInput>;
+  delete?: InputMaybe<DatasetRawdataFileDeleteFieldInput>;
+  disconnect?: InputMaybe<DatasetRawdataFileDisconnectFieldInput>;
+  update?: InputMaybe<DatasetRawdataFileUpdateConnectionInput>;
+  where?: InputMaybe<DatasetRawdataFileConnectionWhere>;
 };
 
-export type RawDatasetRelationInput = {
-  codeBook?: InputMaybe<RawDatasetCodeBookCreateFieldInput>;
-  files?: InputMaybe<Array<RawDatasetFilesCreateFieldInput>>;
-  fromStudy?: InputMaybe<RawDatasetFromStudyCreateFieldInput>;
-  funnelTasks?: InputMaybe<Array<RawDatasetFunnelTasksCreateFieldInput>>;
-  generatedCuratedDatasets?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsCreateFieldInput>>;
-  minioBucket?: InputMaybe<RawDatasetMinioBucketCreateFieldInput>;
-  rawdataFile?: InputMaybe<RawDatasetRawdataFileCreateFieldInput>;
-  studySite?: InputMaybe<RawDatasetStudySiteCreateFieldInput>;
+export type DatasetRelationInput = {
+  codeBook?: InputMaybe<DatasetCodeBookCreateFieldInput>;
+  files?: InputMaybe<Array<DatasetFilesCreateFieldInput>>;
+  fromStudy?: InputMaybe<DatasetFromStudyCreateFieldInput>;
+  funnelTasks?: InputMaybe<Array<DatasetFunnelTasksCreateFieldInput>>;
+  generatedCuratedDatasets?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsCreateFieldInput>>;
+  minioBucket?: InputMaybe<DatasetMinioBucketCreateFieldInput>;
+  rawdataFile?: InputMaybe<DatasetRawdataFileCreateFieldInput>;
+  studySite?: InputMaybe<DatasetStudySiteCreateFieldInput>;
 };
 
-/** Fields to sort RawDatasets by. The order in which sorts are applied is not guaranteed when specifying many fields in one RawDatasetSort object. */
-export type RawDatasetSort = {
+/** Fields to sort Datasets by. The order in which sorts are applied is not guaranteed when specifying many fields in one DatasetSort object. */
+export type DatasetSort = {
   createdAt?: InputMaybe<SortDirection>;
   description?: InputMaybe<SortDirection>;
   name?: InputMaybe<SortDirection>;
-  rawDatasetID?: InputMaybe<SortDirection>;
+  DatasetID?: InputMaybe<SortDirection>;
 };
 
-export type RawDatasetStudyFromStudyAggregationSelection = {
-  __typename?: 'RawDatasetStudyFromStudyAggregationSelection';
+export type DatasetStudyFromStudyAggregationSelection = {
+  __typename?: 'DatasetStudyFromStudyAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<RawDatasetStudyFromStudyNodeAggregateSelection>;
+  node?: Maybe<DatasetStudyFromStudyNodeAggregateSelection>;
 };
 
-export type RawDatasetStudyFromStudyNodeAggregateSelection = {
-  __typename?: 'RawDatasetStudyFromStudyNodeAggregateSelection';
+export type DatasetStudyFromStudyNodeAggregateSelection = {
+  __typename?: 'DatasetStudyFromStudyNodeAggregateSelection';
   description: StringAggregateSelectionNonNullable;
   fullName: StringAggregateSelectionNonNullable;
   shortName: StringAggregateSelectionNonNullable;
   studyID: IdAggregateSelectionNonNullable;
 };
 
-export type RawDatasetStudySiteAggregateInput = {
-  AND?: InputMaybe<Array<RawDatasetStudySiteAggregateInput>>;
-  OR?: InputMaybe<Array<RawDatasetStudySiteAggregateInput>>;
+export type DatasetStudySiteAggregateInput = {
+  AND?: InputMaybe<Array<DatasetStudySiteAggregateInput>>;
+  OR?: InputMaybe<Array<DatasetStudySiteAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<RawDatasetStudySiteNodeAggregationWhereInput>;
+  node?: InputMaybe<DatasetStudySiteNodeAggregationWhereInput>;
 };
 
-export type RawDatasetStudySiteConnectFieldInput = {
+export type DatasetStudySiteConnectFieldInput = {
   where?: InputMaybe<GeographyCityConnectWhere>;
 };
 
-export type RawDatasetStudySiteConnectOrCreateFieldInput = {
-  onCreate: RawDatasetStudySiteConnectOrCreateFieldInputOnCreate;
+export type DatasetStudySiteConnectOrCreateFieldInput = {
+  onCreate: DatasetStudySiteConnectOrCreateFieldInputOnCreate;
   where: GeographyCityConnectOrCreateWhere;
 };
 
-export type RawDatasetStudySiteConnectOrCreateFieldInputOnCreate = {
+export type DatasetStudySiteConnectOrCreateFieldInputOnCreate = {
   node: GeographyCityOnCreateInput;
 };
 
-export type RawDatasetStudySiteConnection = {
-  __typename?: 'RawDatasetStudySiteConnection';
-  edges: Array<RawDatasetStudySiteRelationship>;
+export type DatasetStudySiteConnection = {
+  __typename?: 'DatasetStudySiteConnection';
+  edges: Array<DatasetStudySiteRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type RawDatasetStudySiteConnectionSort = {
+export type DatasetStudySiteConnectionSort = {
   node?: InputMaybe<GeographyCitySort>;
 };
 
-export type RawDatasetStudySiteConnectionWhere = {
-  AND?: InputMaybe<Array<RawDatasetStudySiteConnectionWhere>>;
-  OR?: InputMaybe<Array<RawDatasetStudySiteConnectionWhere>>;
+export type DatasetStudySiteConnectionWhere = {
+  AND?: InputMaybe<Array<DatasetStudySiteConnectionWhere>>;
+  OR?: InputMaybe<Array<DatasetStudySiteConnectionWhere>>;
   node?: InputMaybe<GeographyCityWhere>;
   node_NOT?: InputMaybe<GeographyCityWhere>;
 };
 
-export type RawDatasetStudySiteCreateFieldInput = {
+export type DatasetStudySiteCreateFieldInput = {
   node: GeographyCityCreateInput;
 };
 
-export type RawDatasetStudySiteDeleteFieldInput = {
-  where?: InputMaybe<RawDatasetStudySiteConnectionWhere>;
+export type DatasetStudySiteDeleteFieldInput = {
+  where?: InputMaybe<DatasetStudySiteConnectionWhere>;
 };
 
-export type RawDatasetStudySiteDisconnectFieldInput = {
-  where?: InputMaybe<RawDatasetStudySiteConnectionWhere>;
+export type DatasetStudySiteDisconnectFieldInput = {
+  where?: InputMaybe<DatasetStudySiteConnectionWhere>;
 };
 
-export type RawDatasetStudySiteFieldInput = {
-  connect?: InputMaybe<RawDatasetStudySiteConnectFieldInput>;
-  connectOrCreate?: InputMaybe<RawDatasetStudySiteConnectOrCreateFieldInput>;
-  create?: InputMaybe<RawDatasetStudySiteCreateFieldInput>;
+export type DatasetStudySiteFieldInput = {
+  connect?: InputMaybe<DatasetStudySiteConnectFieldInput>;
+  connectOrCreate?: InputMaybe<DatasetStudySiteConnectOrCreateFieldInput>;
+  create?: InputMaybe<DatasetStudySiteCreateFieldInput>;
 };
 
-export type RawDatasetStudySiteNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<RawDatasetStudySiteNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<RawDatasetStudySiteNodeAggregationWhereInput>>;
+export type DatasetStudySiteNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<DatasetStudySiteNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<DatasetStudySiteNodeAggregationWhereInput>>;
   cityID_EQUAL?: InputMaybe<Scalars['ID']>;
   city_AVERAGE_EQUAL?: InputMaybe<Scalars['Float']>;
   city_AVERAGE_GT?: InputMaybe<Scalars['Float']>;
@@ -9286,34 +9286,34 @@ export type RawDatasetStudySiteNodeAggregationWhereInput = {
   longitude_SUM_LTE?: InputMaybe<Scalars['Float']>;
 };
 
-export type RawDatasetStudySiteRelationship = {
-  __typename?: 'RawDatasetStudySiteRelationship';
+export type DatasetStudySiteRelationship = {
+  __typename?: 'DatasetStudySiteRelationship';
   cursor: Scalars['String'];
   node: GeographyCity;
 };
 
-export type RawDatasetStudySiteUpdateConnectionInput = {
+export type DatasetStudySiteUpdateConnectionInput = {
   node?: InputMaybe<GeographyCityUpdateInput>;
 };
 
-export type RawDatasetStudySiteUpdateFieldInput = {
-  connect?: InputMaybe<RawDatasetStudySiteConnectFieldInput>;
-  connectOrCreate?: InputMaybe<RawDatasetStudySiteConnectOrCreateFieldInput>;
-  create?: InputMaybe<RawDatasetStudySiteCreateFieldInput>;
-  delete?: InputMaybe<RawDatasetStudySiteDeleteFieldInput>;
-  disconnect?: InputMaybe<RawDatasetStudySiteDisconnectFieldInput>;
-  update?: InputMaybe<RawDatasetStudySiteUpdateConnectionInput>;
-  where?: InputMaybe<RawDatasetStudySiteConnectionWhere>;
+export type DatasetStudySiteUpdateFieldInput = {
+  connect?: InputMaybe<DatasetStudySiteConnectFieldInput>;
+  connectOrCreate?: InputMaybe<DatasetStudySiteConnectOrCreateFieldInput>;
+  create?: InputMaybe<DatasetStudySiteCreateFieldInput>;
+  delete?: InputMaybe<DatasetStudySiteDeleteFieldInput>;
+  disconnect?: InputMaybe<DatasetStudySiteDisconnectFieldInput>;
+  update?: InputMaybe<DatasetStudySiteUpdateConnectionInput>;
+  where?: InputMaybe<DatasetStudySiteConnectionWhere>;
 };
 
-export type RawDatasetTaskFunnelTasksAggregationSelection = {
-  __typename?: 'RawDatasetTaskFunnelTasksAggregationSelection';
+export type DatasetTaskFunnelTasksAggregationSelection = {
+  __typename?: 'DatasetTaskFunnelTasksAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<RawDatasetTaskFunnelTasksNodeAggregateSelection>;
+  node?: Maybe<DatasetTaskFunnelTasksNodeAggregateSelection>;
 };
 
-export type RawDatasetTaskFunnelTasksNodeAggregateSelection = {
-  __typename?: 'RawDatasetTaskFunnelTasksNodeAggregateSelection';
+export type DatasetTaskFunnelTasksNodeAggregateSelection = {
+  __typename?: 'DatasetTaskFunnelTasksNodeAggregateSelection';
   creationTime: StringAggregateSelectionNullable;
   description: StringAggregateSelectionNullable;
   id: StringAggregateSelectionNullable;
@@ -9321,32 +9321,32 @@ export type RawDatasetTaskFunnelTasksNodeAggregateSelection = {
   taskID: IdAggregateSelectionNullable;
 };
 
-export type RawDatasetUniqueWhere = {
-  rawDatasetID?: InputMaybe<Scalars['ID']>;
+export type DatasetUniqueWhere = {
+  DatasetID?: InputMaybe<Scalars['ID']>;
 };
 
-export type RawDatasetUpdateInput = {
+export type DatasetUpdateInput = {
   allowedSites?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   allowedSites_POP?: InputMaybe<Scalars['Int']>;
   allowedSites_PUSH?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   allowedStudies?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   allowedStudies_POP?: InputMaybe<Scalars['Int']>;
   allowedStudies_PUSH?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
-  codeBook?: InputMaybe<RawDatasetCodeBookUpdateFieldInput>;
+  codeBook?: InputMaybe<DatasetCodeBookUpdateFieldInput>;
   description?: InputMaybe<Scalars['String']>;
-  files?: InputMaybe<Array<RawDatasetFilesUpdateFieldInput>>;
-  fromStudy?: InputMaybe<RawDatasetFromStudyUpdateFieldInput>;
-  funnelTasks?: InputMaybe<Array<RawDatasetFunnelTasksUpdateFieldInput>>;
-  generatedCuratedDatasets?: InputMaybe<Array<RawDatasetGeneratedCuratedDatasetsUpdateFieldInput>>;
-  minioBucket?: InputMaybe<RawDatasetMinioBucketUpdateFieldInput>;
+  files?: InputMaybe<Array<DatasetFilesUpdateFieldInput>>;
+  fromStudy?: InputMaybe<DatasetFromStudyUpdateFieldInput>;
+  funnelTasks?: InputMaybe<Array<DatasetFunnelTasksUpdateFieldInput>>;
+  generatedCuratedDatasets?: InputMaybe<Array<DatasetGeneratedCuratedDatasetsUpdateFieldInput>>;
+  minioBucket?: InputMaybe<DatasetMinioBucketUpdateFieldInput>;
   name?: InputMaybe<Scalars['String']>;
-  rawdataFile?: InputMaybe<RawDatasetRawdataFileUpdateFieldInput>;
-  studySite?: InputMaybe<RawDatasetStudySiteUpdateFieldInput>;
+  rawdataFile?: InputMaybe<DatasetRawdataFileUpdateFieldInput>;
+  studySite?: InputMaybe<DatasetStudySiteUpdateFieldInput>;
 };
 
-export type RawDatasetWhere = {
-  AND?: InputMaybe<Array<RawDatasetWhere>>;
-  OR?: InputMaybe<Array<RawDatasetWhere>>;
+export type DatasetWhere = {
+  AND?: InputMaybe<Array<DatasetWhere>>;
+  OR?: InputMaybe<Array<DatasetWhere>>;
   allowedSites?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   allowedSites_INCLUDES?: InputMaybe<Scalars['String']>;
   allowedSites_NOT?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
@@ -9356,9 +9356,9 @@ export type RawDatasetWhere = {
   allowedStudies_NOT?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   allowedStudies_NOT_INCLUDES?: InputMaybe<Scalars['String']>;
   codeBook?: InputMaybe<MinioUploadWhere>;
-  codeBookAggregate?: InputMaybe<RawDatasetCodeBookAggregateInput>;
-  codeBookConnection?: InputMaybe<RawDatasetCodeBookConnectionWhere>;
-  codeBookConnection_NOT?: InputMaybe<RawDatasetCodeBookConnectionWhere>;
+  codeBookAggregate?: InputMaybe<DatasetCodeBookAggregateInput>;
+  codeBookConnection?: InputMaybe<DatasetCodeBookConnectionWhere>;
+  codeBookConnection_NOT?: InputMaybe<DatasetCodeBookConnectionWhere>;
   codeBook_NOT?: InputMaybe<MinioUploadWhere>;
   createdAt?: InputMaybe<Scalars['DateTime']>;
   createdAt_GT?: InputMaybe<Scalars['DateTime']>;
@@ -9379,65 +9379,65 @@ export type RawDatasetWhere = {
   description_NOT_STARTS_WITH?: InputMaybe<Scalars['String']>;
   description_STARTS_WITH?: InputMaybe<Scalars['String']>;
   files?: InputMaybe<MinioUploadWhere>;
-  filesAggregate?: InputMaybe<RawDatasetFilesAggregateInput>;
-  filesConnection?: InputMaybe<RawDatasetFilesConnectionWhere>;
-  filesConnection_ALL?: InputMaybe<RawDatasetFilesConnectionWhere>;
-  filesConnection_NONE?: InputMaybe<RawDatasetFilesConnectionWhere>;
-  filesConnection_NOT?: InputMaybe<RawDatasetFilesConnectionWhere>;
-  filesConnection_SINGLE?: InputMaybe<RawDatasetFilesConnectionWhere>;
-  filesConnection_SOME?: InputMaybe<RawDatasetFilesConnectionWhere>;
-  /** Return RawDatasets where all of the related MinioUploads match this filter */
+  filesAggregate?: InputMaybe<DatasetFilesAggregateInput>;
+  filesConnection?: InputMaybe<DatasetFilesConnectionWhere>;
+  filesConnection_ALL?: InputMaybe<DatasetFilesConnectionWhere>;
+  filesConnection_NONE?: InputMaybe<DatasetFilesConnectionWhere>;
+  filesConnection_NOT?: InputMaybe<DatasetFilesConnectionWhere>;
+  filesConnection_SINGLE?: InputMaybe<DatasetFilesConnectionWhere>;
+  filesConnection_SOME?: InputMaybe<DatasetFilesConnectionWhere>;
+  /** Return Datasets where all of the related MinioUploads match this filter */
   files_ALL?: InputMaybe<MinioUploadWhere>;
-  /** Return RawDatasets where none of the related MinioUploads match this filter */
+  /** Return Datasets where none of the related MinioUploads match this filter */
   files_NONE?: InputMaybe<MinioUploadWhere>;
   files_NOT?: InputMaybe<MinioUploadWhere>;
-  /** Return RawDatasets where one of the related MinioUploads match this filter */
+  /** Return Datasets where one of the related MinioUploads match this filter */
   files_SINGLE?: InputMaybe<MinioUploadWhere>;
-  /** Return RawDatasets where some of the related MinioUploads match this filter */
+  /** Return Datasets where some of the related MinioUploads match this filter */
   files_SOME?: InputMaybe<MinioUploadWhere>;
   fromStudy?: InputMaybe<StudyWhere>;
-  fromStudyAggregate?: InputMaybe<RawDatasetFromStudyAggregateInput>;
-  fromStudyConnection?: InputMaybe<RawDatasetFromStudyConnectionWhere>;
-  fromStudyConnection_NOT?: InputMaybe<RawDatasetFromStudyConnectionWhere>;
+  fromStudyAggregate?: InputMaybe<DatasetFromStudyAggregateInput>;
+  fromStudyConnection?: InputMaybe<DatasetFromStudyConnectionWhere>;
+  fromStudyConnection_NOT?: InputMaybe<DatasetFromStudyConnectionWhere>;
   fromStudy_NOT?: InputMaybe<StudyWhere>;
   funnelTasks?: InputMaybe<TaskWhere>;
-  funnelTasksAggregate?: InputMaybe<RawDatasetFunnelTasksAggregateInput>;
-  funnelTasksConnection?: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
-  funnelTasksConnection_ALL?: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
-  funnelTasksConnection_NONE?: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
-  funnelTasksConnection_NOT?: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
-  funnelTasksConnection_SINGLE?: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
-  funnelTasksConnection_SOME?: InputMaybe<RawDatasetFunnelTasksConnectionWhere>;
-  /** Return RawDatasets where all of the related Tasks match this filter */
+  funnelTasksAggregate?: InputMaybe<DatasetFunnelTasksAggregateInput>;
+  funnelTasksConnection?: InputMaybe<DatasetFunnelTasksConnectionWhere>;
+  funnelTasksConnection_ALL?: InputMaybe<DatasetFunnelTasksConnectionWhere>;
+  funnelTasksConnection_NONE?: InputMaybe<DatasetFunnelTasksConnectionWhere>;
+  funnelTasksConnection_NOT?: InputMaybe<DatasetFunnelTasksConnectionWhere>;
+  funnelTasksConnection_SINGLE?: InputMaybe<DatasetFunnelTasksConnectionWhere>;
+  funnelTasksConnection_SOME?: InputMaybe<DatasetFunnelTasksConnectionWhere>;
+  /** Return Datasets where all of the related Tasks match this filter */
   funnelTasks_ALL?: InputMaybe<TaskWhere>;
-  /** Return RawDatasets where none of the related Tasks match this filter */
+  /** Return Datasets where none of the related Tasks match this filter */
   funnelTasks_NONE?: InputMaybe<TaskWhere>;
   funnelTasks_NOT?: InputMaybe<TaskWhere>;
-  /** Return RawDatasets where one of the related Tasks match this filter */
+  /** Return Datasets where one of the related Tasks match this filter */
   funnelTasks_SINGLE?: InputMaybe<TaskWhere>;
-  /** Return RawDatasets where some of the related Tasks match this filter */
+  /** Return Datasets where some of the related Tasks match this filter */
   funnelTasks_SOME?: InputMaybe<TaskWhere>;
   generatedCuratedDatasets?: InputMaybe<CuratedDatasetWhere>;
-  generatedCuratedDatasetsAggregate?: InputMaybe<RawDatasetGeneratedCuratedDatasetsAggregateInput>;
-  generatedCuratedDatasetsConnection?: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
-  generatedCuratedDatasetsConnection_ALL?: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
-  generatedCuratedDatasetsConnection_NONE?: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
-  generatedCuratedDatasetsConnection_NOT?: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
-  generatedCuratedDatasetsConnection_SINGLE?: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
-  generatedCuratedDatasetsConnection_SOME?: InputMaybe<RawDatasetGeneratedCuratedDatasetsConnectionWhere>;
-  /** Return RawDatasets where all of the related CuratedDatasets match this filter */
+  generatedCuratedDatasetsAggregate?: InputMaybe<DatasetGeneratedCuratedDatasetsAggregateInput>;
+  generatedCuratedDatasetsConnection?: InputMaybe<DatasetGeneratedCuratedDatasetsConnectionWhere>;
+  generatedCuratedDatasetsConnection_ALL?: InputMaybe<DatasetGeneratedCuratedDatasetsConnectionWhere>;
+  generatedCuratedDatasetsConnection_NONE?: InputMaybe<DatasetGeneratedCuratedDatasetsConnectionWhere>;
+  generatedCuratedDatasetsConnection_NOT?: InputMaybe<DatasetGeneratedCuratedDatasetsConnectionWhere>;
+  generatedCuratedDatasetsConnection_SINGLE?: InputMaybe<DatasetGeneratedCuratedDatasetsConnectionWhere>;
+  generatedCuratedDatasetsConnection_SOME?: InputMaybe<DatasetGeneratedCuratedDatasetsConnectionWhere>;
+  /** Return Datasets where all of the related CuratedDatasets match this filter */
   generatedCuratedDatasets_ALL?: InputMaybe<CuratedDatasetWhere>;
-  /** Return RawDatasets where none of the related CuratedDatasets match this filter */
+  /** Return Datasets where none of the related CuratedDatasets match this filter */
   generatedCuratedDatasets_NONE?: InputMaybe<CuratedDatasetWhere>;
   generatedCuratedDatasets_NOT?: InputMaybe<CuratedDatasetWhere>;
-  /** Return RawDatasets where one of the related CuratedDatasets match this filter */
+  /** Return Datasets where one of the related CuratedDatasets match this filter */
   generatedCuratedDatasets_SINGLE?: InputMaybe<CuratedDatasetWhere>;
-  /** Return RawDatasets where some of the related CuratedDatasets match this filter */
+  /** Return Datasets where some of the related CuratedDatasets match this filter */
   generatedCuratedDatasets_SOME?: InputMaybe<CuratedDatasetWhere>;
   minioBucket?: InputMaybe<MinioBucketWhere>;
-  minioBucketAggregate?: InputMaybe<RawDatasetMinioBucketAggregateInput>;
-  minioBucketConnection?: InputMaybe<RawDatasetMinioBucketConnectionWhere>;
-  minioBucketConnection_NOT?: InputMaybe<RawDatasetMinioBucketConnectionWhere>;
+  minioBucketAggregate?: InputMaybe<DatasetMinioBucketAggregateInput>;
+  minioBucketConnection?: InputMaybe<DatasetMinioBucketConnectionWhere>;
+  minioBucketConnection_NOT?: InputMaybe<DatasetMinioBucketConnectionWhere>;
   minioBucket_NOT?: InputMaybe<MinioBucketWhere>;
   name?: InputMaybe<Scalars['String']>;
   name_CONTAINS?: InputMaybe<Scalars['String']>;
@@ -9449,31 +9449,31 @@ export type RawDatasetWhere = {
   name_NOT_IN?: InputMaybe<Array<Scalars['String']>>;
   name_NOT_STARTS_WITH?: InputMaybe<Scalars['String']>;
   name_STARTS_WITH?: InputMaybe<Scalars['String']>;
-  rawDatasetID?: InputMaybe<Scalars['ID']>;
-  rawDatasetID_CONTAINS?: InputMaybe<Scalars['ID']>;
-  rawDatasetID_ENDS_WITH?: InputMaybe<Scalars['ID']>;
-  rawDatasetID_IN?: InputMaybe<Array<Scalars['ID']>>;
-  rawDatasetID_NOT?: InputMaybe<Scalars['ID']>;
-  rawDatasetID_NOT_CONTAINS?: InputMaybe<Scalars['ID']>;
-  rawDatasetID_NOT_ENDS_WITH?: InputMaybe<Scalars['ID']>;
-  rawDatasetID_NOT_IN?: InputMaybe<Array<Scalars['ID']>>;
-  rawDatasetID_NOT_STARTS_WITH?: InputMaybe<Scalars['ID']>;
-  rawDatasetID_STARTS_WITH?: InputMaybe<Scalars['ID']>;
+  DatasetID?: InputMaybe<Scalars['ID']>;
+  DatasetID_CONTAINS?: InputMaybe<Scalars['ID']>;
+  DatasetID_ENDS_WITH?: InputMaybe<Scalars['ID']>;
+  DatasetID_IN?: InputMaybe<Array<Scalars['ID']>>;
+  DatasetID_NOT?: InputMaybe<Scalars['ID']>;
+  DatasetID_NOT_CONTAINS?: InputMaybe<Scalars['ID']>;
+  DatasetID_NOT_ENDS_WITH?: InputMaybe<Scalars['ID']>;
+  DatasetID_NOT_IN?: InputMaybe<Array<Scalars['ID']>>;
+  DatasetID_NOT_STARTS_WITH?: InputMaybe<Scalars['ID']>;
+  DatasetID_STARTS_WITH?: InputMaybe<Scalars['ID']>;
   rawdataFile?: InputMaybe<MinioUploadWhere>;
-  rawdataFileAggregate?: InputMaybe<RawDatasetRawdataFileAggregateInput>;
-  rawdataFileConnection?: InputMaybe<RawDatasetRawdataFileConnectionWhere>;
-  rawdataFileConnection_NOT?: InputMaybe<RawDatasetRawdataFileConnectionWhere>;
+  rawdataFileAggregate?: InputMaybe<DatasetRawdataFileAggregateInput>;
+  rawdataFileConnection?: InputMaybe<DatasetRawdataFileConnectionWhere>;
+  rawdataFileConnection_NOT?: InputMaybe<DatasetRawdataFileConnectionWhere>;
   rawdataFile_NOT?: InputMaybe<MinioUploadWhere>;
   studySite?: InputMaybe<GeographyCityWhere>;
-  studySiteAggregate?: InputMaybe<RawDatasetStudySiteAggregateInput>;
-  studySiteConnection?: InputMaybe<RawDatasetStudySiteConnectionWhere>;
-  studySiteConnection_NOT?: InputMaybe<RawDatasetStudySiteConnectionWhere>;
+  studySiteAggregate?: InputMaybe<DatasetStudySiteAggregateInput>;
+  studySiteConnection?: InputMaybe<DatasetStudySiteConnectionWhere>;
+  studySiteConnection_NOT?: InputMaybe<DatasetStudySiteConnectionWhere>;
   studySite_NOT?: InputMaybe<GeographyCityWhere>;
 };
 
-export type RawDatasetsConnection = {
-  __typename?: 'RawDatasetsConnection';
-  edges: Array<RawDatasetEdge>;
+export type DatasetsConnection = {
+  __typename?: 'DatasetsConnection';
+  edges: Array<DatasetEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
@@ -9504,15 +9504,15 @@ export type StudiesConnection = {
   totalCount: Scalars['Int'];
 };
 
-export type Study = {
-  __typename?: 'Study';
+export type Project = {
+  __typename?: 'Project';
   allowedSites?: Maybe<Array<Maybe<Scalars['String']>>>;
   allowedStudies?: Maybe<Array<Maybe<Scalars['String']>>>;
   description: Scalars['String'];
   fullName: Scalars['String'];
-  rawDatasets: Array<RawDataset>;
-  rawDatasetsAggregate?: Maybe<StudyRawDatasetRawDatasetsAggregationSelection>;
-  rawDatasetsConnection: StudyRawDatasetsConnection;
+  Datasets: Array<Dataset>;
+  DatasetsAggregate?: Maybe<StudyDatasetDatasetsAggregationSelection>;
+  DatasetsConnection: StudyDatasetsConnection;
   shortName: Scalars['String'];
   studyID: Scalars['ID'];
   studySites: Array<GeographyCity>;
@@ -9521,25 +9521,25 @@ export type Study = {
 };
 
 
-export type StudyRawDatasetsArgs = {
+export type StudyDatasetsArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  options?: InputMaybe<RawDatasetOptions>;
-  where?: InputMaybe<RawDatasetWhere>;
+  options?: InputMaybe<DatasetOptions>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type StudyRawDatasetsAggregateArgs = {
+export type StudyDatasetsAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  where?: InputMaybe<RawDatasetWhere>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type StudyRawDatasetsConnectionArgs = {
+export type StudyDatasetsConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<StudyRawDatasetsConnectionSort>>;
-  where?: InputMaybe<StudyRawDatasetsConnectionWhere>;
+  sort?: InputMaybe<Array<StudyDatasetsConnectionSort>>;
+  where?: InputMaybe<StudyDatasetsConnectionWhere>;
 };
 
 
@@ -9574,12 +9574,12 @@ export type StudyAggregateSelection = {
 };
 
 export type StudyConnectInput = {
-  rawDatasets?: InputMaybe<Array<StudyRawDatasetsConnectFieldInput>>;
+  Datasets?: InputMaybe<Array<StudyDatasetsConnectFieldInput>>;
   studySites?: InputMaybe<Array<StudyStudySitesConnectFieldInput>>;
 };
 
 export type StudyConnectOrCreateInput = {
-  rawDatasets?: InputMaybe<Array<StudyRawDatasetsConnectOrCreateFieldInput>>;
+  Datasets?: InputMaybe<Array<StudyDatasetsConnectOrCreateFieldInput>>;
   studySites?: InputMaybe<Array<StudyStudySitesConnectOrCreateFieldInput>>;
 };
 
@@ -9596,25 +9596,25 @@ export type StudyCreateInput = {
   allowedStudies?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   description: Scalars['String'];
   fullName: Scalars['String'];
-  rawDatasets?: InputMaybe<StudyRawDatasetsFieldInput>;
+  Datasets?: InputMaybe<StudyDatasetsFieldInput>;
   shortName: Scalars['String'];
   studySites?: InputMaybe<StudyStudySitesFieldInput>;
 };
 
 export type StudyDeleteInput = {
-  rawDatasets?: InputMaybe<Array<StudyRawDatasetsDeleteFieldInput>>;
+  Datasets?: InputMaybe<Array<StudyDatasetsDeleteFieldInput>>;
   studySites?: InputMaybe<Array<StudyStudySitesDeleteFieldInput>>;
 };
 
 export type StudyDisconnectInput = {
-  rawDatasets?: InputMaybe<Array<StudyRawDatasetsDisconnectFieldInput>>;
+  Datasets?: InputMaybe<Array<StudyDatasetsDisconnectFieldInput>>;
   studySites?: InputMaybe<Array<StudyStudySitesDisconnectFieldInput>>;
 };
 
 export type StudyEdge = {
   __typename?: 'StudyEdge';
   cursor: Scalars['String'];
-  node: Study;
+  node: Project;
 };
 
 export type StudyGeographyCityStudySitesAggregationSelection = {
@@ -9648,86 +9648,86 @@ export type StudyOptions = {
   sort?: InputMaybe<Array<StudySort>>;
 };
 
-export type StudyRawDatasetRawDatasetsAggregationSelection = {
-  __typename?: 'StudyRawDatasetRawDatasetsAggregationSelection';
+export type StudyDatasetDatasetsAggregationSelection = {
+  __typename?: 'StudyDatasetDatasetsAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<StudyRawDatasetRawDatasetsNodeAggregateSelection>;
+  node?: Maybe<StudyDatasetDatasetsNodeAggregateSelection>;
 };
 
-export type StudyRawDatasetRawDatasetsNodeAggregateSelection = {
-  __typename?: 'StudyRawDatasetRawDatasetsNodeAggregateSelection';
+export type StudyDatasetDatasetsNodeAggregateSelection = {
+  __typename?: 'StudyDatasetDatasetsNodeAggregateSelection';
   createdAt: DateTimeAggregateSelectionNonNullable;
   description: StringAggregateSelectionNonNullable;
   name: StringAggregateSelectionNonNullable;
-  rawDatasetID: IdAggregateSelectionNonNullable;
+  DatasetID: IdAggregateSelectionNonNullable;
 };
 
-export type StudyRawDatasetsAggregateInput = {
-  AND?: InputMaybe<Array<StudyRawDatasetsAggregateInput>>;
-  OR?: InputMaybe<Array<StudyRawDatasetsAggregateInput>>;
+export type StudyDatasetsAggregateInput = {
+  AND?: InputMaybe<Array<StudyDatasetsAggregateInput>>;
+  OR?: InputMaybe<Array<StudyDatasetsAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<StudyRawDatasetsNodeAggregationWhereInput>;
+  node?: InputMaybe<StudyDatasetsNodeAggregationWhereInput>;
 };
 
-export type StudyRawDatasetsConnectFieldInput = {
-  connect?: InputMaybe<Array<RawDatasetConnectInput>>;
-  where?: InputMaybe<RawDatasetConnectWhere>;
+export type StudyDatasetsConnectFieldInput = {
+  connect?: InputMaybe<Array<DatasetConnectInput>>;
+  where?: InputMaybe<DatasetConnectWhere>;
 };
 
-export type StudyRawDatasetsConnectOrCreateFieldInput = {
-  onCreate: StudyRawDatasetsConnectOrCreateFieldInputOnCreate;
-  where: RawDatasetConnectOrCreateWhere;
+export type StudyDatasetsConnectOrCreateFieldInput = {
+  onCreate: StudyDatasetsConnectOrCreateFieldInputOnCreate;
+  where: DatasetConnectOrCreateWhere;
 };
 
-export type StudyRawDatasetsConnectOrCreateFieldInputOnCreate = {
-  node: RawDatasetOnCreateInput;
+export type StudyDatasetsConnectOrCreateFieldInputOnCreate = {
+  node: DatasetOnCreateInput;
 };
 
-export type StudyRawDatasetsConnection = {
-  __typename?: 'StudyRawDatasetsConnection';
-  edges: Array<StudyRawDatasetsRelationship>;
+export type StudyDatasetsConnection = {
+  __typename?: 'StudyDatasetsConnection';
+  edges: Array<StudyDatasetsRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type StudyRawDatasetsConnectionSort = {
-  node?: InputMaybe<RawDatasetSort>;
+export type StudyDatasetsConnectionSort = {
+  node?: InputMaybe<DatasetSort>;
 };
 
-export type StudyRawDatasetsConnectionWhere = {
-  AND?: InputMaybe<Array<StudyRawDatasetsConnectionWhere>>;
-  OR?: InputMaybe<Array<StudyRawDatasetsConnectionWhere>>;
-  node?: InputMaybe<RawDatasetWhere>;
-  node_NOT?: InputMaybe<RawDatasetWhere>;
+export type StudyDatasetsConnectionWhere = {
+  AND?: InputMaybe<Array<StudyDatasetsConnectionWhere>>;
+  OR?: InputMaybe<Array<StudyDatasetsConnectionWhere>>;
+  node?: InputMaybe<DatasetWhere>;
+  node_NOT?: InputMaybe<DatasetWhere>;
 };
 
-export type StudyRawDatasetsCreateFieldInput = {
-  node: RawDatasetCreateInput;
+export type StudyDatasetsCreateFieldInput = {
+  node: DatasetCreateInput;
 };
 
-export type StudyRawDatasetsDeleteFieldInput = {
-  delete?: InputMaybe<RawDatasetDeleteInput>;
-  where?: InputMaybe<StudyRawDatasetsConnectionWhere>;
+export type StudyDatasetsDeleteFieldInput = {
+  delete?: InputMaybe<DatasetDeleteInput>;
+  where?: InputMaybe<StudyDatasetsConnectionWhere>;
 };
 
-export type StudyRawDatasetsDisconnectFieldInput = {
-  disconnect?: InputMaybe<RawDatasetDisconnectInput>;
-  where?: InputMaybe<StudyRawDatasetsConnectionWhere>;
+export type StudyDatasetsDisconnectFieldInput = {
+  disconnect?: InputMaybe<DatasetDisconnectInput>;
+  where?: InputMaybe<StudyDatasetsConnectionWhere>;
 };
 
-export type StudyRawDatasetsFieldInput = {
-  connect?: InputMaybe<Array<StudyRawDatasetsConnectFieldInput>>;
-  connectOrCreate?: InputMaybe<Array<StudyRawDatasetsConnectOrCreateFieldInput>>;
-  create?: InputMaybe<Array<StudyRawDatasetsCreateFieldInput>>;
+export type StudyDatasetsFieldInput = {
+  connect?: InputMaybe<Array<StudyDatasetsConnectFieldInput>>;
+  connectOrCreate?: InputMaybe<Array<StudyDatasetsConnectOrCreateFieldInput>>;
+  create?: InputMaybe<Array<StudyDatasetsCreateFieldInput>>;
 };
 
-export type StudyRawDatasetsNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<StudyRawDatasetsNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<StudyRawDatasetsNodeAggregationWhereInput>>;
+export type StudyDatasetsNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<StudyDatasetsNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<StudyDatasetsNodeAggregationWhereInput>>;
   createdAt_EQUAL?: InputMaybe<Scalars['DateTime']>;
   createdAt_GT?: InputMaybe<Scalars['DateTime']>;
   createdAt_GTE?: InputMaybe<Scalars['DateTime']>;
@@ -9783,31 +9783,31 @@ export type StudyRawDatasetsNodeAggregationWhereInput = {
   name_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
-  rawDatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
+  DatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type StudyRawDatasetsRelationship = {
-  __typename?: 'StudyRawDatasetsRelationship';
+export type StudyDatasetsRelationship = {
+  __typename?: 'StudyDatasetsRelationship';
   cursor: Scalars['String'];
-  node: RawDataset;
+  node: Dataset;
 };
 
-export type StudyRawDatasetsUpdateConnectionInput = {
-  node?: InputMaybe<RawDatasetUpdateInput>;
+export type StudyDatasetsUpdateConnectionInput = {
+  node?: InputMaybe<DatasetUpdateInput>;
 };
 
-export type StudyRawDatasetsUpdateFieldInput = {
-  connect?: InputMaybe<Array<StudyRawDatasetsConnectFieldInput>>;
-  connectOrCreate?: InputMaybe<Array<StudyRawDatasetsConnectOrCreateFieldInput>>;
-  create?: InputMaybe<Array<StudyRawDatasetsCreateFieldInput>>;
-  delete?: InputMaybe<Array<StudyRawDatasetsDeleteFieldInput>>;
-  disconnect?: InputMaybe<Array<StudyRawDatasetsDisconnectFieldInput>>;
-  update?: InputMaybe<StudyRawDatasetsUpdateConnectionInput>;
-  where?: InputMaybe<StudyRawDatasetsConnectionWhere>;
+export type StudyDatasetsUpdateFieldInput = {
+  connect?: InputMaybe<Array<StudyDatasetsConnectFieldInput>>;
+  connectOrCreate?: InputMaybe<Array<StudyDatasetsConnectOrCreateFieldInput>>;
+  create?: InputMaybe<Array<StudyDatasetsCreateFieldInput>>;
+  delete?: InputMaybe<Array<StudyDatasetsDeleteFieldInput>>;
+  disconnect?: InputMaybe<Array<StudyDatasetsDisconnectFieldInput>>;
+  update?: InputMaybe<StudyDatasetsUpdateConnectionInput>;
+  where?: InputMaybe<StudyDatasetsConnectionWhere>;
 };
 
 export type StudyRelationInput = {
-  rawDatasets?: InputMaybe<Array<StudyRawDatasetsCreateFieldInput>>;
+  Datasets?: InputMaybe<Array<StudyDatasetsCreateFieldInput>>;
   studySites?: InputMaybe<Array<StudyStudySitesCreateFieldInput>>;
 };
 
@@ -10009,7 +10009,7 @@ export type StudyUpdateInput = {
   allowedStudies_PUSH?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
   description?: InputMaybe<Scalars['String']>;
   fullName?: InputMaybe<Scalars['String']>;
-  rawDatasets?: InputMaybe<Array<StudyRawDatasetsUpdateFieldInput>>;
+  Datasets?: InputMaybe<Array<StudyDatasetsUpdateFieldInput>>;
   shortName?: InputMaybe<Scalars['String']>;
   studySites?: InputMaybe<Array<StudyStudySitesUpdateFieldInput>>;
 };
@@ -10045,23 +10045,23 @@ export type StudyWhere = {
   fullName_NOT_IN?: InputMaybe<Array<Scalars['String']>>;
   fullName_NOT_STARTS_WITH?: InputMaybe<Scalars['String']>;
   fullName_STARTS_WITH?: InputMaybe<Scalars['String']>;
-  rawDatasets?: InputMaybe<RawDatasetWhere>;
-  rawDatasetsAggregate?: InputMaybe<StudyRawDatasetsAggregateInput>;
-  rawDatasetsConnection?: InputMaybe<StudyRawDatasetsConnectionWhere>;
-  rawDatasetsConnection_ALL?: InputMaybe<StudyRawDatasetsConnectionWhere>;
-  rawDatasetsConnection_NONE?: InputMaybe<StudyRawDatasetsConnectionWhere>;
-  rawDatasetsConnection_NOT?: InputMaybe<StudyRawDatasetsConnectionWhere>;
-  rawDatasetsConnection_SINGLE?: InputMaybe<StudyRawDatasetsConnectionWhere>;
-  rawDatasetsConnection_SOME?: InputMaybe<StudyRawDatasetsConnectionWhere>;
-  /** Return Studies where all of the related RawDatasets match this filter */
-  rawDatasets_ALL?: InputMaybe<RawDatasetWhere>;
-  /** Return Studies where none of the related RawDatasets match this filter */
-  rawDatasets_NONE?: InputMaybe<RawDatasetWhere>;
-  rawDatasets_NOT?: InputMaybe<RawDatasetWhere>;
-  /** Return Studies where one of the related RawDatasets match this filter */
-  rawDatasets_SINGLE?: InputMaybe<RawDatasetWhere>;
-  /** Return Studies where some of the related RawDatasets match this filter */
-  rawDatasets_SOME?: InputMaybe<RawDatasetWhere>;
+  Datasets?: InputMaybe<DatasetWhere>;
+  DatasetsAggregate?: InputMaybe<StudyDatasetsAggregateInput>;
+  DatasetsConnection?: InputMaybe<StudyDatasetsConnectionWhere>;
+  DatasetsConnection_ALL?: InputMaybe<StudyDatasetsConnectionWhere>;
+  DatasetsConnection_NONE?: InputMaybe<StudyDatasetsConnectionWhere>;
+  DatasetsConnection_NOT?: InputMaybe<StudyDatasetsConnectionWhere>;
+  DatasetsConnection_SINGLE?: InputMaybe<StudyDatasetsConnectionWhere>;
+  DatasetsConnection_SOME?: InputMaybe<StudyDatasetsConnectionWhere>;
+  /** Return Studies where all of the related Datasets match this filter */
+  Datasets_ALL?: InputMaybe<DatasetWhere>;
+  /** Return Studies where none of the related Datasets match this filter */
+  Datasets_NONE?: InputMaybe<DatasetWhere>;
+  Datasets_NOT?: InputMaybe<DatasetWhere>;
+  /** Return Studies where one of the related Datasets match this filter */
+  Datasets_SINGLE?: InputMaybe<DatasetWhere>;
+  /** Return Studies where some of the related Datasets match this filter */
+  Datasets_SOME?: InputMaybe<DatasetWhere>;
   shortName?: InputMaybe<Scalars['String']>;
   shortName_CONTAINS?: InputMaybe<Scalars['String']>;
   shortName_ENDS_WITH?: InputMaybe<Scalars['String']>;
@@ -10110,9 +10110,9 @@ export type Task = {
   fromCuratedDataset?: Maybe<Task>;
   fromCuratedDatasetAggregate?: Maybe<TaskTaskFromCuratedDatasetAggregationSelection>;
   fromCuratedDatasetConnection: TaskFromCuratedDatasetConnection;
-  fromRawDataset?: Maybe<RawDataset>;
-  fromRawDatasetAggregate?: Maybe<TaskRawDatasetFromRawDatasetAggregationSelection>;
-  fromRawDatasetConnection: TaskFromRawDatasetConnection;
+  fromDataset?: Maybe<Dataset>;
+  fromDatasetAggregate?: Maybe<TaskDatasetFromDatasetAggregationSelection>;
+  fromDatasetConnection: TaskFromDatasetConnection;
   generatedCuratedDataset?: Maybe<CuratedDataset>;
   generatedCuratedDatasetAggregate?: Maybe<TaskCuratedDatasetGeneratedCuratedDatasetAggregationSelection>;
   generatedCuratedDatasetConnection: TaskGeneratedCuratedDatasetConnection;
@@ -10148,25 +10148,25 @@ export type TaskFromCuratedDatasetConnectionArgs = {
 };
 
 
-export type TaskFromRawDatasetArgs = {
+export type TaskFromDatasetArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  options?: InputMaybe<RawDatasetOptions>;
-  where?: InputMaybe<RawDatasetWhere>;
+  options?: InputMaybe<DatasetOptions>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type TaskFromRawDatasetAggregateArgs = {
+export type TaskFromDatasetAggregateArgs = {
   directed?: InputMaybe<Scalars['Boolean']>;
-  where?: InputMaybe<RawDatasetWhere>;
+  where?: InputMaybe<DatasetWhere>;
 };
 
 
-export type TaskFromRawDatasetConnectionArgs = {
+export type TaskFromDatasetConnectionArgs = {
   after?: InputMaybe<Scalars['String']>;
   directed?: InputMaybe<Scalars['Boolean']>;
   first?: InputMaybe<Scalars['Int']>;
-  sort?: InputMaybe<Array<TaskFromRawDatasetConnectionSort>>;
-  where?: InputMaybe<TaskFromRawDatasetConnectionWhere>;
+  sort?: InputMaybe<Array<TaskFromDatasetConnectionSort>>;
+  where?: InputMaybe<TaskFromDatasetConnectionWhere>;
 };
 
 
@@ -10225,13 +10225,13 @@ export type TaskAggregateSelection = {
 
 export type TaskConnectInput = {
   fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetConnectFieldInput>;
-  fromRawDataset?: InputMaybe<TaskFromRawDatasetConnectFieldInput>;
+  fromDataset?: InputMaybe<TaskFromDatasetConnectFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetConnectFieldInput>;
   generatedExport?: InputMaybe<TaskGeneratedExportConnectFieldInput>;
 };
 
 export type TaskConnectOrCreateInput = {
-  fromRawDataset?: InputMaybe<TaskFromRawDatasetConnectOrCreateFieldInput>;
+  fromDataset?: InputMaybe<TaskFromDatasetConnectOrCreateFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetConnectOrCreateFieldInput>;
   generatedExport?: InputMaybe<TaskGeneratedExportConnectOrCreateFieldInput>;
 };
@@ -10246,7 +10246,7 @@ export type TaskCreateInput = {
   creationTime?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetFieldInput>;
-  fromRawDataset?: InputMaybe<TaskFromRawDatasetFieldInput>;
+  fromDataset?: InputMaybe<TaskFromDatasetFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetFieldInput>;
   generatedExport?: InputMaybe<TaskGeneratedExportFieldInput>;
   id?: InputMaybe<Scalars['String']>;
@@ -10270,14 +10270,14 @@ export type TaskCuratedDatasetGeneratedCuratedDatasetNodeAggregateSelection = {
 
 export type TaskDeleteInput = {
   fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetDeleteFieldInput>;
-  fromRawDataset?: InputMaybe<TaskFromRawDatasetDeleteFieldInput>;
+  fromDataset?: InputMaybe<TaskFromDatasetDeleteFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetDeleteFieldInput>;
   generatedExport?: InputMaybe<TaskGeneratedExportDeleteFieldInput>;
 };
 
 export type TaskDisconnectInput = {
   fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetDisconnectFieldInput>;
-  fromRawDataset?: InputMaybe<TaskFromRawDatasetDisconnectFieldInput>;
+  fromDataset?: InputMaybe<TaskFromDatasetDisconnectFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetDisconnectFieldInput>;
   generatedExport?: InputMaybe<TaskGeneratedExportDisconnectFieldInput>;
 };
@@ -10446,72 +10446,72 @@ export type TaskFromCuratedDatasetUpdateFieldInput = {
   where?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
 };
 
-export type TaskFromRawDatasetAggregateInput = {
-  AND?: InputMaybe<Array<TaskFromRawDatasetAggregateInput>>;
-  OR?: InputMaybe<Array<TaskFromRawDatasetAggregateInput>>;
+export type TaskFromDatasetAggregateInput = {
+  AND?: InputMaybe<Array<TaskFromDatasetAggregateInput>>;
+  OR?: InputMaybe<Array<TaskFromDatasetAggregateInput>>;
   count?: InputMaybe<Scalars['Int']>;
   count_GT?: InputMaybe<Scalars['Int']>;
   count_GTE?: InputMaybe<Scalars['Int']>;
   count_LT?: InputMaybe<Scalars['Int']>;
   count_LTE?: InputMaybe<Scalars['Int']>;
-  node?: InputMaybe<TaskFromRawDatasetNodeAggregationWhereInput>;
+  node?: InputMaybe<TaskFromDatasetNodeAggregationWhereInput>;
 };
 
-export type TaskFromRawDatasetConnectFieldInput = {
-  connect?: InputMaybe<RawDatasetConnectInput>;
-  where?: InputMaybe<RawDatasetConnectWhere>;
+export type TaskFromDatasetConnectFieldInput = {
+  connect?: InputMaybe<DatasetConnectInput>;
+  where?: InputMaybe<DatasetConnectWhere>;
 };
 
-export type TaskFromRawDatasetConnectOrCreateFieldInput = {
-  onCreate: TaskFromRawDatasetConnectOrCreateFieldInputOnCreate;
-  where: RawDatasetConnectOrCreateWhere;
+export type TaskFromDatasetConnectOrCreateFieldInput = {
+  onCreate: TaskFromDatasetConnectOrCreateFieldInputOnCreate;
+  where: DatasetConnectOrCreateWhere;
 };
 
-export type TaskFromRawDatasetConnectOrCreateFieldInputOnCreate = {
-  node: RawDatasetOnCreateInput;
+export type TaskFromDatasetConnectOrCreateFieldInputOnCreate = {
+  node: DatasetOnCreateInput;
 };
 
-export type TaskFromRawDatasetConnection = {
-  __typename?: 'TaskFromRawDatasetConnection';
-  edges: Array<TaskFromRawDatasetRelationship>;
+export type TaskFromDatasetConnection = {
+  __typename?: 'TaskFromDatasetConnection';
+  edges: Array<TaskFromDatasetRelationship>;
   pageInfo: PageInfo;
   totalCount: Scalars['Int'];
 };
 
-export type TaskFromRawDatasetConnectionSort = {
-  node?: InputMaybe<RawDatasetSort>;
+export type TaskFromDatasetConnectionSort = {
+  node?: InputMaybe<DatasetSort>;
 };
 
-export type TaskFromRawDatasetConnectionWhere = {
-  AND?: InputMaybe<Array<TaskFromRawDatasetConnectionWhere>>;
-  OR?: InputMaybe<Array<TaskFromRawDatasetConnectionWhere>>;
-  node?: InputMaybe<RawDatasetWhere>;
-  node_NOT?: InputMaybe<RawDatasetWhere>;
+export type TaskFromDatasetConnectionWhere = {
+  AND?: InputMaybe<Array<TaskFromDatasetConnectionWhere>>;
+  OR?: InputMaybe<Array<TaskFromDatasetConnectionWhere>>;
+  node?: InputMaybe<DatasetWhere>;
+  node_NOT?: InputMaybe<DatasetWhere>;
 };
 
-export type TaskFromRawDatasetCreateFieldInput = {
-  node: RawDatasetCreateInput;
+export type TaskFromDatasetCreateFieldInput = {
+  node: DatasetCreateInput;
 };
 
-export type TaskFromRawDatasetDeleteFieldInput = {
-  delete?: InputMaybe<RawDatasetDeleteInput>;
-  where?: InputMaybe<TaskFromRawDatasetConnectionWhere>;
+export type TaskFromDatasetDeleteFieldInput = {
+  delete?: InputMaybe<DatasetDeleteInput>;
+  where?: InputMaybe<TaskFromDatasetConnectionWhere>;
 };
 
-export type TaskFromRawDatasetDisconnectFieldInput = {
-  disconnect?: InputMaybe<RawDatasetDisconnectInput>;
-  where?: InputMaybe<TaskFromRawDatasetConnectionWhere>;
+export type TaskFromDatasetDisconnectFieldInput = {
+  disconnect?: InputMaybe<DatasetDisconnectInput>;
+  where?: InputMaybe<TaskFromDatasetConnectionWhere>;
 };
 
-export type TaskFromRawDatasetFieldInput = {
-  connect?: InputMaybe<TaskFromRawDatasetConnectFieldInput>;
-  connectOrCreate?: InputMaybe<TaskFromRawDatasetConnectOrCreateFieldInput>;
-  create?: InputMaybe<TaskFromRawDatasetCreateFieldInput>;
+export type TaskFromDatasetFieldInput = {
+  connect?: InputMaybe<TaskFromDatasetConnectFieldInput>;
+  connectOrCreate?: InputMaybe<TaskFromDatasetConnectOrCreateFieldInput>;
+  create?: InputMaybe<TaskFromDatasetCreateFieldInput>;
 };
 
-export type TaskFromRawDatasetNodeAggregationWhereInput = {
-  AND?: InputMaybe<Array<TaskFromRawDatasetNodeAggregationWhereInput>>;
-  OR?: InputMaybe<Array<TaskFromRawDatasetNodeAggregationWhereInput>>;
+export type TaskFromDatasetNodeAggregationWhereInput = {
+  AND?: InputMaybe<Array<TaskFromDatasetNodeAggregationWhereInput>>;
+  OR?: InputMaybe<Array<TaskFromDatasetNodeAggregationWhereInput>>;
   createdAt_EQUAL?: InputMaybe<Scalars['DateTime']>;
   createdAt_GT?: InputMaybe<Scalars['DateTime']>;
   createdAt_GTE?: InputMaybe<Scalars['DateTime']>;
@@ -10567,27 +10567,27 @@ export type TaskFromRawDatasetNodeAggregationWhereInput = {
   name_SHORTEST_GTE?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LT?: InputMaybe<Scalars['Int']>;
   name_SHORTEST_LTE?: InputMaybe<Scalars['Int']>;
-  rawDatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
+  DatasetID_EQUAL?: InputMaybe<Scalars['ID']>;
 };
 
-export type TaskFromRawDatasetRelationship = {
-  __typename?: 'TaskFromRawDatasetRelationship';
+export type TaskFromDatasetRelationship = {
+  __typename?: 'TaskFromDatasetRelationship';
   cursor: Scalars['String'];
-  node: RawDataset;
+  node: Dataset;
 };
 
-export type TaskFromRawDatasetUpdateConnectionInput = {
-  node?: InputMaybe<RawDatasetUpdateInput>;
+export type TaskFromDatasetUpdateConnectionInput = {
+  node?: InputMaybe<DatasetUpdateInput>;
 };
 
-export type TaskFromRawDatasetUpdateFieldInput = {
-  connect?: InputMaybe<TaskFromRawDatasetConnectFieldInput>;
-  connectOrCreate?: InputMaybe<TaskFromRawDatasetConnectOrCreateFieldInput>;
-  create?: InputMaybe<TaskFromRawDatasetCreateFieldInput>;
-  delete?: InputMaybe<TaskFromRawDatasetDeleteFieldInput>;
-  disconnect?: InputMaybe<TaskFromRawDatasetDisconnectFieldInput>;
-  update?: InputMaybe<TaskFromRawDatasetUpdateConnectionInput>;
-  where?: InputMaybe<TaskFromRawDatasetConnectionWhere>;
+export type TaskFromDatasetUpdateFieldInput = {
+  connect?: InputMaybe<TaskFromDatasetConnectFieldInput>;
+  connectOrCreate?: InputMaybe<TaskFromDatasetConnectOrCreateFieldInput>;
+  create?: InputMaybe<TaskFromDatasetCreateFieldInput>;
+  delete?: InputMaybe<TaskFromDatasetDeleteFieldInput>;
+  disconnect?: InputMaybe<TaskFromDatasetDisconnectFieldInput>;
+  update?: InputMaybe<TaskFromDatasetUpdateConnectionInput>;
+  where?: InputMaybe<TaskFromDatasetConnectionWhere>;
 };
 
 export type TaskGeneratedCuratedDatasetAggregateInput = {
@@ -10849,23 +10849,23 @@ export type TaskOptions = {
   sort?: InputMaybe<Array<TaskSort>>;
 };
 
-export type TaskRawDatasetFromRawDatasetAggregationSelection = {
-  __typename?: 'TaskRawDatasetFromRawDatasetAggregationSelection';
+export type TaskDatasetFromDatasetAggregationSelection = {
+  __typename?: 'TaskDatasetFromDatasetAggregationSelection';
   count: Scalars['Int'];
-  node?: Maybe<TaskRawDatasetFromRawDatasetNodeAggregateSelection>;
+  node?: Maybe<TaskDatasetFromDatasetNodeAggregateSelection>;
 };
 
-export type TaskRawDatasetFromRawDatasetNodeAggregateSelection = {
-  __typename?: 'TaskRawDatasetFromRawDatasetNodeAggregateSelection';
+export type TaskDatasetFromDatasetNodeAggregateSelection = {
+  __typename?: 'TaskDatasetFromDatasetNodeAggregateSelection';
   createdAt: DateTimeAggregateSelectionNonNullable;
   description: StringAggregateSelectionNonNullable;
   name: StringAggregateSelectionNonNullable;
-  rawDatasetID: IdAggregateSelectionNonNullable;
+  DatasetID: IdAggregateSelectionNonNullable;
 };
 
 export type TaskRelationInput = {
   fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetCreateFieldInput>;
-  fromRawDataset?: InputMaybe<TaskFromRawDatasetCreateFieldInput>;
+  fromDataset?: InputMaybe<TaskFromDatasetCreateFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetCreateFieldInput>;
   generatedExport?: InputMaybe<TaskGeneratedExportCreateFieldInput>;
 };
@@ -10905,7 +10905,7 @@ export type TaskUpdateInput = {
   creationTime?: InputMaybe<Scalars['String']>;
   description?: InputMaybe<Scalars['String']>;
   fromCuratedDataset?: InputMaybe<TaskFromCuratedDatasetUpdateFieldInput>;
-  fromRawDataset?: InputMaybe<TaskFromRawDatasetUpdateFieldInput>;
+  fromDataset?: InputMaybe<TaskFromDatasetUpdateFieldInput>;
   generatedCuratedDataset?: InputMaybe<TaskGeneratedCuratedDatasetUpdateFieldInput>;
   generatedExport?: InputMaybe<TaskGeneratedExportUpdateFieldInput>;
   id?: InputMaybe<Scalars['String']>;
@@ -10950,11 +10950,11 @@ export type TaskWhere = {
   fromCuratedDatasetConnection?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
   fromCuratedDatasetConnection_NOT?: InputMaybe<TaskFromCuratedDatasetConnectionWhere>;
   fromCuratedDataset_NOT?: InputMaybe<TaskWhere>;
-  fromRawDataset?: InputMaybe<RawDatasetWhere>;
-  fromRawDatasetAggregate?: InputMaybe<TaskFromRawDatasetAggregateInput>;
-  fromRawDatasetConnection?: InputMaybe<TaskFromRawDatasetConnectionWhere>;
-  fromRawDatasetConnection_NOT?: InputMaybe<TaskFromRawDatasetConnectionWhere>;
-  fromRawDataset_NOT?: InputMaybe<RawDatasetWhere>;
+  fromDataset?: InputMaybe<DatasetWhere>;
+  fromDatasetAggregate?: InputMaybe<TaskFromDatasetAggregateInput>;
+  fromDatasetConnection?: InputMaybe<TaskFromDatasetConnectionWhere>;
+  fromDatasetConnection_NOT?: InputMaybe<TaskFromDatasetConnectionWhere>;
+  fromDataset_NOT?: InputMaybe<DatasetWhere>;
   generatedCuratedDataset?: InputMaybe<CuratedDatasetWhere>;
   generatedCuratedDatasetAggregate?: InputMaybe<TaskGeneratedCuratedDatasetAggregateInput>;
   generatedCuratedDatasetConnection?: InputMaybe<TaskGeneratedCuratedDatasetConnectionWhere>;
@@ -11131,16 +11131,16 @@ export type UpdateOntologyRelationsMutationResponse = {
   ontologyRelations: Array<OntologyRelation>;
 };
 
-export type UpdateRawDatasetsMutationResponse = {
-  __typename?: 'UpdateRawDatasetsMutationResponse';
+export type UpdateDatasetsMutationResponse = {
+  __typename?: 'UpdateDatasetsMutationResponse';
   info: UpdateInfo;
-  rawDatasets: Array<RawDataset>;
+  Datasets: Array<Dataset>;
 };
 
 export type UpdateStudiesMutationResponse = {
   __typename?: 'UpdateStudiesMutationResponse';
   info: UpdateInfo;
-  studies: Array<Study>;
+  studies: Array<Project>;
 };
 
 export type UpdateTasksMutationResponse = {
@@ -11268,7 +11268,7 @@ export type ResolversTypes = {
   CreateOntologiesMutationResponse: ResolverTypeWrapper<CreateOntologiesMutationResponse>;
   CreateOntologyClassesMutationResponse: ResolverTypeWrapper<CreateOntologyClassesMutationResponse>;
   CreateOntologyRelationsMutationResponse: ResolverTypeWrapper<CreateOntologyRelationsMutationResponse>;
-  CreateRawDatasetsMutationResponse: ResolverTypeWrapper<CreateRawDatasetsMutationResponse>;
+  CreateDatasetsMutationResponse: ResolverTypeWrapper<CreateDatasetsMutationResponse>;
   CreateStudiesMutationResponse: ResolverTypeWrapper<CreateStudiesMutationResponse>;
   CreateTasksMutationResponse: ResolverTypeWrapper<CreateTasksMutationResponse>;
   CuratedDataset: ResolverTypeWrapper<CuratedDataset>;
@@ -11341,25 +11341,25 @@ export type ResolversTypes = {
   CuratedDatasetFunnelTaskRelationship: ResolverTypeWrapper<CuratedDatasetFunnelTaskRelationship>;
   CuratedDatasetFunnelTaskUpdateConnectionInput: CuratedDatasetFunnelTaskUpdateConnectionInput;
   CuratedDatasetFunnelTaskUpdateFieldInput: CuratedDatasetFunnelTaskUpdateFieldInput;
-  CuratedDatasetGeneratedByRawDatasetAggregateInput: CuratedDatasetGeneratedByRawDatasetAggregateInput;
-  CuratedDatasetGeneratedByRawDatasetConnectFieldInput: CuratedDatasetGeneratedByRawDatasetConnectFieldInput;
-  CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInput: CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInput;
-  CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInputOnCreate: CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInputOnCreate;
-  CuratedDatasetGeneratedByRawDatasetConnection: ResolverTypeWrapper<CuratedDatasetGeneratedByRawDatasetConnection>;
-  CuratedDatasetGeneratedByRawDatasetConnectionSort: CuratedDatasetGeneratedByRawDatasetConnectionSort;
-  CuratedDatasetGeneratedByRawDatasetConnectionWhere: CuratedDatasetGeneratedByRawDatasetConnectionWhere;
-  CuratedDatasetGeneratedByRawDatasetCreateFieldInput: CuratedDatasetGeneratedByRawDatasetCreateFieldInput;
-  CuratedDatasetGeneratedByRawDatasetDeleteFieldInput: CuratedDatasetGeneratedByRawDatasetDeleteFieldInput;
-  CuratedDatasetGeneratedByRawDatasetDisconnectFieldInput: CuratedDatasetGeneratedByRawDatasetDisconnectFieldInput;
-  CuratedDatasetGeneratedByRawDatasetFieldInput: CuratedDatasetGeneratedByRawDatasetFieldInput;
-  CuratedDatasetGeneratedByRawDatasetNodeAggregationWhereInput: CuratedDatasetGeneratedByRawDatasetNodeAggregationWhereInput;
-  CuratedDatasetGeneratedByRawDatasetRelationship: ResolverTypeWrapper<CuratedDatasetGeneratedByRawDatasetRelationship>;
-  CuratedDatasetGeneratedByRawDatasetUpdateConnectionInput: CuratedDatasetGeneratedByRawDatasetUpdateConnectionInput;
-  CuratedDatasetGeneratedByRawDatasetUpdateFieldInput: CuratedDatasetGeneratedByRawDatasetUpdateFieldInput;
+  CuratedDatasetGeneratedByDatasetAggregateInput: CuratedDatasetGeneratedByDatasetAggregateInput;
+  CuratedDatasetGeneratedByDatasetConnectFieldInput: CuratedDatasetGeneratedByDatasetConnectFieldInput;
+  CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInput: CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInput;
+  CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInputOnCreate: CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInputOnCreate;
+  CuratedDatasetGeneratedByDatasetConnection: ResolverTypeWrapper<CuratedDatasetGeneratedByDatasetConnection>;
+  CuratedDatasetGeneratedByDatasetConnectionSort: CuratedDatasetGeneratedByDatasetConnectionSort;
+  CuratedDatasetGeneratedByDatasetConnectionWhere: CuratedDatasetGeneratedByDatasetConnectionWhere;
+  CuratedDatasetGeneratedByDatasetCreateFieldInput: CuratedDatasetGeneratedByDatasetCreateFieldInput;
+  CuratedDatasetGeneratedByDatasetDeleteFieldInput: CuratedDatasetGeneratedByDatasetDeleteFieldInput;
+  CuratedDatasetGeneratedByDatasetDisconnectFieldInput: CuratedDatasetGeneratedByDatasetDisconnectFieldInput;
+  CuratedDatasetGeneratedByDatasetFieldInput: CuratedDatasetGeneratedByDatasetFieldInput;
+  CuratedDatasetGeneratedByDatasetNodeAggregationWhereInput: CuratedDatasetGeneratedByDatasetNodeAggregationWhereInput;
+  CuratedDatasetGeneratedByDatasetRelationship: ResolverTypeWrapper<CuratedDatasetGeneratedByDatasetRelationship>;
+  CuratedDatasetGeneratedByDatasetUpdateConnectionInput: CuratedDatasetGeneratedByDatasetUpdateConnectionInput;
+  CuratedDatasetGeneratedByDatasetUpdateFieldInput: CuratedDatasetGeneratedByDatasetUpdateFieldInput;
   CuratedDatasetOnCreateInput: CuratedDatasetOnCreateInput;
   CuratedDatasetOptions: CuratedDatasetOptions;
-  CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection: ResolverTypeWrapper<CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection>;
-  CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection: ResolverTypeWrapper<CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection>;
+  CuratedDatasetDatasetGeneratedByDatasetAggregationSelection: ResolverTypeWrapper<CuratedDatasetDatasetGeneratedByDatasetAggregationSelection>;
+  CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelection: ResolverTypeWrapper<CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelection>;
   CuratedDatasetRelationInput: CuratedDatasetRelationInput;
   CuratedDatasetSort: CuratedDatasetSort;
   CuratedDatasetTaskExportTaskAggregationSelection: ResolverTypeWrapper<CuratedDatasetTaskExportTaskAggregationSelection>;
@@ -11582,29 +11582,29 @@ export type ResolversTypes = {
   HarmonizedDatasetDisconnectInput: HarmonizedDatasetDisconnectInput;
   HarmonizedDatasetEdge: ResolverTypeWrapper<HarmonizedDatasetEdge>;
   HarmonizedDatasetOptions: HarmonizedDatasetOptions;
-  HarmonizedDatasetRawDatasetRawDatasetsAggregationSelection: ResolverTypeWrapper<HarmonizedDatasetRawDatasetRawDatasetsAggregationSelection>;
-  HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelection: ResolverTypeWrapper<HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelection>;
-  HarmonizedDatasetRawDatasetsAggregateInput: HarmonizedDatasetRawDatasetsAggregateInput;
-  HarmonizedDatasetRawDatasetsConnectFieldInput: HarmonizedDatasetRawDatasetsConnectFieldInput;
-  HarmonizedDatasetRawDatasetsConnectOrCreateFieldInput: HarmonizedDatasetRawDatasetsConnectOrCreateFieldInput;
-  HarmonizedDatasetRawDatasetsConnectOrCreateFieldInputOnCreate: HarmonizedDatasetRawDatasetsConnectOrCreateFieldInputOnCreate;
-  HarmonizedDatasetRawDatasetsConnection: ResolverTypeWrapper<HarmonizedDatasetRawDatasetsConnection>;
-  HarmonizedDatasetRawDatasetsConnectionSort: HarmonizedDatasetRawDatasetsConnectionSort;
-  HarmonizedDatasetRawDatasetsConnectionWhere: HarmonizedDatasetRawDatasetsConnectionWhere;
-  HarmonizedDatasetRawDatasetsCreateFieldInput: HarmonizedDatasetRawDatasetsCreateFieldInput;
-  HarmonizedDatasetRawDatasetsDeleteFieldInput: HarmonizedDatasetRawDatasetsDeleteFieldInput;
-  HarmonizedDatasetRawDatasetsDisconnectFieldInput: HarmonizedDatasetRawDatasetsDisconnectFieldInput;
-  HarmonizedDatasetRawDatasetsFieldInput: HarmonizedDatasetRawDatasetsFieldInput;
-  HarmonizedDatasetRawDatasetsNodeAggregationWhereInput: HarmonizedDatasetRawDatasetsNodeAggregationWhereInput;
-  HarmonizedDatasetRawDatasetsRelationship: ResolverTypeWrapper<HarmonizedDatasetRawDatasetsRelationship>;
-  HarmonizedDatasetRawDatasetsUpdateConnectionInput: HarmonizedDatasetRawDatasetsUpdateConnectionInput;
-  HarmonizedDatasetRawDatasetsUpdateFieldInput: HarmonizedDatasetRawDatasetsUpdateFieldInput;
+  HarmonizedDatasetDatasetDatasetsAggregationSelection: ResolverTypeWrapper<HarmonizedDatasetDatasetDatasetsAggregationSelection>;
+  HarmonizedDatasetDatasetDatasetsNodeAggregateSelection: ResolverTypeWrapper<HarmonizedDatasetDatasetDatasetsNodeAggregateSelection>;
+  HarmonizedDatasetDatasetsAggregateInput: HarmonizedDatasetDatasetsAggregateInput;
+  HarmonizedDatasetDatasetsConnectFieldInput: HarmonizedDatasetDatasetsConnectFieldInput;
+  HarmonizedDatasetDatasetsConnectOrCreateFieldInput: HarmonizedDatasetDatasetsConnectOrCreateFieldInput;
+  HarmonizedDatasetDatasetsConnectOrCreateFieldInputOnCreate: HarmonizedDatasetDatasetsConnectOrCreateFieldInputOnCreate;
+  HarmonizedDatasetDatasetsConnection: ResolverTypeWrapper<HarmonizedDatasetDatasetsConnection>;
+  HarmonizedDatasetDatasetsConnectionSort: HarmonizedDatasetDatasetsConnectionSort;
+  HarmonizedDatasetDatasetsConnectionWhere: HarmonizedDatasetDatasetsConnectionWhere;
+  HarmonizedDatasetDatasetsCreateFieldInput: HarmonizedDatasetDatasetsCreateFieldInput;
+  HarmonizedDatasetDatasetsDeleteFieldInput: HarmonizedDatasetDatasetsDeleteFieldInput;
+  HarmonizedDatasetDatasetsDisconnectFieldInput: HarmonizedDatasetDatasetsDisconnectFieldInput;
+  HarmonizedDatasetDatasetsFieldInput: HarmonizedDatasetDatasetsFieldInput;
+  HarmonizedDatasetDatasetsNodeAggregationWhereInput: HarmonizedDatasetDatasetsNodeAggregationWhereInput;
+  HarmonizedDatasetDatasetsRelationship: ResolverTypeWrapper<HarmonizedDatasetDatasetsRelationship>;
+  HarmonizedDatasetDatasetsUpdateConnectionInput: HarmonizedDatasetDatasetsUpdateConnectionInput;
+  HarmonizedDatasetDatasetsUpdateFieldInput: HarmonizedDatasetDatasetsUpdateFieldInput;
   HarmonizedDatasetRelationInput: HarmonizedDatasetRelationInput;
   HarmonizedDatasetSort: HarmonizedDatasetSort;
   HarmonizedDatasetUpdateInput: HarmonizedDatasetUpdateInput;
   HarmonizedDatasetWhere: HarmonizedDatasetWhere;
   HarmonizedDatasetsConnection: ResolverTypeWrapper<HarmonizedDatasetsConnection>;
-  HasCodebook: ResolversTypes['MinioUploadCodeBookRawDatasetRelationship'] | ResolversTypes['RawDatasetCodeBookRelationship'];
+  HasCodebook: ResolversTypes['MinioUploadCodeBookDatasetRelationship'] | ResolversTypes['DatasetCodeBookRelationship'];
   HasCodebookCreateInput: HasCodebookCreateInput;
   HasCodebookSort: HasCodebookSort;
   HasCodebookUpdateInput: HasCodebookUpdateInput;
@@ -11619,7 +11619,7 @@ export type ResolversTypes = {
   HasPairedRawdatafileSort: HasPairedRawdatafileSort;
   HasPairedRawdatafileUpdateInput: HasPairedRawdatafileUpdateInput;
   HasPairedRawdatafileWhere: HasPairedRawdatafileWhere;
-  HasRawdatafile: ResolversTypes['MinioUploadRawdataFileRawDatasetRelationship'] | ResolversTypes['RawDatasetRawdataFileRelationship'];
+  HasRawdatafile: ResolversTypes['MinioUploadRawdataFileDatasetRelationship'] | ResolversTypes['DatasetRawdataFileRelationship'];
   HasRawdatafileCreateInput: HasRawdatafileCreateInput;
   HasRawdatafileSort: HasRawdatafileSort;
   HasRawdatafileUpdateInput: HasRawdatafileUpdateInput;
@@ -11675,21 +11675,21 @@ export type ResolversTypes = {
   MinioBucketsConnection: ResolverTypeWrapper<MinioBucketsConnection>;
   MinioUpload: ResolverTypeWrapper<MinioUpload>;
   MinioUploadAggregateSelection: ResolverTypeWrapper<MinioUploadAggregateSelection>;
-  MinioUploadCodeBookRawDatasetAggregateInput: MinioUploadCodeBookRawDatasetAggregateInput;
-  MinioUploadCodeBookRawDatasetConnectFieldInput: MinioUploadCodeBookRawDatasetConnectFieldInput;
-  MinioUploadCodeBookRawDatasetConnectOrCreateFieldInput: MinioUploadCodeBookRawDatasetConnectOrCreateFieldInput;
-  MinioUploadCodeBookRawDatasetConnectOrCreateFieldInputOnCreate: MinioUploadCodeBookRawDatasetConnectOrCreateFieldInputOnCreate;
-  MinioUploadCodeBookRawDatasetConnection: ResolverTypeWrapper<MinioUploadCodeBookRawDatasetConnection>;
-  MinioUploadCodeBookRawDatasetConnectionSort: MinioUploadCodeBookRawDatasetConnectionSort;
-  MinioUploadCodeBookRawDatasetConnectionWhere: MinioUploadCodeBookRawDatasetConnectionWhere;
-  MinioUploadCodeBookRawDatasetCreateFieldInput: MinioUploadCodeBookRawDatasetCreateFieldInput;
-  MinioUploadCodeBookRawDatasetDeleteFieldInput: MinioUploadCodeBookRawDatasetDeleteFieldInput;
-  MinioUploadCodeBookRawDatasetDisconnectFieldInput: MinioUploadCodeBookRawDatasetDisconnectFieldInput;
-  MinioUploadCodeBookRawDatasetFieldInput: MinioUploadCodeBookRawDatasetFieldInput;
-  MinioUploadCodeBookRawDatasetNodeAggregationWhereInput: MinioUploadCodeBookRawDatasetNodeAggregationWhereInput;
-  MinioUploadCodeBookRawDatasetRelationship: ResolverTypeWrapper<MinioUploadCodeBookRawDatasetRelationship>;
-  MinioUploadCodeBookRawDatasetUpdateConnectionInput: MinioUploadCodeBookRawDatasetUpdateConnectionInput;
-  MinioUploadCodeBookRawDatasetUpdateFieldInput: MinioUploadCodeBookRawDatasetUpdateFieldInput;
+  MinioUploadCodeBookDatasetAggregateInput: MinioUploadCodeBookDatasetAggregateInput;
+  MinioUploadCodeBookDatasetConnectFieldInput: MinioUploadCodeBookDatasetConnectFieldInput;
+  MinioUploadCodeBookDatasetConnectOrCreateFieldInput: MinioUploadCodeBookDatasetConnectOrCreateFieldInput;
+  MinioUploadCodeBookDatasetConnectOrCreateFieldInputOnCreate: MinioUploadCodeBookDatasetConnectOrCreateFieldInputOnCreate;
+  MinioUploadCodeBookDatasetConnection: ResolverTypeWrapper<MinioUploadCodeBookDatasetConnection>;
+  MinioUploadCodeBookDatasetConnectionSort: MinioUploadCodeBookDatasetConnectionSort;
+  MinioUploadCodeBookDatasetConnectionWhere: MinioUploadCodeBookDatasetConnectionWhere;
+  MinioUploadCodeBookDatasetCreateFieldInput: MinioUploadCodeBookDatasetCreateFieldInput;
+  MinioUploadCodeBookDatasetDeleteFieldInput: MinioUploadCodeBookDatasetDeleteFieldInput;
+  MinioUploadCodeBookDatasetDisconnectFieldInput: MinioUploadCodeBookDatasetDisconnectFieldInput;
+  MinioUploadCodeBookDatasetFieldInput: MinioUploadCodeBookDatasetFieldInput;
+  MinioUploadCodeBookDatasetNodeAggregationWhereInput: MinioUploadCodeBookDatasetNodeAggregationWhereInput;
+  MinioUploadCodeBookDatasetRelationship: ResolverTypeWrapper<MinioUploadCodeBookDatasetRelationship>;
+  MinioUploadCodeBookDatasetUpdateConnectionInput: MinioUploadCodeBookDatasetUpdateConnectionInput;
+  MinioUploadCodeBookDatasetUpdateFieldInput: MinioUploadCodeBookDatasetUpdateFieldInput;
   MinioUploadConnectInput: MinioUploadConnectInput;
   MinioUploadConnectOrCreateInput: MinioUploadConnectOrCreateInput;
   MinioUploadConnectOrCreateWhere: MinioUploadConnectOrCreateWhere;
@@ -11747,42 +11747,42 @@ export type ResolversTypes = {
   MinioUploadPairedRawdataFileRelationship: ResolverTypeWrapper<MinioUploadPairedRawdataFileRelationship>;
   MinioUploadPairedRawdataFileUpdateConnectionInput: MinioUploadPairedRawdataFileUpdateConnectionInput;
   MinioUploadPairedRawdataFileUpdateFieldInput: MinioUploadPairedRawdataFileUpdateFieldInput;
-  MinioUploadRawDatasetAggregateInput: MinioUploadRawDatasetAggregateInput;
-  MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection: ResolverTypeWrapper<MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection>;
-  MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection: ResolverTypeWrapper<MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection>;
-  MinioUploadRawDatasetConnectFieldInput: MinioUploadRawDatasetConnectFieldInput;
-  MinioUploadRawDatasetConnectOrCreateFieldInput: MinioUploadRawDatasetConnectOrCreateFieldInput;
-  MinioUploadRawDatasetConnectOrCreateFieldInputOnCreate: MinioUploadRawDatasetConnectOrCreateFieldInputOnCreate;
-  MinioUploadRawDatasetConnection: ResolverTypeWrapper<MinioUploadRawDatasetConnection>;
-  MinioUploadRawDatasetConnectionSort: MinioUploadRawDatasetConnectionSort;
-  MinioUploadRawDatasetConnectionWhere: MinioUploadRawDatasetConnectionWhere;
-  MinioUploadRawDatasetCreateFieldInput: MinioUploadRawDatasetCreateFieldInput;
-  MinioUploadRawDatasetDeleteFieldInput: MinioUploadRawDatasetDeleteFieldInput;
-  MinioUploadRawDatasetDisconnectFieldInput: MinioUploadRawDatasetDisconnectFieldInput;
-  MinioUploadRawDatasetFieldInput: MinioUploadRawDatasetFieldInput;
-  MinioUploadRawDatasetNodeAggregationWhereInput: MinioUploadRawDatasetNodeAggregationWhereInput;
-  MinioUploadRawDatasetRawDatasetAggregationSelection: ResolverTypeWrapper<MinioUploadRawDatasetRawDatasetAggregationSelection>;
-  MinioUploadRawDatasetRawDatasetNodeAggregateSelection: ResolverTypeWrapper<MinioUploadRawDatasetRawDatasetNodeAggregateSelection>;
-  MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelection: ResolverTypeWrapper<MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelection>;
-  MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelection: ResolverTypeWrapper<MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelection>;
-  MinioUploadRawDatasetRelationship: ResolverTypeWrapper<MinioUploadRawDatasetRelationship>;
-  MinioUploadRawDatasetUpdateConnectionInput: MinioUploadRawDatasetUpdateConnectionInput;
-  MinioUploadRawDatasetUpdateFieldInput: MinioUploadRawDatasetUpdateFieldInput;
-  MinioUploadRawdataFileRawDatasetAggregateInput: MinioUploadRawdataFileRawDatasetAggregateInput;
-  MinioUploadRawdataFileRawDatasetConnectFieldInput: MinioUploadRawdataFileRawDatasetConnectFieldInput;
-  MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInput: MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInput;
-  MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInputOnCreate: MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInputOnCreate;
-  MinioUploadRawdataFileRawDatasetConnection: ResolverTypeWrapper<MinioUploadRawdataFileRawDatasetConnection>;
-  MinioUploadRawdataFileRawDatasetConnectionSort: MinioUploadRawdataFileRawDatasetConnectionSort;
-  MinioUploadRawdataFileRawDatasetConnectionWhere: MinioUploadRawdataFileRawDatasetConnectionWhere;
-  MinioUploadRawdataFileRawDatasetCreateFieldInput: MinioUploadRawdataFileRawDatasetCreateFieldInput;
-  MinioUploadRawdataFileRawDatasetDeleteFieldInput: MinioUploadRawdataFileRawDatasetDeleteFieldInput;
-  MinioUploadRawdataFileRawDatasetDisconnectFieldInput: MinioUploadRawdataFileRawDatasetDisconnectFieldInput;
-  MinioUploadRawdataFileRawDatasetFieldInput: MinioUploadRawdataFileRawDatasetFieldInput;
-  MinioUploadRawdataFileRawDatasetNodeAggregationWhereInput: MinioUploadRawdataFileRawDatasetNodeAggregationWhereInput;
-  MinioUploadRawdataFileRawDatasetRelationship: ResolverTypeWrapper<MinioUploadRawdataFileRawDatasetRelationship>;
-  MinioUploadRawdataFileRawDatasetUpdateConnectionInput: MinioUploadRawdataFileRawDatasetUpdateConnectionInput;
-  MinioUploadRawdataFileRawDatasetUpdateFieldInput: MinioUploadRawdataFileRawDatasetUpdateFieldInput;
+  MinioUploadDatasetAggregateInput: MinioUploadDatasetAggregateInput;
+  MinioUploadDatasetCodeBookDatasetAggregationSelection: ResolverTypeWrapper<MinioUploadDatasetCodeBookDatasetAggregationSelection>;
+  MinioUploadDatasetCodeBookDatasetNodeAggregateSelection: ResolverTypeWrapper<MinioUploadDatasetCodeBookDatasetNodeAggregateSelection>;
+  MinioUploadDatasetConnectFieldInput: MinioUploadDatasetConnectFieldInput;
+  MinioUploadDatasetConnectOrCreateFieldInput: MinioUploadDatasetConnectOrCreateFieldInput;
+  MinioUploadDatasetConnectOrCreateFieldInputOnCreate: MinioUploadDatasetConnectOrCreateFieldInputOnCreate;
+  MinioUploadDatasetConnection: ResolverTypeWrapper<MinioUploadDatasetConnection>;
+  MinioUploadDatasetConnectionSort: MinioUploadDatasetConnectionSort;
+  MinioUploadDatasetConnectionWhere: MinioUploadDatasetConnectionWhere;
+  MinioUploadDatasetCreateFieldInput: MinioUploadDatasetCreateFieldInput;
+  MinioUploadDatasetDeleteFieldInput: MinioUploadDatasetDeleteFieldInput;
+  MinioUploadDatasetDisconnectFieldInput: MinioUploadDatasetDisconnectFieldInput;
+  MinioUploadDatasetFieldInput: MinioUploadDatasetFieldInput;
+  MinioUploadDatasetNodeAggregationWhereInput: MinioUploadDatasetNodeAggregationWhereInput;
+  MinioUploadDatasetDatasetAggregationSelection: ResolverTypeWrapper<MinioUploadDatasetDatasetAggregationSelection>;
+  MinioUploadDatasetDatasetNodeAggregateSelection: ResolverTypeWrapper<MinioUploadDatasetDatasetNodeAggregateSelection>;
+  MinioUploadDatasetRawdataFileDatasetAggregationSelection: ResolverTypeWrapper<MinioUploadDatasetRawdataFileDatasetAggregationSelection>;
+  MinioUploadDatasetRawdataFileDatasetNodeAggregateSelection: ResolverTypeWrapper<MinioUploadDatasetRawdataFileDatasetNodeAggregateSelection>;
+  MinioUploadDatasetRelationship: ResolverTypeWrapper<MinioUploadDatasetRelationship>;
+  MinioUploadDatasetUpdateConnectionInput: MinioUploadDatasetUpdateConnectionInput;
+  MinioUploadDatasetUpdateFieldInput: MinioUploadDatasetUpdateFieldInput;
+  MinioUploadRawdataFileDatasetAggregateInput: MinioUploadRawdataFileDatasetAggregateInput;
+  MinioUploadRawdataFileDatasetConnectFieldInput: MinioUploadRawdataFileDatasetConnectFieldInput;
+  MinioUploadRawdataFileDatasetConnectOrCreateFieldInput: MinioUploadRawdataFileDatasetConnectOrCreateFieldInput;
+  MinioUploadRawdataFileDatasetConnectOrCreateFieldInputOnCreate: MinioUploadRawdataFileDatasetConnectOrCreateFieldInputOnCreate;
+  MinioUploadRawdataFileDatasetConnection: ResolverTypeWrapper<MinioUploadRawdataFileDatasetConnection>;
+  MinioUploadRawdataFileDatasetConnectionSort: MinioUploadRawdataFileDatasetConnectionSort;
+  MinioUploadRawdataFileDatasetConnectionWhere: MinioUploadRawdataFileDatasetConnectionWhere;
+  MinioUploadRawdataFileDatasetCreateFieldInput: MinioUploadRawdataFileDatasetCreateFieldInput;
+  MinioUploadRawdataFileDatasetDeleteFieldInput: MinioUploadRawdataFileDatasetDeleteFieldInput;
+  MinioUploadRawdataFileDatasetDisconnectFieldInput: MinioUploadRawdataFileDatasetDisconnectFieldInput;
+  MinioUploadRawdataFileDatasetFieldInput: MinioUploadRawdataFileDatasetFieldInput;
+  MinioUploadRawdataFileDatasetNodeAggregationWhereInput: MinioUploadRawdataFileDatasetNodeAggregationWhereInput;
+  MinioUploadRawdataFileDatasetRelationship: ResolverTypeWrapper<MinioUploadRawdataFileDatasetRelationship>;
+  MinioUploadRawdataFileDatasetUpdateConnectionInput: MinioUploadRawdataFileDatasetUpdateConnectionInput;
+  MinioUploadRawdataFileDatasetUpdateFieldInput: MinioUploadRawdataFileDatasetUpdateFieldInput;
   MinioUploadRelationInput: MinioUploadRelationInput;
   MinioUploadSort: MinioUploadSort;
   MinioUploadTaskFromExportTaskAggregationSelection: ResolverTypeWrapper<MinioUploadTaskFromExportTaskAggregationSelection>;
@@ -11924,162 +11924,162 @@ export type ResolversTypes = {
   OntologyWhere: OntologyWhere;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
-  RawDataset: ResolverTypeWrapper<RawDataset>;
-  RawDatasetAggregateSelection: ResolverTypeWrapper<RawDatasetAggregateSelection>;
-  RawDatasetCodeBookAggregateInput: RawDatasetCodeBookAggregateInput;
-  RawDatasetCodeBookConnectFieldInput: RawDatasetCodeBookConnectFieldInput;
-  RawDatasetCodeBookConnectOrCreateFieldInput: RawDatasetCodeBookConnectOrCreateFieldInput;
-  RawDatasetCodeBookConnectOrCreateFieldInputOnCreate: RawDatasetCodeBookConnectOrCreateFieldInputOnCreate;
-  RawDatasetCodeBookConnection: ResolverTypeWrapper<RawDatasetCodeBookConnection>;
-  RawDatasetCodeBookConnectionSort: RawDatasetCodeBookConnectionSort;
-  RawDatasetCodeBookConnectionWhere: RawDatasetCodeBookConnectionWhere;
-  RawDatasetCodeBookCreateFieldInput: RawDatasetCodeBookCreateFieldInput;
-  RawDatasetCodeBookDeleteFieldInput: RawDatasetCodeBookDeleteFieldInput;
-  RawDatasetCodeBookDisconnectFieldInput: RawDatasetCodeBookDisconnectFieldInput;
-  RawDatasetCodeBookFieldInput: RawDatasetCodeBookFieldInput;
-  RawDatasetCodeBookNodeAggregationWhereInput: RawDatasetCodeBookNodeAggregationWhereInput;
-  RawDatasetCodeBookRelationship: ResolverTypeWrapper<RawDatasetCodeBookRelationship>;
-  RawDatasetCodeBookUpdateConnectionInput: RawDatasetCodeBookUpdateConnectionInput;
-  RawDatasetCodeBookUpdateFieldInput: RawDatasetCodeBookUpdateFieldInput;
-  RawDatasetConnectInput: RawDatasetConnectInput;
-  RawDatasetConnectOrCreateInput: RawDatasetConnectOrCreateInput;
-  RawDatasetConnectOrCreateWhere: RawDatasetConnectOrCreateWhere;
-  RawDatasetConnectWhere: RawDatasetConnectWhere;
-  RawDatasetCreateInput: RawDatasetCreateInput;
-  RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection: ResolverTypeWrapper<RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection>;
-  RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection: ResolverTypeWrapper<RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection>;
-  RawDatasetDeleteInput: RawDatasetDeleteInput;
-  RawDatasetDisconnectInput: RawDatasetDisconnectInput;
-  RawDatasetEdge: ResolverTypeWrapper<RawDatasetEdge>;
-  RawDatasetFilesAggregateInput: RawDatasetFilesAggregateInput;
-  RawDatasetFilesConnectFieldInput: RawDatasetFilesConnectFieldInput;
-  RawDatasetFilesConnectOrCreateFieldInput: RawDatasetFilesConnectOrCreateFieldInput;
-  RawDatasetFilesConnectOrCreateFieldInputOnCreate: RawDatasetFilesConnectOrCreateFieldInputOnCreate;
-  RawDatasetFilesConnection: ResolverTypeWrapper<RawDatasetFilesConnection>;
-  RawDatasetFilesConnectionSort: RawDatasetFilesConnectionSort;
-  RawDatasetFilesConnectionWhere: RawDatasetFilesConnectionWhere;
-  RawDatasetFilesCreateFieldInput: RawDatasetFilesCreateFieldInput;
-  RawDatasetFilesDeleteFieldInput: RawDatasetFilesDeleteFieldInput;
-  RawDatasetFilesDisconnectFieldInput: RawDatasetFilesDisconnectFieldInput;
-  RawDatasetFilesFieldInput: RawDatasetFilesFieldInput;
-  RawDatasetFilesNodeAggregationWhereInput: RawDatasetFilesNodeAggregationWhereInput;
-  RawDatasetFilesRelationship: ResolverTypeWrapper<RawDatasetFilesRelationship>;
-  RawDatasetFilesUpdateConnectionInput: RawDatasetFilesUpdateConnectionInput;
-  RawDatasetFilesUpdateFieldInput: RawDatasetFilesUpdateFieldInput;
-  RawDatasetFromStudyAggregateInput: RawDatasetFromStudyAggregateInput;
-  RawDatasetFromStudyConnectFieldInput: RawDatasetFromStudyConnectFieldInput;
-  RawDatasetFromStudyConnectOrCreateFieldInput: RawDatasetFromStudyConnectOrCreateFieldInput;
-  RawDatasetFromStudyConnectOrCreateFieldInputOnCreate: RawDatasetFromStudyConnectOrCreateFieldInputOnCreate;
-  RawDatasetFromStudyConnection: ResolverTypeWrapper<RawDatasetFromStudyConnection>;
-  RawDatasetFromStudyConnectionSort: RawDatasetFromStudyConnectionSort;
-  RawDatasetFromStudyConnectionWhere: RawDatasetFromStudyConnectionWhere;
-  RawDatasetFromStudyCreateFieldInput: RawDatasetFromStudyCreateFieldInput;
-  RawDatasetFromStudyDeleteFieldInput: RawDatasetFromStudyDeleteFieldInput;
-  RawDatasetFromStudyDisconnectFieldInput: RawDatasetFromStudyDisconnectFieldInput;
-  RawDatasetFromStudyFieldInput: RawDatasetFromStudyFieldInput;
-  RawDatasetFromStudyNodeAggregationWhereInput: RawDatasetFromStudyNodeAggregationWhereInput;
-  RawDatasetFromStudyRelationship: ResolverTypeWrapper<RawDatasetFromStudyRelationship>;
-  RawDatasetFromStudyUpdateConnectionInput: RawDatasetFromStudyUpdateConnectionInput;
-  RawDatasetFromStudyUpdateFieldInput: RawDatasetFromStudyUpdateFieldInput;
-  RawDatasetFunnelTasksAggregateInput: RawDatasetFunnelTasksAggregateInput;
-  RawDatasetFunnelTasksConnectFieldInput: RawDatasetFunnelTasksConnectFieldInput;
-  RawDatasetFunnelTasksConnection: ResolverTypeWrapper<RawDatasetFunnelTasksConnection>;
-  RawDatasetFunnelTasksConnectionSort: RawDatasetFunnelTasksConnectionSort;
-  RawDatasetFunnelTasksConnectionWhere: RawDatasetFunnelTasksConnectionWhere;
-  RawDatasetFunnelTasksCreateFieldInput: RawDatasetFunnelTasksCreateFieldInput;
-  RawDatasetFunnelTasksDeleteFieldInput: RawDatasetFunnelTasksDeleteFieldInput;
-  RawDatasetFunnelTasksDisconnectFieldInput: RawDatasetFunnelTasksDisconnectFieldInput;
-  RawDatasetFunnelTasksFieldInput: RawDatasetFunnelTasksFieldInput;
-  RawDatasetFunnelTasksNodeAggregationWhereInput: RawDatasetFunnelTasksNodeAggregationWhereInput;
-  RawDatasetFunnelTasksRelationship: ResolverTypeWrapper<RawDatasetFunnelTasksRelationship>;
-  RawDatasetFunnelTasksUpdateConnectionInput: RawDatasetFunnelTasksUpdateConnectionInput;
-  RawDatasetFunnelTasksUpdateFieldInput: RawDatasetFunnelTasksUpdateFieldInput;
-  RawDatasetGeneratedCuratedDatasetsAggregateInput: RawDatasetGeneratedCuratedDatasetsAggregateInput;
-  RawDatasetGeneratedCuratedDatasetsConnectFieldInput: RawDatasetGeneratedCuratedDatasetsConnectFieldInput;
-  RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput: RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput;
-  RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate: RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate;
-  RawDatasetGeneratedCuratedDatasetsConnection: ResolverTypeWrapper<RawDatasetGeneratedCuratedDatasetsConnection>;
-  RawDatasetGeneratedCuratedDatasetsConnectionSort: RawDatasetGeneratedCuratedDatasetsConnectionSort;
-  RawDatasetGeneratedCuratedDatasetsConnectionWhere: RawDatasetGeneratedCuratedDatasetsConnectionWhere;
-  RawDatasetGeneratedCuratedDatasetsCreateFieldInput: RawDatasetGeneratedCuratedDatasetsCreateFieldInput;
-  RawDatasetGeneratedCuratedDatasetsDeleteFieldInput: RawDatasetGeneratedCuratedDatasetsDeleteFieldInput;
-  RawDatasetGeneratedCuratedDatasetsDisconnectFieldInput: RawDatasetGeneratedCuratedDatasetsDisconnectFieldInput;
-  RawDatasetGeneratedCuratedDatasetsFieldInput: RawDatasetGeneratedCuratedDatasetsFieldInput;
-  RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput: RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput;
-  RawDatasetGeneratedCuratedDatasetsRelationship: ResolverTypeWrapper<RawDatasetGeneratedCuratedDatasetsRelationship>;
-  RawDatasetGeneratedCuratedDatasetsUpdateConnectionInput: RawDatasetGeneratedCuratedDatasetsUpdateConnectionInput;
-  RawDatasetGeneratedCuratedDatasetsUpdateFieldInput: RawDatasetGeneratedCuratedDatasetsUpdateFieldInput;
-  RawDatasetGeographyCityStudySiteAggregationSelection: ResolverTypeWrapper<RawDatasetGeographyCityStudySiteAggregationSelection>;
-  RawDatasetGeographyCityStudySiteNodeAggregateSelection: ResolverTypeWrapper<RawDatasetGeographyCityStudySiteNodeAggregateSelection>;
-  RawDatasetMinioBucketAggregateInput: RawDatasetMinioBucketAggregateInput;
-  RawDatasetMinioBucketConnectFieldInput: RawDatasetMinioBucketConnectFieldInput;
-  RawDatasetMinioBucketConnection: ResolverTypeWrapper<RawDatasetMinioBucketConnection>;
-  RawDatasetMinioBucketConnectionSort: RawDatasetMinioBucketConnectionSort;
-  RawDatasetMinioBucketConnectionWhere: RawDatasetMinioBucketConnectionWhere;
-  RawDatasetMinioBucketCreateFieldInput: RawDatasetMinioBucketCreateFieldInput;
-  RawDatasetMinioBucketDeleteFieldInput: RawDatasetMinioBucketDeleteFieldInput;
-  RawDatasetMinioBucketDisconnectFieldInput: RawDatasetMinioBucketDisconnectFieldInput;
-  RawDatasetMinioBucketFieldInput: RawDatasetMinioBucketFieldInput;
-  RawDatasetMinioBucketMinioBucketAggregationSelection: ResolverTypeWrapper<RawDatasetMinioBucketMinioBucketAggregationSelection>;
-  RawDatasetMinioBucketMinioBucketNodeAggregateSelection: ResolverTypeWrapper<RawDatasetMinioBucketMinioBucketNodeAggregateSelection>;
-  RawDatasetMinioBucketNodeAggregationWhereInput: RawDatasetMinioBucketNodeAggregationWhereInput;
-  RawDatasetMinioBucketRelationship: ResolverTypeWrapper<RawDatasetMinioBucketRelationship>;
-  RawDatasetMinioBucketUpdateConnectionInput: RawDatasetMinioBucketUpdateConnectionInput;
-  RawDatasetMinioBucketUpdateFieldInput: RawDatasetMinioBucketUpdateFieldInput;
-  RawDatasetMinioUploadCodeBookAggregationSelection: ResolverTypeWrapper<RawDatasetMinioUploadCodeBookAggregationSelection>;
-  RawDatasetMinioUploadCodeBookNodeAggregateSelection: ResolverTypeWrapper<RawDatasetMinioUploadCodeBookNodeAggregateSelection>;
-  RawDatasetMinioUploadFilesAggregationSelection: ResolverTypeWrapper<RawDatasetMinioUploadFilesAggregationSelection>;
-  RawDatasetMinioUploadFilesNodeAggregateSelection: ResolverTypeWrapper<RawDatasetMinioUploadFilesNodeAggregateSelection>;
-  RawDatasetMinioUploadRawdataFileAggregationSelection: ResolverTypeWrapper<RawDatasetMinioUploadRawdataFileAggregationSelection>;
-  RawDatasetMinioUploadRawdataFileNodeAggregateSelection: ResolverTypeWrapper<RawDatasetMinioUploadRawdataFileNodeAggregateSelection>;
-  RawDatasetOnCreateInput: RawDatasetOnCreateInput;
-  RawDatasetOptions: RawDatasetOptions;
-  RawDatasetRawdataFileAggregateInput: RawDatasetRawdataFileAggregateInput;
-  RawDatasetRawdataFileConnectFieldInput: RawDatasetRawdataFileConnectFieldInput;
-  RawDatasetRawdataFileConnectOrCreateFieldInput: RawDatasetRawdataFileConnectOrCreateFieldInput;
-  RawDatasetRawdataFileConnectOrCreateFieldInputOnCreate: RawDatasetRawdataFileConnectOrCreateFieldInputOnCreate;
-  RawDatasetRawdataFileConnection: ResolverTypeWrapper<RawDatasetRawdataFileConnection>;
-  RawDatasetRawdataFileConnectionSort: RawDatasetRawdataFileConnectionSort;
-  RawDatasetRawdataFileConnectionWhere: RawDatasetRawdataFileConnectionWhere;
-  RawDatasetRawdataFileCreateFieldInput: RawDatasetRawdataFileCreateFieldInput;
-  RawDatasetRawdataFileDeleteFieldInput: RawDatasetRawdataFileDeleteFieldInput;
-  RawDatasetRawdataFileDisconnectFieldInput: RawDatasetRawdataFileDisconnectFieldInput;
-  RawDatasetRawdataFileFieldInput: RawDatasetRawdataFileFieldInput;
-  RawDatasetRawdataFileNodeAggregationWhereInput: RawDatasetRawdataFileNodeAggregationWhereInput;
-  RawDatasetRawdataFileRelationship: ResolverTypeWrapper<RawDatasetRawdataFileRelationship>;
-  RawDatasetRawdataFileUpdateConnectionInput: RawDatasetRawdataFileUpdateConnectionInput;
-  RawDatasetRawdataFileUpdateFieldInput: RawDatasetRawdataFileUpdateFieldInput;
-  RawDatasetRelationInput: RawDatasetRelationInput;
-  RawDatasetSort: RawDatasetSort;
-  RawDatasetStudyFromStudyAggregationSelection: ResolverTypeWrapper<RawDatasetStudyFromStudyAggregationSelection>;
-  RawDatasetStudyFromStudyNodeAggregateSelection: ResolverTypeWrapper<RawDatasetStudyFromStudyNodeAggregateSelection>;
-  RawDatasetStudySiteAggregateInput: RawDatasetStudySiteAggregateInput;
-  RawDatasetStudySiteConnectFieldInput: RawDatasetStudySiteConnectFieldInput;
-  RawDatasetStudySiteConnectOrCreateFieldInput: RawDatasetStudySiteConnectOrCreateFieldInput;
-  RawDatasetStudySiteConnectOrCreateFieldInputOnCreate: RawDatasetStudySiteConnectOrCreateFieldInputOnCreate;
-  RawDatasetStudySiteConnection: ResolverTypeWrapper<RawDatasetStudySiteConnection>;
-  RawDatasetStudySiteConnectionSort: RawDatasetStudySiteConnectionSort;
-  RawDatasetStudySiteConnectionWhere: RawDatasetStudySiteConnectionWhere;
-  RawDatasetStudySiteCreateFieldInput: RawDatasetStudySiteCreateFieldInput;
-  RawDatasetStudySiteDeleteFieldInput: RawDatasetStudySiteDeleteFieldInput;
-  RawDatasetStudySiteDisconnectFieldInput: RawDatasetStudySiteDisconnectFieldInput;
-  RawDatasetStudySiteFieldInput: RawDatasetStudySiteFieldInput;
-  RawDatasetStudySiteNodeAggregationWhereInput: RawDatasetStudySiteNodeAggregationWhereInput;
-  RawDatasetStudySiteRelationship: ResolverTypeWrapper<RawDatasetStudySiteRelationship>;
-  RawDatasetStudySiteUpdateConnectionInput: RawDatasetStudySiteUpdateConnectionInput;
-  RawDatasetStudySiteUpdateFieldInput: RawDatasetStudySiteUpdateFieldInput;
-  RawDatasetTaskFunnelTasksAggregationSelection: ResolverTypeWrapper<RawDatasetTaskFunnelTasksAggregationSelection>;
-  RawDatasetTaskFunnelTasksNodeAggregateSelection: ResolverTypeWrapper<RawDatasetTaskFunnelTasksNodeAggregateSelection>;
-  RawDatasetUniqueWhere: RawDatasetUniqueWhere;
-  RawDatasetUpdateInput: RawDatasetUpdateInput;
-  RawDatasetWhere: RawDatasetWhere;
-  RawDatasetsConnection: ResolverTypeWrapper<RawDatasetsConnection>;
+  Dataset: ResolverTypeWrapper<Dataset>;
+  DatasetAggregateSelection: ResolverTypeWrapper<DatasetAggregateSelection>;
+  DatasetCodeBookAggregateInput: DatasetCodeBookAggregateInput;
+  DatasetCodeBookConnectFieldInput: DatasetCodeBookConnectFieldInput;
+  DatasetCodeBookConnectOrCreateFieldInput: DatasetCodeBookConnectOrCreateFieldInput;
+  DatasetCodeBookConnectOrCreateFieldInputOnCreate: DatasetCodeBookConnectOrCreateFieldInputOnCreate;
+  DatasetCodeBookConnection: ResolverTypeWrapper<DatasetCodeBookConnection>;
+  DatasetCodeBookConnectionSort: DatasetCodeBookConnectionSort;
+  DatasetCodeBookConnectionWhere: DatasetCodeBookConnectionWhere;
+  DatasetCodeBookCreateFieldInput: DatasetCodeBookCreateFieldInput;
+  DatasetCodeBookDeleteFieldInput: DatasetCodeBookDeleteFieldInput;
+  DatasetCodeBookDisconnectFieldInput: DatasetCodeBookDisconnectFieldInput;
+  DatasetCodeBookFieldInput: DatasetCodeBookFieldInput;
+  DatasetCodeBookNodeAggregationWhereInput: DatasetCodeBookNodeAggregationWhereInput;
+  DatasetCodeBookRelationship: ResolverTypeWrapper<DatasetCodeBookRelationship>;
+  DatasetCodeBookUpdateConnectionInput: DatasetCodeBookUpdateConnectionInput;
+  DatasetCodeBookUpdateFieldInput: DatasetCodeBookUpdateFieldInput;
+  DatasetConnectInput: DatasetConnectInput;
+  DatasetConnectOrCreateInput: DatasetConnectOrCreateInput;
+  DatasetConnectOrCreateWhere: DatasetConnectOrCreateWhere;
+  DatasetConnectWhere: DatasetConnectWhere;
+  DatasetCreateInput: DatasetCreateInput;
+  DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection: ResolverTypeWrapper<DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection>;
+  DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection: ResolverTypeWrapper<DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection>;
+  DatasetDeleteInput: DatasetDeleteInput;
+  DatasetDisconnectInput: DatasetDisconnectInput;
+  DatasetEdge: ResolverTypeWrapper<DatasetEdge>;
+  DatasetFilesAggregateInput: DatasetFilesAggregateInput;
+  DatasetFilesConnectFieldInput: DatasetFilesConnectFieldInput;
+  DatasetFilesConnectOrCreateFieldInput: DatasetFilesConnectOrCreateFieldInput;
+  DatasetFilesConnectOrCreateFieldInputOnCreate: DatasetFilesConnectOrCreateFieldInputOnCreate;
+  DatasetFilesConnection: ResolverTypeWrapper<DatasetFilesConnection>;
+  DatasetFilesConnectionSort: DatasetFilesConnectionSort;
+  DatasetFilesConnectionWhere: DatasetFilesConnectionWhere;
+  DatasetFilesCreateFieldInput: DatasetFilesCreateFieldInput;
+  DatasetFilesDeleteFieldInput: DatasetFilesDeleteFieldInput;
+  DatasetFilesDisconnectFieldInput: DatasetFilesDisconnectFieldInput;
+  DatasetFilesFieldInput: DatasetFilesFieldInput;
+  DatasetFilesNodeAggregationWhereInput: DatasetFilesNodeAggregationWhereInput;
+  DatasetFilesRelationship: ResolverTypeWrapper<DatasetFilesRelationship>;
+  DatasetFilesUpdateConnectionInput: DatasetFilesUpdateConnectionInput;
+  DatasetFilesUpdateFieldInput: DatasetFilesUpdateFieldInput;
+  DatasetFromStudyAggregateInput: DatasetFromStudyAggregateInput;
+  DatasetFromStudyConnectFieldInput: DatasetFromStudyConnectFieldInput;
+  DatasetFromStudyConnectOrCreateFieldInput: DatasetFromStudyConnectOrCreateFieldInput;
+  DatasetFromStudyConnectOrCreateFieldInputOnCreate: DatasetFromStudyConnectOrCreateFieldInputOnCreate;
+  DatasetFromStudyConnection: ResolverTypeWrapper<DatasetFromStudyConnection>;
+  DatasetFromStudyConnectionSort: DatasetFromStudyConnectionSort;
+  DatasetFromStudyConnectionWhere: DatasetFromStudyConnectionWhere;
+  DatasetFromStudyCreateFieldInput: DatasetFromStudyCreateFieldInput;
+  DatasetFromStudyDeleteFieldInput: DatasetFromStudyDeleteFieldInput;
+  DatasetFromStudyDisconnectFieldInput: DatasetFromStudyDisconnectFieldInput;
+  DatasetFromStudyFieldInput: DatasetFromStudyFieldInput;
+  DatasetFromStudyNodeAggregationWhereInput: DatasetFromStudyNodeAggregationWhereInput;
+  DatasetFromStudyRelationship: ResolverTypeWrapper<DatasetFromStudyRelationship>;
+  DatasetFromStudyUpdateConnectionInput: DatasetFromStudyUpdateConnectionInput;
+  DatasetFromStudyUpdateFieldInput: DatasetFromStudyUpdateFieldInput;
+  DatasetFunnelTasksAggregateInput: DatasetFunnelTasksAggregateInput;
+  DatasetFunnelTasksConnectFieldInput: DatasetFunnelTasksConnectFieldInput;
+  DatasetFunnelTasksConnection: ResolverTypeWrapper<DatasetFunnelTasksConnection>;
+  DatasetFunnelTasksConnectionSort: DatasetFunnelTasksConnectionSort;
+  DatasetFunnelTasksConnectionWhere: DatasetFunnelTasksConnectionWhere;
+  DatasetFunnelTasksCreateFieldInput: DatasetFunnelTasksCreateFieldInput;
+  DatasetFunnelTasksDeleteFieldInput: DatasetFunnelTasksDeleteFieldInput;
+  DatasetFunnelTasksDisconnectFieldInput: DatasetFunnelTasksDisconnectFieldInput;
+  DatasetFunnelTasksFieldInput: DatasetFunnelTasksFieldInput;
+  DatasetFunnelTasksNodeAggregationWhereInput: DatasetFunnelTasksNodeAggregationWhereInput;
+  DatasetFunnelTasksRelationship: ResolverTypeWrapper<DatasetFunnelTasksRelationship>;
+  DatasetFunnelTasksUpdateConnectionInput: DatasetFunnelTasksUpdateConnectionInput;
+  DatasetFunnelTasksUpdateFieldInput: DatasetFunnelTasksUpdateFieldInput;
+  DatasetGeneratedCuratedDatasetsAggregateInput: DatasetGeneratedCuratedDatasetsAggregateInput;
+  DatasetGeneratedCuratedDatasetsConnectFieldInput: DatasetGeneratedCuratedDatasetsConnectFieldInput;
+  DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput: DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput;
+  DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate: DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate;
+  DatasetGeneratedCuratedDatasetsConnection: ResolverTypeWrapper<DatasetGeneratedCuratedDatasetsConnection>;
+  DatasetGeneratedCuratedDatasetsConnectionSort: DatasetGeneratedCuratedDatasetsConnectionSort;
+  DatasetGeneratedCuratedDatasetsConnectionWhere: DatasetGeneratedCuratedDatasetsConnectionWhere;
+  DatasetGeneratedCuratedDatasetsCreateFieldInput: DatasetGeneratedCuratedDatasetsCreateFieldInput;
+  DatasetGeneratedCuratedDatasetsDeleteFieldInput: DatasetGeneratedCuratedDatasetsDeleteFieldInput;
+  DatasetGeneratedCuratedDatasetsDisconnectFieldInput: DatasetGeneratedCuratedDatasetsDisconnectFieldInput;
+  DatasetGeneratedCuratedDatasetsFieldInput: DatasetGeneratedCuratedDatasetsFieldInput;
+  DatasetGeneratedCuratedDatasetsNodeAggregationWhereInput: DatasetGeneratedCuratedDatasetsNodeAggregationWhereInput;
+  DatasetGeneratedCuratedDatasetsRelationship: ResolverTypeWrapper<DatasetGeneratedCuratedDatasetsRelationship>;
+  DatasetGeneratedCuratedDatasetsUpdateConnectionInput: DatasetGeneratedCuratedDatasetsUpdateConnectionInput;
+  DatasetGeneratedCuratedDatasetsUpdateFieldInput: DatasetGeneratedCuratedDatasetsUpdateFieldInput;
+  DatasetGeographyCityStudySiteAggregationSelection: ResolverTypeWrapper<DatasetGeographyCityStudySiteAggregationSelection>;
+  DatasetGeographyCityStudySiteNodeAggregateSelection: ResolverTypeWrapper<DatasetGeographyCityStudySiteNodeAggregateSelection>;
+  DatasetMinioBucketAggregateInput: DatasetMinioBucketAggregateInput;
+  DatasetMinioBucketConnectFieldInput: DatasetMinioBucketConnectFieldInput;
+  DatasetMinioBucketConnection: ResolverTypeWrapper<DatasetMinioBucketConnection>;
+  DatasetMinioBucketConnectionSort: DatasetMinioBucketConnectionSort;
+  DatasetMinioBucketConnectionWhere: DatasetMinioBucketConnectionWhere;
+  DatasetMinioBucketCreateFieldInput: DatasetMinioBucketCreateFieldInput;
+  DatasetMinioBucketDeleteFieldInput: DatasetMinioBucketDeleteFieldInput;
+  DatasetMinioBucketDisconnectFieldInput: DatasetMinioBucketDisconnectFieldInput;
+  DatasetMinioBucketFieldInput: DatasetMinioBucketFieldInput;
+  DatasetMinioBucketMinioBucketAggregationSelection: ResolverTypeWrapper<DatasetMinioBucketMinioBucketAggregationSelection>;
+  DatasetMinioBucketMinioBucketNodeAggregateSelection: ResolverTypeWrapper<DatasetMinioBucketMinioBucketNodeAggregateSelection>;
+  DatasetMinioBucketNodeAggregationWhereInput: DatasetMinioBucketNodeAggregationWhereInput;
+  DatasetMinioBucketRelationship: ResolverTypeWrapper<DatasetMinioBucketRelationship>;
+  DatasetMinioBucketUpdateConnectionInput: DatasetMinioBucketUpdateConnectionInput;
+  DatasetMinioBucketUpdateFieldInput: DatasetMinioBucketUpdateFieldInput;
+  DatasetMinioUploadCodeBookAggregationSelection: ResolverTypeWrapper<DatasetMinioUploadCodeBookAggregationSelection>;
+  DatasetMinioUploadCodeBookNodeAggregateSelection: ResolverTypeWrapper<DatasetMinioUploadCodeBookNodeAggregateSelection>;
+  DatasetMinioUploadFilesAggregationSelection: ResolverTypeWrapper<DatasetMinioUploadFilesAggregationSelection>;
+  DatasetMinioUploadFilesNodeAggregateSelection: ResolverTypeWrapper<DatasetMinioUploadFilesNodeAggregateSelection>;
+  DatasetMinioUploadRawdataFileAggregationSelection: ResolverTypeWrapper<DatasetMinioUploadRawdataFileAggregationSelection>;
+  DatasetMinioUploadRawdataFileNodeAggregateSelection: ResolverTypeWrapper<DatasetMinioUploadRawdataFileNodeAggregateSelection>;
+  DatasetOnCreateInput: DatasetOnCreateInput;
+  DatasetOptions: DatasetOptions;
+  DatasetRawdataFileAggregateInput: DatasetRawdataFileAggregateInput;
+  DatasetRawdataFileConnectFieldInput: DatasetRawdataFileConnectFieldInput;
+  DatasetRawdataFileConnectOrCreateFieldInput: DatasetRawdataFileConnectOrCreateFieldInput;
+  DatasetRawdataFileConnectOrCreateFieldInputOnCreate: DatasetRawdataFileConnectOrCreateFieldInputOnCreate;
+  DatasetRawdataFileConnection: ResolverTypeWrapper<DatasetRawdataFileConnection>;
+  DatasetRawdataFileConnectionSort: DatasetRawdataFileConnectionSort;
+  DatasetRawdataFileConnectionWhere: DatasetRawdataFileConnectionWhere;
+  DatasetRawdataFileCreateFieldInput: DatasetRawdataFileCreateFieldInput;
+  DatasetRawdataFileDeleteFieldInput: DatasetRawdataFileDeleteFieldInput;
+  DatasetRawdataFileDisconnectFieldInput: DatasetRawdataFileDisconnectFieldInput;
+  DatasetRawdataFileFieldInput: DatasetRawdataFileFieldInput;
+  DatasetRawdataFileNodeAggregationWhereInput: DatasetRawdataFileNodeAggregationWhereInput;
+  DatasetRawdataFileRelationship: ResolverTypeWrapper<DatasetRawdataFileRelationship>;
+  DatasetRawdataFileUpdateConnectionInput: DatasetRawdataFileUpdateConnectionInput;
+  DatasetRawdataFileUpdateFieldInput: DatasetRawdataFileUpdateFieldInput;
+  DatasetRelationInput: DatasetRelationInput;
+  DatasetSort: DatasetSort;
+  DatasetStudyFromStudyAggregationSelection: ResolverTypeWrapper<DatasetStudyFromStudyAggregationSelection>;
+  DatasetStudyFromStudyNodeAggregateSelection: ResolverTypeWrapper<DatasetStudyFromStudyNodeAggregateSelection>;
+  DatasetStudySiteAggregateInput: DatasetStudySiteAggregateInput;
+  DatasetStudySiteConnectFieldInput: DatasetStudySiteConnectFieldInput;
+  DatasetStudySiteConnectOrCreateFieldInput: DatasetStudySiteConnectOrCreateFieldInput;
+  DatasetStudySiteConnectOrCreateFieldInputOnCreate: DatasetStudySiteConnectOrCreateFieldInputOnCreate;
+  DatasetStudySiteConnection: ResolverTypeWrapper<DatasetStudySiteConnection>;
+  DatasetStudySiteConnectionSort: DatasetStudySiteConnectionSort;
+  DatasetStudySiteConnectionWhere: DatasetStudySiteConnectionWhere;
+  DatasetStudySiteCreateFieldInput: DatasetStudySiteCreateFieldInput;
+  DatasetStudySiteDeleteFieldInput: DatasetStudySiteDeleteFieldInput;
+  DatasetStudySiteDisconnectFieldInput: DatasetStudySiteDisconnectFieldInput;
+  DatasetStudySiteFieldInput: DatasetStudySiteFieldInput;
+  DatasetStudySiteNodeAggregationWhereInput: DatasetStudySiteNodeAggregationWhereInput;
+  DatasetStudySiteRelationship: ResolverTypeWrapper<DatasetStudySiteRelationship>;
+  DatasetStudySiteUpdateConnectionInput: DatasetStudySiteUpdateConnectionInput;
+  DatasetStudySiteUpdateFieldInput: DatasetStudySiteUpdateFieldInput;
+  DatasetTaskFunnelTasksAggregationSelection: ResolverTypeWrapper<DatasetTaskFunnelTasksAggregationSelection>;
+  DatasetTaskFunnelTasksNodeAggregateSelection: ResolverTypeWrapper<DatasetTaskFunnelTasksNodeAggregateSelection>;
+  DatasetUniqueWhere: DatasetUniqueWhere;
+  DatasetUpdateInput: DatasetUpdateInput;
+  DatasetWhere: DatasetWhere;
+  DatasetsConnection: ResolverTypeWrapper<DatasetsConnection>;
   SortDirection: SortDirection;
   String: ResolverTypeWrapper<Scalars['String']>;
   StringAggregateSelectionNonNullable: ResolverTypeWrapper<StringAggregateSelectionNonNullable>;
   StringAggregateSelectionNullable: ResolverTypeWrapper<StringAggregateSelectionNullable>;
   StudiesConnection: ResolverTypeWrapper<StudiesConnection>;
-  Study: ResolverTypeWrapper<Study>;
+  Project: ResolverTypeWrapper<Project>;
   StudyAggregateSelection: ResolverTypeWrapper<StudyAggregateSelection>;
   StudyConnectInput: StudyConnectInput;
   StudyConnectOrCreateInput: StudyConnectOrCreateInput;
@@ -12093,23 +12093,23 @@ export type ResolversTypes = {
   StudyGeographyCityStudySitesNodeAggregateSelection: ResolverTypeWrapper<StudyGeographyCityStudySitesNodeAggregateSelection>;
   StudyOnCreateInput: StudyOnCreateInput;
   StudyOptions: StudyOptions;
-  StudyRawDatasetRawDatasetsAggregationSelection: ResolverTypeWrapper<StudyRawDatasetRawDatasetsAggregationSelection>;
-  StudyRawDatasetRawDatasetsNodeAggregateSelection: ResolverTypeWrapper<StudyRawDatasetRawDatasetsNodeAggregateSelection>;
-  StudyRawDatasetsAggregateInput: StudyRawDatasetsAggregateInput;
-  StudyRawDatasetsConnectFieldInput: StudyRawDatasetsConnectFieldInput;
-  StudyRawDatasetsConnectOrCreateFieldInput: StudyRawDatasetsConnectOrCreateFieldInput;
-  StudyRawDatasetsConnectOrCreateFieldInputOnCreate: StudyRawDatasetsConnectOrCreateFieldInputOnCreate;
-  StudyRawDatasetsConnection: ResolverTypeWrapper<StudyRawDatasetsConnection>;
-  StudyRawDatasetsConnectionSort: StudyRawDatasetsConnectionSort;
-  StudyRawDatasetsConnectionWhere: StudyRawDatasetsConnectionWhere;
-  StudyRawDatasetsCreateFieldInput: StudyRawDatasetsCreateFieldInput;
-  StudyRawDatasetsDeleteFieldInput: StudyRawDatasetsDeleteFieldInput;
-  StudyRawDatasetsDisconnectFieldInput: StudyRawDatasetsDisconnectFieldInput;
-  StudyRawDatasetsFieldInput: StudyRawDatasetsFieldInput;
-  StudyRawDatasetsNodeAggregationWhereInput: StudyRawDatasetsNodeAggregationWhereInput;
-  StudyRawDatasetsRelationship: ResolverTypeWrapper<StudyRawDatasetsRelationship>;
-  StudyRawDatasetsUpdateConnectionInput: StudyRawDatasetsUpdateConnectionInput;
-  StudyRawDatasetsUpdateFieldInput: StudyRawDatasetsUpdateFieldInput;
+  StudyDatasetDatasetsAggregationSelection: ResolverTypeWrapper<StudyDatasetDatasetsAggregationSelection>;
+  StudyDatasetDatasetsNodeAggregateSelection: ResolverTypeWrapper<StudyDatasetDatasetsNodeAggregateSelection>;
+  StudyDatasetsAggregateInput: StudyDatasetsAggregateInput;
+  StudyDatasetsConnectFieldInput: StudyDatasetsConnectFieldInput;
+  StudyDatasetsConnectOrCreateFieldInput: StudyDatasetsConnectOrCreateFieldInput;
+  StudyDatasetsConnectOrCreateFieldInputOnCreate: StudyDatasetsConnectOrCreateFieldInputOnCreate;
+  StudyDatasetsConnection: ResolverTypeWrapper<StudyDatasetsConnection>;
+  StudyDatasetsConnectionSort: StudyDatasetsConnectionSort;
+  StudyDatasetsConnectionWhere: StudyDatasetsConnectionWhere;
+  StudyDatasetsCreateFieldInput: StudyDatasetsCreateFieldInput;
+  StudyDatasetsDeleteFieldInput: StudyDatasetsDeleteFieldInput;
+  StudyDatasetsDisconnectFieldInput: StudyDatasetsDisconnectFieldInput;
+  StudyDatasetsFieldInput: StudyDatasetsFieldInput;
+  StudyDatasetsNodeAggregationWhereInput: StudyDatasetsNodeAggregationWhereInput;
+  StudyDatasetsRelationship: ResolverTypeWrapper<StudyDatasetsRelationship>;
+  StudyDatasetsUpdateConnectionInput: StudyDatasetsUpdateConnectionInput;
+  StudyDatasetsUpdateFieldInput: StudyDatasetsUpdateFieldInput;
   StudyRelationInput: StudyRelationInput;
   StudySort: StudySort;
   StudyStudySitesAggregateInput: StudyStudySitesAggregateInput;
@@ -12154,21 +12154,21 @@ export type ResolversTypes = {
   TaskFromCuratedDatasetRelationship: ResolverTypeWrapper<TaskFromCuratedDatasetRelationship>;
   TaskFromCuratedDatasetUpdateConnectionInput: TaskFromCuratedDatasetUpdateConnectionInput;
   TaskFromCuratedDatasetUpdateFieldInput: TaskFromCuratedDatasetUpdateFieldInput;
-  TaskFromRawDatasetAggregateInput: TaskFromRawDatasetAggregateInput;
-  TaskFromRawDatasetConnectFieldInput: TaskFromRawDatasetConnectFieldInput;
-  TaskFromRawDatasetConnectOrCreateFieldInput: TaskFromRawDatasetConnectOrCreateFieldInput;
-  TaskFromRawDatasetConnectOrCreateFieldInputOnCreate: TaskFromRawDatasetConnectOrCreateFieldInputOnCreate;
-  TaskFromRawDatasetConnection: ResolverTypeWrapper<TaskFromRawDatasetConnection>;
-  TaskFromRawDatasetConnectionSort: TaskFromRawDatasetConnectionSort;
-  TaskFromRawDatasetConnectionWhere: TaskFromRawDatasetConnectionWhere;
-  TaskFromRawDatasetCreateFieldInput: TaskFromRawDatasetCreateFieldInput;
-  TaskFromRawDatasetDeleteFieldInput: TaskFromRawDatasetDeleteFieldInput;
-  TaskFromRawDatasetDisconnectFieldInput: TaskFromRawDatasetDisconnectFieldInput;
-  TaskFromRawDatasetFieldInput: TaskFromRawDatasetFieldInput;
-  TaskFromRawDatasetNodeAggregationWhereInput: TaskFromRawDatasetNodeAggregationWhereInput;
-  TaskFromRawDatasetRelationship: ResolverTypeWrapper<TaskFromRawDatasetRelationship>;
-  TaskFromRawDatasetUpdateConnectionInput: TaskFromRawDatasetUpdateConnectionInput;
-  TaskFromRawDatasetUpdateFieldInput: TaskFromRawDatasetUpdateFieldInput;
+  TaskFromDatasetAggregateInput: TaskFromDatasetAggregateInput;
+  TaskFromDatasetConnectFieldInput: TaskFromDatasetConnectFieldInput;
+  TaskFromDatasetConnectOrCreateFieldInput: TaskFromDatasetConnectOrCreateFieldInput;
+  TaskFromDatasetConnectOrCreateFieldInputOnCreate: TaskFromDatasetConnectOrCreateFieldInputOnCreate;
+  TaskFromDatasetConnection: ResolverTypeWrapper<TaskFromDatasetConnection>;
+  TaskFromDatasetConnectionSort: TaskFromDatasetConnectionSort;
+  TaskFromDatasetConnectionWhere: TaskFromDatasetConnectionWhere;
+  TaskFromDatasetCreateFieldInput: TaskFromDatasetCreateFieldInput;
+  TaskFromDatasetDeleteFieldInput: TaskFromDatasetDeleteFieldInput;
+  TaskFromDatasetDisconnectFieldInput: TaskFromDatasetDisconnectFieldInput;
+  TaskFromDatasetFieldInput: TaskFromDatasetFieldInput;
+  TaskFromDatasetNodeAggregationWhereInput: TaskFromDatasetNodeAggregationWhereInput;
+  TaskFromDatasetRelationship: ResolverTypeWrapper<TaskFromDatasetRelationship>;
+  TaskFromDatasetUpdateConnectionInput: TaskFromDatasetUpdateConnectionInput;
+  TaskFromDatasetUpdateFieldInput: TaskFromDatasetUpdateFieldInput;
   TaskGeneratedCuratedDatasetAggregateInput: TaskGeneratedCuratedDatasetAggregateInput;
   TaskGeneratedCuratedDatasetConnectFieldInput: TaskGeneratedCuratedDatasetConnectFieldInput;
   TaskGeneratedCuratedDatasetConnectOrCreateFieldInput: TaskGeneratedCuratedDatasetConnectOrCreateFieldInput;
@@ -12202,8 +12202,8 @@ export type ResolversTypes = {
   TaskMinioUploadGeneratedExportAggregationSelection: ResolverTypeWrapper<TaskMinioUploadGeneratedExportAggregationSelection>;
   TaskMinioUploadGeneratedExportNodeAggregateSelection: ResolverTypeWrapper<TaskMinioUploadGeneratedExportNodeAggregateSelection>;
   TaskOptions: TaskOptions;
-  TaskRawDatasetFromRawDatasetAggregationSelection: ResolverTypeWrapper<TaskRawDatasetFromRawDatasetAggregationSelection>;
-  TaskRawDatasetFromRawDatasetNodeAggregateSelection: ResolverTypeWrapper<TaskRawDatasetFromRawDatasetNodeAggregateSelection>;
+  TaskDatasetFromDatasetAggregationSelection: ResolverTypeWrapper<TaskDatasetFromDatasetAggregationSelection>;
+  TaskDatasetFromDatasetNodeAggregateSelection: ResolverTypeWrapper<TaskDatasetFromDatasetNodeAggregateSelection>;
   TaskRelationInput: TaskRelationInput;
   TaskSort: TaskSort;
   TaskTaskFromCuratedDatasetAggregationSelection: ResolverTypeWrapper<TaskTaskFromCuratedDatasetAggregationSelection>;
@@ -12231,7 +12231,7 @@ export type ResolversTypes = {
   UpdateOntologiesMutationResponse: ResolverTypeWrapper<UpdateOntologiesMutationResponse>;
   UpdateOntologyClassesMutationResponse: ResolverTypeWrapper<UpdateOntologyClassesMutationResponse>;
   UpdateOntologyRelationsMutationResponse: ResolverTypeWrapper<UpdateOntologyRelationsMutationResponse>;
-  UpdateRawDatasetsMutationResponse: ResolverTypeWrapper<UpdateRawDatasetsMutationResponse>;
+  UpdateDatasetsMutationResponse: ResolverTypeWrapper<UpdateDatasetsMutationResponse>;
   UpdateStudiesMutationResponse: ResolverTypeWrapper<UpdateStudiesMutationResponse>;
   UpdateTasksMutationResponse: ResolverTypeWrapper<UpdateTasksMutationResponse>;
   Upload: ResolverTypeWrapper<Scalars['Upload']>;
@@ -12288,7 +12288,7 @@ export type ResolversParentTypes = {
   CreateOntologiesMutationResponse: CreateOntologiesMutationResponse;
   CreateOntologyClassesMutationResponse: CreateOntologyClassesMutationResponse;
   CreateOntologyRelationsMutationResponse: CreateOntologyRelationsMutationResponse;
-  CreateRawDatasetsMutationResponse: CreateRawDatasetsMutationResponse;
+  CreateDatasetsMutationResponse: CreateDatasetsMutationResponse;
   CreateStudiesMutationResponse: CreateStudiesMutationResponse;
   CreateTasksMutationResponse: CreateTasksMutationResponse;
   CuratedDataset: CuratedDataset;
@@ -12361,25 +12361,25 @@ export type ResolversParentTypes = {
   CuratedDatasetFunnelTaskRelationship: CuratedDatasetFunnelTaskRelationship;
   CuratedDatasetFunnelTaskUpdateConnectionInput: CuratedDatasetFunnelTaskUpdateConnectionInput;
   CuratedDatasetFunnelTaskUpdateFieldInput: CuratedDatasetFunnelTaskUpdateFieldInput;
-  CuratedDatasetGeneratedByRawDatasetAggregateInput: CuratedDatasetGeneratedByRawDatasetAggregateInput;
-  CuratedDatasetGeneratedByRawDatasetConnectFieldInput: CuratedDatasetGeneratedByRawDatasetConnectFieldInput;
-  CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInput: CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInput;
-  CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInputOnCreate: CuratedDatasetGeneratedByRawDatasetConnectOrCreateFieldInputOnCreate;
-  CuratedDatasetGeneratedByRawDatasetConnection: CuratedDatasetGeneratedByRawDatasetConnection;
-  CuratedDatasetGeneratedByRawDatasetConnectionSort: CuratedDatasetGeneratedByRawDatasetConnectionSort;
-  CuratedDatasetGeneratedByRawDatasetConnectionWhere: CuratedDatasetGeneratedByRawDatasetConnectionWhere;
-  CuratedDatasetGeneratedByRawDatasetCreateFieldInput: CuratedDatasetGeneratedByRawDatasetCreateFieldInput;
-  CuratedDatasetGeneratedByRawDatasetDeleteFieldInput: CuratedDatasetGeneratedByRawDatasetDeleteFieldInput;
-  CuratedDatasetGeneratedByRawDatasetDisconnectFieldInput: CuratedDatasetGeneratedByRawDatasetDisconnectFieldInput;
-  CuratedDatasetGeneratedByRawDatasetFieldInput: CuratedDatasetGeneratedByRawDatasetFieldInput;
-  CuratedDatasetGeneratedByRawDatasetNodeAggregationWhereInput: CuratedDatasetGeneratedByRawDatasetNodeAggregationWhereInput;
-  CuratedDatasetGeneratedByRawDatasetRelationship: CuratedDatasetGeneratedByRawDatasetRelationship;
-  CuratedDatasetGeneratedByRawDatasetUpdateConnectionInput: CuratedDatasetGeneratedByRawDatasetUpdateConnectionInput;
-  CuratedDatasetGeneratedByRawDatasetUpdateFieldInput: CuratedDatasetGeneratedByRawDatasetUpdateFieldInput;
+  CuratedDatasetGeneratedByDatasetAggregateInput: CuratedDatasetGeneratedByDatasetAggregateInput;
+  CuratedDatasetGeneratedByDatasetConnectFieldInput: CuratedDatasetGeneratedByDatasetConnectFieldInput;
+  CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInput: CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInput;
+  CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInputOnCreate: CuratedDatasetGeneratedByDatasetConnectOrCreateFieldInputOnCreate;
+  CuratedDatasetGeneratedByDatasetConnection: CuratedDatasetGeneratedByDatasetConnection;
+  CuratedDatasetGeneratedByDatasetConnectionSort: CuratedDatasetGeneratedByDatasetConnectionSort;
+  CuratedDatasetGeneratedByDatasetConnectionWhere: CuratedDatasetGeneratedByDatasetConnectionWhere;
+  CuratedDatasetGeneratedByDatasetCreateFieldInput: CuratedDatasetGeneratedByDatasetCreateFieldInput;
+  CuratedDatasetGeneratedByDatasetDeleteFieldInput: CuratedDatasetGeneratedByDatasetDeleteFieldInput;
+  CuratedDatasetGeneratedByDatasetDisconnectFieldInput: CuratedDatasetGeneratedByDatasetDisconnectFieldInput;
+  CuratedDatasetGeneratedByDatasetFieldInput: CuratedDatasetGeneratedByDatasetFieldInput;
+  CuratedDatasetGeneratedByDatasetNodeAggregationWhereInput: CuratedDatasetGeneratedByDatasetNodeAggregationWhereInput;
+  CuratedDatasetGeneratedByDatasetRelationship: CuratedDatasetGeneratedByDatasetRelationship;
+  CuratedDatasetGeneratedByDatasetUpdateConnectionInput: CuratedDatasetGeneratedByDatasetUpdateConnectionInput;
+  CuratedDatasetGeneratedByDatasetUpdateFieldInput: CuratedDatasetGeneratedByDatasetUpdateFieldInput;
   CuratedDatasetOnCreateInput: CuratedDatasetOnCreateInput;
   CuratedDatasetOptions: CuratedDatasetOptions;
-  CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection: CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection;
-  CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection: CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection;
+  CuratedDatasetDatasetGeneratedByDatasetAggregationSelection: CuratedDatasetDatasetGeneratedByDatasetAggregationSelection;
+  CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelection: CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelection;
   CuratedDatasetRelationInput: CuratedDatasetRelationInput;
   CuratedDatasetSort: CuratedDatasetSort;
   CuratedDatasetTaskExportTaskAggregationSelection: CuratedDatasetTaskExportTaskAggregationSelection;
@@ -12601,29 +12601,29 @@ export type ResolversParentTypes = {
   HarmonizedDatasetDisconnectInput: HarmonizedDatasetDisconnectInput;
   HarmonizedDatasetEdge: HarmonizedDatasetEdge;
   HarmonizedDatasetOptions: HarmonizedDatasetOptions;
-  HarmonizedDatasetRawDatasetRawDatasetsAggregationSelection: HarmonizedDatasetRawDatasetRawDatasetsAggregationSelection;
-  HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelection: HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelection;
-  HarmonizedDatasetRawDatasetsAggregateInput: HarmonizedDatasetRawDatasetsAggregateInput;
-  HarmonizedDatasetRawDatasetsConnectFieldInput: HarmonizedDatasetRawDatasetsConnectFieldInput;
-  HarmonizedDatasetRawDatasetsConnectOrCreateFieldInput: HarmonizedDatasetRawDatasetsConnectOrCreateFieldInput;
-  HarmonizedDatasetRawDatasetsConnectOrCreateFieldInputOnCreate: HarmonizedDatasetRawDatasetsConnectOrCreateFieldInputOnCreate;
-  HarmonizedDatasetRawDatasetsConnection: HarmonizedDatasetRawDatasetsConnection;
-  HarmonizedDatasetRawDatasetsConnectionSort: HarmonizedDatasetRawDatasetsConnectionSort;
-  HarmonizedDatasetRawDatasetsConnectionWhere: HarmonizedDatasetRawDatasetsConnectionWhere;
-  HarmonizedDatasetRawDatasetsCreateFieldInput: HarmonizedDatasetRawDatasetsCreateFieldInput;
-  HarmonizedDatasetRawDatasetsDeleteFieldInput: HarmonizedDatasetRawDatasetsDeleteFieldInput;
-  HarmonizedDatasetRawDatasetsDisconnectFieldInput: HarmonizedDatasetRawDatasetsDisconnectFieldInput;
-  HarmonizedDatasetRawDatasetsFieldInput: HarmonizedDatasetRawDatasetsFieldInput;
-  HarmonizedDatasetRawDatasetsNodeAggregationWhereInput: HarmonizedDatasetRawDatasetsNodeAggregationWhereInput;
-  HarmonizedDatasetRawDatasetsRelationship: HarmonizedDatasetRawDatasetsRelationship;
-  HarmonizedDatasetRawDatasetsUpdateConnectionInput: HarmonizedDatasetRawDatasetsUpdateConnectionInput;
-  HarmonizedDatasetRawDatasetsUpdateFieldInput: HarmonizedDatasetRawDatasetsUpdateFieldInput;
+  HarmonizedDatasetDatasetDatasetsAggregationSelection: HarmonizedDatasetDatasetDatasetsAggregationSelection;
+  HarmonizedDatasetDatasetDatasetsNodeAggregateSelection: HarmonizedDatasetDatasetDatasetsNodeAggregateSelection;
+  HarmonizedDatasetDatasetsAggregateInput: HarmonizedDatasetDatasetsAggregateInput;
+  HarmonizedDatasetDatasetsConnectFieldInput: HarmonizedDatasetDatasetsConnectFieldInput;
+  HarmonizedDatasetDatasetsConnectOrCreateFieldInput: HarmonizedDatasetDatasetsConnectOrCreateFieldInput;
+  HarmonizedDatasetDatasetsConnectOrCreateFieldInputOnCreate: HarmonizedDatasetDatasetsConnectOrCreateFieldInputOnCreate;
+  HarmonizedDatasetDatasetsConnection: HarmonizedDatasetDatasetsConnection;
+  HarmonizedDatasetDatasetsConnectionSort: HarmonizedDatasetDatasetsConnectionSort;
+  HarmonizedDatasetDatasetsConnectionWhere: HarmonizedDatasetDatasetsConnectionWhere;
+  HarmonizedDatasetDatasetsCreateFieldInput: HarmonizedDatasetDatasetsCreateFieldInput;
+  HarmonizedDatasetDatasetsDeleteFieldInput: HarmonizedDatasetDatasetsDeleteFieldInput;
+  HarmonizedDatasetDatasetsDisconnectFieldInput: HarmonizedDatasetDatasetsDisconnectFieldInput;
+  HarmonizedDatasetDatasetsFieldInput: HarmonizedDatasetDatasetsFieldInput;
+  HarmonizedDatasetDatasetsNodeAggregationWhereInput: HarmonizedDatasetDatasetsNodeAggregationWhereInput;
+  HarmonizedDatasetDatasetsRelationship: HarmonizedDatasetDatasetsRelationship;
+  HarmonizedDatasetDatasetsUpdateConnectionInput: HarmonizedDatasetDatasetsUpdateConnectionInput;
+  HarmonizedDatasetDatasetsUpdateFieldInput: HarmonizedDatasetDatasetsUpdateFieldInput;
   HarmonizedDatasetRelationInput: HarmonizedDatasetRelationInput;
   HarmonizedDatasetSort: HarmonizedDatasetSort;
   HarmonizedDatasetUpdateInput: HarmonizedDatasetUpdateInput;
   HarmonizedDatasetWhere: HarmonizedDatasetWhere;
   HarmonizedDatasetsConnection: HarmonizedDatasetsConnection;
-  HasCodebook: ResolversParentTypes['MinioUploadCodeBookRawDatasetRelationship'] | ResolversParentTypes['RawDatasetCodeBookRelationship'];
+  HasCodebook: ResolversParentTypes['MinioUploadCodeBookDatasetRelationship'] | ResolversParentTypes['DatasetCodeBookRelationship'];
   HasCodebookCreateInput: HasCodebookCreateInput;
   HasCodebookSort: HasCodebookSort;
   HasCodebookUpdateInput: HasCodebookUpdateInput;
@@ -12638,7 +12638,7 @@ export type ResolversParentTypes = {
   HasPairedRawdatafileSort: HasPairedRawdatafileSort;
   HasPairedRawdatafileUpdateInput: HasPairedRawdatafileUpdateInput;
   HasPairedRawdatafileWhere: HasPairedRawdatafileWhere;
-  HasRawdatafile: ResolversParentTypes['MinioUploadRawdataFileRawDatasetRelationship'] | ResolversParentTypes['RawDatasetRawdataFileRelationship'];
+  HasRawdatafile: ResolversParentTypes['MinioUploadRawdataFileDatasetRelationship'] | ResolversParentTypes['DatasetRawdataFileRelationship'];
   HasRawdatafileCreateInput: HasRawdatafileCreateInput;
   HasRawdatafileSort: HasRawdatafileSort;
   HasRawdatafileUpdateInput: HasRawdatafileUpdateInput;
@@ -12692,21 +12692,21 @@ export type ResolversParentTypes = {
   MinioBucketsConnection: MinioBucketsConnection;
   MinioUpload: MinioUpload;
   MinioUploadAggregateSelection: MinioUploadAggregateSelection;
-  MinioUploadCodeBookRawDatasetAggregateInput: MinioUploadCodeBookRawDatasetAggregateInput;
-  MinioUploadCodeBookRawDatasetConnectFieldInput: MinioUploadCodeBookRawDatasetConnectFieldInput;
-  MinioUploadCodeBookRawDatasetConnectOrCreateFieldInput: MinioUploadCodeBookRawDatasetConnectOrCreateFieldInput;
-  MinioUploadCodeBookRawDatasetConnectOrCreateFieldInputOnCreate: MinioUploadCodeBookRawDatasetConnectOrCreateFieldInputOnCreate;
-  MinioUploadCodeBookRawDatasetConnection: MinioUploadCodeBookRawDatasetConnection;
-  MinioUploadCodeBookRawDatasetConnectionSort: MinioUploadCodeBookRawDatasetConnectionSort;
-  MinioUploadCodeBookRawDatasetConnectionWhere: MinioUploadCodeBookRawDatasetConnectionWhere;
-  MinioUploadCodeBookRawDatasetCreateFieldInput: MinioUploadCodeBookRawDatasetCreateFieldInput;
-  MinioUploadCodeBookRawDatasetDeleteFieldInput: MinioUploadCodeBookRawDatasetDeleteFieldInput;
-  MinioUploadCodeBookRawDatasetDisconnectFieldInput: MinioUploadCodeBookRawDatasetDisconnectFieldInput;
-  MinioUploadCodeBookRawDatasetFieldInput: MinioUploadCodeBookRawDatasetFieldInput;
-  MinioUploadCodeBookRawDatasetNodeAggregationWhereInput: MinioUploadCodeBookRawDatasetNodeAggregationWhereInput;
-  MinioUploadCodeBookRawDatasetRelationship: MinioUploadCodeBookRawDatasetRelationship;
-  MinioUploadCodeBookRawDatasetUpdateConnectionInput: MinioUploadCodeBookRawDatasetUpdateConnectionInput;
-  MinioUploadCodeBookRawDatasetUpdateFieldInput: MinioUploadCodeBookRawDatasetUpdateFieldInput;
+  MinioUploadCodeBookDatasetAggregateInput: MinioUploadCodeBookDatasetAggregateInput;
+  MinioUploadCodeBookDatasetConnectFieldInput: MinioUploadCodeBookDatasetConnectFieldInput;
+  MinioUploadCodeBookDatasetConnectOrCreateFieldInput: MinioUploadCodeBookDatasetConnectOrCreateFieldInput;
+  MinioUploadCodeBookDatasetConnectOrCreateFieldInputOnCreate: MinioUploadCodeBookDatasetConnectOrCreateFieldInputOnCreate;
+  MinioUploadCodeBookDatasetConnection: MinioUploadCodeBookDatasetConnection;
+  MinioUploadCodeBookDatasetConnectionSort: MinioUploadCodeBookDatasetConnectionSort;
+  MinioUploadCodeBookDatasetConnectionWhere: MinioUploadCodeBookDatasetConnectionWhere;
+  MinioUploadCodeBookDatasetCreateFieldInput: MinioUploadCodeBookDatasetCreateFieldInput;
+  MinioUploadCodeBookDatasetDeleteFieldInput: MinioUploadCodeBookDatasetDeleteFieldInput;
+  MinioUploadCodeBookDatasetDisconnectFieldInput: MinioUploadCodeBookDatasetDisconnectFieldInput;
+  MinioUploadCodeBookDatasetFieldInput: MinioUploadCodeBookDatasetFieldInput;
+  MinioUploadCodeBookDatasetNodeAggregationWhereInput: MinioUploadCodeBookDatasetNodeAggregationWhereInput;
+  MinioUploadCodeBookDatasetRelationship: MinioUploadCodeBookDatasetRelationship;
+  MinioUploadCodeBookDatasetUpdateConnectionInput: MinioUploadCodeBookDatasetUpdateConnectionInput;
+  MinioUploadCodeBookDatasetUpdateFieldInput: MinioUploadCodeBookDatasetUpdateFieldInput;
   MinioUploadConnectInput: MinioUploadConnectInput;
   MinioUploadConnectOrCreateInput: MinioUploadConnectOrCreateInput;
   MinioUploadConnectOrCreateWhere: MinioUploadConnectOrCreateWhere;
@@ -12764,42 +12764,42 @@ export type ResolversParentTypes = {
   MinioUploadPairedRawdataFileRelationship: MinioUploadPairedRawdataFileRelationship;
   MinioUploadPairedRawdataFileUpdateConnectionInput: MinioUploadPairedRawdataFileUpdateConnectionInput;
   MinioUploadPairedRawdataFileUpdateFieldInput: MinioUploadPairedRawdataFileUpdateFieldInput;
-  MinioUploadRawDatasetAggregateInput: MinioUploadRawDatasetAggregateInput;
-  MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection: MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection;
-  MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection: MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection;
-  MinioUploadRawDatasetConnectFieldInput: MinioUploadRawDatasetConnectFieldInput;
-  MinioUploadRawDatasetConnectOrCreateFieldInput: MinioUploadRawDatasetConnectOrCreateFieldInput;
-  MinioUploadRawDatasetConnectOrCreateFieldInputOnCreate: MinioUploadRawDatasetConnectOrCreateFieldInputOnCreate;
-  MinioUploadRawDatasetConnection: MinioUploadRawDatasetConnection;
-  MinioUploadRawDatasetConnectionSort: MinioUploadRawDatasetConnectionSort;
-  MinioUploadRawDatasetConnectionWhere: MinioUploadRawDatasetConnectionWhere;
-  MinioUploadRawDatasetCreateFieldInput: MinioUploadRawDatasetCreateFieldInput;
-  MinioUploadRawDatasetDeleteFieldInput: MinioUploadRawDatasetDeleteFieldInput;
-  MinioUploadRawDatasetDisconnectFieldInput: MinioUploadRawDatasetDisconnectFieldInput;
-  MinioUploadRawDatasetFieldInput: MinioUploadRawDatasetFieldInput;
-  MinioUploadRawDatasetNodeAggregationWhereInput: MinioUploadRawDatasetNodeAggregationWhereInput;
-  MinioUploadRawDatasetRawDatasetAggregationSelection: MinioUploadRawDatasetRawDatasetAggregationSelection;
-  MinioUploadRawDatasetRawDatasetNodeAggregateSelection: MinioUploadRawDatasetRawDatasetNodeAggregateSelection;
-  MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelection: MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelection;
-  MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelection: MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelection;
-  MinioUploadRawDatasetRelationship: MinioUploadRawDatasetRelationship;
-  MinioUploadRawDatasetUpdateConnectionInput: MinioUploadRawDatasetUpdateConnectionInput;
-  MinioUploadRawDatasetUpdateFieldInput: MinioUploadRawDatasetUpdateFieldInput;
-  MinioUploadRawdataFileRawDatasetAggregateInput: MinioUploadRawdataFileRawDatasetAggregateInput;
-  MinioUploadRawdataFileRawDatasetConnectFieldInput: MinioUploadRawdataFileRawDatasetConnectFieldInput;
-  MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInput: MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInput;
-  MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInputOnCreate: MinioUploadRawdataFileRawDatasetConnectOrCreateFieldInputOnCreate;
-  MinioUploadRawdataFileRawDatasetConnection: MinioUploadRawdataFileRawDatasetConnection;
-  MinioUploadRawdataFileRawDatasetConnectionSort: MinioUploadRawdataFileRawDatasetConnectionSort;
-  MinioUploadRawdataFileRawDatasetConnectionWhere: MinioUploadRawdataFileRawDatasetConnectionWhere;
-  MinioUploadRawdataFileRawDatasetCreateFieldInput: MinioUploadRawdataFileRawDatasetCreateFieldInput;
-  MinioUploadRawdataFileRawDatasetDeleteFieldInput: MinioUploadRawdataFileRawDatasetDeleteFieldInput;
-  MinioUploadRawdataFileRawDatasetDisconnectFieldInput: MinioUploadRawdataFileRawDatasetDisconnectFieldInput;
-  MinioUploadRawdataFileRawDatasetFieldInput: MinioUploadRawdataFileRawDatasetFieldInput;
-  MinioUploadRawdataFileRawDatasetNodeAggregationWhereInput: MinioUploadRawdataFileRawDatasetNodeAggregationWhereInput;
-  MinioUploadRawdataFileRawDatasetRelationship: MinioUploadRawdataFileRawDatasetRelationship;
-  MinioUploadRawdataFileRawDatasetUpdateConnectionInput: MinioUploadRawdataFileRawDatasetUpdateConnectionInput;
-  MinioUploadRawdataFileRawDatasetUpdateFieldInput: MinioUploadRawdataFileRawDatasetUpdateFieldInput;
+  MinioUploadDatasetAggregateInput: MinioUploadDatasetAggregateInput;
+  MinioUploadDatasetCodeBookDatasetAggregationSelection: MinioUploadDatasetCodeBookDatasetAggregationSelection;
+  MinioUploadDatasetCodeBookDatasetNodeAggregateSelection: MinioUploadDatasetCodeBookDatasetNodeAggregateSelection;
+  MinioUploadDatasetConnectFieldInput: MinioUploadDatasetConnectFieldInput;
+  MinioUploadDatasetConnectOrCreateFieldInput: MinioUploadDatasetConnectOrCreateFieldInput;
+  MinioUploadDatasetConnectOrCreateFieldInputOnCreate: MinioUploadDatasetConnectOrCreateFieldInputOnCreate;
+  MinioUploadDatasetConnection: MinioUploadDatasetConnection;
+  MinioUploadDatasetConnectionSort: MinioUploadDatasetConnectionSort;
+  MinioUploadDatasetConnectionWhere: MinioUploadDatasetConnectionWhere;
+  MinioUploadDatasetCreateFieldInput: MinioUploadDatasetCreateFieldInput;
+  MinioUploadDatasetDeleteFieldInput: MinioUploadDatasetDeleteFieldInput;
+  MinioUploadDatasetDisconnectFieldInput: MinioUploadDatasetDisconnectFieldInput;
+  MinioUploadDatasetFieldInput: MinioUploadDatasetFieldInput;
+  MinioUploadDatasetNodeAggregationWhereInput: MinioUploadDatasetNodeAggregationWhereInput;
+  MinioUploadDatasetDatasetAggregationSelection: MinioUploadDatasetDatasetAggregationSelection;
+  MinioUploadDatasetDatasetNodeAggregateSelection: MinioUploadDatasetDatasetNodeAggregateSelection;
+  MinioUploadDatasetRawdataFileDatasetAggregationSelection: MinioUploadDatasetRawdataFileDatasetAggregationSelection;
+  MinioUploadDatasetRawdataFileDatasetNodeAggregateSelection: MinioUploadDatasetRawdataFileDatasetNodeAggregateSelection;
+  MinioUploadDatasetRelationship: MinioUploadDatasetRelationship;
+  MinioUploadDatasetUpdateConnectionInput: MinioUploadDatasetUpdateConnectionInput;
+  MinioUploadDatasetUpdateFieldInput: MinioUploadDatasetUpdateFieldInput;
+  MinioUploadRawdataFileDatasetAggregateInput: MinioUploadRawdataFileDatasetAggregateInput;
+  MinioUploadRawdataFileDatasetConnectFieldInput: MinioUploadRawdataFileDatasetConnectFieldInput;
+  MinioUploadRawdataFileDatasetConnectOrCreateFieldInput: MinioUploadRawdataFileDatasetConnectOrCreateFieldInput;
+  MinioUploadRawdataFileDatasetConnectOrCreateFieldInputOnCreate: MinioUploadRawdataFileDatasetConnectOrCreateFieldInputOnCreate;
+  MinioUploadRawdataFileDatasetConnection: MinioUploadRawdataFileDatasetConnection;
+  MinioUploadRawdataFileDatasetConnectionSort: MinioUploadRawdataFileDatasetConnectionSort;
+  MinioUploadRawdataFileDatasetConnectionWhere: MinioUploadRawdataFileDatasetConnectionWhere;
+  MinioUploadRawdataFileDatasetCreateFieldInput: MinioUploadRawdataFileDatasetCreateFieldInput;
+  MinioUploadRawdataFileDatasetDeleteFieldInput: MinioUploadRawdataFileDatasetDeleteFieldInput;
+  MinioUploadRawdataFileDatasetDisconnectFieldInput: MinioUploadRawdataFileDatasetDisconnectFieldInput;
+  MinioUploadRawdataFileDatasetFieldInput: MinioUploadRawdataFileDatasetFieldInput;
+  MinioUploadRawdataFileDatasetNodeAggregationWhereInput: MinioUploadRawdataFileDatasetNodeAggregationWhereInput;
+  MinioUploadRawdataFileDatasetRelationship: MinioUploadRawdataFileDatasetRelationship;
+  MinioUploadRawdataFileDatasetUpdateConnectionInput: MinioUploadRawdataFileDatasetUpdateConnectionInput;
+  MinioUploadRawdataFileDatasetUpdateFieldInput: MinioUploadRawdataFileDatasetUpdateFieldInput;
   MinioUploadRelationInput: MinioUploadRelationInput;
   MinioUploadSort: MinioUploadSort;
   MinioUploadTaskFromExportTaskAggregationSelection: MinioUploadTaskFromExportTaskAggregationSelection;
@@ -12938,161 +12938,161 @@ export type ResolversParentTypes = {
   OntologyWhere: OntologyWhere;
   PageInfo: PageInfo;
   Query: {};
-  RawDataset: RawDataset;
-  RawDatasetAggregateSelection: RawDatasetAggregateSelection;
-  RawDatasetCodeBookAggregateInput: RawDatasetCodeBookAggregateInput;
-  RawDatasetCodeBookConnectFieldInput: RawDatasetCodeBookConnectFieldInput;
-  RawDatasetCodeBookConnectOrCreateFieldInput: RawDatasetCodeBookConnectOrCreateFieldInput;
-  RawDatasetCodeBookConnectOrCreateFieldInputOnCreate: RawDatasetCodeBookConnectOrCreateFieldInputOnCreate;
-  RawDatasetCodeBookConnection: RawDatasetCodeBookConnection;
-  RawDatasetCodeBookConnectionSort: RawDatasetCodeBookConnectionSort;
-  RawDatasetCodeBookConnectionWhere: RawDatasetCodeBookConnectionWhere;
-  RawDatasetCodeBookCreateFieldInput: RawDatasetCodeBookCreateFieldInput;
-  RawDatasetCodeBookDeleteFieldInput: RawDatasetCodeBookDeleteFieldInput;
-  RawDatasetCodeBookDisconnectFieldInput: RawDatasetCodeBookDisconnectFieldInput;
-  RawDatasetCodeBookFieldInput: RawDatasetCodeBookFieldInput;
-  RawDatasetCodeBookNodeAggregationWhereInput: RawDatasetCodeBookNodeAggregationWhereInput;
-  RawDatasetCodeBookRelationship: RawDatasetCodeBookRelationship;
-  RawDatasetCodeBookUpdateConnectionInput: RawDatasetCodeBookUpdateConnectionInput;
-  RawDatasetCodeBookUpdateFieldInput: RawDatasetCodeBookUpdateFieldInput;
-  RawDatasetConnectInput: RawDatasetConnectInput;
-  RawDatasetConnectOrCreateInput: RawDatasetConnectOrCreateInput;
-  RawDatasetConnectOrCreateWhere: RawDatasetConnectOrCreateWhere;
-  RawDatasetConnectWhere: RawDatasetConnectWhere;
-  RawDatasetCreateInput: RawDatasetCreateInput;
-  RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection: RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection;
-  RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection: RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection;
-  RawDatasetDeleteInput: RawDatasetDeleteInput;
-  RawDatasetDisconnectInput: RawDatasetDisconnectInput;
-  RawDatasetEdge: RawDatasetEdge;
-  RawDatasetFilesAggregateInput: RawDatasetFilesAggregateInput;
-  RawDatasetFilesConnectFieldInput: RawDatasetFilesConnectFieldInput;
-  RawDatasetFilesConnectOrCreateFieldInput: RawDatasetFilesConnectOrCreateFieldInput;
-  RawDatasetFilesConnectOrCreateFieldInputOnCreate: RawDatasetFilesConnectOrCreateFieldInputOnCreate;
-  RawDatasetFilesConnection: RawDatasetFilesConnection;
-  RawDatasetFilesConnectionSort: RawDatasetFilesConnectionSort;
-  RawDatasetFilesConnectionWhere: RawDatasetFilesConnectionWhere;
-  RawDatasetFilesCreateFieldInput: RawDatasetFilesCreateFieldInput;
-  RawDatasetFilesDeleteFieldInput: RawDatasetFilesDeleteFieldInput;
-  RawDatasetFilesDisconnectFieldInput: RawDatasetFilesDisconnectFieldInput;
-  RawDatasetFilesFieldInput: RawDatasetFilesFieldInput;
-  RawDatasetFilesNodeAggregationWhereInput: RawDatasetFilesNodeAggregationWhereInput;
-  RawDatasetFilesRelationship: RawDatasetFilesRelationship;
-  RawDatasetFilesUpdateConnectionInput: RawDatasetFilesUpdateConnectionInput;
-  RawDatasetFilesUpdateFieldInput: RawDatasetFilesUpdateFieldInput;
-  RawDatasetFromStudyAggregateInput: RawDatasetFromStudyAggregateInput;
-  RawDatasetFromStudyConnectFieldInput: RawDatasetFromStudyConnectFieldInput;
-  RawDatasetFromStudyConnectOrCreateFieldInput: RawDatasetFromStudyConnectOrCreateFieldInput;
-  RawDatasetFromStudyConnectOrCreateFieldInputOnCreate: RawDatasetFromStudyConnectOrCreateFieldInputOnCreate;
-  RawDatasetFromStudyConnection: RawDatasetFromStudyConnection;
-  RawDatasetFromStudyConnectionSort: RawDatasetFromStudyConnectionSort;
-  RawDatasetFromStudyConnectionWhere: RawDatasetFromStudyConnectionWhere;
-  RawDatasetFromStudyCreateFieldInput: RawDatasetFromStudyCreateFieldInput;
-  RawDatasetFromStudyDeleteFieldInput: RawDatasetFromStudyDeleteFieldInput;
-  RawDatasetFromStudyDisconnectFieldInput: RawDatasetFromStudyDisconnectFieldInput;
-  RawDatasetFromStudyFieldInput: RawDatasetFromStudyFieldInput;
-  RawDatasetFromStudyNodeAggregationWhereInput: RawDatasetFromStudyNodeAggregationWhereInput;
-  RawDatasetFromStudyRelationship: RawDatasetFromStudyRelationship;
-  RawDatasetFromStudyUpdateConnectionInput: RawDatasetFromStudyUpdateConnectionInput;
-  RawDatasetFromStudyUpdateFieldInput: RawDatasetFromStudyUpdateFieldInput;
-  RawDatasetFunnelTasksAggregateInput: RawDatasetFunnelTasksAggregateInput;
-  RawDatasetFunnelTasksConnectFieldInput: RawDatasetFunnelTasksConnectFieldInput;
-  RawDatasetFunnelTasksConnection: RawDatasetFunnelTasksConnection;
-  RawDatasetFunnelTasksConnectionSort: RawDatasetFunnelTasksConnectionSort;
-  RawDatasetFunnelTasksConnectionWhere: RawDatasetFunnelTasksConnectionWhere;
-  RawDatasetFunnelTasksCreateFieldInput: RawDatasetFunnelTasksCreateFieldInput;
-  RawDatasetFunnelTasksDeleteFieldInput: RawDatasetFunnelTasksDeleteFieldInput;
-  RawDatasetFunnelTasksDisconnectFieldInput: RawDatasetFunnelTasksDisconnectFieldInput;
-  RawDatasetFunnelTasksFieldInput: RawDatasetFunnelTasksFieldInput;
-  RawDatasetFunnelTasksNodeAggregationWhereInput: RawDatasetFunnelTasksNodeAggregationWhereInput;
-  RawDatasetFunnelTasksRelationship: RawDatasetFunnelTasksRelationship;
-  RawDatasetFunnelTasksUpdateConnectionInput: RawDatasetFunnelTasksUpdateConnectionInput;
-  RawDatasetFunnelTasksUpdateFieldInput: RawDatasetFunnelTasksUpdateFieldInput;
-  RawDatasetGeneratedCuratedDatasetsAggregateInput: RawDatasetGeneratedCuratedDatasetsAggregateInput;
-  RawDatasetGeneratedCuratedDatasetsConnectFieldInput: RawDatasetGeneratedCuratedDatasetsConnectFieldInput;
-  RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput: RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput;
-  RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate: RawDatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate;
-  RawDatasetGeneratedCuratedDatasetsConnection: RawDatasetGeneratedCuratedDatasetsConnection;
-  RawDatasetGeneratedCuratedDatasetsConnectionSort: RawDatasetGeneratedCuratedDatasetsConnectionSort;
-  RawDatasetGeneratedCuratedDatasetsConnectionWhere: RawDatasetGeneratedCuratedDatasetsConnectionWhere;
-  RawDatasetGeneratedCuratedDatasetsCreateFieldInput: RawDatasetGeneratedCuratedDatasetsCreateFieldInput;
-  RawDatasetGeneratedCuratedDatasetsDeleteFieldInput: RawDatasetGeneratedCuratedDatasetsDeleteFieldInput;
-  RawDatasetGeneratedCuratedDatasetsDisconnectFieldInput: RawDatasetGeneratedCuratedDatasetsDisconnectFieldInput;
-  RawDatasetGeneratedCuratedDatasetsFieldInput: RawDatasetGeneratedCuratedDatasetsFieldInput;
-  RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput: RawDatasetGeneratedCuratedDatasetsNodeAggregationWhereInput;
-  RawDatasetGeneratedCuratedDatasetsRelationship: RawDatasetGeneratedCuratedDatasetsRelationship;
-  RawDatasetGeneratedCuratedDatasetsUpdateConnectionInput: RawDatasetGeneratedCuratedDatasetsUpdateConnectionInput;
-  RawDatasetGeneratedCuratedDatasetsUpdateFieldInput: RawDatasetGeneratedCuratedDatasetsUpdateFieldInput;
-  RawDatasetGeographyCityStudySiteAggregationSelection: RawDatasetGeographyCityStudySiteAggregationSelection;
-  RawDatasetGeographyCityStudySiteNodeAggregateSelection: RawDatasetGeographyCityStudySiteNodeAggregateSelection;
-  RawDatasetMinioBucketAggregateInput: RawDatasetMinioBucketAggregateInput;
-  RawDatasetMinioBucketConnectFieldInput: RawDatasetMinioBucketConnectFieldInput;
-  RawDatasetMinioBucketConnection: RawDatasetMinioBucketConnection;
-  RawDatasetMinioBucketConnectionSort: RawDatasetMinioBucketConnectionSort;
-  RawDatasetMinioBucketConnectionWhere: RawDatasetMinioBucketConnectionWhere;
-  RawDatasetMinioBucketCreateFieldInput: RawDatasetMinioBucketCreateFieldInput;
-  RawDatasetMinioBucketDeleteFieldInput: RawDatasetMinioBucketDeleteFieldInput;
-  RawDatasetMinioBucketDisconnectFieldInput: RawDatasetMinioBucketDisconnectFieldInput;
-  RawDatasetMinioBucketFieldInput: RawDatasetMinioBucketFieldInput;
-  RawDatasetMinioBucketMinioBucketAggregationSelection: RawDatasetMinioBucketMinioBucketAggregationSelection;
-  RawDatasetMinioBucketMinioBucketNodeAggregateSelection: RawDatasetMinioBucketMinioBucketNodeAggregateSelection;
-  RawDatasetMinioBucketNodeAggregationWhereInput: RawDatasetMinioBucketNodeAggregationWhereInput;
-  RawDatasetMinioBucketRelationship: RawDatasetMinioBucketRelationship;
-  RawDatasetMinioBucketUpdateConnectionInput: RawDatasetMinioBucketUpdateConnectionInput;
-  RawDatasetMinioBucketUpdateFieldInput: RawDatasetMinioBucketUpdateFieldInput;
-  RawDatasetMinioUploadCodeBookAggregationSelection: RawDatasetMinioUploadCodeBookAggregationSelection;
-  RawDatasetMinioUploadCodeBookNodeAggregateSelection: RawDatasetMinioUploadCodeBookNodeAggregateSelection;
-  RawDatasetMinioUploadFilesAggregationSelection: RawDatasetMinioUploadFilesAggregationSelection;
-  RawDatasetMinioUploadFilesNodeAggregateSelection: RawDatasetMinioUploadFilesNodeAggregateSelection;
-  RawDatasetMinioUploadRawdataFileAggregationSelection: RawDatasetMinioUploadRawdataFileAggregationSelection;
-  RawDatasetMinioUploadRawdataFileNodeAggregateSelection: RawDatasetMinioUploadRawdataFileNodeAggregateSelection;
-  RawDatasetOnCreateInput: RawDatasetOnCreateInput;
-  RawDatasetOptions: RawDatasetOptions;
-  RawDatasetRawdataFileAggregateInput: RawDatasetRawdataFileAggregateInput;
-  RawDatasetRawdataFileConnectFieldInput: RawDatasetRawdataFileConnectFieldInput;
-  RawDatasetRawdataFileConnectOrCreateFieldInput: RawDatasetRawdataFileConnectOrCreateFieldInput;
-  RawDatasetRawdataFileConnectOrCreateFieldInputOnCreate: RawDatasetRawdataFileConnectOrCreateFieldInputOnCreate;
-  RawDatasetRawdataFileConnection: RawDatasetRawdataFileConnection;
-  RawDatasetRawdataFileConnectionSort: RawDatasetRawdataFileConnectionSort;
-  RawDatasetRawdataFileConnectionWhere: RawDatasetRawdataFileConnectionWhere;
-  RawDatasetRawdataFileCreateFieldInput: RawDatasetRawdataFileCreateFieldInput;
-  RawDatasetRawdataFileDeleteFieldInput: RawDatasetRawdataFileDeleteFieldInput;
-  RawDatasetRawdataFileDisconnectFieldInput: RawDatasetRawdataFileDisconnectFieldInput;
-  RawDatasetRawdataFileFieldInput: RawDatasetRawdataFileFieldInput;
-  RawDatasetRawdataFileNodeAggregationWhereInput: RawDatasetRawdataFileNodeAggregationWhereInput;
-  RawDatasetRawdataFileRelationship: RawDatasetRawdataFileRelationship;
-  RawDatasetRawdataFileUpdateConnectionInput: RawDatasetRawdataFileUpdateConnectionInput;
-  RawDatasetRawdataFileUpdateFieldInput: RawDatasetRawdataFileUpdateFieldInput;
-  RawDatasetRelationInput: RawDatasetRelationInput;
-  RawDatasetSort: RawDatasetSort;
-  RawDatasetStudyFromStudyAggregationSelection: RawDatasetStudyFromStudyAggregationSelection;
-  RawDatasetStudyFromStudyNodeAggregateSelection: RawDatasetStudyFromStudyNodeAggregateSelection;
-  RawDatasetStudySiteAggregateInput: RawDatasetStudySiteAggregateInput;
-  RawDatasetStudySiteConnectFieldInput: RawDatasetStudySiteConnectFieldInput;
-  RawDatasetStudySiteConnectOrCreateFieldInput: RawDatasetStudySiteConnectOrCreateFieldInput;
-  RawDatasetStudySiteConnectOrCreateFieldInputOnCreate: RawDatasetStudySiteConnectOrCreateFieldInputOnCreate;
-  RawDatasetStudySiteConnection: RawDatasetStudySiteConnection;
-  RawDatasetStudySiteConnectionSort: RawDatasetStudySiteConnectionSort;
-  RawDatasetStudySiteConnectionWhere: RawDatasetStudySiteConnectionWhere;
-  RawDatasetStudySiteCreateFieldInput: RawDatasetStudySiteCreateFieldInput;
-  RawDatasetStudySiteDeleteFieldInput: RawDatasetStudySiteDeleteFieldInput;
-  RawDatasetStudySiteDisconnectFieldInput: RawDatasetStudySiteDisconnectFieldInput;
-  RawDatasetStudySiteFieldInput: RawDatasetStudySiteFieldInput;
-  RawDatasetStudySiteNodeAggregationWhereInput: RawDatasetStudySiteNodeAggregationWhereInput;
-  RawDatasetStudySiteRelationship: RawDatasetStudySiteRelationship;
-  RawDatasetStudySiteUpdateConnectionInput: RawDatasetStudySiteUpdateConnectionInput;
-  RawDatasetStudySiteUpdateFieldInput: RawDatasetStudySiteUpdateFieldInput;
-  RawDatasetTaskFunnelTasksAggregationSelection: RawDatasetTaskFunnelTasksAggregationSelection;
-  RawDatasetTaskFunnelTasksNodeAggregateSelection: RawDatasetTaskFunnelTasksNodeAggregateSelection;
-  RawDatasetUniqueWhere: RawDatasetUniqueWhere;
-  RawDatasetUpdateInput: RawDatasetUpdateInput;
-  RawDatasetWhere: RawDatasetWhere;
-  RawDatasetsConnection: RawDatasetsConnection;
+  Dataset: Dataset;
+  DatasetAggregateSelection: DatasetAggregateSelection;
+  DatasetCodeBookAggregateInput: DatasetCodeBookAggregateInput;
+  DatasetCodeBookConnectFieldInput: DatasetCodeBookConnectFieldInput;
+  DatasetCodeBookConnectOrCreateFieldInput: DatasetCodeBookConnectOrCreateFieldInput;
+  DatasetCodeBookConnectOrCreateFieldInputOnCreate: DatasetCodeBookConnectOrCreateFieldInputOnCreate;
+  DatasetCodeBookConnection: DatasetCodeBookConnection;
+  DatasetCodeBookConnectionSort: DatasetCodeBookConnectionSort;
+  DatasetCodeBookConnectionWhere: DatasetCodeBookConnectionWhere;
+  DatasetCodeBookCreateFieldInput: DatasetCodeBookCreateFieldInput;
+  DatasetCodeBookDeleteFieldInput: DatasetCodeBookDeleteFieldInput;
+  DatasetCodeBookDisconnectFieldInput: DatasetCodeBookDisconnectFieldInput;
+  DatasetCodeBookFieldInput: DatasetCodeBookFieldInput;
+  DatasetCodeBookNodeAggregationWhereInput: DatasetCodeBookNodeAggregationWhereInput;
+  DatasetCodeBookRelationship: DatasetCodeBookRelationship;
+  DatasetCodeBookUpdateConnectionInput: DatasetCodeBookUpdateConnectionInput;
+  DatasetCodeBookUpdateFieldInput: DatasetCodeBookUpdateFieldInput;
+  DatasetConnectInput: DatasetConnectInput;
+  DatasetConnectOrCreateInput: DatasetConnectOrCreateInput;
+  DatasetConnectOrCreateWhere: DatasetConnectOrCreateWhere;
+  DatasetConnectWhere: DatasetConnectWhere;
+  DatasetCreateInput: DatasetCreateInput;
+  DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection: DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection;
+  DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection: DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection;
+  DatasetDeleteInput: DatasetDeleteInput;
+  DatasetDisconnectInput: DatasetDisconnectInput;
+  DatasetEdge: DatasetEdge;
+  DatasetFilesAggregateInput: DatasetFilesAggregateInput;
+  DatasetFilesConnectFieldInput: DatasetFilesConnectFieldInput;
+  DatasetFilesConnectOrCreateFieldInput: DatasetFilesConnectOrCreateFieldInput;
+  DatasetFilesConnectOrCreateFieldInputOnCreate: DatasetFilesConnectOrCreateFieldInputOnCreate;
+  DatasetFilesConnection: DatasetFilesConnection;
+  DatasetFilesConnectionSort: DatasetFilesConnectionSort;
+  DatasetFilesConnectionWhere: DatasetFilesConnectionWhere;
+  DatasetFilesCreateFieldInput: DatasetFilesCreateFieldInput;
+  DatasetFilesDeleteFieldInput: DatasetFilesDeleteFieldInput;
+  DatasetFilesDisconnectFieldInput: DatasetFilesDisconnectFieldInput;
+  DatasetFilesFieldInput: DatasetFilesFieldInput;
+  DatasetFilesNodeAggregationWhereInput: DatasetFilesNodeAggregationWhereInput;
+  DatasetFilesRelationship: DatasetFilesRelationship;
+  DatasetFilesUpdateConnectionInput: DatasetFilesUpdateConnectionInput;
+  DatasetFilesUpdateFieldInput: DatasetFilesUpdateFieldInput;
+  DatasetFromStudyAggregateInput: DatasetFromStudyAggregateInput;
+  DatasetFromStudyConnectFieldInput: DatasetFromStudyConnectFieldInput;
+  DatasetFromStudyConnectOrCreateFieldInput: DatasetFromStudyConnectOrCreateFieldInput;
+  DatasetFromStudyConnectOrCreateFieldInputOnCreate: DatasetFromStudyConnectOrCreateFieldInputOnCreate;
+  DatasetFromStudyConnection: DatasetFromStudyConnection;
+  DatasetFromStudyConnectionSort: DatasetFromStudyConnectionSort;
+  DatasetFromStudyConnectionWhere: DatasetFromStudyConnectionWhere;
+  DatasetFromStudyCreateFieldInput: DatasetFromStudyCreateFieldInput;
+  DatasetFromStudyDeleteFieldInput: DatasetFromStudyDeleteFieldInput;
+  DatasetFromStudyDisconnectFieldInput: DatasetFromStudyDisconnectFieldInput;
+  DatasetFromStudyFieldInput: DatasetFromStudyFieldInput;
+  DatasetFromStudyNodeAggregationWhereInput: DatasetFromStudyNodeAggregationWhereInput;
+  DatasetFromStudyRelationship: DatasetFromStudyRelationship;
+  DatasetFromStudyUpdateConnectionInput: DatasetFromStudyUpdateConnectionInput;
+  DatasetFromStudyUpdateFieldInput: DatasetFromStudyUpdateFieldInput;
+  DatasetFunnelTasksAggregateInput: DatasetFunnelTasksAggregateInput;
+  DatasetFunnelTasksConnectFieldInput: DatasetFunnelTasksConnectFieldInput;
+  DatasetFunnelTasksConnection: DatasetFunnelTasksConnection;
+  DatasetFunnelTasksConnectionSort: DatasetFunnelTasksConnectionSort;
+  DatasetFunnelTasksConnectionWhere: DatasetFunnelTasksConnectionWhere;
+  DatasetFunnelTasksCreateFieldInput: DatasetFunnelTasksCreateFieldInput;
+  DatasetFunnelTasksDeleteFieldInput: DatasetFunnelTasksDeleteFieldInput;
+  DatasetFunnelTasksDisconnectFieldInput: DatasetFunnelTasksDisconnectFieldInput;
+  DatasetFunnelTasksFieldInput: DatasetFunnelTasksFieldInput;
+  DatasetFunnelTasksNodeAggregationWhereInput: DatasetFunnelTasksNodeAggregationWhereInput;
+  DatasetFunnelTasksRelationship: DatasetFunnelTasksRelationship;
+  DatasetFunnelTasksUpdateConnectionInput: DatasetFunnelTasksUpdateConnectionInput;
+  DatasetFunnelTasksUpdateFieldInput: DatasetFunnelTasksUpdateFieldInput;
+  DatasetGeneratedCuratedDatasetsAggregateInput: DatasetGeneratedCuratedDatasetsAggregateInput;
+  DatasetGeneratedCuratedDatasetsConnectFieldInput: DatasetGeneratedCuratedDatasetsConnectFieldInput;
+  DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput: DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInput;
+  DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate: DatasetGeneratedCuratedDatasetsConnectOrCreateFieldInputOnCreate;
+  DatasetGeneratedCuratedDatasetsConnection: DatasetGeneratedCuratedDatasetsConnection;
+  DatasetGeneratedCuratedDatasetsConnectionSort: DatasetGeneratedCuratedDatasetsConnectionSort;
+  DatasetGeneratedCuratedDatasetsConnectionWhere: DatasetGeneratedCuratedDatasetsConnectionWhere;
+  DatasetGeneratedCuratedDatasetsCreateFieldInput: DatasetGeneratedCuratedDatasetsCreateFieldInput;
+  DatasetGeneratedCuratedDatasetsDeleteFieldInput: DatasetGeneratedCuratedDatasetsDeleteFieldInput;
+  DatasetGeneratedCuratedDatasetsDisconnectFieldInput: DatasetGeneratedCuratedDatasetsDisconnectFieldInput;
+  DatasetGeneratedCuratedDatasetsFieldInput: DatasetGeneratedCuratedDatasetsFieldInput;
+  DatasetGeneratedCuratedDatasetsNodeAggregationWhereInput: DatasetGeneratedCuratedDatasetsNodeAggregationWhereInput;
+  DatasetGeneratedCuratedDatasetsRelationship: DatasetGeneratedCuratedDatasetsRelationship;
+  DatasetGeneratedCuratedDatasetsUpdateConnectionInput: DatasetGeneratedCuratedDatasetsUpdateConnectionInput;
+  DatasetGeneratedCuratedDatasetsUpdateFieldInput: DatasetGeneratedCuratedDatasetsUpdateFieldInput;
+  DatasetGeographyCityStudySiteAggregationSelection: DatasetGeographyCityStudySiteAggregationSelection;
+  DatasetGeographyCityStudySiteNodeAggregateSelection: DatasetGeographyCityStudySiteNodeAggregateSelection;
+  DatasetMinioBucketAggregateInput: DatasetMinioBucketAggregateInput;
+  DatasetMinioBucketConnectFieldInput: DatasetMinioBucketConnectFieldInput;
+  DatasetMinioBucketConnection: DatasetMinioBucketConnection;
+  DatasetMinioBucketConnectionSort: DatasetMinioBucketConnectionSort;
+  DatasetMinioBucketConnectionWhere: DatasetMinioBucketConnectionWhere;
+  DatasetMinioBucketCreateFieldInput: DatasetMinioBucketCreateFieldInput;
+  DatasetMinioBucketDeleteFieldInput: DatasetMinioBucketDeleteFieldInput;
+  DatasetMinioBucketDisconnectFieldInput: DatasetMinioBucketDisconnectFieldInput;
+  DatasetMinioBucketFieldInput: DatasetMinioBucketFieldInput;
+  DatasetMinioBucketMinioBucketAggregationSelection: DatasetMinioBucketMinioBucketAggregationSelection;
+  DatasetMinioBucketMinioBucketNodeAggregateSelection: DatasetMinioBucketMinioBucketNodeAggregateSelection;
+  DatasetMinioBucketNodeAggregationWhereInput: DatasetMinioBucketNodeAggregationWhereInput;
+  DatasetMinioBucketRelationship: DatasetMinioBucketRelationship;
+  DatasetMinioBucketUpdateConnectionInput: DatasetMinioBucketUpdateConnectionInput;
+  DatasetMinioBucketUpdateFieldInput: DatasetMinioBucketUpdateFieldInput;
+  DatasetMinioUploadCodeBookAggregationSelection: DatasetMinioUploadCodeBookAggregationSelection;
+  DatasetMinioUploadCodeBookNodeAggregateSelection: DatasetMinioUploadCodeBookNodeAggregateSelection;
+  DatasetMinioUploadFilesAggregationSelection: DatasetMinioUploadFilesAggregationSelection;
+  DatasetMinioUploadFilesNodeAggregateSelection: DatasetMinioUploadFilesNodeAggregateSelection;
+  DatasetMinioUploadRawdataFileAggregationSelection: DatasetMinioUploadRawdataFileAggregationSelection;
+  DatasetMinioUploadRawdataFileNodeAggregateSelection: DatasetMinioUploadRawdataFileNodeAggregateSelection;
+  DatasetOnCreateInput: DatasetOnCreateInput;
+  DatasetOptions: DatasetOptions;
+  DatasetRawdataFileAggregateInput: DatasetRawdataFileAggregateInput;
+  DatasetRawdataFileConnectFieldInput: DatasetRawdataFileConnectFieldInput;
+  DatasetRawdataFileConnectOrCreateFieldInput: DatasetRawdataFileConnectOrCreateFieldInput;
+  DatasetRawdataFileConnectOrCreateFieldInputOnCreate: DatasetRawdataFileConnectOrCreateFieldInputOnCreate;
+  DatasetRawdataFileConnection: DatasetRawdataFileConnection;
+  DatasetRawdataFileConnectionSort: DatasetRawdataFileConnectionSort;
+  DatasetRawdataFileConnectionWhere: DatasetRawdataFileConnectionWhere;
+  DatasetRawdataFileCreateFieldInput: DatasetRawdataFileCreateFieldInput;
+  DatasetRawdataFileDeleteFieldInput: DatasetRawdataFileDeleteFieldInput;
+  DatasetRawdataFileDisconnectFieldInput: DatasetRawdataFileDisconnectFieldInput;
+  DatasetRawdataFileFieldInput: DatasetRawdataFileFieldInput;
+  DatasetRawdataFileNodeAggregationWhereInput: DatasetRawdataFileNodeAggregationWhereInput;
+  DatasetRawdataFileRelationship: DatasetRawdataFileRelationship;
+  DatasetRawdataFileUpdateConnectionInput: DatasetRawdataFileUpdateConnectionInput;
+  DatasetRawdataFileUpdateFieldInput: DatasetRawdataFileUpdateFieldInput;
+  DatasetRelationInput: DatasetRelationInput;
+  DatasetSort: DatasetSort;
+  DatasetStudyFromStudyAggregationSelection: DatasetStudyFromStudyAggregationSelection;
+  DatasetStudyFromStudyNodeAggregateSelection: DatasetStudyFromStudyNodeAggregateSelection;
+  DatasetStudySiteAggregateInput: DatasetStudySiteAggregateInput;
+  DatasetStudySiteConnectFieldInput: DatasetStudySiteConnectFieldInput;
+  DatasetStudySiteConnectOrCreateFieldInput: DatasetStudySiteConnectOrCreateFieldInput;
+  DatasetStudySiteConnectOrCreateFieldInputOnCreate: DatasetStudySiteConnectOrCreateFieldInputOnCreate;
+  DatasetStudySiteConnection: DatasetStudySiteConnection;
+  DatasetStudySiteConnectionSort: DatasetStudySiteConnectionSort;
+  DatasetStudySiteConnectionWhere: DatasetStudySiteConnectionWhere;
+  DatasetStudySiteCreateFieldInput: DatasetStudySiteCreateFieldInput;
+  DatasetStudySiteDeleteFieldInput: DatasetStudySiteDeleteFieldInput;
+  DatasetStudySiteDisconnectFieldInput: DatasetStudySiteDisconnectFieldInput;
+  DatasetStudySiteFieldInput: DatasetStudySiteFieldInput;
+  DatasetStudySiteNodeAggregationWhereInput: DatasetStudySiteNodeAggregationWhereInput;
+  DatasetStudySiteRelationship: DatasetStudySiteRelationship;
+  DatasetStudySiteUpdateConnectionInput: DatasetStudySiteUpdateConnectionInput;
+  DatasetStudySiteUpdateFieldInput: DatasetStudySiteUpdateFieldInput;
+  DatasetTaskFunnelTasksAggregationSelection: DatasetTaskFunnelTasksAggregationSelection;
+  DatasetTaskFunnelTasksNodeAggregateSelection: DatasetTaskFunnelTasksNodeAggregateSelection;
+  DatasetUniqueWhere: DatasetUniqueWhere;
+  DatasetUpdateInput: DatasetUpdateInput;
+  DatasetWhere: DatasetWhere;
+  DatasetsConnection: DatasetsConnection;
   String: Scalars['String'];
   StringAggregateSelectionNonNullable: StringAggregateSelectionNonNullable;
   StringAggregateSelectionNullable: StringAggregateSelectionNullable;
   StudiesConnection: StudiesConnection;
-  Study: Study;
+  Project: Project;
   StudyAggregateSelection: StudyAggregateSelection;
   StudyConnectInput: StudyConnectInput;
   StudyConnectOrCreateInput: StudyConnectOrCreateInput;
@@ -13106,23 +13106,23 @@ export type ResolversParentTypes = {
   StudyGeographyCityStudySitesNodeAggregateSelection: StudyGeographyCityStudySitesNodeAggregateSelection;
   StudyOnCreateInput: StudyOnCreateInput;
   StudyOptions: StudyOptions;
-  StudyRawDatasetRawDatasetsAggregationSelection: StudyRawDatasetRawDatasetsAggregationSelection;
-  StudyRawDatasetRawDatasetsNodeAggregateSelection: StudyRawDatasetRawDatasetsNodeAggregateSelection;
-  StudyRawDatasetsAggregateInput: StudyRawDatasetsAggregateInput;
-  StudyRawDatasetsConnectFieldInput: StudyRawDatasetsConnectFieldInput;
-  StudyRawDatasetsConnectOrCreateFieldInput: StudyRawDatasetsConnectOrCreateFieldInput;
-  StudyRawDatasetsConnectOrCreateFieldInputOnCreate: StudyRawDatasetsConnectOrCreateFieldInputOnCreate;
-  StudyRawDatasetsConnection: StudyRawDatasetsConnection;
-  StudyRawDatasetsConnectionSort: StudyRawDatasetsConnectionSort;
-  StudyRawDatasetsConnectionWhere: StudyRawDatasetsConnectionWhere;
-  StudyRawDatasetsCreateFieldInput: StudyRawDatasetsCreateFieldInput;
-  StudyRawDatasetsDeleteFieldInput: StudyRawDatasetsDeleteFieldInput;
-  StudyRawDatasetsDisconnectFieldInput: StudyRawDatasetsDisconnectFieldInput;
-  StudyRawDatasetsFieldInput: StudyRawDatasetsFieldInput;
-  StudyRawDatasetsNodeAggregationWhereInput: StudyRawDatasetsNodeAggregationWhereInput;
-  StudyRawDatasetsRelationship: StudyRawDatasetsRelationship;
-  StudyRawDatasetsUpdateConnectionInput: StudyRawDatasetsUpdateConnectionInput;
-  StudyRawDatasetsUpdateFieldInput: StudyRawDatasetsUpdateFieldInput;
+  StudyDatasetDatasetsAggregationSelection: StudyDatasetDatasetsAggregationSelection;
+  StudyDatasetDatasetsNodeAggregateSelection: StudyDatasetDatasetsNodeAggregateSelection;
+  StudyDatasetsAggregateInput: StudyDatasetsAggregateInput;
+  StudyDatasetsConnectFieldInput: StudyDatasetsConnectFieldInput;
+  StudyDatasetsConnectOrCreateFieldInput: StudyDatasetsConnectOrCreateFieldInput;
+  StudyDatasetsConnectOrCreateFieldInputOnCreate: StudyDatasetsConnectOrCreateFieldInputOnCreate;
+  StudyDatasetsConnection: StudyDatasetsConnection;
+  StudyDatasetsConnectionSort: StudyDatasetsConnectionSort;
+  StudyDatasetsConnectionWhere: StudyDatasetsConnectionWhere;
+  StudyDatasetsCreateFieldInput: StudyDatasetsCreateFieldInput;
+  StudyDatasetsDeleteFieldInput: StudyDatasetsDeleteFieldInput;
+  StudyDatasetsDisconnectFieldInput: StudyDatasetsDisconnectFieldInput;
+  StudyDatasetsFieldInput: StudyDatasetsFieldInput;
+  StudyDatasetsNodeAggregationWhereInput: StudyDatasetsNodeAggregationWhereInput;
+  StudyDatasetsRelationship: StudyDatasetsRelationship;
+  StudyDatasetsUpdateConnectionInput: StudyDatasetsUpdateConnectionInput;
+  StudyDatasetsUpdateFieldInput: StudyDatasetsUpdateFieldInput;
   StudyRelationInput: StudyRelationInput;
   StudySort: StudySort;
   StudyStudySitesAggregateInput: StudyStudySitesAggregateInput;
@@ -13167,21 +13167,21 @@ export type ResolversParentTypes = {
   TaskFromCuratedDatasetRelationship: TaskFromCuratedDatasetRelationship;
   TaskFromCuratedDatasetUpdateConnectionInput: TaskFromCuratedDatasetUpdateConnectionInput;
   TaskFromCuratedDatasetUpdateFieldInput: TaskFromCuratedDatasetUpdateFieldInput;
-  TaskFromRawDatasetAggregateInput: TaskFromRawDatasetAggregateInput;
-  TaskFromRawDatasetConnectFieldInput: TaskFromRawDatasetConnectFieldInput;
-  TaskFromRawDatasetConnectOrCreateFieldInput: TaskFromRawDatasetConnectOrCreateFieldInput;
-  TaskFromRawDatasetConnectOrCreateFieldInputOnCreate: TaskFromRawDatasetConnectOrCreateFieldInputOnCreate;
-  TaskFromRawDatasetConnection: TaskFromRawDatasetConnection;
-  TaskFromRawDatasetConnectionSort: TaskFromRawDatasetConnectionSort;
-  TaskFromRawDatasetConnectionWhere: TaskFromRawDatasetConnectionWhere;
-  TaskFromRawDatasetCreateFieldInput: TaskFromRawDatasetCreateFieldInput;
-  TaskFromRawDatasetDeleteFieldInput: TaskFromRawDatasetDeleteFieldInput;
-  TaskFromRawDatasetDisconnectFieldInput: TaskFromRawDatasetDisconnectFieldInput;
-  TaskFromRawDatasetFieldInput: TaskFromRawDatasetFieldInput;
-  TaskFromRawDatasetNodeAggregationWhereInput: TaskFromRawDatasetNodeAggregationWhereInput;
-  TaskFromRawDatasetRelationship: TaskFromRawDatasetRelationship;
-  TaskFromRawDatasetUpdateConnectionInput: TaskFromRawDatasetUpdateConnectionInput;
-  TaskFromRawDatasetUpdateFieldInput: TaskFromRawDatasetUpdateFieldInput;
+  TaskFromDatasetAggregateInput: TaskFromDatasetAggregateInput;
+  TaskFromDatasetConnectFieldInput: TaskFromDatasetConnectFieldInput;
+  TaskFromDatasetConnectOrCreateFieldInput: TaskFromDatasetConnectOrCreateFieldInput;
+  TaskFromDatasetConnectOrCreateFieldInputOnCreate: TaskFromDatasetConnectOrCreateFieldInputOnCreate;
+  TaskFromDatasetConnection: TaskFromDatasetConnection;
+  TaskFromDatasetConnectionSort: TaskFromDatasetConnectionSort;
+  TaskFromDatasetConnectionWhere: TaskFromDatasetConnectionWhere;
+  TaskFromDatasetCreateFieldInput: TaskFromDatasetCreateFieldInput;
+  TaskFromDatasetDeleteFieldInput: TaskFromDatasetDeleteFieldInput;
+  TaskFromDatasetDisconnectFieldInput: TaskFromDatasetDisconnectFieldInput;
+  TaskFromDatasetFieldInput: TaskFromDatasetFieldInput;
+  TaskFromDatasetNodeAggregationWhereInput: TaskFromDatasetNodeAggregationWhereInput;
+  TaskFromDatasetRelationship: TaskFromDatasetRelationship;
+  TaskFromDatasetUpdateConnectionInput: TaskFromDatasetUpdateConnectionInput;
+  TaskFromDatasetUpdateFieldInput: TaskFromDatasetUpdateFieldInput;
   TaskGeneratedCuratedDatasetAggregateInput: TaskGeneratedCuratedDatasetAggregateInput;
   TaskGeneratedCuratedDatasetConnectFieldInput: TaskGeneratedCuratedDatasetConnectFieldInput;
   TaskGeneratedCuratedDatasetConnectOrCreateFieldInput: TaskGeneratedCuratedDatasetConnectOrCreateFieldInput;
@@ -13215,8 +13215,8 @@ export type ResolversParentTypes = {
   TaskMinioUploadGeneratedExportAggregationSelection: TaskMinioUploadGeneratedExportAggregationSelection;
   TaskMinioUploadGeneratedExportNodeAggregateSelection: TaskMinioUploadGeneratedExportNodeAggregateSelection;
   TaskOptions: TaskOptions;
-  TaskRawDatasetFromRawDatasetAggregationSelection: TaskRawDatasetFromRawDatasetAggregationSelection;
-  TaskRawDatasetFromRawDatasetNodeAggregateSelection: TaskRawDatasetFromRawDatasetNodeAggregateSelection;
+  TaskDatasetFromDatasetAggregationSelection: TaskDatasetFromDatasetAggregationSelection;
+  TaskDatasetFromDatasetNodeAggregateSelection: TaskDatasetFromDatasetNodeAggregateSelection;
   TaskRelationInput: TaskRelationInput;
   TaskSort: TaskSort;
   TaskTaskFromCuratedDatasetAggregationSelection: TaskTaskFromCuratedDatasetAggregationSelection;
@@ -13244,7 +13244,7 @@ export type ResolversParentTypes = {
   UpdateOntologiesMutationResponse: UpdateOntologiesMutationResponse;
   UpdateOntologyClassesMutationResponse: UpdateOntologyClassesMutationResponse;
   UpdateOntologyRelationsMutationResponse: UpdateOntologyRelationsMutationResponse;
-  UpdateRawDatasetsMutationResponse: UpdateRawDatasetsMutationResponse;
+  UpdateDatasetsMutationResponse: UpdateDatasetsMutationResponse;
   UpdateStudiesMutationResponse: UpdateStudiesMutationResponse;
   UpdateTasksMutationResponse: UpdateTasksMutationResponse;
   Upload: Scalars['Upload'];
@@ -13473,15 +13473,15 @@ export type CreateOntologyRelationsMutationResponseResolvers<ContextType = MyCon
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CreateRawDatasetsMutationResponseResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CreateRawDatasetsMutationResponse'] = ResolversParentTypes['CreateRawDatasetsMutationResponse']> = {
+export type CreateDatasetsMutationResponseResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CreateDatasetsMutationResponse'] = ResolversParentTypes['CreateDatasetsMutationResponse']> = {
   info?: Resolver<ResolversTypes['CreateInfo'], ParentType, ContextType>;
-  rawDatasets?: Resolver<Array<ResolversTypes['RawDataset']>, ParentType, ContextType>;
+  Datasets?: Resolver<Array<ResolversTypes['Dataset']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type CreateStudiesMutationResponseResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CreateStudiesMutationResponse'] = ResolversParentTypes['CreateStudiesMutationResponse']> = {
   info?: Resolver<ResolversTypes['CreateInfo'], ParentType, ContextType>;
-  studies?: Resolver<Array<ResolversTypes['Study']>, ParentType, ContextType>;
+  studies?: Resolver<Array<ResolversTypes['Project']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -13508,9 +13508,9 @@ export type CuratedDatasetResolvers<ContextType = MyContextType, ParentType exte
   funnelTask?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<CuratedDatasetFunnelTaskArgs, 'directed'>>;
   funnelTaskAggregate?: Resolver<Maybe<ResolversTypes['CuratedDatasetTaskFunnelTaskAggregationSelection']>, ParentType, ContextType, RequireFields<CuratedDatasetFunnelTaskAggregateArgs, 'directed'>>;
   funnelTaskConnection?: Resolver<ResolversTypes['CuratedDatasetFunnelTaskConnection'], ParentType, ContextType, RequireFields<CuratedDatasetFunnelTaskConnectionArgs, 'directed'>>;
-  generatedByRawDataset?: Resolver<Maybe<ResolversTypes['RawDataset']>, ParentType, ContextType, RequireFields<CuratedDatasetGeneratedByRawDatasetArgs, 'directed'>>;
-  generatedByRawDatasetAggregate?: Resolver<Maybe<ResolversTypes['CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<CuratedDatasetGeneratedByRawDatasetAggregateArgs, 'directed'>>;
-  generatedByRawDatasetConnection?: Resolver<ResolversTypes['CuratedDatasetGeneratedByRawDatasetConnection'], ParentType, ContextType, RequireFields<CuratedDatasetGeneratedByRawDatasetConnectionArgs, 'directed'>>;
+  generatedByDataset?: Resolver<Maybe<ResolversTypes['Dataset']>, ParentType, ContextType, RequireFields<CuratedDatasetGeneratedByDatasetArgs, 'directed'>>;
+  generatedByDatasetAggregate?: Resolver<Maybe<ResolversTypes['CuratedDatasetDatasetGeneratedByDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<CuratedDatasetGeneratedByDatasetAggregateArgs, 'directed'>>;
+  generatedByDatasetConnection?: Resolver<ResolversTypes['CuratedDatasetGeneratedByDatasetConnection'], ParentType, ContextType, RequireFields<CuratedDatasetGeneratedByDatasetConnectionArgs, 'directed'>>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -13605,30 +13605,30 @@ export type CuratedDatasetFunnelTaskRelationshipResolvers<ContextType = MyContex
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetGeneratedByRawDatasetConnection'] = ResolversParentTypes['CuratedDatasetGeneratedByRawDatasetConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['CuratedDatasetGeneratedByRawDatasetRelationship']>, ParentType, ContextType>;
+export type CuratedDatasetGeneratedByDatasetConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetGeneratedByDatasetConnection'] = ResolversParentTypes['CuratedDatasetGeneratedByDatasetConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['CuratedDatasetGeneratedByDatasetRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CuratedDatasetGeneratedByRawDatasetRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetGeneratedByRawDatasetRelationship'] = ResolversParentTypes['CuratedDatasetGeneratedByRawDatasetRelationship']> = {
+export type CuratedDatasetGeneratedByDatasetRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetGeneratedByDatasetRelationship'] = ResolversParentTypes['CuratedDatasetGeneratedByDatasetRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['RawDataset'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Dataset'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection'] = ResolversParentTypes['CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection']> = {
+export type CuratedDatasetDatasetGeneratedByDatasetAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetDatasetGeneratedByDatasetAggregationSelection'] = ResolversParentTypes['CuratedDatasetDatasetGeneratedByDatasetAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection'] = ResolversParentTypes['CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection']> = {
+export type CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelection'] = ResolversParentTypes['CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelection']> = {
   createdAt?: Resolver<ResolversTypes['DateTimeAggregateSelectionNonNullable'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
-  rawDatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  DatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -14045,9 +14045,9 @@ export type GeographyCityEdgeResolvers<ContextType = MyContextType, ParentType e
 export type HarmonizedDatasetResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['HarmonizedDataset'] = ResolversParentTypes['HarmonizedDataset']> = {
   harmonizedDatasetID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  rawDatasets?: Resolver<Array<ResolversTypes['RawDataset']>, ParentType, ContextType, RequireFields<HarmonizedDatasetRawDatasetsArgs, 'directed'>>;
-  rawDatasetsAggregate?: Resolver<Maybe<ResolversTypes['HarmonizedDatasetRawDatasetRawDatasetsAggregationSelection']>, ParentType, ContextType, RequireFields<HarmonizedDatasetRawDatasetsAggregateArgs, 'directed'>>;
-  rawDatasetsConnection?: Resolver<ResolversTypes['HarmonizedDatasetRawDatasetsConnection'], ParentType, ContextType, RequireFields<HarmonizedDatasetRawDatasetsConnectionArgs, 'directed'>>;
+  Datasets?: Resolver<Array<ResolversTypes['Dataset']>, ParentType, ContextType, RequireFields<HarmonizedDatasetDatasetsArgs, 'directed'>>;
+  DatasetsAggregate?: Resolver<Maybe<ResolversTypes['HarmonizedDatasetDatasetDatasetsAggregationSelection']>, ParentType, ContextType, RequireFields<HarmonizedDatasetDatasetsAggregateArgs, 'directed'>>;
+  DatasetsConnection?: Resolver<ResolversTypes['HarmonizedDatasetDatasetsConnection'], ParentType, ContextType, RequireFields<HarmonizedDatasetDatasetsConnectionArgs, 'directed'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -14064,30 +14064,30 @@ export type HarmonizedDatasetEdgeResolvers<ContextType = MyContextType, ParentTy
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type HarmonizedDatasetRawDatasetRawDatasetsAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['HarmonizedDatasetRawDatasetRawDatasetsAggregationSelection'] = ResolversParentTypes['HarmonizedDatasetRawDatasetRawDatasetsAggregationSelection']> = {
+export type HarmonizedDatasetDatasetDatasetsAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['HarmonizedDatasetDatasetDatasetsAggregationSelection'] = ResolversParentTypes['HarmonizedDatasetDatasetDatasetsAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['HarmonizedDatasetDatasetDatasetsNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelection'] = ResolversParentTypes['HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelection']> = {
+export type HarmonizedDatasetDatasetDatasetsNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['HarmonizedDatasetDatasetDatasetsNodeAggregateSelection'] = ResolversParentTypes['HarmonizedDatasetDatasetDatasetsNodeAggregateSelection']> = {
   createdAt?: Resolver<ResolversTypes['DateTimeAggregateSelectionNonNullable'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
-  rawDatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  DatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type HarmonizedDatasetRawDatasetsConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['HarmonizedDatasetRawDatasetsConnection'] = ResolversParentTypes['HarmonizedDatasetRawDatasetsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['HarmonizedDatasetRawDatasetsRelationship']>, ParentType, ContextType>;
+export type HarmonizedDatasetDatasetsConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['HarmonizedDatasetDatasetsConnection'] = ResolversParentTypes['HarmonizedDatasetDatasetsConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['HarmonizedDatasetDatasetsRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type HarmonizedDatasetRawDatasetsRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['HarmonizedDatasetRawDatasetsRelationship'] = ResolversParentTypes['HarmonizedDatasetRawDatasetsRelationship']> = {
+export type HarmonizedDatasetDatasetsRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['HarmonizedDatasetDatasetsRelationship'] = ResolversParentTypes['HarmonizedDatasetDatasetsRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['RawDataset'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Dataset'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -14099,7 +14099,7 @@ export type HarmonizedDatasetsConnectionResolvers<ContextType = MyContextType, P
 };
 
 export type HasCodebookResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['HasCodebook'] = ResolversParentTypes['HasCodebook']> = {
-  __resolveType: TypeResolveFn<'MinioUploadCodeBookRawDatasetRelationship' | 'RawDatasetCodeBookRelationship', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'MinioUploadCodeBookDatasetRelationship' | 'DatasetCodeBookRelationship', ParentType, ContextType>;
   validated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 };
 
@@ -14114,7 +14114,7 @@ export type HasPairedRawdatafileResolvers<ContextType = MyContextType, ParentTyp
 };
 
 export type HasRawdatafileResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['HasRawdatafile'] = ResolversParentTypes['HasRawdatafile']> = {
-  __resolveType: TypeResolveFn<'MinioUploadRawdataFileRawDatasetRelationship' | 'RawDatasetRawdataFileRelationship', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'MinioUploadRawdataFileDatasetRelationship' | 'DatasetRawdataFileRelationship', ParentType, ContextType>;
   validated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 };
 
@@ -14227,9 +14227,9 @@ export type MinioUploadResolvers<ContextType = MyContextType, ParentType extends
   allowedSites?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   allowedStudies?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   bucketName?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  codeBookRawDataset?: Resolver<Maybe<ResolversTypes['RawDataset']>, ParentType, ContextType, RequireFields<MinioUploadCodeBookRawDatasetArgs, 'directed'>>;
-  codeBookRawDatasetAggregate?: Resolver<Maybe<ResolversTypes['MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<MinioUploadCodeBookRawDatasetAggregateArgs, 'directed'>>;
-  codeBookRawDatasetConnection?: Resolver<ResolversTypes['MinioUploadCodeBookRawDatasetConnection'], ParentType, ContextType, RequireFields<MinioUploadCodeBookRawDatasetConnectionArgs, 'directed'>>;
+  codeBookDataset?: Resolver<Maybe<ResolversTypes['Dataset']>, ParentType, ContextType, RequireFields<MinioUploadCodeBookDatasetArgs, 'directed'>>;
+  codeBookDatasetAggregate?: Resolver<Maybe<ResolversTypes['MinioUploadDatasetCodeBookDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<MinioUploadCodeBookDatasetAggregateArgs, 'directed'>>;
+  codeBookDatasetConnection?: Resolver<ResolversTypes['MinioUploadCodeBookDatasetConnection'], ParentType, ContextType, RequireFields<MinioUploadCodeBookDatasetConnectionArgs, 'directed'>>;
   filename?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   fromExportTask?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MinioUploadFromExportTaskArgs, 'directed'>>;
   fromExportTaskAggregate?: Resolver<Maybe<ResolversTypes['MinioUploadTaskFromExportTaskAggregationSelection']>, ParentType, ContextType, RequireFields<MinioUploadFromExportTaskAggregateArgs, 'directed'>>;
@@ -14242,12 +14242,12 @@ export type MinioUploadResolvers<ContextType = MyContextType, ParentType extends
   pairedRawdataFileAggregate?: Resolver<Maybe<ResolversTypes['MinioUploadMinioUploadPairedRawdataFileAggregationSelection']>, ParentType, ContextType, RequireFields<MinioUploadPairedRawdataFileAggregateArgs, 'directed'>>;
   pairedRawdataFileConnection?: Resolver<ResolversTypes['MinioUploadPairedRawdataFileConnection'], ParentType, ContextType, RequireFields<MinioUploadPairedRawdataFileConnectionArgs, 'directed'>>;
   presignedURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  rawDataset?: Resolver<Maybe<ResolversTypes['RawDataset']>, ParentType, ContextType, RequireFields<MinioUploadRawDatasetArgs, 'directed'>>;
-  rawDatasetAggregate?: Resolver<Maybe<ResolversTypes['MinioUploadRawDatasetRawDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<MinioUploadRawDatasetAggregateArgs, 'directed'>>;
-  rawDatasetConnection?: Resolver<ResolversTypes['MinioUploadRawDatasetConnection'], ParentType, ContextType, RequireFields<MinioUploadRawDatasetConnectionArgs, 'directed'>>;
-  rawdataFileRawDataset?: Resolver<Maybe<ResolversTypes['RawDataset']>, ParentType, ContextType, RequireFields<MinioUploadRawdataFileRawDatasetArgs, 'directed'>>;
-  rawdataFileRawDatasetAggregate?: Resolver<Maybe<ResolversTypes['MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<MinioUploadRawdataFileRawDatasetAggregateArgs, 'directed'>>;
-  rawdataFileRawDatasetConnection?: Resolver<ResolversTypes['MinioUploadRawdataFileRawDatasetConnection'], ParentType, ContextType, RequireFields<MinioUploadRawdataFileRawDatasetConnectionArgs, 'directed'>>;
+  Dataset?: Resolver<Maybe<ResolversTypes['Dataset']>, ParentType, ContextType, RequireFields<MinioUploadDatasetArgs, 'directed'>>;
+  DatasetAggregate?: Resolver<Maybe<ResolversTypes['MinioUploadDatasetDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<MinioUploadDatasetAggregateArgs, 'directed'>>;
+  DatasetConnection?: Resolver<ResolversTypes['MinioUploadDatasetConnection'], ParentType, ContextType, RequireFields<MinioUploadDatasetConnectionArgs, 'directed'>>;
+  rawdataFileDataset?: Resolver<Maybe<ResolversTypes['Dataset']>, ParentType, ContextType, RequireFields<MinioUploadRawdataFileDatasetArgs, 'directed'>>;
+  rawdataFileDatasetAggregate?: Resolver<Maybe<ResolversTypes['MinioUploadDatasetRawdataFileDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<MinioUploadRawdataFileDatasetAggregateArgs, 'directed'>>;
+  rawdataFileDatasetConnection?: Resolver<ResolversTypes['MinioUploadRawdataFileDatasetConnection'], ParentType, ContextType, RequireFields<MinioUploadRawdataFileDatasetConnectionArgs, 'directed'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -14259,16 +14259,16 @@ export type MinioUploadAggregateSelectionResolvers<ContextType = MyContextType, 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MinioUploadCodeBookRawDatasetConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadCodeBookRawDatasetConnection'] = ResolversParentTypes['MinioUploadCodeBookRawDatasetConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['MinioUploadCodeBookRawDatasetRelationship']>, ParentType, ContextType>;
+export type MinioUploadCodeBookDatasetConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadCodeBookDatasetConnection'] = ResolversParentTypes['MinioUploadCodeBookDatasetConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['MinioUploadCodeBookDatasetRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MinioUploadCodeBookRawDatasetRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadCodeBookRawDatasetRelationship'] = ResolversParentTypes['MinioUploadCodeBookRawDatasetRelationship']> = {
+export type MinioUploadCodeBookDatasetRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadCodeBookDatasetRelationship'] = ResolversParentTypes['MinioUploadCodeBookDatasetRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['RawDataset'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Dataset'], ParentType, ContextType>;
   validated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -14346,71 +14346,71 @@ export type MinioUploadPairedRawdataFileRelationshipResolvers<ContextType = MyCo
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MinioUploadRawDatasetCodeBookRawDatasetAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection'] = ResolversParentTypes['MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection']> = {
+export type MinioUploadDatasetCodeBookDatasetAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadDatasetCodeBookDatasetAggregationSelection'] = ResolversParentTypes['MinioUploadDatasetCodeBookDatasetAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['MinioUploadDatasetCodeBookDatasetNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection'] = ResolversParentTypes['MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection']> = {
+export type MinioUploadDatasetCodeBookDatasetNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadDatasetCodeBookDatasetNodeAggregateSelection'] = ResolversParentTypes['MinioUploadDatasetCodeBookDatasetNodeAggregateSelection']> = {
   createdAt?: Resolver<ResolversTypes['DateTimeAggregateSelectionNonNullable'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
-  rawDatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  DatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MinioUploadRawDatasetConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadRawDatasetConnection'] = ResolversParentTypes['MinioUploadRawDatasetConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['MinioUploadRawDatasetRelationship']>, ParentType, ContextType>;
+export type MinioUploadDatasetConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadDatasetConnection'] = ResolversParentTypes['MinioUploadDatasetConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['MinioUploadDatasetRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MinioUploadRawDatasetRawDatasetAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadRawDatasetRawDatasetAggregationSelection'] = ResolversParentTypes['MinioUploadRawDatasetRawDatasetAggregationSelection']> = {
+export type MinioUploadDatasetDatasetAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadDatasetDatasetAggregationSelection'] = ResolversParentTypes['MinioUploadDatasetDatasetAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['MinioUploadRawDatasetRawDatasetNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['MinioUploadDatasetDatasetNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MinioUploadRawDatasetRawDatasetNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadRawDatasetRawDatasetNodeAggregateSelection'] = ResolversParentTypes['MinioUploadRawDatasetRawDatasetNodeAggregateSelection']> = {
+export type MinioUploadDatasetDatasetNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadDatasetDatasetNodeAggregateSelection'] = ResolversParentTypes['MinioUploadDatasetDatasetNodeAggregateSelection']> = {
   createdAt?: Resolver<ResolversTypes['DateTimeAggregateSelectionNonNullable'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
-  rawDatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  DatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelection'] = ResolversParentTypes['MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelection']> = {
+export type MinioUploadDatasetRawdataFileDatasetAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadDatasetRawdataFileDatasetAggregationSelection'] = ResolversParentTypes['MinioUploadDatasetRawdataFileDatasetAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['MinioUploadDatasetRawdataFileDatasetNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelection'] = ResolversParentTypes['MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelection']> = {
+export type MinioUploadDatasetRawdataFileDatasetNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadDatasetRawdataFileDatasetNodeAggregateSelection'] = ResolversParentTypes['MinioUploadDatasetRawdataFileDatasetNodeAggregateSelection']> = {
   createdAt?: Resolver<ResolversTypes['DateTimeAggregateSelectionNonNullable'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
-  rawDatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  DatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MinioUploadRawDatasetRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadRawDatasetRelationship'] = ResolversParentTypes['MinioUploadRawDatasetRelationship']> = {
+export type MinioUploadDatasetRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadDatasetRelationship'] = ResolversParentTypes['MinioUploadDatasetRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['RawDataset'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Dataset'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MinioUploadRawdataFileRawDatasetConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadRawdataFileRawDatasetConnection'] = ResolversParentTypes['MinioUploadRawdataFileRawDatasetConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['MinioUploadRawdataFileRawDatasetRelationship']>, ParentType, ContextType>;
+export type MinioUploadRawdataFileDatasetConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadRawdataFileDatasetConnection'] = ResolversParentTypes['MinioUploadRawdataFileDatasetConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['MinioUploadRawdataFileDatasetRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type MinioUploadRawdataFileRawDatasetRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadRawdataFileRawDatasetRelationship'] = ResolversParentTypes['MinioUploadRawdataFileRawDatasetRelationship']> = {
+export type MinioUploadRawdataFileDatasetRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['MinioUploadRawdataFileDatasetRelationship'] = ResolversParentTypes['MinioUploadRawdataFileDatasetRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['RawDataset'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Dataset'], ParentType, ContextType>;
   validated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -14470,9 +14470,9 @@ export type MutationResolvers<ContextType = MyContextType, ParentType extends Re
   createClientRoles?: Resolver<ResolversTypes['CreateClientRolesMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateClientRolesArgs, 'input'>>;
   createClientUsers?: Resolver<ResolversTypes['CreateClientUsersMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateClientUsersArgs, 'input'>>;
   createClients?: Resolver<ResolversTypes['CreateClientsMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateClientsArgs, 'input'>>;
-  createCuratedDatasetFromCSVCodebook?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationCreateCuratedDatasetFromCsvCodebookArgs, 'allowedSite' | 'allowedStudy' | 'name' | 'rawDatasetID'>>;
-  createCuratedDatasetFromRawDataset?: Resolver<ResolversTypes['CuratedDataset'], ParentType, ContextType, RequireFields<MutationCreateCuratedDatasetFromRawDatasetArgs, 'description' | 'name' | 'rawDatasetID'>>;
-  createCuratedDatasetFromRawDatasetNew?: Resolver<Maybe<ResolversTypes['CuratedDataset']>, ParentType, ContextType, RequireFields<MutationCreateCuratedDatasetFromRawDatasetNewArgs, 'codebookObjectName' | 'rawDatasetID' | 'rawObjectName'>>;
+  createCuratedDatasetFromCSVCodebook?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationCreateCuratedDatasetFromCsvCodebookArgs, 'allowedSite' | 'allowedStudy' | 'name' | 'DatasetID'>>;
+  createCuratedDatasetFromDataset?: Resolver<ResolversTypes['CuratedDataset'], ParentType, ContextType, RequireFields<MutationCreateCuratedDatasetFromDatasetArgs, 'description' | 'name' | 'DatasetID'>>;
+  createCuratedDatasetFromDatasetNew?: Resolver<Maybe<ResolversTypes['CuratedDataset']>, ParentType, ContextType, RequireFields<MutationCreateCuratedDatasetFromDatasetNewArgs, 'codebookObjectName' | 'DatasetID' | 'rawObjectName'>>;
   createCuratedDatasets?: Resolver<ResolversTypes['CreateCuratedDatasetsMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateCuratedDatasetsArgs, 'input'>>;
   createDataVariableFieldDefinitions?: Resolver<ResolversTypes['CreateDataVariableFieldDefinitionsMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateDataVariableFieldDefinitionsArgs, 'input'>>;
   createDataVariableFields?: Resolver<ResolversTypes['CreateDataVariableFieldsMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateDataVariableFieldsArgs, 'input'>>;
@@ -14489,8 +14489,8 @@ export type MutationResolvers<ContextType = MyContextType, ParentType extends Re
   createOntologies?: Resolver<ResolversTypes['CreateOntologiesMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateOntologiesArgs, 'input'>>;
   createOntologyClasses?: Resolver<ResolversTypes['CreateOntologyClassesMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateOntologyClassesArgs, 'input'>>;
   createOntologyRelations?: Resolver<ResolversTypes['CreateOntologyRelationsMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateOntologyRelationsArgs, 'input'>>;
-  createRawDatasetWithMinioBucket?: Resolver<ResolversTypes['RawDataset'], ParentType, ContextType, RequireFields<MutationCreateRawDatasetWithMinioBucketArgs, 'description' | 'name' | 'studyID' | 'studySiteID'>>;
-  createRawDatasets?: Resolver<ResolversTypes['CreateRawDatasetsMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateRawDatasetsArgs, 'input'>>;
+  createDataset?: Resolver<ResolversTypes['Dataset'], ParentType, ContextType, RequireFields<MutationcreateDatasetArgs, 'description' | 'name' | 'studyID' | 'studySiteID'>>;
+  createDatasets?: Resolver<ResolversTypes['CreateDatasetsMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateDatasetsArgs, 'input'>>;
   createStudies?: Resolver<ResolversTypes['CreateStudiesMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateStudiesArgs, 'input'>>;
   createTasks?: Resolver<ResolversTypes['CreateTasksMutationResponse'], ParentType, ContextType, RequireFields<MutationCreateTasksArgs, 'input'>>;
   deleteClientRoles?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteClientRolesArgs>>;
@@ -14512,7 +14512,7 @@ export type MutationResolvers<ContextType = MyContextType, ParentType extends Re
   deleteOntologies?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteOntologiesArgs>>;
   deleteOntologyClasses?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteOntologyClassesArgs>>;
   deleteOntologyRelations?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteOntologyRelationsArgs>>;
-  deleteRawDatasets?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteRawDatasetsArgs>>;
+  deleteDatasets?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteDatasetsArgs>>;
   deleteStudies?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteStudiesArgs>>;
   deleteTasks?: Resolver<ResolversTypes['DeleteInfo'], ParentType, ContextType, Partial<MutationDeleteTasksArgs>>;
   funnelTaskExportCuratedDataset?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<MutationFunnelTaskExportCuratedDatasetArgs, 'curatedDatasetID' | 'taskID'>>;
@@ -14527,11 +14527,11 @@ export type MutationResolvers<ContextType = MyContextType, ParentType extends Re
   keycloakUsersDelete?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationKeycloakUsersDeleteArgs, 'userID'>>;
   me?: Resolver<Maybe<ResolversTypes['KeycloakUser']>, ParentType, ContextType>;
   minioDelete?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationMinioDeleteArgs, 'bucketName' | 'objectName'>>;
-  minioUploadFile?: Resolver<ResolversTypes['MinioUpload'], ParentType, ContextType, RequireFields<MutationMinioUploadFileArgs, 'bucketName' | 'file' | 'rawDatasetID'>>;
+  minioUploadFile?: Resolver<ResolversTypes['MinioUpload'], ParentType, ContextType, RequireFields<MutationMinioUploadFileArgs, 'bucketName' | 'file' | 'DatasetID'>>;
   nestedCuratedDatasetDelete?: Resolver<Maybe<ResolversTypes['Neo4jUpdateStats']>, ParentType, ContextType, RequireFields<MutationNestedCuratedDatasetDeleteArgs, 'id'>>;
   nestedCuratedDatasetProperty?: Resolver<Maybe<ResolversTypes['Neo4jUpdateStats']>, ParentType, ContextType, RequireFields<MutationNestedCuratedDatasetPropertyArgs, 'id' | 'operation' | 'property' | 'value'>>;
-  nestedRawDatasetDelete?: Resolver<Maybe<ResolversTypes['Neo4jUpdateStats']>, ParentType, ContextType, RequireFields<MutationNestedRawDatasetDeleteArgs, 'id'>>;
-  nestedRawDatasetProperty?: Resolver<Maybe<ResolversTypes['Neo4jUpdateStats']>, ParentType, ContextType, RequireFields<MutationNestedRawDatasetPropertyArgs, 'id' | 'operation' | 'property' | 'value'>>;
+  nestedDatasetDelete?: Resolver<Maybe<ResolversTypes['Neo4jUpdateStats']>, ParentType, ContextType, RequireFields<MutationNestedDatasetDeleteArgs, 'id'>>;
+  nestedDatasetProperty?: Resolver<Maybe<ResolversTypes['Neo4jUpdateStats']>, ParentType, ContextType, RequireFields<MutationNestedDatasetPropertyArgs, 'id' | 'operation' | 'property' | 'value'>>;
   nestedStudyDelete?: Resolver<Maybe<ResolversTypes['Neo4jUpdateStats']>, ParentType, ContextType, RequireFields<MutationNestedStudyDeleteArgs, 'id'>>;
   nestedStudyProperty?: Resolver<Maybe<ResolversTypes['Neo4jUpdateStats']>, ParentType, ContextType, RequireFields<MutationNestedStudyPropertyArgs, 'id' | 'operation' | 'property' | 'value'>>;
   nestedSwitch?: Resolver<Maybe<ResolversTypes['Neo4jUpdateStats']>, ParentType, ContextType, RequireFields<MutationNestedSwitchArgs, 'id' | 'nestedSwitch' | 'operation' | 'property' | 'value'>>;
@@ -14557,12 +14557,12 @@ export type MutationResolvers<ContextType = MyContextType, ParentType extends Re
   updateOntologies?: Resolver<ResolversTypes['UpdateOntologiesMutationResponse'], ParentType, ContextType, Partial<MutationUpdateOntologiesArgs>>;
   updateOntologyClasses?: Resolver<ResolversTypes['UpdateOntologyClassesMutationResponse'], ParentType, ContextType, Partial<MutationUpdateOntologyClassesArgs>>;
   updateOntologyRelations?: Resolver<ResolversTypes['UpdateOntologyRelationsMutationResponse'], ParentType, ContextType, Partial<MutationUpdateOntologyRelationsArgs>>;
-  updateRawDatasets?: Resolver<ResolversTypes['UpdateRawDatasetsMutationResponse'], ParentType, ContextType, Partial<MutationUpdateRawDatasetsArgs>>;
+  updateDatasets?: Resolver<ResolversTypes['UpdateDatasetsMutationResponse'], ParentType, ContextType, Partial<MutationUpdateDatasetsArgs>>;
   updateStudies?: Resolver<ResolversTypes['UpdateStudiesMutationResponse'], ParentType, ContextType, Partial<MutationUpdateStudiesArgs>>;
   updateTasks?: Resolver<ResolversTypes['UpdateTasksMutationResponse'], ParentType, ContextType, Partial<MutationUpdateTasksArgs>>;
-  validateCodebook?: Resolver<Maybe<ResolversTypes['FileValidation']>, ParentType, ContextType, RequireFields<MutationValidateCodebookArgs, 'objectName' | 'rawDatasetID'>>;
-  validateRawdatafile?: Resolver<Maybe<ResolversTypes['FileValidation']>, ParentType, ContextType, RequireFields<MutationValidateRawdatafileArgs, 'objectName' | 'rawDatasetID'>>;
-  validateRawfileCodebookPair?: Resolver<Maybe<ResolversTypes['FileValidation']>, ParentType, ContextType, RequireFields<MutationValidateRawfileCodebookPairArgs, 'objectNameCB' | 'objectNameRF' | 'rawDatasetIDCB' | 'rawDatasetIDRF'>>;
+  validateCodebook?: Resolver<Maybe<ResolversTypes['FileValidation']>, ParentType, ContextType, RequireFields<MutationValidateCodebookArgs, 'objectName' | 'DatasetID'>>;
+  validateRawdatafile?: Resolver<Maybe<ResolversTypes['FileValidation']>, ParentType, ContextType, RequireFields<MutationValidateRawdatafileArgs, 'objectName' | 'DatasetID'>>;
+  validateRawfileCodebookPair?: Resolver<Maybe<ResolversTypes['FileValidation']>, ParentType, ContextType, RequireFields<MutationValidateRawfileCodebookPairArgs, 'objectNameCB' | 'objectNameRF' | 'DatasetIDCB' | 'DatasetIDRF'>>;
 };
 
 export type Neo4JUpdateStatsConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['Neo4JUpdateStatsConnection'] = ResolversParentTypes['Neo4JUpdateStatsConnection']> = {
@@ -14853,12 +14853,12 @@ export type QueryResolvers<ContextType = MyContextType, ParentType extends Resol
   ontologyRelations?: Resolver<Array<ResolversTypes['OntologyRelation']>, ParentType, ContextType, Partial<QueryOntologyRelationsArgs>>;
   ontologyRelationsAggregate?: Resolver<ResolversTypes['OntologyRelationAggregateSelection'], ParentType, ContextType, Partial<QueryOntologyRelationsAggregateArgs>>;
   ontologyRelationsConnection?: Resolver<ResolversTypes['OntologyRelationsConnection'], ParentType, ContextType, Partial<QueryOntologyRelationsConnectionArgs>>;
-  rawDatasetCalendarHeatmap?: Resolver<Array<ResolversTypes['CalendarHeatmapDatum']>, ParentType, ContextType, RequireFields<QueryRawDatasetCalendarHeatmapArgs, 'endDate' | 'startDate'>>;
-  rawDatasets?: Resolver<Array<ResolversTypes['RawDataset']>, ParentType, ContextType, Partial<QueryRawDatasetsArgs>>;
-  rawDatasetsAggregate?: Resolver<ResolversTypes['RawDatasetAggregateSelection'], ParentType, ContextType, Partial<QueryRawDatasetsAggregateArgs>>;
-  rawDatasetsConnection?: Resolver<ResolversTypes['RawDatasetsConnection'], ParentType, ContextType, Partial<QueryRawDatasetsConnectionArgs>>;
+  DatasetCalendarHeatmap?: Resolver<Array<ResolversTypes['CalendarHeatmapDatum']>, ParentType, ContextType, RequireFields<QueryDatasetCalendarHeatmapArgs, 'endDate' | 'startDate'>>;
+  Datasets?: Resolver<Array<ResolversTypes['Dataset']>, ParentType, ContextType, Partial<QueryDatasetsArgs>>;
+  DatasetsAggregate?: Resolver<ResolversTypes['DatasetAggregateSelection'], ParentType, ContextType, Partial<QueryDatasetsAggregateArgs>>;
+  DatasetsConnection?: Resolver<ResolversTypes['DatasetsConnection'], ParentType, ContextType, Partial<QueryDatasetsConnectionArgs>>;
   searchGeographyCities?: Resolver<Array<ResolversTypes['GeographyCity']>, ParentType, ContextType, RequireFields<QuerySearchGeographyCitiesArgs, 'name'>>;
-  studies?: Resolver<Array<ResolversTypes['Study']>, ParentType, ContextType, Partial<QueryStudiesArgs>>;
+  studies?: Resolver<Array<ResolversTypes['Project']>, ParentType, ContextType, Partial<QueryStudiesArgs>>;
   studiesAggregate?: Resolver<ResolversTypes['StudyAggregateSelection'], ParentType, ContextType, Partial<QueryStudiesAggregateArgs>>;
   studiesConnection?: Resolver<ResolversTypes['StudiesConnection'], ParentType, ContextType, Partial<QueryStudiesConnectionArgs>>;
   tasks?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType, Partial<QueryTasksArgs>>;
@@ -14866,141 +14866,141 @@ export type QueryResolvers<ContextType = MyContextType, ParentType extends Resol
   tasksConnection?: Resolver<ResolversTypes['TasksConnection'], ParentType, ContextType, Partial<QueryTasksConnectionArgs>>;
 };
 
-export type RawDatasetResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDataset'] = ResolversParentTypes['RawDataset']> = {
+export type DatasetResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['Dataset'] = ResolversParentTypes['Dataset']> = {
   allowedSites?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   allowedStudies?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
-  codeBook?: Resolver<Maybe<ResolversTypes['MinioUpload']>, ParentType, ContextType, RequireFields<RawDatasetCodeBookArgs, 'directed'>>;
-  codeBookAggregate?: Resolver<Maybe<ResolversTypes['RawDatasetMinioUploadCodeBookAggregationSelection']>, ParentType, ContextType, RequireFields<RawDatasetCodeBookAggregateArgs, 'directed'>>;
-  codeBookConnection?: Resolver<ResolversTypes['RawDatasetCodeBookConnection'], ParentType, ContextType, RequireFields<RawDatasetCodeBookConnectionArgs, 'directed'>>;
+  codeBook?: Resolver<Maybe<ResolversTypes['MinioUpload']>, ParentType, ContextType, RequireFields<DatasetCodeBookArgs, 'directed'>>;
+  codeBookAggregate?: Resolver<Maybe<ResolversTypes['DatasetMinioUploadCodeBookAggregationSelection']>, ParentType, ContextType, RequireFields<DatasetCodeBookAggregateArgs, 'directed'>>;
+  codeBookConnection?: Resolver<ResolversTypes['DatasetCodeBookConnection'], ParentType, ContextType, RequireFields<DatasetCodeBookConnectionArgs, 'directed'>>;
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  files?: Resolver<Array<ResolversTypes['MinioUpload']>, ParentType, ContextType, RequireFields<RawDatasetFilesArgs, 'directed'>>;
-  filesAggregate?: Resolver<Maybe<ResolversTypes['RawDatasetMinioUploadFilesAggregationSelection']>, ParentType, ContextType, RequireFields<RawDatasetFilesAggregateArgs, 'directed'>>;
-  filesConnection?: Resolver<ResolversTypes['RawDatasetFilesConnection'], ParentType, ContextType, RequireFields<RawDatasetFilesConnectionArgs, 'directed'>>;
-  fromStudy?: Resolver<Maybe<ResolversTypes['Study']>, ParentType, ContextType, RequireFields<RawDatasetFromStudyArgs, 'directed'>>;
-  fromStudyAggregate?: Resolver<Maybe<ResolversTypes['RawDatasetStudyFromStudyAggregationSelection']>, ParentType, ContextType, RequireFields<RawDatasetFromStudyAggregateArgs, 'directed'>>;
-  fromStudyConnection?: Resolver<ResolversTypes['RawDatasetFromStudyConnection'], ParentType, ContextType, RequireFields<RawDatasetFromStudyConnectionArgs, 'directed'>>;
-  funnelTasks?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<RawDatasetFunnelTasksArgs, 'directed'>>;
-  funnelTasksAggregate?: Resolver<Maybe<ResolversTypes['RawDatasetTaskFunnelTasksAggregationSelection']>, ParentType, ContextType, RequireFields<RawDatasetFunnelTasksAggregateArgs, 'directed'>>;
-  funnelTasksConnection?: Resolver<ResolversTypes['RawDatasetFunnelTasksConnection'], ParentType, ContextType, RequireFields<RawDatasetFunnelTasksConnectionArgs, 'directed'>>;
-  generatedCuratedDatasets?: Resolver<Array<ResolversTypes['CuratedDataset']>, ParentType, ContextType, RequireFields<RawDatasetGeneratedCuratedDatasetsArgs, 'directed'>>;
-  generatedCuratedDatasetsAggregate?: Resolver<Maybe<ResolversTypes['RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection']>, ParentType, ContextType, RequireFields<RawDatasetGeneratedCuratedDatasetsAggregateArgs, 'directed'>>;
-  generatedCuratedDatasetsConnection?: Resolver<ResolversTypes['RawDatasetGeneratedCuratedDatasetsConnection'], ParentType, ContextType, RequireFields<RawDatasetGeneratedCuratedDatasetsConnectionArgs, 'directed'>>;
-  minioBucket?: Resolver<Maybe<ResolversTypes['MinioBucket']>, ParentType, ContextType, RequireFields<RawDatasetMinioBucketArgs, 'directed'>>;
-  minioBucketAggregate?: Resolver<Maybe<ResolversTypes['RawDatasetMinioBucketMinioBucketAggregationSelection']>, ParentType, ContextType, RequireFields<RawDatasetMinioBucketAggregateArgs, 'directed'>>;
-  minioBucketConnection?: Resolver<ResolversTypes['RawDatasetMinioBucketConnection'], ParentType, ContextType, RequireFields<RawDatasetMinioBucketConnectionArgs, 'directed'>>;
+  files?: Resolver<Array<ResolversTypes['MinioUpload']>, ParentType, ContextType, RequireFields<DatasetFilesArgs, 'directed'>>;
+  filesAggregate?: Resolver<Maybe<ResolversTypes['DatasetMinioUploadFilesAggregationSelection']>, ParentType, ContextType, RequireFields<DatasetFilesAggregateArgs, 'directed'>>;
+  filesConnection?: Resolver<ResolversTypes['DatasetFilesConnection'], ParentType, ContextType, RequireFields<DatasetFilesConnectionArgs, 'directed'>>;
+  fromStudy?: Resolver<Maybe<ResolversTypes['Project']>, ParentType, ContextType, RequireFields<DatasetFromStudyArgs, 'directed'>>;
+  fromStudyAggregate?: Resolver<Maybe<ResolversTypes['DatasetStudyFromStudyAggregationSelection']>, ParentType, ContextType, RequireFields<DatasetFromStudyAggregateArgs, 'directed'>>;
+  fromStudyConnection?: Resolver<ResolversTypes['DatasetFromStudyConnection'], ParentType, ContextType, RequireFields<DatasetFromStudyConnectionArgs, 'directed'>>;
+  funnelTasks?: Resolver<Array<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<DatasetFunnelTasksArgs, 'directed'>>;
+  funnelTasksAggregate?: Resolver<Maybe<ResolversTypes['DatasetTaskFunnelTasksAggregationSelection']>, ParentType, ContextType, RequireFields<DatasetFunnelTasksAggregateArgs, 'directed'>>;
+  funnelTasksConnection?: Resolver<ResolversTypes['DatasetFunnelTasksConnection'], ParentType, ContextType, RequireFields<DatasetFunnelTasksConnectionArgs, 'directed'>>;
+  generatedCuratedDatasets?: Resolver<Array<ResolversTypes['CuratedDataset']>, ParentType, ContextType, RequireFields<DatasetGeneratedCuratedDatasetsArgs, 'directed'>>;
+  generatedCuratedDatasetsAggregate?: Resolver<Maybe<ResolversTypes['DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection']>, ParentType, ContextType, RequireFields<DatasetGeneratedCuratedDatasetsAggregateArgs, 'directed'>>;
+  generatedCuratedDatasetsConnection?: Resolver<ResolversTypes['DatasetGeneratedCuratedDatasetsConnection'], ParentType, ContextType, RequireFields<DatasetGeneratedCuratedDatasetsConnectionArgs, 'directed'>>;
+  minioBucket?: Resolver<Maybe<ResolversTypes['MinioBucket']>, ParentType, ContextType, RequireFields<DatasetMinioBucketArgs, 'directed'>>;
+  minioBucketAggregate?: Resolver<Maybe<ResolversTypes['DatasetMinioBucketMinioBucketAggregationSelection']>, ParentType, ContextType, RequireFields<DatasetMinioBucketAggregateArgs, 'directed'>>;
+  minioBucketConnection?: Resolver<ResolversTypes['DatasetMinioBucketConnection'], ParentType, ContextType, RequireFields<DatasetMinioBucketConnectionArgs, 'directed'>>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  rawDatasetID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
-  rawdataFile?: Resolver<Maybe<ResolversTypes['MinioUpload']>, ParentType, ContextType, RequireFields<RawDatasetRawdataFileArgs, 'directed'>>;
-  rawdataFileAggregate?: Resolver<Maybe<ResolversTypes['RawDatasetMinioUploadRawdataFileAggregationSelection']>, ParentType, ContextType, RequireFields<RawDatasetRawdataFileAggregateArgs, 'directed'>>;
-  rawdataFileConnection?: Resolver<ResolversTypes['RawDatasetRawdataFileConnection'], ParentType, ContextType, RequireFields<RawDatasetRawdataFileConnectionArgs, 'directed'>>;
-  studySite?: Resolver<Maybe<ResolversTypes['GeographyCity']>, ParentType, ContextType, RequireFields<RawDatasetStudySiteArgs, 'directed'>>;
-  studySiteAggregate?: Resolver<Maybe<ResolversTypes['RawDatasetGeographyCityStudySiteAggregationSelection']>, ParentType, ContextType, RequireFields<RawDatasetStudySiteAggregateArgs, 'directed'>>;
-  studySiteConnection?: Resolver<ResolversTypes['RawDatasetStudySiteConnection'], ParentType, ContextType, RequireFields<RawDatasetStudySiteConnectionArgs, 'directed'>>;
+  DatasetID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  rawdataFile?: Resolver<Maybe<ResolversTypes['MinioUpload']>, ParentType, ContextType, RequireFields<DatasetRawdataFileArgs, 'directed'>>;
+  rawdataFileAggregate?: Resolver<Maybe<ResolversTypes['DatasetMinioUploadRawdataFileAggregationSelection']>, ParentType, ContextType, RequireFields<DatasetRawdataFileAggregateArgs, 'directed'>>;
+  rawdataFileConnection?: Resolver<ResolversTypes['DatasetRawdataFileConnection'], ParentType, ContextType, RequireFields<DatasetRawdataFileConnectionArgs, 'directed'>>;
+  studySite?: Resolver<Maybe<ResolversTypes['GeographyCity']>, ParentType, ContextType, RequireFields<DatasetStudySiteArgs, 'directed'>>;
+  studySiteAggregate?: Resolver<Maybe<ResolversTypes['DatasetGeographyCityStudySiteAggregationSelection']>, ParentType, ContextType, RequireFields<DatasetStudySiteAggregateArgs, 'directed'>>;
+  studySiteConnection?: Resolver<ResolversTypes['DatasetStudySiteConnection'], ParentType, ContextType, RequireFields<DatasetStudySiteConnectionArgs, 'directed'>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetAggregateSelection'] = ResolversParentTypes['RawDatasetAggregateSelection']> = {
+export type DatasetAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetAggregateSelection'] = ResolversParentTypes['DatasetAggregateSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['DateTimeAggregateSelectionNonNullable'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
-  rawDatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  DatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetCodeBookConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetCodeBookConnection'] = ResolversParentTypes['RawDatasetCodeBookConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['RawDatasetCodeBookRelationship']>, ParentType, ContextType>;
+export type DatasetCodeBookConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetCodeBookConnection'] = ResolversParentTypes['DatasetCodeBookConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['DatasetCodeBookRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetCodeBookRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetCodeBookRelationship'] = ResolversParentTypes['RawDatasetCodeBookRelationship']> = {
+export type DatasetCodeBookRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetCodeBookRelationship'] = ResolversParentTypes['DatasetCodeBookRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['MinioUpload'], ParentType, ContextType>;
   validated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection'] = ResolversParentTypes['RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection']> = {
+export type DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection'] = ResolversParentTypes['DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection'] = ResolversParentTypes['RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection']> = {
+export type DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection'] = ResolversParentTypes['DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection']> = {
   curatedDatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetEdgeResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetEdge'] = ResolversParentTypes['RawDatasetEdge']> = {
+export type DatasetEdgeResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetEdge'] = ResolversParentTypes['DatasetEdge']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['RawDataset'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Dataset'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetFilesConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetFilesConnection'] = ResolversParentTypes['RawDatasetFilesConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['RawDatasetFilesRelationship']>, ParentType, ContextType>;
+export type DatasetFilesConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetFilesConnection'] = ResolversParentTypes['DatasetFilesConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['DatasetFilesRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetFilesRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetFilesRelationship'] = ResolversParentTypes['RawDatasetFilesRelationship']> = {
+export type DatasetFilesRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetFilesRelationship'] = ResolversParentTypes['DatasetFilesRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['MinioUpload'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetFromStudyConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetFromStudyConnection'] = ResolversParentTypes['RawDatasetFromStudyConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['RawDatasetFromStudyRelationship']>, ParentType, ContextType>;
+export type DatasetFromStudyConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetFromStudyConnection'] = ResolversParentTypes['DatasetFromStudyConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['DatasetFromStudyRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetFromStudyRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetFromStudyRelationship'] = ResolversParentTypes['RawDatasetFromStudyRelationship']> = {
+export type DatasetFromStudyRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetFromStudyRelationship'] = ResolversParentTypes['DatasetFromStudyRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['Study'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Project'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetFunnelTasksConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetFunnelTasksConnection'] = ResolversParentTypes['RawDatasetFunnelTasksConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['RawDatasetFunnelTasksRelationship']>, ParentType, ContextType>;
+export type DatasetFunnelTasksConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetFunnelTasksConnection'] = ResolversParentTypes['DatasetFunnelTasksConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['DatasetFunnelTasksRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetFunnelTasksRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetFunnelTasksRelationship'] = ResolversParentTypes['RawDatasetFunnelTasksRelationship']> = {
+export type DatasetFunnelTasksRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetFunnelTasksRelationship'] = ResolversParentTypes['DatasetFunnelTasksRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['Task'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetGeneratedCuratedDatasetsConnection'] = ResolversParentTypes['RawDatasetGeneratedCuratedDatasetsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['RawDatasetGeneratedCuratedDatasetsRelationship']>, ParentType, ContextType>;
+export type DatasetGeneratedCuratedDatasetsConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetGeneratedCuratedDatasetsConnection'] = ResolversParentTypes['DatasetGeneratedCuratedDatasetsConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['DatasetGeneratedCuratedDatasetsRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetGeneratedCuratedDatasetsRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetGeneratedCuratedDatasetsRelationship'] = ResolversParentTypes['RawDatasetGeneratedCuratedDatasetsRelationship']> = {
+export type DatasetGeneratedCuratedDatasetsRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetGeneratedCuratedDatasetsRelationship'] = ResolversParentTypes['DatasetGeneratedCuratedDatasetsRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['CuratedDataset'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetGeographyCityStudySiteAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetGeographyCityStudySiteAggregationSelection'] = ResolversParentTypes['RawDatasetGeographyCityStudySiteAggregationSelection']> = {
+export type DatasetGeographyCityStudySiteAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetGeographyCityStudySiteAggregationSelection'] = ResolversParentTypes['DatasetGeographyCityStudySiteAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['RawDatasetGeographyCityStudySiteNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['DatasetGeographyCityStudySiteNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetGeographyCityStudySiteNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetGeographyCityStudySiteNodeAggregateSelection'] = ResolversParentTypes['RawDatasetGeographyCityStudySiteNodeAggregateSelection']> = {
+export type DatasetGeographyCityStudySiteNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetGeographyCityStudySiteNodeAggregateSelection'] = ResolversParentTypes['DatasetGeographyCityStudySiteNodeAggregateSelection']> = {
   city?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   cityID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   country?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
@@ -15010,90 +15010,90 @@ export type RawDatasetGeographyCityStudySiteNodeAggregateSelectionResolvers<Cont
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetMinioBucketConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetMinioBucketConnection'] = ResolversParentTypes['RawDatasetMinioBucketConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['RawDatasetMinioBucketRelationship']>, ParentType, ContextType>;
+export type DatasetMinioBucketConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetMinioBucketConnection'] = ResolversParentTypes['DatasetMinioBucketConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['DatasetMinioBucketRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetMinioBucketMinioBucketAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetMinioBucketMinioBucketAggregationSelection'] = ResolversParentTypes['RawDatasetMinioBucketMinioBucketAggregationSelection']> = {
+export type DatasetMinioBucketMinioBucketAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetMinioBucketMinioBucketAggregationSelection'] = ResolversParentTypes['DatasetMinioBucketMinioBucketAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['RawDatasetMinioBucketMinioBucketNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['DatasetMinioBucketMinioBucketNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetMinioBucketMinioBucketNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetMinioBucketMinioBucketNodeAggregateSelection'] = ResolversParentTypes['RawDatasetMinioBucketMinioBucketNodeAggregateSelection']> = {
+export type DatasetMinioBucketMinioBucketNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetMinioBucketMinioBucketNodeAggregateSelection'] = ResolversParentTypes['DatasetMinioBucketMinioBucketNodeAggregateSelection']> = {
   bucketName?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetMinioBucketRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetMinioBucketRelationship'] = ResolversParentTypes['RawDatasetMinioBucketRelationship']> = {
+export type DatasetMinioBucketRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetMinioBucketRelationship'] = ResolversParentTypes['DatasetMinioBucketRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['MinioBucket'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetMinioUploadCodeBookAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetMinioUploadCodeBookAggregationSelection'] = ResolversParentTypes['RawDatasetMinioUploadCodeBookAggregationSelection']> = {
+export type DatasetMinioUploadCodeBookAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetMinioUploadCodeBookAggregationSelection'] = ResolversParentTypes['DatasetMinioUploadCodeBookAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['RawDatasetMinioUploadCodeBookNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['DatasetMinioUploadCodeBookNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetMinioUploadCodeBookNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetMinioUploadCodeBookNodeAggregateSelection'] = ResolversParentTypes['RawDatasetMinioUploadCodeBookNodeAggregateSelection']> = {
+export type DatasetMinioUploadCodeBookNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetMinioUploadCodeBookNodeAggregateSelection'] = ResolversParentTypes['DatasetMinioUploadCodeBookNodeAggregateSelection']> = {
   bucketName?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   filename?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   objectName?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetMinioUploadFilesAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetMinioUploadFilesAggregationSelection'] = ResolversParentTypes['RawDatasetMinioUploadFilesAggregationSelection']> = {
+export type DatasetMinioUploadFilesAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetMinioUploadFilesAggregationSelection'] = ResolversParentTypes['DatasetMinioUploadFilesAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['RawDatasetMinioUploadFilesNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['DatasetMinioUploadFilesNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetMinioUploadFilesNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetMinioUploadFilesNodeAggregateSelection'] = ResolversParentTypes['RawDatasetMinioUploadFilesNodeAggregateSelection']> = {
+export type DatasetMinioUploadFilesNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetMinioUploadFilesNodeAggregateSelection'] = ResolversParentTypes['DatasetMinioUploadFilesNodeAggregateSelection']> = {
   bucketName?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   filename?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   objectName?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetMinioUploadRawdataFileAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetMinioUploadRawdataFileAggregationSelection'] = ResolversParentTypes['RawDatasetMinioUploadRawdataFileAggregationSelection']> = {
+export type DatasetMinioUploadRawdataFileAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetMinioUploadRawdataFileAggregationSelection'] = ResolversParentTypes['DatasetMinioUploadRawdataFileAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['RawDatasetMinioUploadRawdataFileNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['DatasetMinioUploadRawdataFileNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetMinioUploadRawdataFileNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetMinioUploadRawdataFileNodeAggregateSelection'] = ResolversParentTypes['RawDatasetMinioUploadRawdataFileNodeAggregateSelection']> = {
+export type DatasetMinioUploadRawdataFileNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetMinioUploadRawdataFileNodeAggregateSelection'] = ResolversParentTypes['DatasetMinioUploadRawdataFileNodeAggregateSelection']> = {
   bucketName?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   filename?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   objectName?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetRawdataFileConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetRawdataFileConnection'] = ResolversParentTypes['RawDatasetRawdataFileConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['RawDatasetRawdataFileRelationship']>, ParentType, ContextType>;
+export type DatasetRawdataFileConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetRawdataFileConnection'] = ResolversParentTypes['DatasetRawdataFileConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['DatasetRawdataFileRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetRawdataFileRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetRawdataFileRelationship'] = ResolversParentTypes['RawDatasetRawdataFileRelationship']> = {
+export type DatasetRawdataFileRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetRawdataFileRelationship'] = ResolversParentTypes['DatasetRawdataFileRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['MinioUpload'], ParentType, ContextType>;
   validated?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetStudyFromStudyAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetStudyFromStudyAggregationSelection'] = ResolversParentTypes['RawDatasetStudyFromStudyAggregationSelection']> = {
+export type DatasetStudyFromStudyAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetStudyFromStudyAggregationSelection'] = ResolversParentTypes['DatasetStudyFromStudyAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['RawDatasetStudyFromStudyNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['DatasetStudyFromStudyNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetStudyFromStudyNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetStudyFromStudyNodeAggregateSelection'] = ResolversParentTypes['RawDatasetStudyFromStudyNodeAggregateSelection']> = {
+export type DatasetStudyFromStudyNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetStudyFromStudyNodeAggregateSelection'] = ResolversParentTypes['DatasetStudyFromStudyNodeAggregateSelection']> = {
   description?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   fullName?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   shortName?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
@@ -15101,26 +15101,26 @@ export type RawDatasetStudyFromStudyNodeAggregateSelectionResolvers<ContextType 
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetStudySiteConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetStudySiteConnection'] = ResolversParentTypes['RawDatasetStudySiteConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['RawDatasetStudySiteRelationship']>, ParentType, ContextType>;
+export type DatasetStudySiteConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetStudySiteConnection'] = ResolversParentTypes['DatasetStudySiteConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['DatasetStudySiteRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetStudySiteRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetStudySiteRelationship'] = ResolversParentTypes['RawDatasetStudySiteRelationship']> = {
+export type DatasetStudySiteRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetStudySiteRelationship'] = ResolversParentTypes['DatasetStudySiteRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   node?: Resolver<ResolversTypes['GeographyCity'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetTaskFunnelTasksAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetTaskFunnelTasksAggregationSelection'] = ResolversParentTypes['RawDatasetTaskFunnelTasksAggregationSelection']> = {
+export type DatasetTaskFunnelTasksAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetTaskFunnelTasksAggregationSelection'] = ResolversParentTypes['DatasetTaskFunnelTasksAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['RawDatasetTaskFunnelTasksNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['DatasetTaskFunnelTasksNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetTaskFunnelTasksNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetTaskFunnelTasksNodeAggregateSelection'] = ResolversParentTypes['RawDatasetTaskFunnelTasksNodeAggregateSelection']> = {
+export type DatasetTaskFunnelTasksNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetTaskFunnelTasksNodeAggregateSelection'] = ResolversParentTypes['DatasetTaskFunnelTasksNodeAggregateSelection']> = {
   creationTime?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['StringAggregateSelectionNullable'], ParentType, ContextType>;
@@ -15129,8 +15129,8 @@ export type RawDatasetTaskFunnelTasksNodeAggregateSelectionResolvers<ContextType
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type RawDatasetsConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['RawDatasetsConnection'] = ResolversParentTypes['RawDatasetsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['RawDatasetEdge']>, ParentType, ContextType>;
+export type DatasetsConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['DatasetsConnection'] = ResolversParentTypes['DatasetsConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['DatasetEdge']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -15155,14 +15155,14 @@ export type StudiesConnectionResolvers<ContextType = MyContextType, ParentType e
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type StudyResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['Study'] = ResolversParentTypes['Study']> = {
+export type StudyResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['Project'] = ResolversParentTypes['Project']> = {
   allowedSites?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   allowedStudies?: Resolver<Maybe<Array<Maybe<ResolversTypes['String']>>>, ParentType, ContextType>;
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   fullName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  rawDatasets?: Resolver<Array<ResolversTypes['RawDataset']>, ParentType, ContextType, RequireFields<StudyRawDatasetsArgs, 'directed'>>;
-  rawDatasetsAggregate?: Resolver<Maybe<ResolversTypes['StudyRawDatasetRawDatasetsAggregationSelection']>, ParentType, ContextType, RequireFields<StudyRawDatasetsAggregateArgs, 'directed'>>;
-  rawDatasetsConnection?: Resolver<ResolversTypes['StudyRawDatasetsConnection'], ParentType, ContextType, RequireFields<StudyRawDatasetsConnectionArgs, 'directed'>>;
+  Datasets?: Resolver<Array<ResolversTypes['Dataset']>, ParentType, ContextType, RequireFields<StudyDatasetsArgs, 'directed'>>;
+  DatasetsAggregate?: Resolver<Maybe<ResolversTypes['StudyDatasetDatasetsAggregationSelection']>, ParentType, ContextType, RequireFields<StudyDatasetsAggregateArgs, 'directed'>>;
+  DatasetsConnection?: Resolver<ResolversTypes['StudyDatasetsConnection'], ParentType, ContextType, RequireFields<StudyDatasetsConnectionArgs, 'directed'>>;
   shortName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   studyID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   studySites?: Resolver<Array<ResolversTypes['GeographyCity']>, ParentType, ContextType, RequireFields<StudyStudySitesArgs, 'directed'>>;
@@ -15182,7 +15182,7 @@ export type StudyAggregateSelectionResolvers<ContextType = MyContextType, Parent
 
 export type StudyEdgeResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['StudyEdge'] = ResolversParentTypes['StudyEdge']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['Study'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Project'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -15202,30 +15202,30 @@ export type StudyGeographyCityStudySitesNodeAggregateSelectionResolvers<ContextT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type StudyRawDatasetRawDatasetsAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['StudyRawDatasetRawDatasetsAggregationSelection'] = ResolversParentTypes['StudyRawDatasetRawDatasetsAggregationSelection']> = {
+export type StudyDatasetDatasetsAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['StudyDatasetDatasetsAggregationSelection'] = ResolversParentTypes['StudyDatasetDatasetsAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['StudyRawDatasetRawDatasetsNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['StudyDatasetDatasetsNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type StudyRawDatasetRawDatasetsNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['StudyRawDatasetRawDatasetsNodeAggregateSelection'] = ResolversParentTypes['StudyRawDatasetRawDatasetsNodeAggregateSelection']> = {
+export type StudyDatasetDatasetsNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['StudyDatasetDatasetsNodeAggregateSelection'] = ResolversParentTypes['StudyDatasetDatasetsNodeAggregateSelection']> = {
   createdAt?: Resolver<ResolversTypes['DateTimeAggregateSelectionNonNullable'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
-  rawDatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  DatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type StudyRawDatasetsConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['StudyRawDatasetsConnection'] = ResolversParentTypes['StudyRawDatasetsConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['StudyRawDatasetsRelationship']>, ParentType, ContextType>;
+export type StudyDatasetsConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['StudyDatasetsConnection'] = ResolversParentTypes['StudyDatasetsConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['StudyDatasetsRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type StudyRawDatasetsRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['StudyRawDatasetsRelationship'] = ResolversParentTypes['StudyRawDatasetsRelationship']> = {
+export type StudyDatasetsRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['StudyDatasetsRelationship'] = ResolversParentTypes['StudyDatasetsRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['RawDataset'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Dataset'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -15250,9 +15250,9 @@ export type TaskResolvers<ContextType = MyContextType, ParentType extends Resolv
   fromCuratedDataset?: Resolver<Maybe<ResolversTypes['Task']>, ParentType, ContextType, RequireFields<TaskFromCuratedDatasetArgs, 'directed'>>;
   fromCuratedDatasetAggregate?: Resolver<Maybe<ResolversTypes['TaskTaskFromCuratedDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<TaskFromCuratedDatasetAggregateArgs, 'directed'>>;
   fromCuratedDatasetConnection?: Resolver<ResolversTypes['TaskFromCuratedDatasetConnection'], ParentType, ContextType, RequireFields<TaskFromCuratedDatasetConnectionArgs, 'directed'>>;
-  fromRawDataset?: Resolver<Maybe<ResolversTypes['RawDataset']>, ParentType, ContextType, RequireFields<TaskFromRawDatasetArgs, 'directed'>>;
-  fromRawDatasetAggregate?: Resolver<Maybe<ResolversTypes['TaskRawDatasetFromRawDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<TaskFromRawDatasetAggregateArgs, 'directed'>>;
-  fromRawDatasetConnection?: Resolver<ResolversTypes['TaskFromRawDatasetConnection'], ParentType, ContextType, RequireFields<TaskFromRawDatasetConnectionArgs, 'directed'>>;
+  fromDataset?: Resolver<Maybe<ResolversTypes['Dataset']>, ParentType, ContextType, RequireFields<TaskFromDatasetArgs, 'directed'>>;
+  fromDatasetAggregate?: Resolver<Maybe<ResolversTypes['TaskDatasetFromDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<TaskFromDatasetAggregateArgs, 'directed'>>;
+  fromDatasetConnection?: Resolver<ResolversTypes['TaskFromDatasetConnection'], ParentType, ContextType, RequireFields<TaskFromDatasetConnectionArgs, 'directed'>>;
   generatedCuratedDataset?: Resolver<Maybe<ResolversTypes['CuratedDataset']>, ParentType, ContextType, RequireFields<TaskGeneratedCuratedDatasetArgs, 'directed'>>;
   generatedCuratedDatasetAggregate?: Resolver<Maybe<ResolversTypes['TaskCuratedDatasetGeneratedCuratedDatasetAggregationSelection']>, ParentType, ContextType, RequireFields<TaskGeneratedCuratedDatasetAggregateArgs, 'directed'>>;
   generatedCuratedDatasetConnection?: Resolver<ResolversTypes['TaskGeneratedCuratedDatasetConnection'], ParentType, ContextType, RequireFields<TaskGeneratedCuratedDatasetConnectionArgs, 'directed'>>;
@@ -15308,16 +15308,16 @@ export type TaskFromCuratedDatasetRelationshipResolvers<ContextType = MyContextT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TaskFromRawDatasetConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskFromRawDatasetConnection'] = ResolversParentTypes['TaskFromRawDatasetConnection']> = {
-  edges?: Resolver<Array<ResolversTypes['TaskFromRawDatasetRelationship']>, ParentType, ContextType>;
+export type TaskFromDatasetConnectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskFromDatasetConnection'] = ResolversParentTypes['TaskFromDatasetConnection']> = {
+  edges?: Resolver<Array<ResolversTypes['TaskFromDatasetRelationship']>, ParentType, ContextType>;
   pageInfo?: Resolver<ResolversTypes['PageInfo'], ParentType, ContextType>;
   totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TaskFromRawDatasetRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskFromRawDatasetRelationship'] = ResolversParentTypes['TaskFromRawDatasetRelationship']> = {
+export type TaskFromDatasetRelationshipResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskFromDatasetRelationship'] = ResolversParentTypes['TaskFromDatasetRelationship']> = {
   cursor?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  node?: Resolver<ResolversTypes['RawDataset'], ParentType, ContextType>;
+  node?: Resolver<ResolversTypes['Dataset'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -15360,17 +15360,17 @@ export type TaskMinioUploadGeneratedExportNodeAggregateSelectionResolvers<Contex
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TaskRawDatasetFromRawDatasetAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskRawDatasetFromRawDatasetAggregationSelection'] = ResolversParentTypes['TaskRawDatasetFromRawDatasetAggregationSelection']> = {
+export type TaskDatasetFromDatasetAggregationSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskDatasetFromDatasetAggregationSelection'] = ResolversParentTypes['TaskDatasetFromDatasetAggregationSelection']> = {
   count?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  node?: Resolver<Maybe<ResolversTypes['TaskRawDatasetFromRawDatasetNodeAggregateSelection']>, ParentType, ContextType>;
+  node?: Resolver<Maybe<ResolversTypes['TaskDatasetFromDatasetNodeAggregateSelection']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TaskRawDatasetFromRawDatasetNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskRawDatasetFromRawDatasetNodeAggregateSelection'] = ResolversParentTypes['TaskRawDatasetFromRawDatasetNodeAggregateSelection']> = {
+export type TaskDatasetFromDatasetNodeAggregateSelectionResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['TaskDatasetFromDatasetNodeAggregateSelection'] = ResolversParentTypes['TaskDatasetFromDatasetNodeAggregateSelection']> = {
   createdAt?: Resolver<ResolversTypes['DateTimeAggregateSelectionNonNullable'], ParentType, ContextType>;
   description?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['StringAggregateSelectionNonNullable'], ParentType, ContextType>;
-  rawDatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
+  DatasetID?: Resolver<ResolversTypes['IDAggregateSelectionNonNullable'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -15519,15 +15519,15 @@ export type UpdateOntologyRelationsMutationResponseResolvers<ContextType = MyCon
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type UpdateRawDatasetsMutationResponseResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['UpdateRawDatasetsMutationResponse'] = ResolversParentTypes['UpdateRawDatasetsMutationResponse']> = {
+export type UpdateDatasetsMutationResponseResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['UpdateDatasetsMutationResponse'] = ResolversParentTypes['UpdateDatasetsMutationResponse']> = {
   info?: Resolver<ResolversTypes['UpdateInfo'], ParentType, ContextType>;
-  rawDatasets?: Resolver<Array<ResolversTypes['RawDataset']>, ParentType, ContextType>;
+  Datasets?: Resolver<Array<ResolversTypes['Dataset']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UpdateStudiesMutationResponseResolvers<ContextType = MyContextType, ParentType extends ResolversParentTypes['UpdateStudiesMutationResponse'] = ResolversParentTypes['UpdateStudiesMutationResponse']> = {
   info?: Resolver<ResolversTypes['UpdateInfo'], ParentType, ContextType>;
-  studies?: Resolver<Array<ResolversTypes['Study']>, ParentType, ContextType>;
+  studies?: Resolver<Array<ResolversTypes['Project']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -15575,7 +15575,7 @@ export type Resolvers<ContextType = MyContextType> = {
   CreateOntologiesMutationResponse?: CreateOntologiesMutationResponseResolvers<ContextType>;
   CreateOntologyClassesMutationResponse?: CreateOntologyClassesMutationResponseResolvers<ContextType>;
   CreateOntologyRelationsMutationResponse?: CreateOntologyRelationsMutationResponseResolvers<ContextType>;
-  CreateRawDatasetsMutationResponse?: CreateRawDatasetsMutationResponseResolvers<ContextType>;
+  CreateDatasetsMutationResponse?: CreateDatasetsMutationResponseResolvers<ContextType>;
   CreateStudiesMutationResponse?: CreateStudiesMutationResponseResolvers<ContextType>;
   CreateTasksMutationResponse?: CreateTasksMutationResponseResolvers<ContextType>;
   CuratedDataset?: CuratedDatasetResolvers<ContextType>;
@@ -15593,10 +15593,10 @@ export type Resolvers<ContextType = MyContextType> = {
   CuratedDatasetFieldDefinitionsRelationship?: CuratedDatasetFieldDefinitionsRelationshipResolvers<ContextType>;
   CuratedDatasetFunnelTaskConnection?: CuratedDatasetFunnelTaskConnectionResolvers<ContextType>;
   CuratedDatasetFunnelTaskRelationship?: CuratedDatasetFunnelTaskRelationshipResolvers<ContextType>;
-  CuratedDatasetGeneratedByRawDatasetConnection?: CuratedDatasetGeneratedByRawDatasetConnectionResolvers<ContextType>;
-  CuratedDatasetGeneratedByRawDatasetRelationship?: CuratedDatasetGeneratedByRawDatasetRelationshipResolvers<ContextType>;
-  CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelection?: CuratedDatasetRawDatasetGeneratedByRawDatasetAggregationSelectionResolvers<ContextType>;
-  CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelection?: CuratedDatasetRawDatasetGeneratedByRawDatasetNodeAggregateSelectionResolvers<ContextType>;
+  CuratedDatasetGeneratedByDatasetConnection?: CuratedDatasetGeneratedByDatasetConnectionResolvers<ContextType>;
+  CuratedDatasetGeneratedByDatasetRelationship?: CuratedDatasetGeneratedByDatasetRelationshipResolvers<ContextType>;
+  CuratedDatasetDatasetGeneratedByDatasetAggregationSelection?: CuratedDatasetDatasetGeneratedByDatasetAggregationSelectionResolvers<ContextType>;
+  CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelection?: CuratedDatasetDatasetGeneratedByDatasetNodeAggregateSelectionResolvers<ContextType>;
   CuratedDatasetTaskExportTaskAggregationSelection?: CuratedDatasetTaskExportTaskAggregationSelectionResolvers<ContextType>;
   CuratedDatasetTaskExportTaskNodeAggregateSelection?: CuratedDatasetTaskExportTaskNodeAggregateSelectionResolvers<ContextType>;
   CuratedDatasetTaskFunnelTaskAggregationSelection?: CuratedDatasetTaskFunnelTaskAggregationSelectionResolvers<ContextType>;
@@ -15658,10 +15658,10 @@ export type Resolvers<ContextType = MyContextType> = {
   HarmonizedDataset?: HarmonizedDatasetResolvers<ContextType>;
   HarmonizedDatasetAggregateSelection?: HarmonizedDatasetAggregateSelectionResolvers<ContextType>;
   HarmonizedDatasetEdge?: HarmonizedDatasetEdgeResolvers<ContextType>;
-  HarmonizedDatasetRawDatasetRawDatasetsAggregationSelection?: HarmonizedDatasetRawDatasetRawDatasetsAggregationSelectionResolvers<ContextType>;
-  HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelection?: HarmonizedDatasetRawDatasetRawDatasetsNodeAggregateSelectionResolvers<ContextType>;
-  HarmonizedDatasetRawDatasetsConnection?: HarmonizedDatasetRawDatasetsConnectionResolvers<ContextType>;
-  HarmonizedDatasetRawDatasetsRelationship?: HarmonizedDatasetRawDatasetsRelationshipResolvers<ContextType>;
+  HarmonizedDatasetDatasetDatasetsAggregationSelection?: HarmonizedDatasetDatasetDatasetsAggregationSelectionResolvers<ContextType>;
+  HarmonizedDatasetDatasetDatasetsNodeAggregateSelection?: HarmonizedDatasetDatasetDatasetsNodeAggregateSelectionResolvers<ContextType>;
+  HarmonizedDatasetDatasetsConnection?: HarmonizedDatasetDatasetsConnectionResolvers<ContextType>;
+  HarmonizedDatasetDatasetsRelationship?: HarmonizedDatasetDatasetsRelationshipResolvers<ContextType>;
   HarmonizedDatasetsConnection?: HarmonizedDatasetsConnectionResolvers<ContextType>;
   HasCodebook?: HasCodebookResolvers<ContextType>;
   HasPairedCodebook?: HasPairedCodebookResolvers<ContextType>;
@@ -15685,8 +15685,8 @@ export type Resolvers<ContextType = MyContextType> = {
   MinioBucketsConnection?: MinioBucketsConnectionResolvers<ContextType>;
   MinioUpload?: MinioUploadResolvers<ContextType>;
   MinioUploadAggregateSelection?: MinioUploadAggregateSelectionResolvers<ContextType>;
-  MinioUploadCodeBookRawDatasetConnection?: MinioUploadCodeBookRawDatasetConnectionResolvers<ContextType>;
-  MinioUploadCodeBookRawDatasetRelationship?: MinioUploadCodeBookRawDatasetRelationshipResolvers<ContextType>;
+  MinioUploadCodeBookDatasetConnection?: MinioUploadCodeBookDatasetConnectionResolvers<ContextType>;
+  MinioUploadCodeBookDatasetRelationship?: MinioUploadCodeBookDatasetRelationshipResolvers<ContextType>;
   MinioUploadEdge?: MinioUploadEdgeResolvers<ContextType>;
   MinioUploadFromExportTaskConnection?: MinioUploadFromExportTaskConnectionResolvers<ContextType>;
   MinioUploadFromExportTaskRelationship?: MinioUploadFromExportTaskRelationshipResolvers<ContextType>;
@@ -15698,16 +15698,16 @@ export type Resolvers<ContextType = MyContextType> = {
   MinioUploadPairedCodebookRelationship?: MinioUploadPairedCodebookRelationshipResolvers<ContextType>;
   MinioUploadPairedRawdataFileConnection?: MinioUploadPairedRawdataFileConnectionResolvers<ContextType>;
   MinioUploadPairedRawdataFileRelationship?: MinioUploadPairedRawdataFileRelationshipResolvers<ContextType>;
-  MinioUploadRawDatasetCodeBookRawDatasetAggregationSelection?: MinioUploadRawDatasetCodeBookRawDatasetAggregationSelectionResolvers<ContextType>;
-  MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelection?: MinioUploadRawDatasetCodeBookRawDatasetNodeAggregateSelectionResolvers<ContextType>;
-  MinioUploadRawDatasetConnection?: MinioUploadRawDatasetConnectionResolvers<ContextType>;
-  MinioUploadRawDatasetRawDatasetAggregationSelection?: MinioUploadRawDatasetRawDatasetAggregationSelectionResolvers<ContextType>;
-  MinioUploadRawDatasetRawDatasetNodeAggregateSelection?: MinioUploadRawDatasetRawDatasetNodeAggregateSelectionResolvers<ContextType>;
-  MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelection?: MinioUploadRawDatasetRawdataFileRawDatasetAggregationSelectionResolvers<ContextType>;
-  MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelection?: MinioUploadRawDatasetRawdataFileRawDatasetNodeAggregateSelectionResolvers<ContextType>;
-  MinioUploadRawDatasetRelationship?: MinioUploadRawDatasetRelationshipResolvers<ContextType>;
-  MinioUploadRawdataFileRawDatasetConnection?: MinioUploadRawdataFileRawDatasetConnectionResolvers<ContextType>;
-  MinioUploadRawdataFileRawDatasetRelationship?: MinioUploadRawdataFileRawDatasetRelationshipResolvers<ContextType>;
+  MinioUploadDatasetCodeBookDatasetAggregationSelection?: MinioUploadDatasetCodeBookDatasetAggregationSelectionResolvers<ContextType>;
+  MinioUploadDatasetCodeBookDatasetNodeAggregateSelection?: MinioUploadDatasetCodeBookDatasetNodeAggregateSelectionResolvers<ContextType>;
+  MinioUploadDatasetConnection?: MinioUploadDatasetConnectionResolvers<ContextType>;
+  MinioUploadDatasetDatasetAggregationSelection?: MinioUploadDatasetDatasetAggregationSelectionResolvers<ContextType>;
+  MinioUploadDatasetDatasetNodeAggregateSelection?: MinioUploadDatasetDatasetNodeAggregateSelectionResolvers<ContextType>;
+  MinioUploadDatasetRawdataFileDatasetAggregationSelection?: MinioUploadDatasetRawdataFileDatasetAggregationSelectionResolvers<ContextType>;
+  MinioUploadDatasetRawdataFileDatasetNodeAggregateSelection?: MinioUploadDatasetRawdataFileDatasetNodeAggregateSelectionResolvers<ContextType>;
+  MinioUploadDatasetRelationship?: MinioUploadDatasetRelationshipResolvers<ContextType>;
+  MinioUploadRawdataFileDatasetConnection?: MinioUploadRawdataFileDatasetConnectionResolvers<ContextType>;
+  MinioUploadRawdataFileDatasetRelationship?: MinioUploadRawdataFileDatasetRelationshipResolvers<ContextType>;
   MinioUploadTaskFromExportTaskAggregationSelection?: MinioUploadTaskFromExportTaskAggregationSelectionResolvers<ContextType>;
   MinioUploadTaskFromExportTaskNodeAggregateSelection?: MinioUploadTaskFromExportTaskNodeAggregateSelectionResolvers<ContextType>;
   MinioUploadsConnection?: MinioUploadsConnectionResolvers<ContextType>;
@@ -15746,54 +15746,54 @@ export type Resolvers<ContextType = MyContextType> = {
   OntologyRelationsConnection?: OntologyRelationsConnectionResolvers<ContextType>;
   PageInfo?: PageInfoResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
-  RawDataset?: RawDatasetResolvers<ContextType>;
-  RawDatasetAggregateSelection?: RawDatasetAggregateSelectionResolvers<ContextType>;
-  RawDatasetCodeBookConnection?: RawDatasetCodeBookConnectionResolvers<ContextType>;
-  RawDatasetCodeBookRelationship?: RawDatasetCodeBookRelationshipResolvers<ContextType>;
-  RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection?: RawDatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelectionResolvers<ContextType>;
-  RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection?: RawDatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelectionResolvers<ContextType>;
-  RawDatasetEdge?: RawDatasetEdgeResolvers<ContextType>;
-  RawDatasetFilesConnection?: RawDatasetFilesConnectionResolvers<ContextType>;
-  RawDatasetFilesRelationship?: RawDatasetFilesRelationshipResolvers<ContextType>;
-  RawDatasetFromStudyConnection?: RawDatasetFromStudyConnectionResolvers<ContextType>;
-  RawDatasetFromStudyRelationship?: RawDatasetFromStudyRelationshipResolvers<ContextType>;
-  RawDatasetFunnelTasksConnection?: RawDatasetFunnelTasksConnectionResolvers<ContextType>;
-  RawDatasetFunnelTasksRelationship?: RawDatasetFunnelTasksRelationshipResolvers<ContextType>;
-  RawDatasetGeneratedCuratedDatasetsConnection?: RawDatasetGeneratedCuratedDatasetsConnectionResolvers<ContextType>;
-  RawDatasetGeneratedCuratedDatasetsRelationship?: RawDatasetGeneratedCuratedDatasetsRelationshipResolvers<ContextType>;
-  RawDatasetGeographyCityStudySiteAggregationSelection?: RawDatasetGeographyCityStudySiteAggregationSelectionResolvers<ContextType>;
-  RawDatasetGeographyCityStudySiteNodeAggregateSelection?: RawDatasetGeographyCityStudySiteNodeAggregateSelectionResolvers<ContextType>;
-  RawDatasetMinioBucketConnection?: RawDatasetMinioBucketConnectionResolvers<ContextType>;
-  RawDatasetMinioBucketMinioBucketAggregationSelection?: RawDatasetMinioBucketMinioBucketAggregationSelectionResolvers<ContextType>;
-  RawDatasetMinioBucketMinioBucketNodeAggregateSelection?: RawDatasetMinioBucketMinioBucketNodeAggregateSelectionResolvers<ContextType>;
-  RawDatasetMinioBucketRelationship?: RawDatasetMinioBucketRelationshipResolvers<ContextType>;
-  RawDatasetMinioUploadCodeBookAggregationSelection?: RawDatasetMinioUploadCodeBookAggregationSelectionResolvers<ContextType>;
-  RawDatasetMinioUploadCodeBookNodeAggregateSelection?: RawDatasetMinioUploadCodeBookNodeAggregateSelectionResolvers<ContextType>;
-  RawDatasetMinioUploadFilesAggregationSelection?: RawDatasetMinioUploadFilesAggregationSelectionResolvers<ContextType>;
-  RawDatasetMinioUploadFilesNodeAggregateSelection?: RawDatasetMinioUploadFilesNodeAggregateSelectionResolvers<ContextType>;
-  RawDatasetMinioUploadRawdataFileAggregationSelection?: RawDatasetMinioUploadRawdataFileAggregationSelectionResolvers<ContextType>;
-  RawDatasetMinioUploadRawdataFileNodeAggregateSelection?: RawDatasetMinioUploadRawdataFileNodeAggregateSelectionResolvers<ContextType>;
-  RawDatasetRawdataFileConnection?: RawDatasetRawdataFileConnectionResolvers<ContextType>;
-  RawDatasetRawdataFileRelationship?: RawDatasetRawdataFileRelationshipResolvers<ContextType>;
-  RawDatasetStudyFromStudyAggregationSelection?: RawDatasetStudyFromStudyAggregationSelectionResolvers<ContextType>;
-  RawDatasetStudyFromStudyNodeAggregateSelection?: RawDatasetStudyFromStudyNodeAggregateSelectionResolvers<ContextType>;
-  RawDatasetStudySiteConnection?: RawDatasetStudySiteConnectionResolvers<ContextType>;
-  RawDatasetStudySiteRelationship?: RawDatasetStudySiteRelationshipResolvers<ContextType>;
-  RawDatasetTaskFunnelTasksAggregationSelection?: RawDatasetTaskFunnelTasksAggregationSelectionResolvers<ContextType>;
-  RawDatasetTaskFunnelTasksNodeAggregateSelection?: RawDatasetTaskFunnelTasksNodeAggregateSelectionResolvers<ContextType>;
-  RawDatasetsConnection?: RawDatasetsConnectionResolvers<ContextType>;
+  Dataset?: DatasetResolvers<ContextType>;
+  DatasetAggregateSelection?: DatasetAggregateSelectionResolvers<ContextType>;
+  DatasetCodeBookConnection?: DatasetCodeBookConnectionResolvers<ContextType>;
+  DatasetCodeBookRelationship?: DatasetCodeBookRelationshipResolvers<ContextType>;
+  DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelection?: DatasetCuratedDatasetGeneratedCuratedDatasetsAggregationSelectionResolvers<ContextType>;
+  DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelection?: DatasetCuratedDatasetGeneratedCuratedDatasetsNodeAggregateSelectionResolvers<ContextType>;
+  DatasetEdge?: DatasetEdgeResolvers<ContextType>;
+  DatasetFilesConnection?: DatasetFilesConnectionResolvers<ContextType>;
+  DatasetFilesRelationship?: DatasetFilesRelationshipResolvers<ContextType>;
+  DatasetFromStudyConnection?: DatasetFromStudyConnectionResolvers<ContextType>;
+  DatasetFromStudyRelationship?: DatasetFromStudyRelationshipResolvers<ContextType>;
+  DatasetFunnelTasksConnection?: DatasetFunnelTasksConnectionResolvers<ContextType>;
+  DatasetFunnelTasksRelationship?: DatasetFunnelTasksRelationshipResolvers<ContextType>;
+  DatasetGeneratedCuratedDatasetsConnection?: DatasetGeneratedCuratedDatasetsConnectionResolvers<ContextType>;
+  DatasetGeneratedCuratedDatasetsRelationship?: DatasetGeneratedCuratedDatasetsRelationshipResolvers<ContextType>;
+  DatasetGeographyCityStudySiteAggregationSelection?: DatasetGeographyCityStudySiteAggregationSelectionResolvers<ContextType>;
+  DatasetGeographyCityStudySiteNodeAggregateSelection?: DatasetGeographyCityStudySiteNodeAggregateSelectionResolvers<ContextType>;
+  DatasetMinioBucketConnection?: DatasetMinioBucketConnectionResolvers<ContextType>;
+  DatasetMinioBucketMinioBucketAggregationSelection?: DatasetMinioBucketMinioBucketAggregationSelectionResolvers<ContextType>;
+  DatasetMinioBucketMinioBucketNodeAggregateSelection?: DatasetMinioBucketMinioBucketNodeAggregateSelectionResolvers<ContextType>;
+  DatasetMinioBucketRelationship?: DatasetMinioBucketRelationshipResolvers<ContextType>;
+  DatasetMinioUploadCodeBookAggregationSelection?: DatasetMinioUploadCodeBookAggregationSelectionResolvers<ContextType>;
+  DatasetMinioUploadCodeBookNodeAggregateSelection?: DatasetMinioUploadCodeBookNodeAggregateSelectionResolvers<ContextType>;
+  DatasetMinioUploadFilesAggregationSelection?: DatasetMinioUploadFilesAggregationSelectionResolvers<ContextType>;
+  DatasetMinioUploadFilesNodeAggregateSelection?: DatasetMinioUploadFilesNodeAggregateSelectionResolvers<ContextType>;
+  DatasetMinioUploadRawdataFileAggregationSelection?: DatasetMinioUploadRawdataFileAggregationSelectionResolvers<ContextType>;
+  DatasetMinioUploadRawdataFileNodeAggregateSelection?: DatasetMinioUploadRawdataFileNodeAggregateSelectionResolvers<ContextType>;
+  DatasetRawdataFileConnection?: DatasetRawdataFileConnectionResolvers<ContextType>;
+  DatasetRawdataFileRelationship?: DatasetRawdataFileRelationshipResolvers<ContextType>;
+  DatasetStudyFromStudyAggregationSelection?: DatasetStudyFromStudyAggregationSelectionResolvers<ContextType>;
+  DatasetStudyFromStudyNodeAggregateSelection?: DatasetStudyFromStudyNodeAggregateSelectionResolvers<ContextType>;
+  DatasetStudySiteConnection?: DatasetStudySiteConnectionResolvers<ContextType>;
+  DatasetStudySiteRelationship?: DatasetStudySiteRelationshipResolvers<ContextType>;
+  DatasetTaskFunnelTasksAggregationSelection?: DatasetTaskFunnelTasksAggregationSelectionResolvers<ContextType>;
+  DatasetTaskFunnelTasksNodeAggregateSelection?: DatasetTaskFunnelTasksNodeAggregateSelectionResolvers<ContextType>;
+  DatasetsConnection?: DatasetsConnectionResolvers<ContextType>;
   StringAggregateSelectionNonNullable?: StringAggregateSelectionNonNullableResolvers<ContextType>;
   StringAggregateSelectionNullable?: StringAggregateSelectionNullableResolvers<ContextType>;
   StudiesConnection?: StudiesConnectionResolvers<ContextType>;
-  Study?: StudyResolvers<ContextType>;
+  Project?: StudyResolvers<ContextType>;
   StudyAggregateSelection?: StudyAggregateSelectionResolvers<ContextType>;
   StudyEdge?: StudyEdgeResolvers<ContextType>;
   StudyGeographyCityStudySitesAggregationSelection?: StudyGeographyCityStudySitesAggregationSelectionResolvers<ContextType>;
   StudyGeographyCityStudySitesNodeAggregateSelection?: StudyGeographyCityStudySitesNodeAggregateSelectionResolvers<ContextType>;
-  StudyRawDatasetRawDatasetsAggregationSelection?: StudyRawDatasetRawDatasetsAggregationSelectionResolvers<ContextType>;
-  StudyRawDatasetRawDatasetsNodeAggregateSelection?: StudyRawDatasetRawDatasetsNodeAggregateSelectionResolvers<ContextType>;
-  StudyRawDatasetsConnection?: StudyRawDatasetsConnectionResolvers<ContextType>;
-  StudyRawDatasetsRelationship?: StudyRawDatasetsRelationshipResolvers<ContextType>;
+  StudyDatasetDatasetsAggregationSelection?: StudyDatasetDatasetsAggregationSelectionResolvers<ContextType>;
+  StudyDatasetDatasetsNodeAggregateSelection?: StudyDatasetDatasetsNodeAggregateSelectionResolvers<ContextType>;
+  StudyDatasetsConnection?: StudyDatasetsConnectionResolvers<ContextType>;
+  StudyDatasetsRelationship?: StudyDatasetsRelationshipResolvers<ContextType>;
   StudyStudySitesConnection?: StudyStudySitesConnectionResolvers<ContextType>;
   StudyStudySitesRelationship?: StudyStudySitesRelationshipResolvers<ContextType>;
   Task?: TaskResolvers<ContextType>;
@@ -15803,16 +15803,16 @@ export type Resolvers<ContextType = MyContextType> = {
   TaskEdge?: TaskEdgeResolvers<ContextType>;
   TaskFromCuratedDatasetConnection?: TaskFromCuratedDatasetConnectionResolvers<ContextType>;
   TaskFromCuratedDatasetRelationship?: TaskFromCuratedDatasetRelationshipResolvers<ContextType>;
-  TaskFromRawDatasetConnection?: TaskFromRawDatasetConnectionResolvers<ContextType>;
-  TaskFromRawDatasetRelationship?: TaskFromRawDatasetRelationshipResolvers<ContextType>;
+  TaskFromDatasetConnection?: TaskFromDatasetConnectionResolvers<ContextType>;
+  TaskFromDatasetRelationship?: TaskFromDatasetRelationshipResolvers<ContextType>;
   TaskGeneratedCuratedDatasetConnection?: TaskGeneratedCuratedDatasetConnectionResolvers<ContextType>;
   TaskGeneratedCuratedDatasetRelationship?: TaskGeneratedCuratedDatasetRelationshipResolvers<ContextType>;
   TaskGeneratedExportConnection?: TaskGeneratedExportConnectionResolvers<ContextType>;
   TaskGeneratedExportRelationship?: TaskGeneratedExportRelationshipResolvers<ContextType>;
   TaskMinioUploadGeneratedExportAggregationSelection?: TaskMinioUploadGeneratedExportAggregationSelectionResolvers<ContextType>;
   TaskMinioUploadGeneratedExportNodeAggregateSelection?: TaskMinioUploadGeneratedExportNodeAggregateSelectionResolvers<ContextType>;
-  TaskRawDatasetFromRawDatasetAggregationSelection?: TaskRawDatasetFromRawDatasetAggregationSelectionResolvers<ContextType>;
-  TaskRawDatasetFromRawDatasetNodeAggregateSelection?: TaskRawDatasetFromRawDatasetNodeAggregateSelectionResolvers<ContextType>;
+  TaskDatasetFromDatasetAggregationSelection?: TaskDatasetFromDatasetAggregationSelectionResolvers<ContextType>;
+  TaskDatasetFromDatasetNodeAggregateSelection?: TaskDatasetFromDatasetNodeAggregateSelectionResolvers<ContextType>;
   TaskTaskFromCuratedDatasetAggregationSelection?: TaskTaskFromCuratedDatasetAggregationSelectionResolvers<ContextType>;
   TaskTaskFromCuratedDatasetNodeAggregateSelection?: TaskTaskFromCuratedDatasetNodeAggregateSelectionResolvers<ContextType>;
   TasksConnection?: TasksConnectionResolvers<ContextType>;
@@ -15836,7 +15836,7 @@ export type Resolvers<ContextType = MyContextType> = {
   UpdateOntologiesMutationResponse?: UpdateOntologiesMutationResponseResolvers<ContextType>;
   UpdateOntologyClassesMutationResponse?: UpdateOntologyClassesMutationResponseResolvers<ContextType>;
   UpdateOntologyRelationsMutationResponse?: UpdateOntologyRelationsMutationResponseResolvers<ContextType>;
-  UpdateRawDatasetsMutationResponse?: UpdateRawDatasetsMutationResponseResolvers<ContextType>;
+  UpdateDatasetsMutationResponse?: UpdateDatasetsMutationResponseResolvers<ContextType>;
   UpdateStudiesMutationResponse?: UpdateStudiesMutationResponseResolvers<ContextType>;
   UpdateTasksMutationResponse?: UpdateTasksMutationResponseResolvers<ContextType>;
   Upload?: GraphQLScalarType;

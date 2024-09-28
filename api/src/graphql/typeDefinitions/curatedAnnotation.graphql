@@ -31,7 +31,7 @@ type CuratedAnnotation {
     description: String!
     annotationVariables: [AnnotationVariable!]! @relationship(type: "HAS_ANNOTATION_VARIABLE", direction: OUT)
 
-    generatedByRawDataset: RawDataset! @relationship(type: "GENERATED_CURATED_ANNOTATION", direction: IN)
+    generatedByRawDataset: Dataset! @relationship(type: "GENERATED_CURATED_ANNOTATION", direction: IN)
 }
 
 type EpitopeSpeciesCount {

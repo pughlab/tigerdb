@@ -4,9 +4,11 @@ type KeycloakUser {
   keycloakUserID: ID!
   name: String!
   email: Email!
-  roles: [String]
-  notifications: [Notification!]! @relationship(type: "RECEIVED_NOTIFICATION", direction: IN)
-  sentMessages: [Message!]! @relationship(type: "SENT_BY", direction: OUT)
+  # roles: [String]
+}
+
+input KeycloakUserInput {
+  keycloakUserID: ID!
 }
 
 type Mutation {
@@ -16,11 +18,5 @@ type Mutation {
 extend type KeycloakUser @auth(
   rules: [{
       isAuthenticated: true,
-      # where: {allowedRoles: "$jwt.realm_access.roles"}
-      where: {AND: [
-        # {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
-        # {allowedSites: "$jwt.resource_access.pibu-app.roles"},
-        {allowedRoles: "$jwt.resource_access.pibu-app.roles"},
-        ]}
     }]
 )

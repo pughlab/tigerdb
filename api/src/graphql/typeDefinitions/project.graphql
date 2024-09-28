@@ -1,0 +1,53 @@
+type Project {
+  projectID: ID! @id
+  name: String!
+  description: String!
+
+  # Projects must have at least one dataset, so we enforce that datasets
+  # must not be null.
+  # This means that the dataset must exist in the DB prior to creating the
+  # project, either by the user selecting an existing dataset or uploading
+  # a new one, which must be saved to the DB before creating the project.
+  datasets: [Dataset!]! @relationship(type: "HAS_DATASET", direction: OUT)
+
+  createdBy: KeycloakUser! @relationship(type: "CREATED_BY", direction: OUT)
+  createdOn: DateTime! @timestamp(operations: [CREATE])
+  sharedWith: [KeycloakUser!]! @relationship(type: "SHARED_WITH", direction: OUT)
+  isPublic: Boolean!
+  runs: [Run!]! @relationship(type: "HAS_RUN", direction: OUT)
+}
+
+input ProjectInput {
+  projectID: ID!
+  name: String
+  description: String
+  datasets: [DatasetInput]
+  sharedWith: [KeycloakUserInput]
+  isPublic: Boolean
+  runs: [RunInput]
+}
+
+type Mutation {
+  createProject(
+    name: String!
+    description: String!
+    datasets: [DatasetInput!]!
+  ): Project!,
+  updateProject(
+    projectID: ID!
+    name: String
+    description: String
+    sharedWith: [KeycloakUserInput]
+    isPublic: Boolean
+  ): Project!,
+  addDatasetsToProject(
+    projectID: ID!
+    datasets: [DatasetInput!]!
+  ): Project!
+}
+
+extend type Project @auth(
+  rules: [{
+      isAuthenticated: true,
+    }]
+)

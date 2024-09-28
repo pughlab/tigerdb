@@ -1,0 +1,39 @@
+type Run {
+    runID: ID! @id
+    wesID: ID
+    name: String!
+    description: String
+    datasets: [Dataset!]! @relationship(type: "HAS_RUN", direction: IN)
+    project: Project! @relationship(type: "HAS_RUN", direction: IN)
+    createdOn: DateTime! @timestamp(operations: [CREATE])
+    submittedOn: DateTime
+    completedOn: DateTime
+    status: String!
+    createdBy: KeycloakUser! @relationship(type: "CREATED_BY", direction: OUT)
+    logs: String
+}
+
+input RunInput {
+    runID: ID!
+    wesID: ID
+    name: String
+    description: String
+    datasets: [DatasetInput]
+    status: String
+}
+
+type Mutation {
+    createRun(
+        project: ProjectInput!
+        wesID: ID
+        description: String
+        datasets: [DatasetInput!]!
+    ): Run!,
+    updateRun(
+        runID: ID!
+        datasets: [DatasetInput]!
+        wesID: ID
+        name: String
+        description: String
+    ): Run!
+}

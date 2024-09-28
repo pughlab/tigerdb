@@ -25,27 +25,21 @@ type MinioUpload {
   objectName: ID! @id
   filename: String!
   presignedURL: String @customResolver
-  allowedStudies: [String]
-  allowedSites: [String]
 
-  rawDataset: RawDataset @relationship(type: "HAS_FILE", direction: IN)
+  Dataset: Dataset @relationship(type: "HAS_FILE", direction: IN)
 
-  rawdataFileRawDataset: RawDataset @relationship(type: "HAS_RAWDATAFILE", properties: "HasRawdatafile", direction: IN)
-  codeBookRawDataset: RawDataset @relationship(type: "HAS_CODEBOOK", properties: "HasCodebook", direction: IN)
+  # rawdataFileDataset: Dataset @relationship(type: "HAS_RAWDATAFILE", properties: "HasRawdatafile", direction: IN)
+  # codeBookDataset: Dataset @relationship(type: "HAS_CODEBOOK", properties: "HasCodebook", direction: IN)
 
   pairedCodebook: MinioUpload @relationship(type: "HAS_PAIRED_RAWDATAFILE", properties: "HasPairedRawdatafile", direction: OUT)
   pairedRawdataFile: MinioUpload @relationship(type: "HAS_PAIRED_CODEBOOK", properties: "HasPairedCodebook", direction: OUT)
 
-  fromExportTask: Task @relationship(type: "FROM_FUNNEL_TASK", direction: IN)
+  # fromExportTask: Task @relationship(type: "FROM_FUNNEL_TASK", direction: IN)
 }
 
 extend type MinioUpload @auth(
   rules: [{
       isAuthenticated: true,
-      where: {AND: [
-        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
-        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
-        ]}
     }]
 )
 
@@ -65,19 +59,15 @@ type MinioBucket {
 extend type MinioBucket @auth(
   rules: [{
       isAuthenticated: true,
-      where: {AND: [
-        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
-        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
-        ]}
     }]
 )
 
 type Mutation {
   # Example usage (should be generalized)
-  minioUploadFile(bucketName: String!, file: Upload!, rawDatasetID: ID!, allowedStudies: [String], allowedSites: [String]): MinioUpload!
+  minioUploadFile(bucketName: String!, file: Upload!, datasetID: ID!, allowedStudies: [String], allowedSites: [String]): MinioUpload!
   minioDelete(bucketName: String!, objectName: String!): Boolean
 
-  validateRawdatafile(rawDatasetID: ID!, objectName: ID!): FileValidation
-  validateCodebook(rawDatasetID: ID!, objectName: ID!): FileValidation
-  validateRawfileCodebookPair(rawDatasetIDRF: ID!, objectNameRF: ID!, rawDatasetIDCB: ID!, objectNameCB: ID!): FileValidation
+  validateRawdatafile(datasetID: ID!, objectName: ID!): FileValidation
+  validateCodebook(datasetID: ID!, objectName: ID!): FileValidation
+  validateRawfileCodebookPair(DatasetIDRF: ID!, objectNameRF: ID!, DatasetIDCB: ID!, objectNameCB: ID!): FileValidation
 }

@@ -195,7 +195,7 @@ export const resolvers = {
                 return true
             } catch (error) {
                 console.error(error)
-                return new ApolloError('csv transform', error)
+                return new ApolloError('csv transform', error as string)
             }
         },
     },
