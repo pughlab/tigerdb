@@ -87,11 +87,11 @@ export const createApolloServer = async () => {
       });
 
 
-      // Query info
-      const queryString = req.body.query
-      const queryObj = gql`${queryString}`
-      const queryOperation = queryObj.definitions[0].operation
-      const queryName = queryObj.definitions[0].selectionSet.selections[0].name.value
+      // // Query info
+      // const queryString = req.body.query
+      // const queryObj = gql`${queryString}`
+      // const queryOperation = queryObj.definitions[0].operation
+      // const queryName = queryObj.definitions[0].selectionSet.selections[0].name.value
 
       // Keycloak info
       if (kauth.accessToken) {
@@ -103,20 +103,20 @@ export const createApolloServer = async () => {
         const allowedWithoutApproved = ['keycloakAcceptTOS', 'me']
         const allowedWithoutTOS = ['keycloakAcceptTOS', 'me']
 
-        // Global requirement of approved
-        if (!roles.includes('role|allowedRoles|approved')) {
-          if (!allowedWithoutApproved.includes(queryName))
-          throw new Error(`Access denied. User [${email} / ${sub}] has not been approved. Please contact your administrator to approve this account.`)
-        }
+        // // Global requirement of approved
+        // if (!roles.includes('role|allowedRoles|approved')) {
+        //   if (!allowedWithoutApproved.includes(queryName))
+        //   throw new Error(`Access denied. User [${email} / ${sub}] has not been approved. Please contact your administrator to approve this account.`)
+        // }
 
-        // Global requirement of accept TOS
-        if (!roles.includes('role|allowedRoles|acceptedTOS')) {
-          if (!allowedWithoutTOS.includes(queryName))
-          throw new Error(`Access denied. User [${email} / ${sub}] has not accepted the TOS. Please accept the TOS to gain access.`)
-        }
-      } //else {
-        //throw new Error(`Access denied. Keycloak auth token required to access graphql. Please login with keycloak.`)
-      //}
+        // // Global requirement of accept TOS
+        // if (!roles.includes('role|allowedRoles|acceptedTOS')) {
+        //   if (!allowedWithoutTOS.includes(queryName))
+        //   throw new Error(`Access denied. User [${email} / ${sub}] has not accepted the TOS. Please accept the TOS to gain access.`)
+        // }
+      } else {
+        throw new Error(`Access denied. Keycloak auth token required to access graphql. Please login with keycloak.`)
+      }
 
 
       return {
