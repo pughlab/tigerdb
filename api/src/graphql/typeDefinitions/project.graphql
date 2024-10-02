@@ -27,11 +27,15 @@ input ProjectInput {
   runs: [RunInput]
 }
 
+type Query{
+  getProjects: [Project]
+}
+
 type Mutation {
   createProject(
     name: String!
     description: String!
-    datasets: [DatasetInput!]!
+    # datasets: [DatasetInput!]!
   ): Project!,
   updateProject(
     projectID: ID!
