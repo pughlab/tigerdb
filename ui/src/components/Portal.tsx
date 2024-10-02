@@ -10,7 +10,7 @@ import {Logo} from './logos'
 import useRouter from '../hooks/useRouter'
 import About from './pages/About'
 import LoginModal from './authentication/LoginModal'
-import Studies from './pages/Studies'
+import Projects from './pages/Projects'
 import Datasets from './pages/Datasets'
 import Explore from './pages/Explore'
 import DataExports from './pages/DataExports'
@@ -78,8 +78,9 @@ export default function Portal () {
   // console.log(location)
   const [meMutationState] = useKeycloakMeMutation()
   let routes = [
-    {path: 'studies', icon: 'stethoscope', element: <Studies />},
-    {path: 'datasets', icon: 'database', element: <Datasets />},
+    {path: 'projects', icon: 'folder open', element: <Projects />},
+    // {path: 'runs', icon: 'paper plane', element: <Datasets />},
+    // {path: 'datasets', icon: 'database', element: <Datasets />},
     // {path: 'explore', icon: 'search', element: <Explore />},
     // {path: 'export', icon: 'download', element: <DataExports />},
     // {path: 'metadata', icon: 'search plus', element: <Metadata />},
@@ -97,8 +98,8 @@ export default function Portal () {
   return (
     <>
       <Layout />
-      <RenderOnApproved>
-        <RenderOnAcceptedTOS>
+      {/* <RenderOnApproved>
+        <RenderOnAcceptedTOS> */}
           <Routes>
               <Route index element={
                 <About />
@@ -128,8 +129,8 @@ export default function Portal () {
               </Route>
               <Route key='notfound' path="*" element={<SegmentPlaceholder text='Not found!' icon='meh outline' />} />
             </Routes>
-          </RenderOnAcceptedTOS>
-        </RenderOnApproved>
+          {/* </RenderOnAcceptedTOS>
+        </RenderOnApproved> */}
     </>
   )
 }
