@@ -1,14 +1,21 @@
+enum RunStatus {
+    pending
+    submitted
+    completed
+    failed
+}
+
 type Run {
     runID: ID! @id
     wesID: ID
     name: String!
     description: String
     datasets: [Dataset!]! @relationship(type: "HAS_RUN", direction: IN)
-    project: Project! @relationship(type: "HAS_RUN", direction: IN)
+    # project: Project! @relationship(type: "HAS_RUN", direction: IN)
     createdOn: DateTime! @timestamp(operations: [CREATE])
     submittedOn: DateTime
     completedOn: DateTime
-    status: String!
+    status: RunStatus! @default(value: pending)   
     createdBy: KeycloakUser! @relationship(type: "CREATED_BY", direction: OUT)
     logs: String
 }
@@ -19,15 +26,21 @@ input RunInput {
     name: String
     description: String
     datasets: [DatasetInput]
-    status: String
+    status: RunStatus
+}
+
+type Query{
+  getRuns: [Run]
 }
 
 type Mutation {
-    createRun(
-        project: ProjectInput!
-        wesID: ID
+    createRunWithMinioBucket(
+        # project: ProjectInput!
+        # wesID: ID
+        name: String!
         description: String
-        datasets: [DatasetInput!]!
+        # datasets: [DatasetInput!]!
+        datasetIDs: [ID!]!
     ): Run!,
     updateRun(
         runID: ID!
