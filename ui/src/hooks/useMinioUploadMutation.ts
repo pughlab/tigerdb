@@ -37,16 +37,12 @@ export default function useMinioUploadMutation(postFn: any) {
         mutation minioUploadFile(
             $bucketName: String!
             $file: Upload!
-            $rawDatasetID: ID!
-            $allowedStudies: [String]
-            $allowedSites: [String]
+            $datasetID: ID!
         ) {
             minioUploadFile(
                 bucketName: $bucketName
                 file: $file
-                rawDatasetID: $rawDatasetID
-                allowedStudies: $allowedStudies
-                allowedSites: $allowedSites
+                datasetID: $datasetID
             ) {
                 bucketName
                 objectName
