@@ -5,40 +5,34 @@ import SegmentPlaceholder from '../SegmentPlaceholder'
 import { useDropzone, FileWithPath } from 'react-dropzone'
 import { gql, useQuery, useMutation } from '@apollo/client'
 import useMinioUploadMutation from '../../../hooks/useMinioUploadMutation'
-import SegmentPlaceholder from '../SegmentPlaceholder'
 import { MinioUpload } from '../../../types/types'
-import { getPermissionRoles } from '../../../state/appContext'
+// import { getPermissionRoles } from '../../../state/appContext'
 
-export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) {
-    const bucketName = `raw-dataset-${rawDatasetID}`
+export default function MinioBucket({ datasetID } : { datasetID:String }) {
+    const bucketName = `dataset-${datasetID}`
     const { data, loading, error, refetch } = useQuery(gql`
         query MinioUploads($bucketName: ID!) {
             minioUploads(where: {bucketName: $bucketName}) {
                 bucketName
                 objectName
                 filename
-                rawdataFileRawDataset {
-                    rawDatasetID
-                }
-                codeBookRawDataset {
-                    rawDatasetID
-                }
+                # rawdataFileRawDataset {
+                #     datasetID
+                # }
             }
         }`,
         { variables: { bucketName }, fetchPolicy: 'network-only' })
 
-    function MinioUploadModal({ rawDatasetID } : { rawDatasetID:String }) {
-        const bucketName = `raw-dataset-${rawDatasetID}`
-        const {allowedStudies, allowedSites} = getPermissionRoles()
+    function MinioUploadModal({ datasetID } : { datasetID:String }) {
+        const bucketName = `dataset-${datasetID}`
+        // const {allowedStudies, allowedSites} = getPermissionRoles()
 
         const { state: uploadState, dispatch: uploadDispatch, mutation: uploadMutation } = useMinioUploadMutation(refetch)
         const onDrop = useCallback((files: FileWithPath[]) => {
             uploadMutation({
                 variables: {
-                    rawDatasetID: rawDatasetID,
+                    datasetID: datasetID,
                     bucketName: bucketName,
-                    allowedStudies: allowedStudies,
-                    allowedSites: allowedSites,
                     file: files[0]
                 }
             })
@@ -49,14 +43,23 @@ export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) 
                 trigger={<Button fluid icon='upload' />}
             >
                 <Modal.Content>
+                <div {...getRootProps()}>
+
                     <SegmentPlaceholder text='Click to upload a file' icon='upload'>
-                        <div {...getRootProps()}>
+                        {/* <input {...getInputProps()} /> */}
+
+                        {
+        isDragActive ?
+          <p>Drop the files here ...</p> :
+          <p>Drag 'n' drop some files here</p>
+      }
                             <Button>
-                                Upload a file
+                                Or click to Upload a file
                                 <input {...getInputProps()} />
                             </Button>
-                        </div>
                     </SegmentPlaceholder>
+                    </div>
+
                 </Modal.Content>
             </Modal>
         )
@@ -73,40 +76,51 @@ export default function MinioBucket({ rawDatasetID } : { rawDatasetID:String }) 
         }
     )
 
-    const {allowedStudies, allowedSites} = getPermissionRoles()
+    // const {allowedStudies, allowedSites} = getPermissionRoles()
 
     if (!data?.minioUploads) {
         return null
     }
     const { minioUploads } : { minioUploads: MinioUpload[] } = data
     return (
-        <Segment>
-            <MinioUploadModal rawDatasetID={rawDatasetID} />
-            <Divider horizontal />
+        <Segment >
+            <Divider horizontal content='Dataset Files' />
+
+            <MinioUploadModal datasetID={datasetID} />
+            <Divider />
             {!minioUploads.length ? <SegmentPlaceholder text={'No uploads yet'} /> :
+                
                 <List celled divided>
                     {minioUploads.map(minioUpload => {
 
-                        const isCodebook = !!minioUpload.codeBookRawDataset
-                        const isRawdataFile = !!minioUpload.rawdataFileRawDataset
+                        // const isRawdataFile = !!minioUpload.rawdataFileRawDataset
 
                         return <div key={'div.' + minioUpload.objectName}>
                             <List.Item
                                 key={'list.' + minioUpload.objectName}
                             >
-                                <Label
+                                <Button compact 
+                                    attached='left' 
+                                    color='blue' 
+                                    basic
+                                    // inverted
+                                    icon='download' 
+                                    key={'button.' + minioUpload.objectName} 
+                                    // onClick={() => { window.open(`/minio/download/${minioUpload.objectName}`) }}
                                     content={minioUpload.filename}
                                 />
-                                <Label
+                                {/* <Label
                                     content={minioUpload.objectName}
-                                />
+                                /> */}
                                 {/* {
                                     isCodebook && <Label color='blue' >Codebook</Label>
                                 }
                                 {
                                     isRawdataFile && <Label color='blue'>Rawdata</Label>
                                 } */}
-                                <Button key={'button.' + minioUpload.objectName} onClick={() => { minioDelete({variables: {objectName: minioUpload.objectName, allowedStudies, allowedSites}}) }}>Delete</Button>
+                                <Button compact attached='right' color='red' icon='trash' key={'button.' + minioUpload.objectName} onClick={() => { minioDelete({variables: {objectName: minioUpload.objectName}}) }}/>
+                                <Divider />
+
                             </List.Item>
                         </div>
                     })}
