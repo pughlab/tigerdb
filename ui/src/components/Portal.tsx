@@ -12,6 +12,7 @@ import About from './pages/About'
 import LoginModal from './authentication/LoginModal'
 import Projects from './pages/Projects'
 import Datasets from './pages/Datasets'
+import Runs from './pages/Runs'
 import Explore from './pages/Explore'
 import DataExports from './pages/DataExports'
 import Metadata from './pages/Metadata'
@@ -42,15 +43,28 @@ function Layout ({}) {
     
     <Sticky>
       <Menu size='huge'>
-        <Menu.Menu position='left' >
+        {/* <Menu.Menu position='left' >
           <div>
           <a onClick={() => keycloakRefreshToken(keycloak, setKeycloakToken) }><Logo size='small' /></a>
-          {/* {process.env.NODE_ENV !== 'production' ? process.env.NODE_ENV : ''} */}
           </div>
         </Menu.Menu>
         <Menu.Menu position='right'>
         <Header style={{margin: 10}}>
           TCR-DB
+        </Header>
+        </Menu.Menu> */}
+        <Menu.Menu position='left' >
+          <div>
+          <Link to="/">
+          <Logo size='small' />
+
+          </Link>
+          {/* {process.env.NODE_ENV !== 'production' ? process.env.NODE_ENV : ''} */}
+          </div>
+        </Menu.Menu>
+        <Menu.Menu position='right'>
+        <Header style={{margin: 10}}>
+          TIGERdb
         </Header>
         </Menu.Menu>
 
@@ -78,21 +92,21 @@ export default function Portal () {
   // console.log(location)
   const [meMutationState] = useKeycloakMeMutation()
   let routes = [
-    {path: 'projects', icon: 'folder open', element: <Projects />},
-    // {path: 'runs', icon: 'paper plane', element: <Datasets />},
+    {path: 'data', icon: 'database', description: 'upload MiXCR data', element: <Projects />},
+    {path: 'analysis', icon: 'react', description: 'run GLIPH analysis', element: <Runs />},
     // {path: 'datasets', icon: 'database', element: <Datasets />},
     // {path: 'explore', icon: 'search', element: <Explore />},
     // {path: 'export', icon: 'download', element: <DataExports />},
     // {path: 'metadata', icon: 'search plus', element: <Metadata />},
-    {path: 'annotations', icon: 'certificate', element: <Annotations/>}
+    {path: 'search', icon: 'certificate', description: 'global CDR3 search', element: <Annotations/>}
   ]
 
   const const_adminRole = 'role|allowedRoles|admin'
   const const_resource = 'pibu-app'
   const { keycloak } = useKeycloak()
   if (keycloak.hasResourceRole(const_adminRole, const_resource)) {
-    routes.push({path: 'adminUsers', icon: 'chain', element: <AdminUsers />})
-    routes.push({path: 'adminData', icon: 'dot circle', element: <AdminData />})
+    routes.push({path: 'adminUsers', icon: 'chain', description: 'update user controls',element: <AdminUsers />})
+    routes.push({path: 'adminData', icon: 'dot circle', description: 'update data controls', element: <AdminData />})
   }
 
   return (
@@ -107,10 +121,10 @@ export default function Portal () {
               <Route key='home' path='home/*' element={
                 <>
                   <Segment attached='top'>
-                  <Step.Group fluid>
+                  <Step.Group size='large' fluid>
                     {routes.map(
-                      ({path, icon}) => (
-                        <Step key={path} description={path} icon={icon} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`home/${path}`)} />
+                      ({path, icon, description}) => (
+                        <Step key={path} title={path} description={description} icon={icon} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`home/${path}`)} />
                       )
                     )}
                   </Step.Group>
