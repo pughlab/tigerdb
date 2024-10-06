@@ -34,6 +34,10 @@ export const resolvers = {
           createdOn
           isPublic
           description
+          datasets {
+            datasetID
+            name
+          }
           createdBy {
             keycloakUserID
             name
