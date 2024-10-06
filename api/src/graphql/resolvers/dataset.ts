@@ -6,86 +6,94 @@ export const resolvers = {
 
   },
   Mutation: {
-    createDataset: async (
+    createDatasetWithMinioBucket: async (
       parent,
-      {projectID, tags, name, description },
+      {projectID, tags, name },
       { driver, ogm, minioClient }
     ) => {
       try {
         const DatasetModel = ogm.model("Dataset")
 
         const datasetInput = {
-          name, description, tags, fromProject: {connect: {where: {node: {projectID}}}},
+          name, tags, project: {connect: {where: {node: {projectID}}}},
         }
-        const { Datasets: [Dataset] } = await DatasetModel.create({ input: [datasetInput] })
-        const { datasetID } = Dataset
+        const { datasets: [dataset] } = await DatasetModel.create({ input: [datasetInput] })
+        const { datasetID } = dataset
         const bucketName = `dataset-${datasetID}`
         await makeBucket(minioClient, bucketName)
 
         const ProjectModel = ogm.model('Project')
-        const { project } = await ProjectModel.find({
-          where: { id: projectID }
+        // const { projects: [project] } = await ProjectModel.find({
+        //   where: { id: projectID }
+        // })
+
+        // if(!project) {
+        //   throw new Error('Project not found')
+        // }
+
+        // await project.update({
+        //   where: {projectID},
+        //   connect: {datasets: {where: {node: {datasetID}}}}
+        // })
+
+        const { projects: [project] } = await ProjectModel.update({
+          where: { projectID },
+          connect: { datasets: { where: { node: { datasetID } } } }
         })
 
-        if(!project) {
-          throw new Error('Project not found')
-        }
+        // await DatasetModel.update({
+        //   where: {datasetID}
+        // })
 
-        await project.update({
-          where: {projectID},
-          connect: {Datasets: {where: {node: {datasetID}}}}
-        })
+        return dataset
 
-        await DatasetModel.update({
-          where: {datasetID}
-        })
-        return Dataset
       } catch (error) {
-        console.log('createDataset', error)
-        throw new ApolloError('createDataset', error as string)
+        console.log('createDatasetWithMinioBucket', error)
+        throw new ApolloError('createDatasetWithMinioBucket', error as string)
       }
     },
-    updateDataset: async (
-      parent,
-      {
-        datasetID,
-        name,
-        filename,
-        tags,
-        runs,
-        projects
-      },
-      {ogm}
-    ) => {
-      const DatasetModel = ogm.model('Dataset')
-      const datasetInput = { name, filename, tags }
+    //  undetermined if we will allow updating datasets:
+    // updateDataset: async (
+    //   parent,
+    //   {
+    //     datasetID,
+    //     name,
+    //     filename,
+    //     tags,
+    //     runs,
+    //     projects
+    //   },
+    //   {ogm}
+    // ) => {
+    //   const DatasetModel = ogm.model('Dataset')
+    //   const datasetInput = { name, filename, tags }
 
-      const dataset = await DatasetModel.find({
-        where: { id: datasetID }
-      })
+    //   const dataset = await DatasetModel.find({
+    //     where: { id: datasetID }
+    //   })
 
-      if (!dataset) {
-        throw new Error('Dataset not found')
-      }
+    //   if (!dataset) {
+    //     throw new Error('Dataset not found')
+    //   }
 
-      await dataset.update({
-        input:[{
-          datasetInput,
-          runs: {
-            connect: runs.map((run: any) => ({
-              where: { node: { run }}
-            }))
-          },
-          projects: {
-            connect: projects.map((project: any) => ({
-              where: { node: { project }}
-            }))
-          }
-        }]
-      })
+    //   await dataset.update({
+    //     input:[{
+    //       datasetInput,
+    //       runs: {
+    //         connect: runs.map((run: any) => ({
+    //           where: { node: { run }}
+    //         }))
+    //       },
+    //       projects: {
+    //         connect: projects.map((project: any) => ({
+    //           where: { node: { project }}
+    //         }))
+    //       }
+    //     }]
+    //   })
 
-      return dataset.records[0].get(0).properties
-    }
+    //   return dataset.records[0].get(0).properties
+    // }
   },
 
   Dataset: {
@@ -100,7 +108,7 @@ export const resolvers = {
         }
       } catch (error) {
         console.log(error)
-        throw new ApolloError('Dataset.miniobucket', error as string)
+        throw new ApolloError('dataset.minioBucket', error as string)
       }
     }
   },

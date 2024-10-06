@@ -1,15 +1,15 @@
 type Dataset {
     datasetID: ID! @id
-    name: String!
-    size: Int
-    filename: String
+    name: String! # filename without extension
+    # size: Int # will be stored in minio upload schema
+    # filename: String # will be stored in minio upload schema
     minioBucket: MinioBucket @relationship(type: "HAS_MINIO_BUCKET", direction: OUT)
 
     # custom createDatasetWithUploads makes adding timestamps difficult for autogeneration
     createdOn: DateTime! @timestamp(operations: [CREATE])
     tags: [String]
-    runs: [Run!]! @relationship(type: "HAS_RUN", direction: OUT)
-    projects: [Project!]! @relationship(type: "HAS_DATASET", direction: OUT)
+    # runs: [Run!]! @relationship(type: "HAS_RUN", direction: OUT)
+    project: Project! @relationship(type: "HAS_DATASET", direction: IN)
     # updatedAt: DateTime! @timestamp(operations: [UPDATE])
 
 }
@@ -17,24 +17,26 @@ type Dataset {
 input DatasetInput {
     datasetID: ID!
     name: String
-    filename: String
+    # filename: String
     tags: [String]
 }
 
 type Mutation {
     # Custom resolver for uploading files and creating nodes to account for them
-    createDataset(
+    createDatasetWithMinioBucket(
         projectID: ID!
         name: String!
-        filename: String
+        # filename: String
         tags: [String]
     ): Dataset!,
-    updateDataset(
-        datasetID: ID!
-        name: String
-        description: String
-        tags: [String]
-    ): Dataset!
+
+    # undetermined if we will allow updating datasets:
+    # updateDataset(
+    #     datasetID: ID!
+    #     name: String
+    #     description: String
+    #     tags: [String]
+    # ): Dataset!
 }
 
 extend type Dataset @auth(
