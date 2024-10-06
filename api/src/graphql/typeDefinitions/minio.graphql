@@ -31,8 +31,8 @@ type MinioUpload {
   # rawdataFileDataset: Dataset @relationship(type: "HAS_RAWDATAFILE", properties: "HasRawdatafile", direction: IN)
   # codeBookDataset: Dataset @relationship(type: "HAS_CODEBOOK", properties: "HasCodebook", direction: IN)
 
-  pairedCodebook: MinioUpload @relationship(type: "HAS_PAIRED_RAWDATAFILE", properties: "HasPairedRawdatafile", direction: OUT)
-  pairedRawdataFile: MinioUpload @relationship(type: "HAS_PAIRED_CODEBOOK", properties: "HasPairedCodebook", direction: OUT)
+  # pairedCodebook: MinioUpload @relationship(type: "HAS_PAIRED_RAWDATAFILE", properties: "HasPairedRawdatafile", direction: OUT)
+  # pairedRawdataFile: MinioUpload @relationship(type: "HAS_PAIRED_CODEBOOK", properties: "HasPairedCodebook", direction: OUT)
 
   # fromExportTask: Task @relationship(type: "FROM_FUNNEL_TASK", direction: IN)
 }
@@ -43,13 +43,13 @@ extend type MinioUpload @auth(
     }]
 )
 
-interface HasPairedRawdatafile @relationshipProperties {
-    validated: Boolean!
-}
+# interface HasPairedRawdatafile @relationshipProperties {
+#     validated: Boolean!
+# }
 
-interface HasPairedCodebook @relationshipProperties {
-    validated: Boolean!
-}
+# interface HasPairedCodebook @relationshipProperties {
+#     validated: Boolean!
+# }
 
 type MinioBucket {
   bucketName: ID!

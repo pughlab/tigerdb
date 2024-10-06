@@ -73,7 +73,7 @@ export const resolvers = {
   Query: {
   },
   Mutation: {
-    minioUploadFile: async (obj, { bucketName, file, rawDatasetID, allowedStudies, allowedSites }, { driver }) => {
+    minioUploadFile: async (obj, { bucketName, file, datasetID }, { driver }) => {
       try {
         const { filename, mimetype, encoding, createReadStream } = await file
         const objectName = uuidv4()
@@ -81,10 +81,12 @@ export const resolvers = {
         let filenameExt = filename
         let stream = createReadStream()
 
-        if (extname(filename) != ".gz") {
-          stream = createReadStream().pipe(zlib.createGzip())
-          filenameExt = filename.concat(".gz") 
-        }
+
+        // might need if we're using gzipped files; check if file is gzipped and gzip if not:
+        // if (extname(filename) != ".gz") {
+        //   stream = createReadStream().pipe(zlib.createGzip())
+        //   filenameExt = filename.concat(".gz") 
+        // }
         
         // assume file is already gzipped:
         // const stream = createReadStream()
@@ -97,13 +99,11 @@ export const resolvers = {
         const session = driver.session()
         const createMinioUpload = await session.run(
           `
-          MATCH (rd:RawDataset {rawDatasetID: "${rawDatasetID}"})
-          MERGE (rd)-[:HAS_FILE]->(a:MinioUpload {bucketName: $bucketName, objectName: "${objectName}", filename: $filenameExt})
-          SET a.allowedStudies = $allowedStudies
-          SET a.allowedSites = $allowedSites
+          MATCH (d:Dataset {datasetID: "${datasetID}"})
+          MERGE (d)-[:HAS_FILE]->(a:MinioUpload {bucketName: $bucketName, objectName: "${objectName}", filename: $filenameExt})
           RETURN a
           `,
-          { bucketName, filenameExt, allowedStudies, allowedSites }
+          { bucketName, filenameExt }
         )
         // console.log(createMinioUpload.records[0].get(0).properties)
         const minioUpload = createMinioUpload.records[0].get(0)
