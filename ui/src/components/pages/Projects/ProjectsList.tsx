@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { useEffect, useReducer, useState } from 'react'
-import { Button, Form, Header, Label, Input, Segment, Dropdown, Message, List, Divider, Modal, Grid } from 'semantic-ui-react'
+import { Loader, Dimmer, Form, Header, Label, Input, Segment, Dropdown, Message, List, Divider, Modal, Grid } from 'semantic-ui-react'
 
 // import GeographyVisualization from '../../visualizations/geography/GeographyVisualization'
 
@@ -13,7 +13,7 @@ import useProjectsQuery from '../../../hooks/useProjectsQuery'
 import AddProjectModal from './AddProjectModal'
 
 function ProjectsListItem({ project }) {
-	const { projectID, name, description, createdBy } = project
+	const { projectID, name, description, createdBy, datasets } = project
 	console.log(createdBy)
 	const { navigate } = useRouter()
 	return (
@@ -25,13 +25,17 @@ function ProjectsListItem({ project }) {
 				<List.Content>
 					<List.Header as={Header}>
 						{`${name}`}
-						<Header.Subheader content={createdBy.name} />
+						<Label content='Project' />
+						<Header.Subheader content={createdBy.email} />
 					</List.Header>
 
 					<List.Description content={description} />
-					{/* <List.Description>
-						<Label content='Datasets' detail={`${datasets.length}`} />
-					</List.Description> */}
+					<List.Description>
+					<Divider/>
+						{
+							(datasets.length > 0) ? datasets.map(dataset => <Label color='blue' key={dataset.datasetID} content={dataset.name} />) : null
+						}
+					</List.Description>
 				</List.Content>
 			</List.Item>
 			<Divider horizontal hidden />
@@ -68,30 +72,41 @@ export default function ProjectsList({
 					<GeographyVisualization cityMarkers={allStudySites}/>
 				</Grid.Column> */}
 				<Grid.Column>
-					<Message>
-						Projects
 
-						<Divider horizontal />
+					<Divider horizontal content='Projects' />
+					<Segment basic>
 						<AddProjectModal refetch={refetch} />
-					</Message>
+						</Segment>					
 					<Form>
 						<Form.Field
 							control={Input}
-							label='Search'
+							label='Search projects'
 							placeholder='Names and descriptions'
 						// value={description}
 						// onChange={(e, {value}) => dispatch({type: 'SET_DESCRIPTION', description: value})}
 						/>
 					</Form>
 					{
+					(loading) ?  
+					<>
+					<Segment placeholder textAlign='center'>
+						{/* <Icon size='massive' name='react' loading /> */}
+						<Dimmer active inverted>
+							<Loader size='large'>Loading...</Loader>
+						</Dimmer>
+					</Segment>
+					</>
+					:
 					(projects.length === 0) ?
 					<Label>No projects available. Add a project above or ask your administrator to update your permissions.
 					</Label> :
-					<List relaxed='very' selection size='large'>
-						{
-							projects.map(project => <ProjectsListItem key={project.projectID} {...{ project }} />)
-						}
-					</List>
+					<Segment placeholder>
+						<List relaxed='very' selection size='large'>
+							{
+								projects.map(project => <ProjectsListItem key={project.projectID} {...{ project }} />)
+							}
+						</List>
+					</Segment>
 					}
 				</Grid.Column>
 			</Grid>

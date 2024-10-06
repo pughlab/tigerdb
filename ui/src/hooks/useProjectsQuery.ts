@@ -8,9 +8,10 @@ export default function useProjectsQuery() {
 				projectID
 				name
 				description
-				# datasets {
-				# 	datasetID
-				# }
+				datasets {
+					datasetID
+					name
+				}
 				createdBy {
 					keycloakUserID
 					email

@@ -5,7 +5,9 @@ import { Button, Form, Header, Label, Input, Segment, Dropdown, Message, List, D
 
 import { useParams } from 'react-router-dom'
 
-import DatasetDetails from '../Datasets/DatasetDetails'
+import DatasetDetailsModal from '../Datasets/DatasetDetailsModal'
+import AddDatasetModal from '../Datasets/AddDatasetModal'
+import DatasetsList from '../Datasets/DatasetsList'
 import useProjectDetailsQuery from '../../../hooks/useProjectDetailsQuery'
 
 export default function ProjectDetails() {
@@ -23,9 +25,14 @@ export default function ProjectDetails() {
 		<Grid columns={1}>
 			<Grid.Column>
 				<Message>
-					<Header content={name} subheader={createdBy.name} />
+				<Divider horizontal content='Project Details' />
+
+					<Header content={name} subheader={createdBy.email} />
 					<Message content={description} />
 					<Divider horizontal />
+					</Message>
+
+					{/* should be eventually list of datasets: */}
 					{/* <Label.Group>
 					{projectSites.map(({cityID, city, country, latitude, longitude }) => (
 						<Label key={cityID} basic>
@@ -33,8 +40,7 @@ export default function ProjectDetails() {
 						</Label>
 					))}
 					</Label.Group> */}
-				</Message>
-				<DatasetDetails/>
+					<DatasetsList projectID={projectID} />
 			</Grid.Column>
 		</Grid>
 	)

@@ -2,7 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import * as React from "react";
 import { Button, Form, Input, Modal, TextArea } from "semantic-ui-react";
 
-export default function AddProjectModal() {
+export default function AddProjectModal({refetch}) {
   const [name, setName]= React.useState('')
   const [description, setDescription]= React.useState('')
   const [open, setOpen] = React.useState(false);
@@ -19,8 +19,8 @@ export default function AddProjectModal() {
         createdOn
         isPublic
       }
-    }
-  `)
+    }`, {onCompleted: () => { refetch() }}
+  )
 
   return (
     <Modal
@@ -28,7 +28,7 @@ export default function AddProjectModal() {
       onClose={() => setOpen(!open)}
       size="large"
       trigger={
-        <Button content="Add a project" onClick={() => setOpen(!open)} />
+        <Button fluid icon='plus' color='black' size='large' onClick={() => setOpen(!open)} />
       }
     >
       <Modal.Content>
@@ -53,6 +53,8 @@ export default function AddProjectModal() {
         <Button content='Add project' loading={loading} onClick={async () => {
           await createProject({variables: {name, description} })
           setOpen(!open)
+          setDescription('')
+          setName('')
         }}/>
       </Modal.Actions>
     </Modal>
