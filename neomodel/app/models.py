@@ -1,6 +1,6 @@
 from neomodel import (
     StructuredNode, StringProperty, UniqueIdProperty,
-    DateTimeProperty
+    DateTimeProperty, ArrayProperty
 )
 
 
@@ -8,9 +8,9 @@ class Run(StructuredNode):
     __primarykey__ = 'run_id'
 
     run_id = UniqueIdProperty()
-    dataset_ids = StringProperty()
-    wes_id = UniqueIdProperty(required=True)
-    project_id = UniqueIdProperty(required=True)
+    dataset_ids = ArrayProperty(StringProperty())
+    wes_id = UniqueIdProperty()
+    project_id = UniqueIdProperty()
     status = StringProperty()
     created_on = DateTimeProperty(default_now=True)
     submitted_on = DateTimeProperty()

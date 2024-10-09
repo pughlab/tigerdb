@@ -2,8 +2,10 @@ import datetime
 
 import graphene
 
+import app.schema as schema
 from .models import Run as RunModel
-from .schema import Run
+# from .schema import Run
+
 
 
 class SubmitRun(graphene.Mutation):
@@ -13,7 +15,7 @@ class SubmitRun(graphene.Mutation):
         dataset_ids = graphene.List(graphene.String)
         project_id = graphene.ID()
     
-    run = graphene.Field(lambda: Run)
+    run = graphene.Field(lambda: schema.Run)
 
     def mutate(self, info, run_id, wes_id, dataset_ids, project_id):
         run = RunModel.get_one_by_id(run_id)
@@ -31,4 +33,4 @@ class SubmitRun(graphene.Mutation):
                 status='pending'
             )
         run.save()
-        return SubmitRun(run=Run(**run.as_dict()))
+        return SubmitRun(run=schema.Run(**run.as_dict()))
