@@ -15,3 +15,11 @@ api/src/funnel/inputs
 neo4j
 nginx/certs
 minio
+
+.vscode
+
+# python ignore
+**/*.py[cod]
+**/__pycache__
+**/*.so
+
