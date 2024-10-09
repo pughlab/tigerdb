@@ -4,7 +4,7 @@ from graphene import Schema
 from neomodel import config
 from starlette_graphene3 import GraphQLApp, make_graphiql_handler
 
-from .schema import Mutation
+from .schema import schema
 from .settings import (
     NEO4J_HOST,
     NEO4J_PASSWORD,
@@ -24,6 +24,6 @@ def create_app():
         allow_methods=['POST'],
         allow_headers=['*']
     )
-    app.mount('/', GraphQLApp(schema=Schema(mutation=Mutation), on_get=make_graphiql_handler()))
+    app.mount('/', GraphQLApp(schema=schema, on_get=make_graphiql_handler()))
     
     return app
