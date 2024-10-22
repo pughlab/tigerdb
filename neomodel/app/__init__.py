@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from graphene import Schema
 from neomodel import config
@@ -22,7 +22,8 @@ def create_app():
         CORSMiddleware,
         allow_origins=['*'],
         allow_methods=['POST'],
-        allow_headers=['*']
+        allow_headers=['*'],
+        allow_credentials=True,
     )
     app.mount('/', GraphQLApp(schema=schema, on_get=make_graphiql_handler()))
     
