@@ -52,7 +52,7 @@ export default function LoginModal ({}) {
       {...{open}}
       closeIcon
       onClose={() => setOpen(!open)}
-      closeOnDimmerClick={true}
+      closeOnDimmerClick={false}
     >
       <Modal.Content>
       {/* put logout here */}
@@ -69,7 +69,7 @@ export default function LoginModal ({}) {
           </Segment>
           <Segment>
             <Button
-              fluid color='blue' size='massive'
+              fluid color='facebook' size='massive'
               content='Login'
               onClick={() => keycloak.login()}
             />

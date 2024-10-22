@@ -40,7 +40,9 @@ export default function LoginModal ({}) {
         <Menu.Item
           id={LOGIN_MENU_ELEMENT_ID}     
           header
+          // color='blue'
           icon='user'
+          content={email}
           onClick={() => {keycloakRefreshToken(keycloak, R.identity); setOpen(!open)}}
         />
       }
@@ -52,7 +54,7 @@ export default function LoginModal ({}) {
       {...{open}}
       closeIcon
       onClose={() => setOpen(!open)}
-      closeOnDimmerClick={true}
+      // closeOnDimmerClick={false}
     >
       <Modal.Content>
       {/* put logout here */}
@@ -70,7 +72,7 @@ export default function LoginModal ({}) {
           </Segment>
           <Segment>
             <Button
-              fluid color='grey' size='massive'
+              fluid color='google plus' size='massive'
               content='Logout'
               onClick={() => keycloak.logout()}
             />
