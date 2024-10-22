@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { useCallback, useState, useReducer } from 'react'
 import * as React from 'react'
-import { Button, Form, Dropdown, Label, Input, Segment, Container, Message, List, Divider, Modal, Grid } from 'semantic-ui-react'
+import { Button, Form, Icon, Label, Input, Segment, Container, Message, List, Divider, Modal, Grid } from 'semantic-ui-react'
 
 import useStudiesQuery from '../../../hooks/useStudiesQuery'
 import { getPermissionRoles } from '../../../state/appContext'
@@ -34,14 +34,23 @@ export default function AddDatasetModal({projectID, refetch}) {
     const [open, setOpen] = useState(false)
     return (
         <Modal
+            closeIcon
+            closeOnDimmerClick={false}
             size='large'
             open={open}
             onClose={() => setOpen(!open)}
             trigger={
-                <Button fluid icon='plus' color='black' size='large' onClick={() => setOpen(!open)} />
+                // <Button fluid icon='plus' color='black' size='large' onClick={() => setOpen(!open)} />
+                <Button fluid size='large' color='black' animated='vertical' onClick={() => setOpen(!open)}>
+                    <Button.Content visible>
+                        <Icon name='plus'/>
+                    </Button.Content>
+                    <Button.Content hidden content="Add a new dataset"/>
+                </Button>
             }
         >
             <Modal.Content>
+                <Divider horizontal content='NEW DATASET'/>
                 <Form loading={mutationLoading}>
                     <Form.Field
                         control={Input}
@@ -68,7 +77,7 @@ export default function AddDatasetModal({projectID, refetch}) {
                     disabled={!Object.values(state).every(v => !!v)}
                 /> */}
                 <Segment basic textAlign='center'>
-                <Button fluid color='blue' content="Add dataset" 
+                <Button fluid color='blue' content="CREATE DATASET" 
                 loading={mutationLoading} onClick={() => {mutation({ variables: state }); setOpen(!open); dispatch({ type: 'setName', payload: { name: '' } })}}
                 // Check that reducer state has neither empty string nor null using coercion
                 disabled={!Object.values(state).every(v => !!v)}

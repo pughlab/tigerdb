@@ -1,6 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import * as React from "react";
-import { Button, Form, Input, Modal, TextArea } from "semantic-ui-react";
+import { Button, Form, Input, Modal, TextArea, Icon, Divider } from "semantic-ui-react";
 
 export default function AddProjectModal({refetch}) {
   const [name, setName]= React.useState('')
@@ -24,14 +24,23 @@ export default function AddProjectModal({refetch}) {
 
   return (
     <Modal
+      closeIcon
+      closeOnDimmerClick={false}
       open={open}
       onClose={() => setOpen(!open)}
       size="large"
       trigger={
-        <Button fluid icon='plus' color='black' size='large' onClick={() => setOpen(!open)} />
+        // <Button fluid icon='plus' color='black' size='large' onClick={() => setOpen(!open)} />
+        <Button fluid size='large' color='black' animated='vertical' onClick={() => setOpen(!open)}>
+            <Button.Content visible>
+                <Icon name='plus'/>
+            </Button.Content>
+            <Button.Content hidden content="Add a new project"/>
+        </Button>
       }
     >
       <Modal.Content>
+        <Divider horizontal content='NEW PROJECT'/>
         <Form>
           <Form.Field 
             control={Input}
@@ -50,7 +59,7 @@ export default function AddProjectModal({refetch}) {
         </Form>
       </Modal.Content>
       <Modal.Actions>
-        <Button content='Add project' loading={loading} onClick={async () => {
+        <Button fluid color='facebook' content='CREATE PROJECT' loading={loading} onClick={async () => {
           await createProject({variables: {name, description} })
           setOpen(!open)
           setDescription('')
