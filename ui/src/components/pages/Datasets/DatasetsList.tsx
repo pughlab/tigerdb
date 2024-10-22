@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { useCallback, useEffect, useState } from 'react'
 import * as React from 'react'
-import { Loader, Dimmer, Form, Header, Label, Input, Segment, Container, Message, List, Divider, Modal, Grid, Dropdown } from 'semantic-ui-react'
+import { Loader, Dimmer, Form, Header, Label, Input, Segment, Icon, Message, List, Divider, Modal, Container, Dropdown } from 'semantic-ui-react'
 // import useRouter from '../../../hooks/useRouter'
 import useDatasetsQuery from '../../../hooks/useDatasetsQuery'
 
@@ -23,7 +23,10 @@ function DatasetListItem({ dataset }) {
         // onClick={() => navigate(`dataset/${datasetID}`)}
         onClick={() => setMinioBucketOpen(!isMinioBucketOpen)}
       >
-        <List.Content floated='right' as={Segment} basic>
+        <List.Content floated='right' basic>
+          <Icon size='large' name={isMinioBucketOpen ? 'chevron up' : 'chevron down'} />
+        </List.Content>
+        <List.Content floated='right' basic>
 
         </List.Content>
         <List.Content>
@@ -31,7 +34,7 @@ function DatasetListItem({ dataset }) {
           {`${name}`}
 
           {/* <List.Header as={Header} content={`${name}`} /> */}
-          <Label content='Project' detail={project.name} />
+          <Label content='Dataset' color='blue' />
         </List.Header>
         <Divider />
         <Label content='Tags' />
@@ -85,6 +88,7 @@ export default function DatasetsList({ projectID }) {
               onChange={(e, { value }) => setSearchText(value)}
             />
           </Form>
+          <Divider horizontal />
 
           {
 					(loading) ?  
@@ -100,6 +104,8 @@ export default function DatasetsList({ projectID }) {
 					(datasets.length === 0) ?
 					<Label>No datasets available. Add a dataset above or ask your administrator to update your permissions.
 					</Label> :
+          <Container>
+
           <List selection size='large' key='dataset'>
           {
             datasets.map(dataset => (
@@ -107,6 +113,8 @@ export default function DatasetsList({ projectID }) {
             ))
           }
           </List>
+          </Container>
+
           }
 
         </Message>
