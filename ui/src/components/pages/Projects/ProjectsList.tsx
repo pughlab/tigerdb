@@ -19,13 +19,13 @@ function ProjectsListItem({ project }) {
 	return (
 		<>
 			<List.Item as={Segment} onClick={() => { navigate(projectID) }}>
-				<List.Content floated='right' as={Segment} basic>
+				{/* <List.Content floated='right' as={Segment} basic>
 
-				</List.Content>
+				</List.Content> */}
 				<List.Content>
 					<List.Header as={Header}>
 						{`${name}`}
-						<Label content='Project' />
+						<Label content='Project' style={{backgroundColor: "#3B5998", color: "white"}} />
 						<Header.Subheader content={createdBy.email} />
 					</List.Header>
 
