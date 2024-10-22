@@ -60,7 +60,7 @@ export default function useMinioUploadMutation(postFn: any) {
     })
     
 
-    return {state, dispatch, mutation: minioUploadFile}
+    return {state, dispatch, mutation: minioUploadFile, loading, error}
     
 }
   
