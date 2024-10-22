@@ -20,6 +20,8 @@ import { KeycloakSchemaDirectives } from 'keycloak-connect-graphql'
 
 import KcAdminClient from '@keycloak/keycloak-admin-client';
 import { gql } from 'apollo-server'
+import { WesAPI } from './wesAPI'
+import { dockerService } from './docker'
 
 // Specify host, port and path for GraphQL endpoint
 const graphqlPort = process.env.GRAPHQL_SERVER_PORT || 4001
@@ -49,6 +51,8 @@ export const createApolloServer = async () => {
   schema = applyDirectiveTransformers(schema)
   
   let config = schema.toConfig()
+  // const ogm = new OGM({typeDefs, driver, resolvers})
+  // ogm.init()
 
   const apolloServer = new ApolloServer({
     context: async ({req, res}) => {
@@ -58,7 +62,9 @@ export const createApolloServer = async () => {
       const jwt = kauth?.accessToken?.content
   
       // console.log(`kauth: ${kauth.accessToken}`);
-      
+      // console.log("Request Headers:", req.headers);
+      // console.log("OGM instance:", ogm);
+
       const ogm = new OGM({typeDefs, driver, resolvers})
       ogm.init()
 
@@ -114,9 +120,10 @@ export const createApolloServer = async () => {
         //   if (!allowedWithoutTOS.includes(queryName))
         //   throw new Error(`Access denied. User [${email} / ${sub}] has not accepted the TOS. Please accept the TOS to gain access.`)
         // }
-      } else {
-        throw new Error(`Access denied. Keycloak auth token required to access graphql. Please login with keycloak.`)
       }
+      // } else {
+      //   throw new Error(`Access denied. Keycloak auth token required to access graphql. Please login with keycloak.`)
+      // }
 
 
       return {
@@ -127,9 +134,13 @@ export const createApolloServer = async () => {
         ogm,
         jwt,
         kcAdminClient,
+        // dockerService
       }
     },
     schema: schema,
+    dataSources: () => ({
+        wesAPI: new WesAPI(),
+    }),
     introspection: true,
     playground: true,
     uploads: false,
