@@ -6,8 +6,15 @@ import app.schema as schema
 from .models import Run as RunModel
 # from .schema import Run
 
-from bson.objectid import ObjectId
-from os import environ, remove
+from os import getenv, remove
+from pathlib import Path
+from dotenv import load_dotenv
+
+dotenv_path = Path('../.env')
+load_dotenv(dotenv_path=dotenv_path)
+# from werkzeug.datastructures import FileStorage
+
+# from bson.objectid import ObjectId
 
 import sys
 import json
@@ -16,19 +23,42 @@ from wes_client import util
 from wes_client.util import modify_jsonyaml_paths
 
 from minio import Minio
-from minio.error import ResponseError
+# from minio.error import ResponseError
+# from minio.error import S3Error
+
 
 import socket
 
-def makeGLIPHJob(run_id, run):
-    if (environ["GRAPHENE_DEV"] == "False"):
-        with open('/app/src/schema/minioIP.txt', 'r') as file:
+def makeGLIPHJob(runID, run):
+    if (getenv("GRAPHENE_DEV") == "False"):
+        with open('/app/src/minioIP.txt', 'r') as file:
             minioIP = file.read().replace('\n', '')
     else:
+        # minioIP = getenv("MINIO_IP")
         minioIP = "host.docker.internal"
-    
+        # minioIP = "172.17.0.2"
+        # minioIP = "localhost"
+        # minioIP = "10.0.0.97"
+
+    # print(run.as_dict())
+    # get runParameters from run
+    runParameters = run.runParameters
+    print("RUN PARAMS:")
+    print(runParameters)
+
     minioInputPaths = []
-    minioInputPaths.append("minio/run-" + run_id)
+    for upload in run.minioUploads:
+        minioInputPaths.append("minio/"+upload.bucketName)
+    minioInputPaths.append("minio/run-" + run.runID)
+
+    print(minioInputPaths)
+
+    # # Add paths to pull from minio
+    # minioInputPaths = []
+    # for id in run['datasetIDs']:
+    #     minioInputPaths.append("minio/dataset-" + str(id))
+    # # This must also be read from to retrieve datasets.csv and script
+    # minioInputPaths.append("minio/run-" + runId)
 
     # Filling in structure
     job = {
@@ -37,68 +67,77 @@ def makeGLIPHJob(run_id, run):
         # "pvalue_cutoff" : 0.05,
         # "fdr_cutoff" : 0.1,
 
-        "minioInputPath": minioInputPaths,
-        "destinationPath": "minio/run-" + run_id, 
-        "access_key": environ["MINIO_ACCESS_KEY"],
-        "secret_key": environ["MINIO_SECRET_KEY"],
-        "minio_domain": minioIP,
-        "minio_port": environ["MINIO_HOST_PORT"]
+        # "minioInputPath": minioInputPaths,
+        "minioInputPath": "minio/run-" + runID, 
+        # "destinationPath": "run-" + runID, 
+        "destinationPath": "minio/run-" + runID, 
+        "access": getenv("MINIO_ROOT_USER"),
+        "secret": getenv("MINIO_ROOT_PASSWORD"),
+        "domain": minioIP,
+        "port": getenv("MINIO_API_PORT")
     }
     return job
 
-def minioUpload(script_name, script_path, json_path, run_id, csv_path=None):
+def minioUpload(script_name, script_path, json_path, runID, csv_path=None):
     # Attempting to upload all relevant files neccesary for this run to the run bucket
     try:
         # Connect to minio
-        minioEndpoint = 'minio:' + environ["MINIO_HOST_PORT"]
-        minioClient = Minio(minioEndpoint, environ["MINIO_ACCESS_KEY"], environ["MINIO_SECRET_KEY"], secure=False)
+        minioEndpoint = getenv("MINIO_IP")+':'+ getenv("MINIO_API_PORT")
+        minioClient = Minio(minioEndpoint, getenv("MINIO_ROOT_USER"), getenv("MINIO_ROOT_PASSWORD"), secure=False)
 
         # Upload files to bucket
-        bucket = "run-" + run_id
+        bucket = "run-" + runID
         minioClient.fput_object(bucket, 'tigerdb_gliph_inputs.json', json_path)
 
-        minioClient.fput_object(bucket, 'Runs_GLIPH_v1.R', script_path)
+        # minioClient.fput_object(bucket, 'GLIPHII_Analysis.R', script_path)
+        minioClient.fput_object(bucket, 'parameter_file.txt', script_path)
+
         
         # Check if at least one sent corretly
         if minioClient.stat_object(bucket, "tigerdb_gliph_inputs.json") == None:
             return False
         return True
 
-    except:
-        # Catch connection and response errors
-        e = sys.exc_info()[1]
+    except Exception as e:
         print(format(e))
         return False
 
 class SubmitRun(graphene.Mutation):
     class Arguments:
-        run_id = graphene.ID()
-        wes_id = graphene.ID()
-        dataset_ids = graphene.List(graphene.String)
-        project_id = graphene.ID()
+        runID = graphene.ID()
+        # dataset_ids = graphene.List(graphene.String)
     
     run = graphene.Field(lambda: schema.Run)
 
-    def mutate(self, info, run_id, wes_id, dataset_ids, project_id):
+    def mutate(self, info, runID):
         try: 
-            run = RunModel.get_one_by_id(run_id)
+            run = RunModel.get_one_by_id(runID)
 
             if run is None:
                 print("Run not found")
                 return "Run not found"
 
-            job = makeGLIPHJob(run_id= run_id, run= run)
+            # print(run.as_dict())
+            # Convert the run to a dictionary and access minioUploads
+            run_dict = run.as_dict()
+            minio_uploads = run_dict.get('minioUploads', [])
+            print(f"MinioUploads: {minio_uploads}")
+            
+            job = makeGLIPHJob(runID= runID, run= run)
 
             # Sending files to minio
             # Create temp json file to send to minio
-            fileName = "frontend_gliph_inputs_" + run_id + ".json"
+            fileName = "frontend_gliph_inputs_" + runID + ".json"
+            print(fileName)
             with open(fileName, 'w') as outfile:
                 json.dump(job, outfile)
                 outfile.close()
             
             # Also upload datasets.csv for multiple datasets
 
-            minio_worked = minioUpload(scriptName = "GLIPHII_Analysis.R", scriptPath= "/app/tcrdb/scripts/GLIPHII_Analysis.R", json_path= fileName, run_id= run_id)
+            minio_worked = minioUpload(script_name = "parameter_file.txt", script_path= "/app/tcr-db/scripts/parameter_file.txt", json_path= fileName, runID= runID)
+            print(minio_worked)
+            
             # Delete temp json file
             remove(fileName)
 
@@ -107,13 +146,13 @@ class SubmitRun(graphene.Mutation):
                 return "minio upload failed"
 
             # Get input paths
-            path_to_cwl = "/app/tcrdb/"
-            path_to_gliph_cwl = "/app/tcrdb/GLIPH/"
+            path_to_cwl = "/app/tcr-db/"
+            path_to_gliph_cwl = "/app/tcr-db/gliph-cwl/"
 
 
             # Set up WESClient object
-            client_object = WESClient(
-                {'auth': '', 'proto': 'http', 'host': environ['WES_SERVER'] + ":" + environ['WES_PORT']}
+            client_object = util.WESClient(
+                {'auth': '', 'proto': 'http', 'host': getenv('WES_SERVER') + ":" + getenv('WES_PORT')}
             )
 
             # Sending request to WES container
@@ -127,15 +166,19 @@ class SubmitRun(graphene.Mutation):
                 path_to_gliph_cwl + "upload-gliph.cwl"]
             )
 
-            run.wes_id = req["run_id"]
-            run.submitted_on = datetime.datetime.now()
+            # req = client_object.run(path_to_gliph_cwl + "cp.cwl", job, [])
+
+            run.wesID = req["run_id"]
+            run.submittedOn = str(datetime.datetime.now().isoformat(timespec='microseconds'))
             run.status = 'submitted'
+            print(run.as_dict())
             run.save()
+
+            # check status: http://localhost:8081/ga4gh/wes/v1/runs/{wesID}
 
             return SubmitRun(run=schema.Run(**run.as_dict()))
             
-        except:
-            e = sys.exc_info()[1]
+        except Exception as e:
             print(format(e))
 
 
@@ -170,8 +213,8 @@ class SubmitRun(graphene.Mutation):
 #             # Also upload datasets.csv for multiple datasets
 
 #             minioWorked = minioUpload(scriptName = "Runs_GSVA.R", scriptPath= "/app/crescent/Script/Runs_GSVA.R", jsonPath= fileName, runId= runId)
-#             # Delete temp json file
-#             remove(fileName)
+            # Delete temp json file
+            # remove(fileName)
 
 #             # Check for errors in connecting/accessing minio
 #             if minioWorked == False:
@@ -184,7 +227,7 @@ class SubmitRun(graphene.Mutation):
 
 #             # Set up WESClient object
 #             clientObject = util.WESClient(
-#                 {'auth': '', 'proto': 'http', 'host': environ['WES_SERVER'] + ":" + environ['WES_PORT']}) # should come from env var
+#                 {'auth': '', 'proto': 'http', 'host': getenv('WES_SERVER') + ":" + getenv('WES_PORT')}) # should come from env var
       
 #             # Sending request to WES container
 #             # All workflow related files must be passed as attachments here, excluding files in minio such as the script and datasets
