@@ -1,15 +1,11 @@
-type AnnotationVariable {
-    annotationVariableID: ID! @id
-    locus: String
-    cdr3b: String
-    trbv: String
+type DatasetVariable {
+    datasetVariableID: ID! @id
+    cdr3b: String!
+    trbv: String!
     trbj: String
-    mhc: String
-    mhcClass: String
-    epitope: String
-    epitopeGene: String
-    epitopeSpecies: String
-    reference: String
+    cdr3a: String
+    subjectcondition: String
+    count: Int
     # Define fields you want to search over here, transformation script must map to this shape
 
     # currentDefinition: DataVariableDefinition! @relationship(type: "HAS_DEFINITION", direction: OUT, properties: "HasDefinition")
@@ -19,7 +15,7 @@ type AnnotationVariable {
     # fields: [DataVariableField!]! @relationship(type: "HAS_FIELD", direction: OUT)
 }
 
-# extend type AnnotationVariable @auth(
+# extend type DatasetVariable @auth(
 #   rules: [{
 #       isAuthenticated: true,
 #     }]
