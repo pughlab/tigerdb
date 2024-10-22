@@ -39,8 +39,8 @@ type Mutation {
     # ): Dataset!
 }
 
-extend type Dataset @auth(
-    rules: [{
-        isAuthenticated: true,
-    }]
-)
+# extend type Dataset @auth(
+#     rules: [{
+#         isAuthenticated: true,
+#     }]
+# )
