@@ -2,7 +2,7 @@ import { ApolloError } from 'apollo-server'
 
 export const resolvers = {
   Query: {
-    getProjects: async (obj, {}, {ogm, kauth})=> {
+    getProjects: async (obj, args, {ogm, kauth})=> {
       try {
         const { sub: keycloakUserID } = kauth.accessToken.content
         const UserModel = ogm.model('KeycloakUser')
@@ -19,6 +19,12 @@ export const resolvers = {
             //{ sharedWith_IN: [user[0]] }
           ]
         }
+
+        // Optionally add projectID to the filters if provided
+        if (args.projectID) {
+          filters.projectID = args.projectID;
+        }
+
         // if (name) {
         //   filters.name = name
         // }

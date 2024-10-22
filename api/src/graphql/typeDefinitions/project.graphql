@@ -28,7 +28,7 @@ input ProjectInput {
 }
 
 type Query{
-  getProjects: [Project]
+  getProjects(projectID: ID): [Project]  # projectID is optional here
 }
 
 type Mutation {
@@ -49,9 +49,9 @@ type Mutation {
     datasets: [DatasetInput!]!
   ): Project!
 }
-
-extend type Project @auth(
-  rules: [{
-      isAuthenticated: true,
-    }]
-)
+# turned off for public but not sure..
+# extend type Project @auth(
+#   rules: [{
+#       isAuthenticated: true,
+#     }]
+# )

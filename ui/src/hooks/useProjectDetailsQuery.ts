@@ -5,7 +5,7 @@ export default function useProjectDetailsQuery({ projectID }: { projectID: strin
 	const [project, setProject] = useState()
 	const { data, loading, error } = useQuery(gql`
 		query ProjectDetails ($projectID: ID!) {
-			projects(where: {projectID: $projectID}) {
+			getProjects(projectID: $projectID) {
 				projectID
 				name
 				description
@@ -23,8 +23,8 @@ export default function useProjectDetailsQuery({ projectID }: { projectID: strin
 		fetchPolicy: 'network-only'
 	})
 	useEffect(() => {
-		if (!!data?.projects && data.projects.length > 0) {
-			setProject(data.projects[0])
+		if (!!data?.getProjects && data.getProjects.length > 0) {
+			setProject(data.getProjects[0])
 		}
 	}, [data])
 	return { project, loading, error }
