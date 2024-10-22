@@ -27,11 +27,9 @@ type CuratedAnnotation {
     curatedAnnotationID: ID! @id
     # createdAt: DateTime! @timestamp(operations: [CREATE])
     # updatedAt: DateTime! @timestamp(operations: [UPDATE])
-    name: String!
-    description: String!
     annotationVariables: [AnnotationVariable!]! @relationship(type: "HAS_ANNOTATION_VARIABLE", direction: OUT)
-
-    generatedByRawDataset: Dataset! @relationship(type: "GENERATED_CURATED_ANNOTATION", direction: IN)
+    dataset: Dataset! @relationship(type: "HAS_CURATED_ANNOTATION", direction: IN)
+    minioUpload: MinioUpload! @relationship(type: "GENERATED_CURATED_ANNOTATION", direction: IN)
 }
 
 type EpitopeSpeciesCount {
@@ -40,23 +38,20 @@ type EpitopeSpeciesCount {
 }
 
 type Mutation {
-    createCuratedAnnotationFromRawDataset(
-        name: String!
-        description: String!
-        rawDatasetID: ID!
-    ): CuratedAnnotation!
+    createCuratedAnnotationFromDataset(
+        datasetID: ID!
+        bucketName: ID!
+        objectName: ID!
+    ): CuratedAnnotation! @hasRole(role: "admin")
 }
 
 type Query {
     countEpitopeSpecies: [EpitopeSpeciesCount]!
+    # getCuratedAnnotations: [CuratedAnnotation]
 }
 
 # extend type CuratedAnnotation @auth(
 #   rules: [{
 #       isAuthenticated: true,
-#       where: {AND: [
-#         {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
-#         {allowedSites: "$jwt.resource_access.pibu-app.roles"},
-#         ]}
 #     }]
 # )

@@ -27,43 +27,45 @@ type CuratedDataset {
     curatedDatasetID: ID! @id
     # createdAt: DateTime! @timestamp(operations: [CREATE])
     # updatedAt: DateTime! @timestamp(operations: [UPDATE])
-    allowedStudies: [String]
-    allowedSites: [String]
-    name: String!
-    description: String!
-    dataVariables: [DataVariable!]! @relationship(type: "HAS_DATA_VARIABLE", direction: OUT)
-    fieldDefinitions: [DataVariableFieldDefinition!]! @relationship(type: "HAS_FIELD_DEFINITION", direction: OUT)
-
-    # funnelTask: Task @relationship(type: "FROM_FUNNEL_TASK", direction: IN)
-
-    generatedByRawDataset: Dataset @relationship(type: "GENERATED_CURATED_DATASET", direction: IN)
-
-    # exportTask: [Task!]! @relationship(type: "HAS_FUNNEL_TASK", direction: OUT)
+    datasetVariables: [DatasetVariable!]! @relationship(type: "HAS_DATASET_VARIABLE", direction: OUT)
+    dataset: Dataset! @relationship(type: "HAS_CURATED_DATASET", direction: IN)
+    processedDataset: ProcessedDataset! @relationship(type: "GENERATED_CURATED_DATASET", direction: IN)
 }
 
+# type Mutation {
+#     createCuratedDatasetFromCSVCodebook(name: String!, 
+#         allowedStudy: String!
+#         allowedSite: String!
+#         rawDatasetID: ID!): Boolean!
+#     createCuratedDatasetFromRawDatasetNew(
+#         rawDatasetID: ID!
+#         rawObjectName: String!
+#         codebookObjectName: String!
+#     ): CuratedDataset
+#     createCuratedDatasetFromRawDataset(
+#         name: String!
+#         description: String!
+#         rawDatasetID: ID!
+#     ): CuratedDataset!
+#         createCuratedDataVariableFromDataset(
+#         name: String!
+#         description: String!
+#         datasetID: ID!
+#     ): CuratedDataset!
+# }
+
+
 type Mutation {
-    createCuratedDatasetFromCSVCodebook(name: String!, 
-        allowedStudy: String!
-        allowedSite: String!
-        rawDatasetID: ID!): Boolean!
-    createCuratedDatasetFromRawDatasetNew(
-        rawDatasetID: ID!
-        rawObjectName: String!
-        codebookObjectName: String!
-    ): CuratedDataset
-    createCuratedDatasetFromRawDataset(
-        name: String!
-        description: String!
-        rawDatasetID: ID!
+    createCuratedDatasetFromDataset(
+        datasetID: ID!
+        bucketName: ID!
+        objectName: ID!
+        selectedDelimiter: String! # New field for delimiter
     ): CuratedDataset!
 }
 
-extend type CuratedDataset @auth(
-  rules: [{
-      isAuthenticated: true,
-      where: {AND: [
-        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
-        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
-        ]}
-    }]
-)
+# extend type CuratedDataset @auth(
+#   rules: [{
+#       isAuthenticated: true,
+#     }]
+# )

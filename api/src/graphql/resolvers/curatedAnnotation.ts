@@ -30,28 +30,60 @@ export const resolvers = {
     }
   },
   Mutation: {
-    createCuratedAnnotationFromRawDataset: async (parent, { name, description, rawDatasetID }, { driver, ogm, minioClient }) => {
+    createCuratedAnnotationFromDataset: async (parent, { datasetID, bucketName, objectName }, { driver, ogm, minioClient }) => {
       try {
+        
+        const inputFields = [
+          { name: 'locus', index: 0 },
+          { name: 'cdr3b', index: 1 },
+          { name: 'trbv', index: 2 },
+          { name: 'trbj', index: 3 },
+          { name: 'mhc', index: 4 },
+          { name: 'mhcClass', index: 5 },
+          { name: 'epitope', index: 6 },
+          { name: 'epitopeGene', index: 7 },
+          { name: 'epitopeSpecies', index: 8 },
+          { name: 'reference', index: 9 }
+        ];
+
+
         // Create model and add a curated dataset node to db
         const CuratedAnnotationModel = ogm.model("CuratedAnnotation")
-        const bucketName = `raw-dataset-${rawDatasetID}`
+        // const bucketName = `dataset-${datasetID}`
 
-        const curatedAnnotationInput = {name, description, generatedByRawDataset: {connect: {where: {node: {rawDatasetID}}}}}
+        const curatedAnnotationInput = {
+          dataset: {connect: {where: {node: {datasetID}}}}, 
+          minioUpload: {connect: {where: {node: {objectName}}}}
+        }
+
         const { curatedAnnotations: [curatedAnnotation] } = await CuratedAnnotationModel.create({ input: [curatedAnnotationInput],  })
         const { curatedAnnotationID } = curatedAnnotation
 
         const session = driver.session()
 
-        // const bucketObjects = (await listBucketObjects(minioClient, bucketName)).map(({ name }) => name)
-        // // console.log(bucketObjects)
-        // const presignedURL = await makePresignedURL(minioClient, bucketName, bucketObjects.slice(-1)[0])
-        // // console.log(presignedURL)
-        
-        // original api with datavariables containing chr,start,end,datavalue
-        const createCuratedAnnotationFromRawDataset = await session.run(
-          `CALL apoc.periodic.iterate(\'CALL apoc.load.csv($presignedURL, {sep: \"TAB\"}) YIELD list\', \'MATCH (b:CuratedAnnotation {curatedAnnotationID: $curatedAnnotationID}) CREATE (a:AnnotationVariable {annotationVariableID: apoc.create.uuid(), locus: list[0], cdr3b: list[1], trbv: list[2], trbj: list[3], mhc: list[4], mhcClass: list[5], epitope: list[6], epitopeGene: list[7], epitopeSpecies: list[8], reference: list[9] }), (b)-[:HAS_ANNOTATION_VARIABLE]->(a) RETURN a\', { batchSize:10000, iterateList: true, parallel:true, params:{curatedAnnotationID: $curatedAnnotationID, presignedURL: $presignedURL}})`,
-          {curatedAnnotationID: curatedAnnotationID, presignedURL: 'file:///VDJdb_MinimalScoreConfidence3_VersionII.tsv'}
+        const presignedURL = await makePresignedURL(minioClient, bucketName, objectName)
+        // const accessibleURL = presignedURL.replace('localhost', 'host.docker.internal'); // Replace with accessible hostname or IP
+
+        // console.log(presignedURL)
+        // const createAnnotationVariables = await session.run(
+        //   `CALL apoc.periodic.iterate(\'CALL apoc.load.csv($presignedURL, {sep: \"TAB\"}) YIELD list\', \'MATCH (b:CuratedAnnotation {curatedAnnotationID: $curatedAnnotationID}) CREATE (a:AnnotationVariable {annotationVariableID: apoc.create.uuid(), locus: list[0], cdr3b: list[1], trbv: list[2], trbj: list[3], mhc: list[4], mhcClass: list[5], epitope: list[6], epitopeGene: list[7], epitopeSpecies: list[8], reference: list[9] }), (b)-[:HAS_ANNOTATION_VARIABLE]->(a) RETURN a\', { batchSize:10000, iterateList: true, parallel:true, params:{curatedAnnotationID: $curatedAnnotationID, presignedURL: $presignedURL}})`,
+        //   // {curatedAnnotationID: curatedAnnotationID, presignedURL: 'file:///TCRDB_mini.tsv'}
+        //   {curatedAnnotationID: curatedAnnotationID, presignedURL: presignedURL}
+        // )
+
+        const createAnnotationVariables = await session.run(`
+          CALL apoc.periodic.iterate(
+            'CALL apoc.load.csv($presignedURL, {sep: "TAB"}) YIELD list',
+            'MATCH (b:CuratedAnnotation {curatedAnnotationID: $curatedAnnotationID}) 
+            CREATE (a:AnnotationVariable {annotationVariableID: apoc.create.uuid(), ${inputFields.map(field => `${field.name}: list[${field.index}]`).join(', ')} }), 
+            (b)-[:HAS_ANNOTATION_VARIABLE]->(a) 
+            RETURN a',
+            { batchSize: 10000, iterateList: true, parallel: true, params: { curatedAnnotationID: $curatedAnnotationID, presignedURL: $presignedURL, inputFields: $inputFields } }
+            )
+          `, {curatedAnnotationID: curatedAnnotationID, presignedURL: presignedURL, inputFields: inputFields}, 
         )
+
+
         // const createCuratedDatasetFromRawDataset = await session.run(
         //   `CALL apoc.periodic.iterate(
         //     \'CALL apoc.load.csv($presignedURL, {sep: \" \", compression: \"GZIP\", header: false}) YIELD list\',
@@ -71,7 +103,7 @@ export const resolvers = {
         return curatedAnnotation
       } catch (error) {
         console.log(error)
-        throw new ApolloError('curatedAnnotationFromRawDataset', error )
+        throw new ApolloError('curatedAnnotationFromDataset', error )
       }
     }
   },
