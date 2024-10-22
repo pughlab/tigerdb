@@ -8,9 +8,14 @@ export default function useRunsQuery() {
 				runID
 				name
 				description
-				datasets {
-					datasetID
-					name
+				# datasets {
+				# 	datasetID
+				# 	name
+				# }
+				processedDatasets {
+					objectName
+					bucketName
+					filename
 				}
 				createdBy {
 					keycloakUserID
