@@ -11,6 +11,10 @@ input KeycloakUserInput {
   keycloakUserID: ID!
 }
 
+type Query {
+  isAdmin: Boolean @hasRole(role: "admin")
+}
+
 type Mutation {
     me: KeycloakUser @auth
 }
