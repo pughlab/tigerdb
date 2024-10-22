@@ -3,24 +3,47 @@ import graphene
 from .submit_run import SubmitRun
 from .models import Run as RunModel
 
-class Run(graphene.ObjectType):
-    run_id = graphene.ID(required=True)
-    dataset_ids = graphene.List(graphene.String)
-    wes_id = graphene.ID(required=True)
-    project_id = graphene.ID(required=True)
-    status = graphene.String()
-    created_on = graphene.DateTime()
-    submitted_on = graphene.DateTime()
+class Dataset(graphene.ObjectType):
+    datasetID = graphene.ID(required=True)
+    name = graphene.String()
+    description = graphene.String()
 
+class MinioUpload(graphene.ObjectType):
+    objectName = graphene.ID(required=True)
+    bucketName = graphene.ID(required=True)
+    filename = graphene.String()
+
+class RunParameters(graphene.ObjectType):
+    runID = graphene.ID(required=True)
+    outPrefix = graphene.String()
+    localMinpValue = graphene.Float()
+    pDepth = graphene.Int()
+    globalConvergenceCutoff = graphene.Int()
+    simulationDepth = graphene.Int()
+    kmerMinDepth = graphene.Int()
+    localMinOVE = graphene.Int()
+    allAAInterchangeable = graphene.Int()
+
+class Run(graphene.ObjectType):
+    runID = graphene.ID(required=True)
+    wesID = graphene.ID()
+    # dataset_ids = graphene.List(graphene.String)
+    # wes_id = graphene.ID(required=True)
+    # project_id = graphene.ID(required=True)
+    name = graphene.String()
+    status = graphene.String()
+    # datasets = graphene.List(Dataset)
+    minioUploads = graphene.List(MinioUpload)
+    # createdOn = graphene.DateTime()
+    runParameters = graphene.Field(RunParameters)
+    submittedOn = graphene.String()
 
 class Query(graphene.ObjectType):
-    run = graphene.Field(Run, run_id=graphene.ID(required=True))
+    run = graphene.Field(Run, runID=graphene.ID(required=True))
 
-    def resolve_run(self, info, run_id):
-        run = RunModel.get_one_by_id(run_id)
-        if run:
-            return run
-        return None
+    def resolve_run(self, info, runID):
+        run = RunModel.get_one_by_id(runID)
+        return run
 
 class Mutation(graphene.ObjectType):
     submit_run = SubmitRun.Field()
