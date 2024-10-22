@@ -1,24 +1,31 @@
 import { gql, useMutation } from "@apollo/client";
 import * as React from "react";
-import { Button, Form, Input, Modal, TextArea, Message, Dropdown } from "semantic-ui-react";
+import { Button, Form, Input, Modal, TextArea, Message, Dropdown, Icon, Divider } from "semantic-ui-react";
 import useDatasetsQuery from '../../../hooks/useDatasetsQuery'
 import useProjectsQuery from '../../../hooks/useProjectsQuery'
+import useMinioUploadsQuery from '../../../hooks/useMinioUploadsQuery'
+import useProcessedDatasetsQuery from "../../../hooks/useProcessedDatasetsQuery";
 
 export default function AddRunModal({refetch}) {
   const [name, setName]= React.useState('')
   const [description, setDescription]= React.useState('')
   const [projectID, setProjectID] = React.useState('');
   const [datasetIDs, setDatasetIDs] = React.useState([]);
+  // const [minioUploads, setMinioUploads] = React.useState([]);
+  const [processedDatasets, setProcessedDatasets] = React.useState([]);
   const [open, setOpen] = React.useState(false);
 
   // const [datasets, {data, loading, error}] = useQuery(gql`
   // let projectID = '2f6d441e-fbbe-40ff-87da-35c469bb9e9b'
   const { data: projectsData, loading: projectsLoading, error: projectsError } = useProjectsQuery();
   const { data: datasetsData, loading: datasetsLoading, error: datasetsError } = useDatasetsQuery({ projectID });
+  // const { data: minioUploadsData, loading: minioUploadsLoading, error: minioUploadsError } = useMinioUploadsQuery({ datasetIDs });
+  const { data: processedDatasetsData, loading: processedDatasetsLoading, error: processedDatasetsError } = useProcessedDatasetsQuery({ datasetIDs });
 
+  console.log(processedDatasetsData)
   const [createRunWithMinioBucket, {data, loading, error}] = useMutation(gql`
-    mutation CreateRunWithMinioBucket($name: String!, $description: String!, $datasetIDs: [ID!]!){
-      createRunWithMinioBucket(name: $name, description: $description, datasetIDs: $datasetIDs) {
+    mutation CreateRunWithMinioBucket($name: String!, $description: String!, $processedDatasets: [ID!]!){
+      createRunWithMinioBucket(name: $name, description: $description, processedDatasets: $processedDatasets) {
         runID
         name
         description
@@ -36,6 +43,8 @@ export default function AddRunModal({refetch}) {
       setOpen(!open)
       setProjectID('');
       setDatasetIDs([]);
+      // setMinioUploads([]);
+      setProcessedDatasets([]);
       setDescription('')
       setName('')
     }
@@ -53,16 +62,37 @@ export default function AddRunModal({refetch}) {
     value: dataset.datasetID,
   })) || [];
 
+  // const minioUploadOptions = minioUploadsData?.minioUploads.map(minioUpload => ({
+  //   key: minioUpload.objectName,
+  //   text: minioUpload.filename,
+  //   value: minioUpload.objectName,
+  // })) || [];
+
+  const processedDatasetsOptions = processedDatasetsData?.processedDatasets.map(processedDataset => ({
+    key: processedDataset.objectName,
+    text: processedDataset.filename,
+    value: processedDataset.objectName,
+  })) || [];
+
   return (
     <Modal
+      closeIcon
+      closeOnDimmerClick={false}
       open={open}
       onClose={() => setOpen(!open)}
       size="large"
       trigger={
-        <Button fluid icon='plus' color='black' size='large' onClick={() => setOpen(!open)} />
+        // <Button fluid icon='plus' color='black' size='large' onClick={() => setOpen(!open)} />
+        <Button fluid size='large' color='black' animated='vertical' onClick={() => setOpen(!open)}>
+          <Button.Content visible>
+              <Icon name='plus'/>
+          </Button.Content>
+          <Button.Content hidden content="Add a new run"/>
+      </Button>
       }
     >
       <Modal.Content>
+        <Divider horizontal content='NEW RUN'/>
         <Form>
           <Form.Field 
             control={Input}
@@ -78,20 +108,6 @@ export default function AddRunModal({refetch}) {
             value={description}
             onChange={(_e, { value }) => setDescription(value)}
           />
-          {/* <Form.Field
-            control={Dropdown}
-            label='Datasets'
-            placeholder='Select Datasets'
-            fluid
-            multiple
-            search
-            selection
-            options={datasetOptions}
-            loading={datasetsLoading}
-            onChange={(_e, { value }) => setDatasetIDs(value)}
-            value={datasetIDs}
-          />
-          {datasetsError && <Message error content="Error loading datasets" />} */}
           <Form.Field
             control={Dropdown}
             label='Project'
@@ -123,17 +139,33 @@ export default function AddRunModal({refetch}) {
             disabled={!projectID} // Disable until a project is selected
           />
           {datasetsError && <Message error content="Error loading datasets" />}
+          <Form.Field
+            control={Dropdown}
+            label='Processed Uploads'
+            placeholder='Select Processed Uploaded Files'
+            fluid
+            multiple
+            search
+            selection
+            options={processedDatasetsOptions}
+            loading={processedDatasetsLoading}
+            onChange={(_e, { value }) => setProcessedDatasets(value)}
+            value={processedDatasets}
+            disabled={!(datasetIDs.length > 0) || !projectID} // Disable until a dataset is selected
+          />
+          {processedDatasetsError && <Message error content="Error loading uploads" />}
         </Form>
       </Modal.Content>
       <Modal.Actions>
-        <Button content='Add run' loading={loading} 
-        disabled={!name || !description || datasetIDs.length === 0}
+        <Button fluid color='violet' content='CREATE RUN' loading={loading} 
+        disabled={!name || !description || datasetIDs.length === 0 || processedDatasets.length === 0}
         onClick={async () => {
-          await createRunWithMinioBucket({variables: {name, description, datasetIDs} })
+          await createRunWithMinioBucket({variables: {name, description, processedDatasets} })
           // setOpen(!open)
           // setDescription('')
           // setName('')
         }}/>
+        
       </Modal.Actions>
     </Modal>
   );
