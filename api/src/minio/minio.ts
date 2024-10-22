@@ -70,9 +70,12 @@ export async function putObjectBucket (minioClient: Client, file: any, bucketNam
       console.log(`creating bucket ${bucketName}`)
       await minioClient.makeBucket(bucketName, 'us-east-1')
     }
-    const {filename, mimetype, encoding, createReadStream} = await file
-    const stream = createReadStream()
-    return await minioClient.putObject(bucketName, objectName, stream)
+    // const {filename, mimetype, encoding, createReadStream} = await file
+    // const stream = createReadStream()
+    const stream = await file;  // This should already be a stream if using MinIO's getObject
+    return await minioClient.putObject(bucketName, objectName, stream);  // No need for createReadStream here
+    console.log(`File uploaded to MinIO bucket ${bucketName} with object name ${objectName}`);
+
   } catch (error) {
     console.error(error)
     throw new Error('minio.putObjectTemporaryBucket')

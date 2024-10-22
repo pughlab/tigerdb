@@ -1,4 +1,4 @@
-import { minioClient, listBucketObjects } from '../../minio/minio'
+import { minioClient, listBucketObjects, makePresignedURL, putObjectBucket } from '../../minio/minio'
 import { ApolloError } from 'apollo-server'
 import  zlib  from 'zlib';
 import { extname } from 'path'
@@ -128,6 +128,168 @@ export const resolvers = {
         throw new ApolloError('mutation.minioDelete', error)
       }
     },
+
+    uploadProcessedHeaders: async (
+      parent,
+      {bucketName, objectName, filename, headers, selectedDelimiter, includesHeader },
+      { driver, ogm, minioClient }
+    ) => {  
+      try {
+        console.log("PARAMS CHECK:")
+        console.log(bucketName, objectName, filename, headers, selectedDelimiter, includesHeader)
+        // Step 1: Retrieve the object directly from MinIO
+        const stream = await minioClient.getObject(bucketName, objectName);
+        
+        // Step 2: Read the stream into a string (you can use a buffer or a string reader)
+        const chunks = [];
+        for await (const chunk of stream) {
+          chunks.push(chunk);
+        }
+        const text = Buffer.concat(chunks).toString('utf-8');
+
+        // Step 3: Process the CSV file based on selected headers and delimiter
+        let rows = text.split('\n');
+
+        // Check if the file includes a header row
+        if (includesHeader) {
+          rows = rows.slice(1);  // Skip the first row
+        }
+
+        const processedData = rows.map((row) => {
+          const cells = row.split(selectedDelimiter); // Use the selected delimiter for splitting
+          return headers.reduce((acc, { name, index }) => {
+            acc[name] = cells[index];
+            return acc;
+          }, {});
+        });
+  
+        // Step 4: Convert processed data into a stream format for uploading
+        const processedFileStream = Buffer.from(processedData.map(row => Object.values(row).join(selectedDelimiter)).join('\n'));
+  
+        // Step 5: Upload the processed file using putObjectBucket
+        const newObjectName = `processed-${objectName}`;
+        const newFileName = `processed-${filename}`;
+        await putObjectBucket(minioClient, processedFileStream, bucketName, newObjectName);
+  
+        // Step 6: Generate a presigned URL for the newly uploaded file
+        const processedPresignedURL = await makePresignedURL(minioClient, bucketName, newObjectName);
+  
+        // Step 7: Create the `ProcessedDataset` node
+        const ProcessedDatasetModel = ogm.model('ProcessedDataset');
+        const processedDatasetInput = {
+          objectName: newObjectName,
+          bucketName,
+          filename: newFileName,
+          // headers: headers.map(header => ({ name: header.name, index: header.index })),
+          rows: processedData.length,
+          createdAt: new Date().toISOString(),
+          // presignedURL: processedPresignedURL,
+          selectedDelimiter,
+        };
+
+        const { processedDatasets: [processedDataset] } = await ProcessedDatasetModel.create({
+          input: [processedDatasetInput],
+        });
+
+        const HeaderModel = ogm.model('Header');
+        const headerInputs = headers.map(({ name, index }) => ({
+          name,
+          index,
+          processedDataset: {
+            connect: { where: { node: { objectName: processedDataset.objectName } } },
+          },
+        }))
+    
+        await HeaderModel.create({
+          input: headerInputs,
+        })
+
+        // Step 8: Find the existing `MinioUpload` node and connect `ProcessedDataset` via HAS_PROCESSED_FILE
+        const MinioUploadModel = ogm.model('MinioUpload');
+
+        // Find the existing MinioUpload by objectName (as it's the ID field)
+        const [existingMinioUpload] = await MinioUploadModel.find({
+          where: { objectName: objectName },  // Find using objectName as it's unique (ID)
+        });
+
+        if (!existingMinioUpload) {
+          throw new Error(`MinioUpload with objectName ${objectName} not found`);
+        }
+
+        // Step 9: Update the existing `MinioUpload` to connect the newly created `ProcessedDataset`
+        await MinioUploadModel.update({
+          where: { objectName: objectName },
+          connect: {
+            processedDataset: {
+              where: { node: { objectName: processedDataset.objectName }},
+            },
+          },
+        });
+
+        return existingMinioUpload;  // Return the updated MinioUpload node
+
+  
+      } catch (error) {
+        console.error('Error processing and uploading dataset:', error);
+        throw new Error('Failed to upload processed headers');
+      } 
+    },
+
+    // uploadProcessedHeaders: async (
+    //   obj,
+    //   { datasetID, bucketName, objectName, selectedHeaders, selectedDelimiter },
+    //   { driver, ogm, minioClient }
+    // ) => {
+    //   try {
+    //     // Step 1: Fetch the original file from MinIO
+    //     const presignedURL = await makePresignedURL(minioClient, bucketName, objectName);
+    //     const response = await fetch(presignedURL);
+    //     const text = await response.text();
+  
+    //     // Step 2: Process the CSV file based on selected headers
+    //     const rows = text.split('\n');
+    //     const processedData = rows.map((row) => {
+    //       const cells = row.split(selectedDelimiter); // Assuming TAB-delimited
+    //       return selectedHeaders.reduce((acc, { name, index }) => {
+    //         acc[name] = cells[index];
+    //         return acc;
+    //       }, {});
+    //     });
+  
+    //     // Step 3: Save the processed data as a new file in MinIO
+    //     const newFileName = `processed-${objectName}`;
+    //     const processedFileURL = await putObjectBucket(minioClient, processedData, bucketName, );
+  
+    //     // Step 4: Update Neo4j graph by linking the processedDataset to MinioUpload
+    //     const session = driver.session();
+    //     const MinioUploadModel = ogm.model('MinioUpload');
+  
+    //     const minioUploadInput = {
+    //       objectName: newFileName,
+    //       url: processedFileURL,
+    //       processedDataset: {
+    //         create: {
+    //           datasetID,
+    //           headers: selectedHeaders,
+    //           rows: processedData.length,
+    //           createdAt: new Date().toISOString(),
+    //         },
+    //       },
+    //     };
+  
+    //     const { minioUploads: [minioUpload] } = await MinioUploadModel.create({
+    //       input: [minioUploadInput],
+    //     });
+  
+    //     session.close();
+  
+    //     return minioUpload;
+    //   } catch (error) {
+    //     console.error('Error processing and uploading dataset:', error);
+    //     throw new Error('Failed to upload processed headers');
+    //   }
+    // },
+    
   
     validateRawdatafile: async (obj, { rawDatasetID, objectName }, { driver, ogm }) => {
       try {
@@ -316,7 +478,7 @@ export const resolvers = {
       try {
         // TODO: response-content-disposition to enable clickable downloads? still doesn't work...
         const presignedURL = await minioClient.presignedUrl('GET', bucketName, objectName, 24 * 60 * 60, { "response-content-disposition": `attachment; filename=${objectName}` })
-        console.log(presignedURL)
+        // console.log(presignedURL)
         return presignedURL
       } catch (error) {
         console.log(error)

@@ -26,7 +26,8 @@ type MinioUpload {
   filename: String!
   presignedURL: String @customResolver
 
-  Dataset: Dataset @relationship(type: "HAS_FILE", direction: IN)
+  dataset: Dataset @relationship(type: "HAS_FILE", direction: IN)
+  processedDataset: ProcessedDataset @relationship(type: "HAS_PROCESSED_FILE", direction: OUT)
 
   # rawdataFileDataset: Dataset @relationship(type: "HAS_RAWDATAFILE", properties: "HasRawdatafile", direction: IN)
   # codeBookDataset: Dataset @relationship(type: "HAS_CODEBOOK", properties: "HasCodebook", direction: IN)
@@ -35,6 +36,12 @@ type MinioUpload {
   # pairedRawdataFile: MinioUpload @relationship(type: "HAS_PAIRED_CODEBOOK", properties: "HasPairedCodebook", direction: OUT)
 
   # fromExportTask: Task @relationship(type: "FROM_FUNNEL_TASK", direction: IN)
+}
+
+input MinioUploadInput {
+  bucketName: ID!
+  objectName: ID!
+  filename: String!
 }
 
 extend type MinioUpload @auth(
@@ -62,11 +69,55 @@ extend type MinioBucket @auth(
     }]
 )
 
+type Header {
+  name: String!
+  index: Int!
+  processedDataset: ProcessedDataset @relationship(type: "HAS_HEADER", direction: IN) 
+}
+
+input HeaderInput {
+  name: String!
+  index: Int!
+}
+
+input ProcessedDatasetCreateInput {
+  bucketName: ID!
+  objectName: ID!
+  filename: String!
+  headers: [HeaderInput!]!  # Store processed headers
+  rows: Int!                # Number of rows processed
+  createdAt: DateTime!       # Timestamp
+  # presignedURL: String!
+  selectedDelimiter: String!
+  includesHeader: Boolean!
+}
+
+type ProcessedDataset {
+  bucketName: ID!
+  objectName: ID! 
+  filename: String!
+  # headers: [Header!]!  # Store processed headers
+  headers: [Header!]! @relationship(type: "HAS_HEADER", direction: OUT)
+  rows: Int!           # Number of rows processed
+  createdAt: DateTime! # Timestamp
+  # curatedDataset: CuratedDataset @relationship(type: "GENERATED_CURATED_DATASET", direction: OUT)
+  # presignedURL: String!
+  minioUpload: MinioUpload @relationship(type: "HAS_PROCESSED_FILE", direction: IN)
+  selectedDelimiter: String!
+}
+
 type Mutation {
   # Example usage (should be generalized)
-  minioUploadFile(bucketName: String!, file: Upload!, datasetID: ID!, allowedStudies: [String], allowedSites: [String]): MinioUpload!
+  minioUploadFile(bucketName: String!, file: Upload!, datasetID: ID!): MinioUpload!
   minioDelete(bucketName: String!, objectName: String!): Boolean
-
+  uploadProcessedHeaders(
+    bucketName: String!,
+    objectName: String!,
+    filename: String!,
+    headers: [HeaderInput!]!,
+    selectedDelimiter: String!,
+    includesHeader: Boolean!,
+  ): MinioUpload
   validateRawdatafile(datasetID: ID!, objectName: ID!): FileValidation
   validateCodebook(datasetID: ID!, objectName: ID!): FileValidation
   validateRawfileCodebookPair(DatasetIDRF: ID!, objectNameRF: ID!, DatasetIDCB: ID!, objectNameCB: ID!): FileValidation
