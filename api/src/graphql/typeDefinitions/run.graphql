@@ -5,32 +5,75 @@ enum RunStatus {
     failed
 }
 
+type RunParameters {
+  runID: ID! @id(autogenerate: false)
+  outPrefix: String
+  localMinpValue: Float
+  pDepth: Int
+  globalConvergenceCutoff: Int
+  simulationDepth: Int
+  kmerMinDepth: Int
+  localMinOVE: Int
+  # algorithm: String
+  allAAInterchangeable: Int
+  run: Run! @relationship(type: "HAS_PARAMETERS", direction: IN)
+}
+
+# input RunParametersCreateInput {
+#   runID: ID!
+#   outPrefix: String
+#   localMinpValue: Float
+#   pDepth: Int
+#   globalConvergenceCutoff: Int
+#   simulationDepth: Int
+#   kmerMinDepth: Int
+#   localMinOVE: Int
+#   allAAInterchangeable: Int
+# }
+
+
+
 type Run {
     runID: ID! @id
     wesID: ID
     name: String!
     description: String
-    datasets: [Dataset!]! @relationship(type: "HAS_RUN", direction: IN)
+    runParameters: RunParameters @relationship(type: "HAS_PARAMETERS", direction: OUT)
+    # datasets: [Dataset!]! @relationship(type: "HAS_RUN", direction: IN)
     # project: Project! @relationship(type: "HAS_RUN", direction: IN)
+    # minioUploads: [MinioUpload!]! @relationship(type: "HAS_RUN", direction: IN)
+    processedDatasets: [ProcessedDataset!]! @relationship(type: "HAS_RUN", direction: IN)
     createdOn: DateTime! @timestamp(operations: [CREATE])
-    submittedOn: DateTime
+    submittedOn: String
     completedOn: DateTime
     status: RunStatus! @default(value: pending)   
     createdBy: KeycloakUser! @relationship(type: "CREATED_BY", direction: OUT)
-    logs: String
+    # logs: String
+    getRunData: String
+    failedRunLogs: String
+    # hasResults: Boolean @default(value: false)
 }
+
 
 input RunInput {
     runID: ID!
     wesID: ID
     name: String
     description: String
-    datasets: [DatasetInput]
+    # datasets: [DatasetInput]
+    # project: ProjectInput
+    minioUploads: [MinioUploadInput]
+    submittedOn: String
+    completedOn: DateTime
     status: RunStatus
+    # logs: String
+    # getRunData: String
+    failedRunLogs: String
+    # hasResults: Boolean
 }
 
 type Query{
-  getRuns: [Run]
+  getRuns(runID: ID): [Run]
 }
 
 type Mutation {
@@ -40,13 +83,43 @@ type Mutation {
         name: String!
         description: String
         # datasets: [DatasetInput!]!
-        datasetIDs: [ID!]!
+        # datasetIDs: [ID!]!
+        # minioUploads: [MinioUploadInput!]!
+        processedDatasets: [ID!]!
     ): Run!,
-    updateRun(
-        runID: ID!
-        datasets: [DatasetInput]!
-        wesID: ID
-        name: String
-        description: String
+
+    # updateRun(
+    #     runID: ID!
+    #     datasets: [DatasetInput]!
+    #     wesID: ID
+    #     name: String
+    #     description: String
+    # ): Run!
+
+    # New mutation for updating parameters
+    updateRunParameters(
+      # runID: ID!
+      # selectedParameters: RunParametersCreateInput!
+      runID: ID!
+      outPrefix: String
+      localMinpValue: Float
+      pDepth: Int
+      globalConvergenceCutoff: Int
+      simulationDepth: Int
+      kmerMinDepth: Int
+      localMinOVE: Int
+      allAAInterchangeable: Int
     ): Run!
+
+    # # WES / Docker mutations
+    # cancelRun(
+    #   runID: ID!
+    # ): String
+
 }
+
+extend type Run @auth(
+  rules: [{
+      isAuthenticated: true,
+    }]
+)
