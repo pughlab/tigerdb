@@ -4,8 +4,8 @@ import logo from './logo.png'
 import tigerdb from './tigerdb.png'
 import { Image, Container, Message, Header, Button, Divider, Icon } from 'semantic-ui-react'
 import { Link } from 'react-router-dom';
-import BarChart from '../visualizations/bar/BarChart';
 import { useKeycloak } from "@react-keycloak/web";
+import { EnhancedBarChart } from '../visualizations/bar/EnhancedBarChart';
 
 export function Logo({ size = 'medium', ...props }) {
   return (
@@ -41,11 +41,11 @@ export function AboutPortal({ }) {
         <Button as={Link} to={isLoggedIn ? '/home/data' : '/public/search'} fluid  >
           <Image size='large' src={tigerdb} centered />
 
-        </Button>
-      </Message>
-      <Message positive>
-        <BarChart />
-      </Message>
-    </Container>
-  )
-}
+          </Button>
+        </Message>
+        <Message style={{color: 'white', backgroundColor: '#1f1f1f'}}>
+          <EnhancedBarChart />
+        </Message>
+        </Container>
+    )
+  }
