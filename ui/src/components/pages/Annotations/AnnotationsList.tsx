@@ -77,6 +77,7 @@ function AnnotationListItem({ annotationVariable, searchText, score, dropdownFil
         inverted
         content={reference ? `Click here to go to publication (${reference})` : `Click here to go to Project (${dataset?.project?.name})`}
         position='top center'
+        // color={reference ? 'black' : 'blue'}
         icon={reference ? 'book' : 'database'}
         // disabled={!reference}
         trigger={
@@ -105,7 +106,7 @@ function AnnotationListItem({ annotationVariable, searchText, score, dropdownFil
               }
             />
             {/* hard coded to check locus: */}
-            <Label attached='top right' color={locus ? 'teal' : 'white'} content={locus ? 'Annotated' : 'Unlabelled'} />
+            <Label attached='top right' color={reference ? 'black' : 'white'} content={reference ? 'Annotated' : 'Unlabelled'} />
             {/* <List.Content floated='right' >
               Curated Annotation
             </List.Content> */}
@@ -119,12 +120,12 @@ function AnnotationListItem({ annotationVariable, searchText, score, dropdownFil
               </Grid.Row>
               <Grid.Row columns={3} divided textAlign='center'>
                 <Grid.Column>
-                  <Grid.Row>
+                  {/* <Grid.Row>
                     <Label
                       basic={!dropdownFilters['locus'].includes(locus)}
                       content='Locus' detail={`${locus}`}
                       color={dropdownFilters['locus'].includes(locus) ? "blue" : "grey"} />
-                  </Grid.Row>
+                  </Grid.Row> */}
                   <Grid.Row>
 
                     <Label
@@ -197,7 +198,7 @@ function AnnotationListItem({ annotationVariable, searchText, score, dropdownFil
                     {reference ? reference : dataset?.name}
                 </Button> */}
             {reference ? (
-              <Button fluid color='grey'>
+              <Button fluid color='black'>
                 <Icon name='book' style={{ color: 'white' }} />
                 {reference}
               </Button>
@@ -217,7 +218,7 @@ function AnnotationListItem({ annotationVariable, searchText, score, dropdownFil
 }
 
 const ANNOTATION_FILTERS = [
-  { filterKey: "locus", placeholder: "Locus", text: ["TRB"], disabled: true, value: ["TRB"] },
+  // { filterKey: "locus", placeholder: "Locus", text: ["TRB"], disabled: true, value: ["TRB"] },
   {
     filterKey: "trbv", placeholder: "TRBV", text: ['TRBV12-3', 'TRBV20-1', 'TRBV11-2', 'TRBV5-1', 'TRBV10-2',
       'TRBV10-3', 'TRBV11-1', 'TRBV11-3', 'TRBV12', 'TRBV13', 'TRBV15',
@@ -391,7 +392,7 @@ const ANNOTATION_FILTERS = [
 
 export default function AnnotationsList({ }) {
   const [dropdownFilters, setDropdownFilters] = useState({
-    locus: ["TRB"],
+    // locus: ["TRB"],
     trbv: [],
     trbj: [],
     mhc: [],

@@ -125,6 +125,7 @@ export default function MinioBucket({ datasetID } : { datasetID:String }) {
     )
 
     const [createCuratedDatasetFromDataset, { data: curatedDatasetData, loading: curatedDatasetLoading,  error: curatedDatasetError }, success] = useCreateCuratedDatasetFromDatasetMutation();
+    const [createCuratedAnnotationFromDataset, { data: curatedAnnotationData, loading: curatedAnnotationLoading,  error: curatedAnnotationError }, annotationSuccess] = useCreateCuratedAnnotationFromDatasetMutation();
 
     const { isAdmin, loading: adminLoading, error: adminError, refetch: adminRefetch } = useIsAdmin();
 
@@ -204,7 +205,29 @@ export default function MinioBucket({ datasetID } : { datasetID:String }) {
                                         />
                                     }
                                 />
-                                {/* curate button */}
+                                {/* curate annotations button - admin only */}
+                                {
+                                     isAdmin && 
+                                     <Button 
+                                     circular
+                                    //  color={success || !adminQueryData.isAdmin ? 'grey' : 'teal'} 
+                                    color='facebook' 
+                                    floated='right'
+                                     key={'curate.' + minioUpload?.objectName} onClick={() => { createCuratedAnnotationFromDataset({variables: {
+                                        datasetID, 
+                                        bucketName: minioUpload?.bucketName, 
+                                        objectName: minioUpload?.objectName,
+                                     }}) 
+                                    }}
+                                     loading={curatedAnnotationLoading}
+                                     disabled={annotationSuccess || !isAdmin || curatedAnnotationLoading || minioUpload === null || minioUpload === undefined}
+                                     icon='certificate'
+                                    >
+                                     {/* <Icon name='certificate' /> */}
+                                     {annotationSuccess ? 'ANNOTATED' : null}
+                                     </Button>
+                                }
+                                {/* curate button - admin only */}
                                 {
                                      isAdmin && 
                                      <Button 

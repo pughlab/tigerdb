@@ -30,22 +30,43 @@ export const resolvers = {
     }
   },
   Mutation: {
-    createCuratedAnnotationFromDataset: async (parent, { datasetID, bucketName, objectName }, { driver, ogm, minioClient }) => {
+    createCuratedAnnotationFromDataset: async (parent, { datasetID, bucketName, objectName, selectedDelimiter }, { driver, ogm, minioClient }) => {
       try {
         
         const inputFields = [
-          { name: 'locus', index: 0 },
-          { name: 'cdr3b', index: 1 },
+          { name: 'cdr3b', index: 0 },
+          { name: 'cdr3a', index: 1 },
           { name: 'trbv', index: 2 },
-          { name: 'trbj', index: 3 },
-          { name: 'mhc', index: 4 },
-          { name: 'mhcClass', index: 5 },
-          { name: 'epitope', index: 6 },
-          { name: 'epitopeGene', index: 7 },
-          { name: 'epitopeSpecies', index: 8 },
-          { name: 'reference', index: 9 }
+          { name: 'trav', index: 3 },
+          { name: 'trbj', index: 4 },
+          { name: 'traj', index: 5 },
+          { name: 'mhc', index: 6 },
+          { name: 'mhcClass', index: 7 },
+          { name: 'epitopeAAseq', index: 8 },
+          { name: 'epitopeGene', index: 9 },
+          { name: 'mutation', index: 10 },
+          { name: 'recognizesWTEpitope', index: 11 },
+          { name: 'epitopeSpecies', index: 12 },
+          { name: 'reference', index: 13 },
+          { name: 'uniProt', index: 14 },
+          { name: 'notes', index: 15 },
         ];
 
+
+        // cdr3b: String
+        // cdr3a: String
+        // trbv: String
+        // trbj: String
+        // trav: String
+        // traj: String
+        // mhc: String
+        // mhcClass: String
+        // epitopeGene: String
+        // epitopeAAseq: String
+        // epitopeSpecies: String
+        // mutation: String
+        // reference: String
+        // uniProt: String
 
         // Create model and add a curated dataset node to db
         const CuratedAnnotationModel = ogm.model("CuratedAnnotation")
@@ -80,7 +101,7 @@ export const resolvers = {
             RETURN a',
             { batchSize: 10000, iterateList: true, parallel: true, params: { curatedAnnotationID: $curatedAnnotationID, presignedURL: $presignedURL, inputFields: $inputFields } }
             )
-          `, {curatedAnnotationID: curatedAnnotationID, presignedURL: presignedURL, inputFields: inputFields}, 
+          `, {curatedAnnotationID, presignedURL, inputFields}, 
         )
 
 

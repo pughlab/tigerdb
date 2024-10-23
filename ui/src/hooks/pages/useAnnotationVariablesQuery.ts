@@ -38,16 +38,22 @@ export default function useAnnotationAndDatasetVariablesQuery(dropdownFilters: a
         curatedAnnotationID
         annotationVariables(where: $annotationWhere) {
           annotationVariableID
-          locus
-          cdr3b 
+          cdr3b
+          cdr3a
           trbv
           trbj
+          trav
+          traj
           mhc
           mhcClass
-          epitope
           epitopeGene
+          epitopeAAseq
           epitopeSpecies
+          mutation
+          recognizesWTEpitope
           reference
+          uniProt
+          notes
         }
       }
       curatedDatasets {

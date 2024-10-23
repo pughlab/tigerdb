@@ -1,15 +1,34 @@
 type AnnotationVariable {
     annotationVariableID: ID! @id
-    locus: String
     cdr3b: String
+    cdr3a: String
     trbv: String
     trbj: String
+    trav: String
+    traj: String
     mhc: String
     mhcClass: String
-    epitope: String
     epitopeGene: String
+    epitopeAAseq: String
     epitopeSpecies: String
+    mutation: String
+    recognizesWTEpitope: String
     reference: String
+    uniProt: String
+    notes: String
+
+    # annotationVariableID: ID! @id
+    # locus: String
+    # cdr3b: String
+    # trbv: String
+    # trbj: String
+    # mhc: String
+    # mhcClass: String
+    # epitope: String
+    # epitopeGene: String
+    # epitopeSpecies: String
+    # reference: String
+
     # Define fields you want to search over here, transformation script must map to this shape
 
     # currentDefinition: DataVariableDefinition! @relationship(type: "HAS_DEFINITION", direction: OUT, properties: "HasDefinition")
