@@ -10,8 +10,9 @@ import { FaPerson, FaBacteria } from "react-icons/fa6";
 import { RiVirusFill } from "react-icons/ri";
 import { Grid } from "@visx/grid";
 import { Text } from "@visx/text";
+import { Dimmer, Loader, Segment } from "semantic-ui-react";
 import useAnnotationVariablesQuery from "../../../hooks/pages/useAnnotationVariablesQuery";
-
+import SegmentPlaceholder from "../../common/SegmentPlaceholder";
 export function EnhancedBarChart() {
   const { loading: epitopeLoading, data: epitopeData, error: epitopeError } = useQuery(gql`
     query EpitopeSpeciesCount {
@@ -29,7 +30,13 @@ export function EnhancedBarChart() {
   const loading = epitopeLoading || annotationLoading
   const error = epitopeError || annotationError
 
-  if (loading) return <>{"Loading..."}</>;
+  if (loading) return (
+    <Segment placeholder basic icon="chart bar">
+    <Dimmer active inverted>
+      <Loader size='large'>Loading...</Loader>
+    </Dimmer>
+    </Segment>
+  );
 
   if (error) return <>{"There was an error when querying the data!"}</>;
 
@@ -44,7 +51,7 @@ export function EnhancedBarChart() {
   })
 
 
-  annotationData.curatedDatasets.forEach((dataset) => {
+  annotationData?.curatedDatasets?.forEach((dataset) => {
     totalUnlabelledVars += dataset.datasetVariables.length
   })
 
@@ -208,7 +215,7 @@ const BarChart = ({ data }) => {
 
   return (
     <>
-      <h2 style={{ textAlign: "center" }}>Epitope Species</h2>
+      <h2 style={{ textAlign: "center" }}>TIGERdb Available Data</h2>
       <svg width={width} height={height}>
         {/* Add the Grid component */}
         <Grid
