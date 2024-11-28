@@ -5,6 +5,7 @@ import { extname } from 'path'
 import papa from 'papaparse'
 import * as R from 'remeda'
 import { v4 as uuidv4 } from 'uuid';
+import path from 'path'
 
 const validateFile = async (ogm, rawDatasetID, objectName, preview, header) => {
 
@@ -164,10 +165,23 @@ export const resolvers = {
         });
   
         // Step 4: Convert processed data into a stream format for uploading
-        const processedFileStream = Buffer.from(processedData.map(row => Object.values(row).join(selectedDelimiter)).join('\n'));
+        const processedFileStream = Buffer.from(processedData.map(row => Object.values(row).join('\t')).join('\n'));
   
+
+        // Extract the file extension
+        const fileExtension = path.extname(filename); // e.g., ".tsv" or ".csv"
+
+        // Ensure the original filename has an extension
+        if (!fileExtension) {
+          throw new Error(`File "${filename}" lacks an extension.`);
+        }
+
+        // Construct the new object name by combining the object ID and the original filename
+        const newObjectName = `processed-${objectName}_${filename}`; // e.g., "123e4567-e89b-12d3-a456-426614174000_data.tsv"
+
+
         // Step 5: Upload the processed file using putObjectBucket
-        const newObjectName = `processed-${objectName}`;
+        // const newObjectName = `processed-${objectName}`;
         const newFileName = `processed-${filename}`;
         await putObjectBucket(minioClient, processedFileStream, bucketName, newObjectName);
   

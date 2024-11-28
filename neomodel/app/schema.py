@@ -8,7 +8,7 @@ class Dataset(graphene.ObjectType):
     name = graphene.String()
     description = graphene.String()
 
-class MinioUpload(graphene.ObjectType):
+class ProcessedDataset(graphene.ObjectType):
     objectName = graphene.ID(required=True)
     bucketName = graphene.ID(required=True)
     filename = graphene.String()
@@ -33,7 +33,7 @@ class Run(graphene.ObjectType):
     name = graphene.String()
     status = graphene.String()
     # datasets = graphene.List(Dataset)
-    minioUploads = graphene.List(MinioUpload)
+    processedDatasets = graphene.List(ProcessedDataset)
     # createdOn = graphene.DateTime()
     runParameters = graphene.Field(RunParameters)
     submittedOn = graphene.String()

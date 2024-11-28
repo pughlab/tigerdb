@@ -61,7 +61,7 @@ class Dataset(StructuredNode):
     description = StringProperty()
     project = RelationshipFrom('Project', 'HAS_DATASET')
 
-class MinioUpload(StructuredNode):
+class ProcessedDataset(StructuredNode):
     __primarykey__ = 'objectName'
 
     objectName = UniqueIdProperty()
@@ -117,7 +117,7 @@ class Run(StructuredNode):
     wesID = UniqueIdProperty()
     # dataset_ids = ArrayProperty(StringProperty())
     # datasets = RelationshipFrom('Dataset', 'HAS_RUN')
-    minioUploads = RelationshipFrom('MinioUpload', 'HAS_RUN')
+    processedDatasets = RelationshipFrom('ProcessedDataset', 'HAS_RUN')
     # wes_id = UniqueIdProperty()
     # project_id = UniqueIdProperty()
     name = StringProperty()
@@ -140,21 +140,21 @@ class Run(StructuredNode):
 
     def as_dict(self):
         logger.debug(f"Converting Run {self.runID} to dict")
-        minio_uploads = [upload.as_dict() for upload in self.minioUploads.all()]
-        logger.debug(f"MinioUploads for Run {self.runID}: {minio_uploads}")
+        processed_datasets = [upload.as_dict() for upload in self.processedDatasets.all()]
+        logger.debug(f"ProcessedDatasets for Run {self.runID}: {processed_datasets}")
 
         # Fetch a single RunParameters object and convert it to a dictionary if it exists
         run_parameters_obj = self.runParameters.single()
         run_parameters_dict = run_parameters_obj.as_dict() if run_parameters_obj else None
         logger.debug(f"RunParameters for Run {self.runID}: {run_parameters_dict}")
-        # print(minio_uploads)
+        # print(processed_datasets)
         return {
             'runID': self.runID,
             'wesID': self.wesID,
             # 'dataset_ids': self.dataset_ids,
             # 'datasets': self.datasets,
             # 'minioUploads': self.minioUploads,
-            'minioUploads': minio_uploads,
+            'processedDatasets': processed_datasets,
             'runParameters': run_parameters_dict,
             # 'wes_id': self.wes_id,
             # 'project_id': self.project_id,
