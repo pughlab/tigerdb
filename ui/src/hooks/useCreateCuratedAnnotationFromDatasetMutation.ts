@@ -8,7 +8,7 @@ export default function useCreateCuratedAnnotationFromDatasetMutation(): [
     any,
     boolean
 ] {
-    const [success, setSuccess] = useState(false)
+    const [annotationSuccess, setAnnotationSuccess] = useState(false)
     const [createCuratedAnnotationFromDataset, mutationState] = useMutation(gql`
         mutation createCuratedAnnotationFromDataset(
             $datasetID: ID!
@@ -29,14 +29,14 @@ export default function useCreateCuratedAnnotationFromDatasetMutation(): [
             console.log(data)
             if (!!data) {
                 console.log(data)
-                setSuccess(!!data?.createCuratedAnnotationFromDataset)
+                setAnnotationSuccess(!!data?.createCuratedAnnotationFromDataset)
             }
         }
     })
     const {data, loading, error} = mutationState
     
 
-    return [createCuratedAnnotationFromDataset, mutationState, success]
+    return [createCuratedAnnotationFromDataset, mutationState, annotationSuccess]
     
 }
   

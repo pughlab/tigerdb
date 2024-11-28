@@ -75,12 +75,18 @@ export default function useAnnotationAndDatasetVariablesQuery(dropdownFilters: a
           # subjectcondition
           # count
         }
+        # datasetVariablesAggregate(where: $datasetWhere) {
+        #   count
+        # }
       }
     }
   `, {
     variables: { annotationWhere, datasetWhere },
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'cache-first'
   })
 
-  return { data, loading, error, called, searchText, setSearchText, runQuery }
+  return { data, loading, error, called, searchText, setSearchText, runQuery,
+    // totalDatasetVariables: data?.curatedDatasets?.datasetVariablesAggregate?.count || 0
+
+   }
 }
