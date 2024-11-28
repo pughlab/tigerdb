@@ -116,7 +116,7 @@ export default function RunDetails() {
 						{/* <Message.Item content={`Shared with: ${sharedWith}`} /> */}
             <List.Item icon='info circle' content={`runID: ${runID}`} />
 
-            <List.Item icon='cog' content={wesID ? `wesID: ${wesID}` : "Job ID available after submission"} />
+            {/* <List.Item icon='cog' content={wesID ? `wesID: ${wesID}` : "Job ID available after submission"} /> */}
             <List.Item  style={{color: colorStatus}} >
               <List.Icon name={iconStatus} loading={status === 'submitted' ? true : false} />
               <List.Content>{`${status.toUpperCase()}`}</List.Content>
@@ -158,7 +158,21 @@ export default function RunDetails() {
             {/* Logs Component */}
             <Logs />
           </Dimmer>
-        </Segment> :
+        </Segment> : 
+        status === "completed" ? 
+        <Segment placeholder>
+          <Image size='medium' src={tigerdbLogo} centered />
+          <Message color='green'>
+            <Header as='h3' icon>
+              <Icon name='check circle' color='green' />
+              RUN COMPLETED
+            </Header>
+            <Message.Content>
+              <p>Results are ready for download.</p>
+            </Message.Content>
+          </Message>
+          </Segment>
+        :
           null
         }
 
@@ -179,7 +193,7 @@ export default function RunDetails() {
             <Segment color='violet'>
             <Divider horizontal content='CDR3 INPUT'/>
 
-            <Form.Field
+            {/* <Form.Field
               control={Dropdown}
               label='Project'
               placeholder='Select Project'
@@ -193,9 +207,9 @@ export default function RunDetails() {
               //   setDatasetIDs([])
               // }}
               // value={projectID}
-            />
+            /> */}
             {/* {projectsError && <Message error content="Error loading projects" />} */}
-            <Form.Field
+            {/* <Form.Field
               control={Dropdown}
               label='CDR File'
               placeholder='Select Datasets'
@@ -208,9 +222,9 @@ export default function RunDetails() {
               // onChange={(_e, { value }) => setDatasetIDs(value)}
               // value={datasetIDs}
               // disabled={!projectID} // Disable until a project is selected
-            />
+            /> */}
             {/* {datasetsError && <Message error content="Error loading datasets" />} */}
-            <Form.Field
+            {/* <Form.Field
               control={Dropdown}
               label='Uploads'
               placeholder='Select Uploaded Files'
@@ -223,8 +237,20 @@ export default function RunDetails() {
               // onChange={(_e, { value }) => setMinioUploads(value)}
               value={processedDatasets}
               // disabled={!(datasetIDs.length > 0) || !projectID} // Disable until a dataset is selected
-            />
+            /> */}
             {/* {minioUploadsError && <Message error content="Error loading uploads" />} */}
+
+
+            <Form.Field 
+              control={Dropdown}
+              label='External Specificity File'
+              placeholder='TIGERdb_MinimalScoreConfidence3_VersionII.tsv'
+              value='TIGERdb_MinimalScoreConfidence3_VersionII.tsv'
+              search
+              selection
+              fluid
+              disabled
+            />
             </Segment>
             <Form.Field 
               control={Dropdown}
@@ -232,34 +258,41 @@ export default function RunDetails() {
               placeholder='hla_file.txt'
               selection
               fluid
+              disabled
 
             />
             <Segment color='violet'>
-            <Divider horizontal content='References'/>
+            <Divider horizontal content='Reference Files'/>
 
             <Form.Field 
               control={Dropdown}
               label='Reference File'
               placeholder='ref_CD48_v2.0.txt'
+              value='ref_CD48_v2.0.txt'
               selection
               fluid
               search
+              disabled
             />
             <Form.Field 
               control={Dropdown}
               label='V Usage Frequency File'
               placeholder='ref_V_CD48_v2.0.txt'
+              value='ref_V_CD48_v2.0.txt'
               selection
               fluid
               search
+              disabled
             />
             <Form.Field 
               control={Dropdown}
               label='CDR3 Length Frequency File'
               placeholder='ref_L_CD48_v2.0.txt'
+              value='ref_L_CD48_v2.0.txt'
               search
               selection
               fluid
+              disabled
             />
             </Segment>
             {/* grid with two columns around these: */}
