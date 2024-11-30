@@ -95,13 +95,15 @@ export const resolvers = {
         // to gzip the file:
         // const compressedFileStream = createReadStream().pipe(zlib.createGzip());
 
-        await minioClient.putObject(bucketName, objectName, stream)
+        // Construct the new object name by combining the object ID and the original filename
+        const newObjectName = `${objectName}_${filename}`; // e.g., "123e4567-e89b-12d3-a456-426614174000_data.tsv"
+        await minioClient.putObject(bucketName, newObjectName, stream)
 
         const session = driver.session()
         const createMinioUpload = await session.run(
           `
           MATCH (d:Dataset {datasetID: "${datasetID}"})
-          MERGE (d)-[:HAS_FILE]->(a:MinioUpload {bucketName: $bucketName, objectName: "${objectName}", filename: $filenameExt})
+          MERGE (d)-[:HAS_FILE]->(a:MinioUpload {bucketName: $bucketName, objectName: "${newObjectName}", filename: $filenameExt})
           RETURN a
           `,
           { bucketName, filenameExt }
@@ -491,7 +493,8 @@ export const resolvers = {
     ) => {
       try {
         // TODO: response-content-disposition to enable clickable downloads? still doesn't work...
-        const presignedURL = await minioClient.presignedUrl('GET', bucketName, objectName, 24 * 60 * 60, { "response-content-disposition": `attachment; filename=${objectName}` })
+        // const presignedURL = await minioClient.presignedUrl('GET', bucketName, objectName, 24 * 60 * 60, { "response-content-disposition": `attachment; filename=${objectName}` })
+        const presignedURL = makePresignedURL(minioClient, bucketName, objectName)
         // console.log(presignedURL)
         return presignedURL
       } catch (error) {
