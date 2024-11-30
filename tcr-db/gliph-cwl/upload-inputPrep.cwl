@@ -8,11 +8,11 @@ hints:
       MC_HOST_minio: "http://$(inputs.access):$(inputs.secret)@$(inputs.domain):$(inputs.port)"
 baseCommand: cp
 inputs:
-  # GLIPH:
+  # runs:
   #   type: Directory
   #   inputBinding:
   #     position: 1
-  cluster_output:
+  gliph_input:
     type: File
     inputBinding:
       position: 1
@@ -29,10 +29,27 @@ inputs:
   port:
     type: string
 outputs:
-  GLIPH_dir:
-    type: Directory
+  # gliph_preprocessed:
+  #   type: string
+  #   outputBinding:
+  #     outputEval: $(inputs.destinationPath)
+
+  # runs_dir:
+  #   type: Directory
+  #   outputBinding:
+  #     glob: "run-*/"
+
+  # runs_dir:
+  #   type: Directory
+  #   outputBinding:
+  #     # outputEval: $(inputs.runs_dir.location)
+  #     outputEval: $(inputs.destinationPath)
+
+  parameter_file:
+    type: File
     outputBinding:
-      outputEval: $(inputs.destinationPath)
+      glob: "run-*/parameter_file.txt"
+
 arguments:
   - "--recursive"
   - "--debug"
