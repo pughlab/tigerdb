@@ -4,7 +4,7 @@ import useKeycloakMeMutation from '../hooks/useKeycloakMeMutation'
 import { Routes, Route, Outlet, useNavigate, useLocation, matchPath, Link } from 'react-router-dom'
 
 import SegmentPlaceholder from './common/SegmentPlaceholder'
-
+import NotFoundRedirect from './NotFoundRedirect'
 import { Logo } from './logos'
 import tigerdb from './logos/tigerdb.png'
 
@@ -108,7 +108,7 @@ export default function Portal() {
   const [meMutationState] = useKeycloakMeMutation()
   let routes = [
     { path: 'data', icon: 'database', description: 'upload TCR data', element: <Projects /> },
-    { path: 'analysis', icon: 'react', description: 'run GLIPH analysis', element: <Runs /> },
+    { path: 'analysis', icon: 'react', description: 'run GLIPH2 analysis', element: <Runs /> },
     // {path: 'datasets', icon: 'database', element: <Datasets />},
     // {path: 'explore', icon: 'search', element: <Explore />},
     // {path: 'export', icon: 'download', element: <DataExports />},
@@ -156,7 +156,8 @@ export default function Portal() {
             )
           )}
         </Route>
-        <Route key='notfound' path="*" element={<SegmentPlaceholder text='Not found!' icon='exclamation triangle' />} />
+        {/* <Route key='notfound' path="*" element={<SegmentPlaceholder text='404 - Not Found!' icon='exclamation triangle' />} /> */}
+        <Route key="notfound" path="*" element={<NotFoundRedirect />} />
       </Routes>
       {/* </RenderOnAcceptedTOS>
         </RenderOnApproved> */}

@@ -4,6 +4,7 @@ import useKeycloakMeMutation from '../hooks/useKeycloakMeMutation'
 import { Routes, Route, Outlet, useNavigate, useLocation, matchPath, Link } from 'react-router-dom'
 
 import SegmentPlaceholder from './common/SegmentPlaceholder'
+import NotFoundRedirect from './NotFoundRedirect'
 
 import { Logo } from './logos'
 
@@ -90,7 +91,9 @@ export default function PublicPortal() {
   const { navigate, location, isActivePathElement } = useRouter()
   // console.log(location)
   let routes = [
-    { path: 'search', icon: 'certificate', element: <Annotations /> }
+    { path: 'data', icon: 'database', description: 'login to upload TCR data', disabled: true },
+    { path: 'analysis', icon: 'react', description: 'login to run GLIPH2 analysis', disabled: true},
+    { path: 'search', icon: 'certificate', description: 'global CDR3 search', disabled: false, element: <Annotations /> }
   ]
 
   return (
@@ -105,8 +108,8 @@ export default function PublicPortal() {
             <Segment attached='top'>
               <Step.Group fluid>
                 {routes.map(
-                  ({ path, icon }) => (
-                    <Step key={path} description={path} icon={icon} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`public/${path}`)} />
+                  ({ path, description, icon, disabled }) => (
+                    <Step key={path} description={description} icon={icon} disabled={disabled} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`public/${path}`)} />
                   )
                 )}
               </Step.Group>
@@ -123,7 +126,8 @@ export default function PublicPortal() {
             )
           )}
         </Route>
-        <Route key='notfound' path="*" element={<SegmentPlaceholder text='Not found!' icon='exclamation triangle' />} />
+        {/* <Route key='notfound' path="*" element={<SegmentPlaceholder text='404 - Not Found!' icon='exclamation triangle' />} /> */}
+        <Route key="notfound" path="*" element={<NotFoundRedirect />} />
       </Routes>
     </>
   )
