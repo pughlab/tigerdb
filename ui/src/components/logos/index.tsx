@@ -23,7 +23,7 @@ export function AboutPortal({ }) {
         <Header as='h1'>
           {/* <Icon name='tint' color='red' size='big' /> */}
           <Header.Content>
-            TIGERdb: <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>T</span>-cell and <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>I</span>mmuno<span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>G</span>lobulin <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>E</span>pitope <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>R</span>eceptor <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>D</span>ata<span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>B</span>ase
+            TIGERdb: <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>T</span>-cell & <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>I</span>mmuno<span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>G</span>lobulin <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>E</span>pitope <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>R</span>eceptor <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>D</span>ata<span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>B</span>ase
           </Header.Content>
         </Header>
       </Divider>
