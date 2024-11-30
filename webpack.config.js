@@ -67,6 +67,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: './index.html',
       template: './ui/public/index.html',
+      favicon: './ui/public/favicon.ico', // Add the favicon
     }),
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(dotenv.parsed)
