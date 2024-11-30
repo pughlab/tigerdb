@@ -108,7 +108,7 @@ def generate_parameter_file(run_parameters, runID):
 
 def makeGLIPHJob(runID, run):
     if (getenv("GRAPHENE_DEV") == "False"):
-        with open('/app/src/minioIP.txt', 'r') as file:
+        with open('/app/app/minioIP.txt', 'r') as file:
             minioIP = file.read().replace('\n', '')
     else:
         # minioIP = getenv("MINIO_IP")
