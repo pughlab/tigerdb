@@ -179,7 +179,7 @@ export const resolvers = {
         }
 
         // Construct the new object name by combining the object ID and the original filename
-        const newObjectName = `processed-${objectName}_${filename}`; // e.g., "123e4567-e89b-12d3-a456-426614174000_data.tsv"
+        const newObjectName = `processed-${objectName}`; // e.g., "processed-123e4567-e89b-12d3-a456-426614174000_data.tsv"
 
 
         // Step 5: Upload the processed file using putObjectBucket
