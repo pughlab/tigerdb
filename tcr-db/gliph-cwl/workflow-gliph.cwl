@@ -1,86 +1,82 @@
-class: Workflow
 cwlVersion: v1.0
-
+class: Workflow
+  
 inputs:
+  minioInputPath: string[]
+  destinationPath: string
+  access: string
+  secret: string
+  domain: string
+  port: string
+  outPrefix: string
 
-  - id: minioInputPath
-    # type: string[]
-    type: string
+outputs:
+  GLIPH_dir:
+    type: Directory
+    outputSource: upload-gliph/GLIPH_dir
 
-  - id: destinationPath
-    type: string
-
-  - id: access
-    type: string
-
-  - id: secret
-    type: string
-
-  - id: domain
-    type: string
-
-  - id: port
-    type: string
- 
-outputs: []
 steps:
-  - id: extract-gliph
+  extract-gliph:
+    run: extract-gliph.cwl
     in:
-      - id: minioInputPath
-        source: minioInputPath
+      minioInputPath: minioInputPath
+      access: access
+      secret: secret
+      domain: domain
+      port: port
+    out: [script_file, parameter_file, runs_dir, datasets_dir, datasets_file, external_spcfc_file]
 
-      - id: access
-        source: access
-
-      - id: secret
-        source: secret
-        
-      - id: domain
-        source: domain
-
-      - id: port
-        source: port
-    out:
-      - id: parameter_file
-      # - id: input_dir
-      - id: runs_dir
-
-    run: ./extract-gliph.cwl
-
-  - id: gliph
+  inputPrep-gliph:
+    run: inputPrep-gliph.cwl
     in:
-      - id: runs_dir
-        source: extract-gliph/runs_dir
-      
-      # - id: R_script
-      #   source: extract-gliph/R_file_GLIPH
+      script_file: extract-gliph/script_file
+      minio_paths: extract-gliph/datasets_dir
+      external_spcfc_file: extract-gliph/external_spcfc_file  # Adjust if needed
+      datasets_file: extract-gliph/datasets_file
+      output_dir: extract-gliph/runs_dir
+      output_name: outPrefix
+    # out: [runs_dir]
+    out: [gliph_input]
 
-      - id: parameter_file
-        source: extract-gliph/parameter_file
-
-    out:
-      - id: gliph_output
-    run: ./gliph.cwl
-
-  - id: upload-gliph
+  upload-inputPrep:
+    run: upload-inputPrep.cwl
     in:
-      - id: GLIPH
-        source: gliph/gliph_output
+      gliph_input: inputPrep-gliph/gliph_input
+      # runs: inputPrep-gliph/runs_dir
+      destinationPath: destinationPath
+      access: access
+      secret: secret
+      domain: domain
+      port: port
+    out: [parameter_file]
 
-      - id: destinationPath
-        source: destinationPath
+  # extract-inputPrep:
+  #   run: extract-inputPrep.cwl
+  #   in:
+  #     minioInputPath: minioInputPath
+  #     access: access
+  #     secret: secret
+  #     domain: domain
+  #     port: port
+  #   out: [final_runs_dir, parameter_file]
 
-      - id: access
-        source: access
+  gliph:
+    run: gliph.cwl
+    in:
+      # gliph_input: inputPrep-gliph/gliph_input
+      # runs: upload-inputPrep/runs_dir
+      # parameter_file: extract-gliph/parameter_file
+      parameter_file: upload-inputPrep/parameter_file
+      # cdr3_file: inputPrep-gliph/gliph_input  # Pass the generated input file explicitly
+    out: [HLA_output, cluster_output, cluster_txt_output, kmer_output, kmer_log_output, parameter_output, score_output]
 
-      - id: secret
-        source: secret
-        
-      - id: domain
-        source: domain
-
-      - id: port
-        source: port
-    out:
-      - id: GLIPH_dir
-    run: ./upload-gliph.cwl
+  upload-gliph:
+    run: upload-gliph.cwl
+    in:
+      cluster_output: gliph/cluster_output
+      destinationPath: destinationPath
+      access: access
+      secret: secret
+      domain: domain
+      port: port
+    out: [GLIPH_dir]
