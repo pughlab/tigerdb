@@ -6,10 +6,11 @@ import zlib from 'zlib'
 
 export const resolvers = {
   Query: {
-    countEpitopeSpecies: async (_parent, _args, { driver }) => {
+    countEpitopes: async (_parent, _args, { driver }) => {
       const session = driver.session()
       const epitopeSpeciesList = await session.run("MATCH (a:AnnotationVariable) RETURN DISTINCT a.epitopeSpecies AS e")
       const annotationVariables = await session.run("MATCH (a:AnnotationVariable) RETURN a")
+      const unlabelledVariables = await session.run("MATCH (n:DatasetVariable) RETURN COUNT(n) AS n")
       const results = []
       
       const epitopeSpeciesCount = {}
@@ -25,6 +26,8 @@ export const resolvers = {
       Object.keys(epitopeSpeciesCount).forEach((key) => {
         results.push({ "epitopeSpecies": key, "count": epitopeSpeciesCount[key] })
       })
+
+      results.push({"epitopeSpecies": "Unlabelled", "count": unlabelledVariables.records[0].get('n')})
 
       return results
     }

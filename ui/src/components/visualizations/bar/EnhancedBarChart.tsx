@@ -11,24 +11,16 @@ import { RiVirusFill } from "react-icons/ri";
 import { Grid } from "@visx/grid";
 import { Text } from "@visx/text";
 import { Dimmer, Loader, Segment } from "semantic-ui-react";
-import useAnnotationVariablesQuery from "../../../hooks/pages/useAnnotationVariablesQuery";
-import SegmentPlaceholder from "../../common/SegmentPlaceholder";
+
 export function EnhancedBarChart() {
-  const { loading: epitopeLoading, data: epitopeData, error: epitopeError } = useQuery(gql`
+  const { loading, data, error } = useQuery(gql`
     query EpitopeSpeciesCount {
-      countEpitopeSpecies {
+      countEpitopes {
         count
         epitopeSpecies
       }
     }
   `);
-
-  const { loading: annotationLoading, error: annotationError, data: annotationData, runQuery } = useAnnotationVariablesQuery({})
-  useEffect(() => {
-    runQuery()
-  }, [])
-  const loading = epitopeLoading || annotationLoading
-  const error = epitopeError || annotationError
 
   if (loading) return (
     <Segment placeholder basic icon="chart bar">
@@ -40,27 +32,7 @@ export function EnhancedBarChart() {
 
   if (error) return <>{"There was an error when querying the data!"}</>;
 
-  const data = []
-  let totalUnlabelledVars = 0
-
-  epitopeData.countEpitopeSpecies.forEach((species) => {
-    data.push({
-      count: species.count,
-      epitopeSpecies: species.epitopeSpecies
-    })
-  })
-
-
-  annotationData?.curatedDatasets?.forEach((dataset) => {
-    totalUnlabelledVars += dataset.datasetVariables.length
-  })
-
-  data.push({
-    count: totalUnlabelledVars,
-    epitopeSpecies: "Unlabelled"
-  })
-
-  return <BarChart data={data} />;
+  return <BarChart data={data.countEpitopes} />;
 }
 
 const BarChart = ({ data }) => {
@@ -85,6 +57,13 @@ const BarChart = ({ data }) => {
     Bacterial: ["M.tuberculosis", "S-pneumoniae"],
     Unlabelled: ["Unlabelled"]
   };
+
+  const getXAxisTicks = () => {
+    const maxValue: number = Math.max(...data.map(d => d.count))
+    const power: number = Number(Math.log10(maxValue).toFixed()) + 1
+
+    return [...Array(power + 1)].map((_, i) => 10 ** i)
+  }
 
   const iconMap = {
     Human: <FaPerson />,
@@ -233,21 +212,21 @@ const BarChart = ({ data }) => {
           {
             // Draw the bars
             dataWithGaps.map((d) => {
-              if (d.isGap) {
-                // Do not render anything for gaps
+              if (d.isGap || isNaN(x(d.count))) {
+                // Do not render anything for gaps or invalid values
                 return null;
               }
               return (
                 <rect
-                  key={d.epitopeSpecies}
-                  x={x(1)}
-                  y={y(d.positionIndex)}
-                  height={y.bandwidth()}
-                  width={x(d.count) - x(1)}
-                  fill={colors[d.category] || "white"}
-                  onMouseOver={(event) => handleMouseOver(event, d)}
-                  onMouseOut={handleMouseOut}
-                  opacity={hover === d.epitopeSpecies ? 1 : 0.7}
+                key={d.epitopeSpecies}
+                x={x(1)}
+                y={y(d.positionIndex)}
+                height={y.bandwidth()}
+                width={x(d.count) - x(1)}
+                fill={colors[d.category] || "white"}
+                onMouseOver={(event) => handleMouseOver(event, d)}
+                onMouseOut={handleMouseOut}
+                opacity={hover === d.epitopeSpecies ? 1 : 0.7}
                 />
               );
             })
@@ -262,7 +241,7 @@ const BarChart = ({ data }) => {
               textAnchor="start"
               fontSize={16}
               fontWeight="bold"
-              fill="white"
+              fill={colors[category]}
             >
               {category}
             </Text>
@@ -275,7 +254,7 @@ const BarChart = ({ data }) => {
             stroke="white" // Set axis line color
             tickStroke="white" // Set tick marks color
             tickFormat={(d) => d.toString()}
-            tickValues={[1, 10, 100, 1000, 10000, 100000]}
+            tickValues={getXAxisTicks()}
             tickLabelProps={() => ({
               fontSize: 12,
               textAnchor: "middle",
