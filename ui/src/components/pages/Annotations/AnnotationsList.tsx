@@ -48,7 +48,7 @@ function AnnotationListItem({ annotationVariable, searchText, score, dropdownFil
   // const { annotationVariableID, cdr3b, locus, trbv, trbj, mhc, mhcClass, epitope, epitopeGene, epitopeSpecies, reference } = annotationVariable
   // const dataset = curatedAnnotation?.dataset;  // Access dataset from the curatedDataset
   const {
-    annotationVariableID, cdr3b, locus, trbv, trbj, mhc, mhcClass, epitope, epitopeGene, epitopeSpecies, reference,
+    annotationVariableID, cdr3b, locus, trbv, trbj, mhc, mhcClass, epitopeAAseq, epitopeGene, epitopeSpecies, reference,
     curatedAnnotation, // Access curatedAnnotation (which contains the dataset)
     curatedDataset,    // Access curatedDataset (which contains the dataset)
   } = annotationVariable;
@@ -164,8 +164,8 @@ function AnnotationListItem({ annotationVariable, searchText, score, dropdownFil
                 </Grid.Column>
                 <Grid.Column>
                   <Grid.Row>
-                    <Label basic={!dropdownFilters['epitope'].includes(epitope)} content='Epitope' detail={`${epitope}`}
-                      color={dropdownFilters['epitope'].includes(epitope) ? "blue" : "grey"}
+                    <Label basic={!dropdownFilters['epitopeAAseq'].includes(epitopeAAseq)} content='Epitope Amino Acid Sequence' detail={`${epitopeAAseq}`}
+                      color={dropdownFilters['epitopeAAseq'].includes(epitopeAAseq) ? "blue" : "grey"}
 
                     />
 
@@ -281,7 +281,7 @@ const ANNOTATION_FILTERS = [
   },
   { filterKey: "mhcClass", placeholder: "MHC Class", text: ['MHCI', 'MHCII', 'MHCI-orMHCII'] },
   {
-    filterKey: "epitope", placeholder: "Epitope", text: ['VLEETSVML', 'EFFWDANDIY', 'IPSINVHHY', 'NLVPMVATV',
+    filterKey: "epitopeAAseq", placeholder: "Epitope Amino Acid Sequence", text: ['VLEETSVML', 'EFFWDANDIY', 'IPSINVHHY', 'NLVPMVATV',
       'RPHERNGFTV', 'TPRVTGGGAM', 'VMAPRTLIL', 'GTSGSPIVNR-orGTSGSPIINR',
       'GLCTLVAML', 'YVLDHLIVV', 'EPLPQGQLTAY', 'KLVALGINAV',
       'LPEPLPQGQLTAY',
@@ -397,7 +397,7 @@ export default function AnnotationsList({ }) {
     trbj: [],
     mhc: [],
     mhcClass: [],
-    epitope: [],
+    epitopeAAseq: [],
     epitopeGene: [],
     epitopeSpecies: []
   })
