@@ -437,7 +437,7 @@ export default function AnnotationsList({ }) {
         keys: ['cdr3b'],
         includeScore: true,
         threshold: 0.2, // Adjust this for more or less fuzziness
-        minMatchCharLength: 0,
+        minMatchCharLength: 1,
         useExtendedSearch: true
       };
 
