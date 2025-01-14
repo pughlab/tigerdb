@@ -16,10 +16,41 @@ inputs:
     type: File
     inputBinding:
       position: 1
+  
+  HLA_output:
+    type: File
+    inputBinding:
+      position: 2
+  
+  cluster_txt_output:
+    type: File
+    inputBinding:
+      position: 3
+  
+  kmer_output:
+    type: File
+    inputBinding:
+      position: 4
+  
+  kmer_log_output:
+    type: File
+    inputBinding:
+      position: 5
+  
+  parameter_output:
+    type: File
+    inputBinding:
+      position: 6
+  
+  score_output:
+    type: File
+    inputBinding:
+      position: 7
+
   destinationPath:
     type: string
     inputBinding:
-      position: 2
+      position: 8
   access:
     type: string
   secret:
@@ -30,7 +61,7 @@ inputs:
     type: string
 outputs:
   GLIPH_dir:
-    type: Directory
+    type: string
     outputBinding:
       outputEval: $(inputs.destinationPath)
 arguments:

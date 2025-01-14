@@ -1,5 +1,7 @@
 cwlVersion: v1.0
 class: CommandLineTool
+requirements:
+  InlineJavascriptRequirement: {}
 hints:
   DockerRequirement:
     dockerPull: minio/mc:latest
@@ -29,6 +31,14 @@ inputs:
   port:
     type: string
 outputs:
+  done_signal:
+    type: string
+    outputBinding:
+      # Just return some placeholder text so downstream steps 
+      # can declare a dependency on it.
+      outputEval: |
+        ${return "DONE";}
+# outputs:
   # gliph_preprocessed:
   #   type: string
   #   outputBinding:
@@ -45,10 +55,10 @@ outputs:
   #     # outputEval: $(inputs.runs_dir.location)
   #     outputEval: $(inputs.destinationPath)
 
-  parameter_file:
-    type: File
-    outputBinding:
-      glob: "run-*/parameter_file.txt"
+  # parameter_file:
+  #   type: File
+  #   outputBinding:
+  #     glob: "run-*/parameter_file.txt"
 
 arguments:
   - "--recursive"

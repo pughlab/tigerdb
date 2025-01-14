@@ -5,7 +5,7 @@ requirements:
     dockerPull: gliph2:latest
   InitialWorkDirRequirement:   # Mounts the runs_dir as the working directory
     listing:
-      - $(inputs.runs_dir)    # List the runs_dir so it's available in the container
+      - $(inputs.runs)    # List the runs_dir so it's available in the container
 
 baseCommand: irtools
 inputs:
@@ -14,10 +14,13 @@ inputs:
     # inputBinding:
     #   position: 1
 
-  # runs:
-  #   type: Directory
+  runs:
+    type: Directory
   #   inputBinding:
   #     position: 1
+
+  # forced_dep:
+  #   type: string
 
   parameter_file:
     type: File
