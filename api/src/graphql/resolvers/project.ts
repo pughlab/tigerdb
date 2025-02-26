@@ -61,6 +61,41 @@ export const resolvers = {
         console.log('getProjects', error)
         throw new ApolloError('getProjects', error as string)
       }
+    },
+    countUnlabelledVariables: async (_obj, _args, { driver }) => {
+      const session = driver.session()
+      const unlabelledVarsList = await session.run(`
+        MATCH (p:Project)
+        OPTIONAL MATCH (p)-[:HAS_DATASET]->(d:Dataset)
+        OPTIONAL MATCH (d)-[:HAS_CURATED_DATASET]->(c:CuratedDataset)
+        OPTIONAL MATCH (c)-[:HAS_DATASET_VARIABLE]->(v:DatasetVariable)
+        RETURN p AS projects, count(v) AS varCount`
+      )
+      const projectData: any[] = []
+      console.log(unlabelledVarsList)
+      unlabelledVarsList.records.forEach((record) => {
+        projectData.push({
+          name: record.get('projects').properties['name'],
+          count: record.get('varCount')
+        })
+      })
+      console.log(projectData)
+      // const projectData = unlabelledVarsList.records.map((record) => {
+      //   console.log(record.get('projects'))
+      //   console.log(record.get('datasets'))
+      //   console.log(record.get('varCount'))
+      //   return {
+      //     projects: [
+      //       {
+      //         name: record.get('projects').properties['name'],
+      //         datasets: record.get('datasets').map(
+      //           (dataset) => ({ name: dataset.properties['name'], count: record.get('varCount') })
+      //         ),
+      //       },
+      //     ],
+      //   }
+      // })
+      return projectData
     }
   },
   Mutation: {
