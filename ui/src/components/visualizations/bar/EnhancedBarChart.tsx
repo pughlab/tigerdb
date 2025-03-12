@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import { scaleBand, scaleLog } from "@visx/scale";
 import { AxisBottom, AxisLeft } from "@visx/axis";
 import { Group } from "@visx/group";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Tooltip, useTooltip } from "@visx/tooltip";
 import { localPoint } from "@visx/event";
 import { FaPerson, FaBacteria } from "react-icons/fa6";
@@ -11,24 +11,42 @@ import { RiVirusFill } from "react-icons/ri";
 import { Grid } from "@visx/grid";
 import { Text } from "@visx/text";
 import { Dimmer, Loader, Segment } from "semantic-ui-react";
-import useAnnotationVariablesQuery from "../../../hooks/pages/useAnnotationVariablesQuery";
-import SegmentPlaceholder from "../../common/SegmentPlaceholder";
+
+function generateTone(baseHue = 30, saturation = 20, lightness = 80) {
+  return `hsl(${baseHue}, ${saturation}%, ${lightness}%)`;
+}
+
+function generatePalette(steps = 5) {
+  const palette = [];
+  const baseLightness = 80;
+  
+  for(let i = 0; i < steps; i++) {
+      const lightness = baseLightness + (i * 5);
+      palette.push(generateTone(35, 20, Math.min(lightness, 95))); 
+  }
+  
+  return palette;
+}
+
 export function EnhancedBarChart() {
-  const { loading: epitopeLoading, data: epitopeData, error: epitopeError } = useQuery(gql`
+  const { loading: epitopesLoading, data: epitopes, error: epitopesError } = useQuery(gql`
     query EpitopeSpeciesCount {
-      countEpitopeSpecies {
+      countEpitopes {
         count
         epitopeSpecies
       }
     }
   `);
-
-  const { loading: annotationLoading, error: annotationError, data: annotationData, runQuery } = useAnnotationVariablesQuery({})
-  useEffect(() => {
-    runQuery()
-  }, [])
-  const loading = epitopeLoading || annotationLoading
-  const error = epitopeError || annotationError
+  const { loading: unlabelledVarsLoading, data: unlabelledVars, error: unlabelledVarsError } = useQuery(gql`
+    query UnlabelledVars {
+      countUnlabelledVariables {
+        name
+        count
+      }
+    }
+  `)
+  const loading = epitopesLoading || unlabelledVarsLoading
+  const error = epitopesError || unlabelledVarsError
 
   if (loading) return (
     <Segment placeholder basic icon="chart bar">
@@ -40,30 +58,15 @@ export function EnhancedBarChart() {
 
   if (error) return <>{"There was an error when querying the data!"}</>;
 
-  const data = []
-  let totalUnlabelledVars = 0
-
-  epitopeData.countEpitopeSpecies.forEach((species) => {
-    data.push({
-      count: species.count,
-      epitopeSpecies: species.epitopeSpecies
-    })
-  })
-
-
-  annotationData?.curatedDatasets?.forEach((dataset) => {
-    totalUnlabelledVars += dataset.datasetVariables.length
-  })
-
-  data.push({
-    count: totalUnlabelledVars,
-    epitopeSpecies: "Unlabelled"
-  })
+  const data = {
+    epitopes: epitopes.countEpitopes,
+    unlabelled: unlabelledVars.countUnlabelledVariables
+  }
 
   return <BarChart data={data} />;
 }
 
-const BarChart = ({ data }) => {
+const BarChart = ({ data }: { data: any }) => {
   const [hover, setHover] = useState("");
 
   const categories = {
@@ -86,6 +89,13 @@ const BarChart = ({ data }) => {
     Unlabelled: ["Unlabelled"]
   };
 
+  const getXAxisTicks = () => {
+    const maxValue: number = Math.max(...data.epitopes.map(d => d.count))
+    const power: number = Number(Math.log10(maxValue).toFixed()) + 1
+
+    return [...Array(power + 1)].map((_, i) => 10 ** i)
+  }
+
   const iconMap = {
     Human: <FaPerson />,
     Viral: <RiVirusFill />,
@@ -104,7 +114,7 @@ const BarChart = ({ data }) => {
   };
 
   // Transform and sort the data
-  const transformedData = data
+  const transformedData = data.epitopes
     .map((species) => {
       const category = getCategory(species.epitopeSpecies);
       return {
@@ -141,6 +151,7 @@ const BarChart = ({ data }) => {
     Viral: "lightcyan",
     Unlabelled: "moccasin"
   };
+  const stackedBarColors = generatePalette(data.unlabelled.length)
 
   // Define y scale before computing category positions
   const y = scaleBand({
@@ -233,21 +244,58 @@ const BarChart = ({ data }) => {
           {
             // Draw the bars
             dataWithGaps.map((d) => {
-              if (d.isGap) {
-                // Do not render anything for gaps
+              if (d.category === 'Unlabelled') {
+                let xPosition = x(1)
+                const sortedUnlabelled = data.unlabelled.toSorted((a, b) => a.count - b.count)
+                return (<Group key={d.category} y={d.positionIndex}>
+                  {
+                    sortedUnlabelled.map((project, index) => {
+                      if (project.count === 0) {
+                        return null
+                      }
+                      const barWidth = x(project.count) - xPosition
+                      const barData = {
+                        x: xPosition,
+                        y: y(d.positionIndex),
+                        width: barWidth,
+                        height: y.bandwidth(),
+                        opacity: hover === project.name ? 1 : 0.7
+                      }
+                      const bar = (<g key={`segment-${project.name}`}>
+                        <rect 
+                          {...barData}
+                          onMouseOver={(event) => handleMouseOver(event, {
+                            epitopeSpecies: project.name,
+                            count: project.count
+                          })}
+                          onMouseOut={handleMouseOut}
+                          fill={stackedBarColors[index]}
+                          style={{zIndex: index}}
+                        />
+                      </g>)
+
+                      xPosition += barWidth
+
+                      return bar
+                    })
+                  }
+                </Group>)
+              }
+              if (d.isGap || isNaN(x(d.count))) {
+                // Do not render anything for gaps or invalid values
                 return null;
               }
               return (
                 <rect
-                  key={d.epitopeSpecies}
-                  x={x(1)}
-                  y={y(d.positionIndex)}
-                  height={y.bandwidth()}
-                  width={x(d.count) - x(1)}
-                  fill={colors[d.category] || "white"}
-                  onMouseOver={(event) => handleMouseOver(event, d)}
-                  onMouseOut={handleMouseOut}
-                  opacity={hover === d.epitopeSpecies ? 1 : 0.7}
+                key={d.epitopeSpecies}
+                x={x(1)}
+                y={y(d.positionIndex)}
+                height={y.bandwidth()}
+                width={x(d.count) - x(1)}
+                fill={colors[d.category] || "white"}
+                onMouseOver={(event) => handleMouseOver(event, d)}
+                onMouseOut={handleMouseOut}
+                opacity={hover === d.epitopeSpecies ? 1 : 0.7}
                 />
               );
             })
@@ -262,7 +310,7 @@ const BarChart = ({ data }) => {
               textAnchor="start"
               fontSize={16}
               fontWeight="bold"
-              fill="white"
+              fill={colors[category]}
             >
               {category}
             </Text>
@@ -275,7 +323,7 @@ const BarChart = ({ data }) => {
             stroke="white" // Set axis line color
             tickStroke="white" // Set tick marks color
             tickFormat={(d) => d.toString()}
-            tickValues={[1, 10, 100, 1000, 10000, 100000]}
+            tickValues={getXAxisTicks()}
             tickLabelProps={() => ({
               fontSize: 12,
               textAnchor: "middle",

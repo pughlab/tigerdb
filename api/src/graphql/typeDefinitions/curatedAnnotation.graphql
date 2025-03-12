@@ -46,7 +46,7 @@ type Mutation {
 }
 
 type Query {
-    countEpitopeSpecies: [EpitopeSpeciesCount]!
+    countEpitopes: [EpitopeSpeciesCount]!
     # getCuratedAnnotations: [CuratedAnnotation]
 }
 

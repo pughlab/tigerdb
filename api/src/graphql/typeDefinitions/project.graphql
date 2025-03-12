@@ -17,6 +17,11 @@ type Project {
   runs: [Run!]! @relationship(type: "HAS_RUN", direction: OUT)
 }
 
+type UnlabelledVariablesCount {
+  name: String
+  count: Int
+}
+
 input ProjectInput {
   projectID: ID!
   name: String
@@ -28,7 +33,8 @@ input ProjectInput {
 }
 
 type Query{
-  getProjects(projectID: ID): [Project]  # projectID is optional here
+  getProjects(projectID: ID): [Project],  # projectID is optional here
+  countUnlabelledVariables: [UnlabelledVariablesCount]
 }
 
 type Mutation {

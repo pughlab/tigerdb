@@ -18,7 +18,7 @@ function compareCounts(a, b) {
 export default function BarChart() {
     const { loading, data, error } = useQuery(gql`
         query EpitopeSpeciesCount {
-            countEpitopeSpecies {
+            countEpitopes {
                 count
                 epitopeSpecies
         }
@@ -28,7 +28,7 @@ export default function BarChart() {
 
     if (error) return <>{'There was an error when querying the data!'}</>
 
-    const sortedData = [...data.countEpitopeSpecies].sort(compareCounts)
+    const sortedData = [...data.countEpitopes].sort(compareCounts)
     const chartData = [{
         x: sortedData.map((species) => species.epitopeSpecies),
         y: sortedData.map((species) => species.count),
