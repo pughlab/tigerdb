@@ -1,0 +1,18 @@
+type Tag {
+    tagID: ID!
+    name: String!
+    datasets: [Dataset!]! @relationship(type: "HAS_TAG", direction: IN)
+}
+
+input TagInput {
+    tagID: ID
+    datasetID: ID
+    name: String!
+}
+
+type Mutation {
+    findOrCreateTag(name: String!): Tag
+    addTagToDataset(tagID: ID!, datasetID: ID!): Tag
+    removeTagFromDataset(tagID: ID!, datasetID: ID!): Tag
+    deleteTag(tagID: ID!): String
+}

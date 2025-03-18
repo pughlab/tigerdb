@@ -7,7 +7,7 @@ type Dataset {
 
     # custom createDatasetWithUploads makes adding timestamps difficult for autogeneration
     createdOn: DateTime! @timestamp(operations: [CREATE])
-    tags: [String]
+    tags: [Tag!]! @relationship(type: "HAS_TAG", direction: OUT)
     # runs: [Run!]! @relationship(type: "HAS_RUN", direction: OUT)
     project: Project! @relationship(type: "HAS_DATASET", direction: IN)
     # updatedAt: DateTime! @timestamp(operations: [UPDATE])
@@ -18,7 +18,7 @@ input DatasetInput {
     datasetID: ID!
     name: String
     # filename: String
-    tags: [String]
+    tags: [TagInput]
 }
 
 type Mutation {
