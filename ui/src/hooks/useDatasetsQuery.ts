@@ -1,5 +1,5 @@
-import { gql, useMutation, useQuery } from '@apollo/client'
-import { useCallback, useState } from 'react'
+import { gql, useQuery } from '@apollo/client'
+import { useState } from 'react'
 
 export default function useDatasetsQuery({ projectID }: { projectID: string }) {
   const [searchText, setSearchText] = useState('')
@@ -20,6 +20,11 @@ export default function useDatasetsQuery({ projectID }: { projectID: string }) {
       project {
         projectID
         name
+      }
+      tags {
+        tagID
+        name
+        category
       }
     }
   }`, { variables: { projectID, searchText }, fetchPolicy: 'network-only' })
