@@ -1,0 +1,37 @@
+input CDR3Filters {
+    trbv: [String]
+    trbj: [String]
+    mhc: [String]
+    mhcClass: [String]
+    epitopeAASeq: [String]
+    epitopeGene: [String]
+    epitopeSpecies: [String]
+}
+
+input CDR3SearchInput {
+    cdr3b: String
+    filters: CDR3Filters
+    limit: Int
+    differences: Int
+}
+
+type CDR3SearchResult {
+    variableID: ID
+    cdr3b: String
+    cdr3a: String
+    reference: String
+    trbv: String
+    trbj: String
+    trav: String
+    traj: String
+    mhc: String
+    mhcClass: String
+    epitopeGene: String
+    epitopeAAseq: String
+    epitopeSpecies: String
+    score: Decimal
+}
+
+type Query {
+    findCDR3s(input: CDR3SearchInput!): [CDR3SearchResult]!
+}
