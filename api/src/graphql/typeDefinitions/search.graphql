@@ -3,7 +3,7 @@ input CDR3Filters {
     trbj: [String]
     mhc: [String]
     mhcClass: [String]
-    epitopeAASeq: [String]
+    epitopeAAseq: [String]
     epitopeGene: [String]
     epitopeSpecies: [String]
 }

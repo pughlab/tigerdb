@@ -20,7 +20,6 @@ function parseValue(value) {
 function buildFilters(filters) {
   let result = '';
   if (filters) {
-    result = 'WHERE '
     const filterArray: string[] = [];
     Object.keys(filters).forEach((key) => {
       let filterStr = ''
@@ -28,7 +27,7 @@ function buildFilters(filters) {
       filterArray.push(filterStr);
     })
     if (filterArray.length > 0) {
-      result += filterArray[0] + ' AND '+ filterArray.slice(1).join(' AND ');
+      result = 'WHERE ' + filterArray.join(' AND ');
     }
   }
   return result;
