@@ -12,10 +12,14 @@ input CDR3SearchInput {
     cdr3b: String
     filters: CDR3Filters
     limit: Int
-    differences: Int
+    differenceFactor: Decimal
 }
 
 type CDR3SearchResult {
+    projectID: String
+    projectName: String
+    datasetID: String
+    datasetName: String
     variableID: ID
     cdr3b: String
     cdr3a: String

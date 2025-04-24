@@ -34,10 +34,6 @@ function buildFilters(filters) {
 }
 
 function fuzzinessScore(text: string, pattern: string): number {
-  if (text.length === pattern.length) {
-    return 0;
-  }
-
   const nonMatchingPositions = [];
   for (let i = 0; i < pattern.length; i++) {
     if (text[i] !== pattern[i]) {
@@ -87,7 +83,7 @@ export const resolvers = {
   Query: {
     findCDR3s: async (_parent, args, { driver }) => {
       const { input } = args;
-      const { cdr3b, filters, limit, differences } = input;
+      const { cdr3b, filters, limit, differenceFactor } = input;
       const session = driver.session();
 
       try {
@@ -134,9 +130,10 @@ export const resolvers = {
           query += ` LIMIT ${limit}`;
         }
         const results = await session.run(query);
+        const maxDifferences = Math.max(1, Math.ceil(differenceFactor * cdr3b.length))
         const variables: any[] = results.records.map((record) => record.get('data'));
         const fuzzyResults = variables
-          .filter((variable) => bitapSearch(variable.cdr3b, cdr3b, differences ?? 2))
+          .filter((variable) => bitapSearch(variable.cdr3b, cdr3b, maxDifferences))
           .map((result) => ({...result, score: fuzzinessScore(result.cdr3b, cdr3b)}))
           .sort((a, b) => b.score - a.score);
         return fuzzyResults;
