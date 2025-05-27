@@ -26,13 +26,9 @@ export default function AddTagModal({ datasetID, setTags, categories = [] }) {
       open={open}
       onClose={() => { setOpen(!open) }}
       trigger={
-        <Button fluid onClick={() => setOpen(!open)} animated='vertical'>
-          <Button.Content visible>
-            <Icon name="plus" />
-          </Button.Content>
-          <Button.Content hidden>
-            Add tag
-          </Button.Content>
+        <Button icon labelPosition={"left"} onClick={() => setOpen(!open)} size="mini" floated="right">
+          <Icon name="plus" />
+          Add tag
         </Button>
       }
     >

@@ -11,57 +11,18 @@ import {
   Icon,
   Message,
   List,
-  Divider, Container,
-  SemanticCOLORS
+  Divider, Container
 } from "semantic-ui-react";
 // import useRouter from '../../../hooks/useRouter'
 import useDatasetsQuery from "../../../hooks/useDatasetsQuery";
+import { tagColors, DatasetTag } from "./DatasetTag";
 
 import AddDatasetModal from "./AddDatasetModal";
 import AddTagModal from "./AddTagModal";
 import MinioBucket from "../../common/minio";
 
 import { useLocation } from "react-router-dom";
-import { gql, useMutation } from "@apollo/client";
 
-// Colors for the tags, depending on their category.
-// Since we are limited by the options available in Semantic UI React,
-// colors must be picked from the following list:
-// [ 'red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black']
-const tagColors: {[key: string]: SemanticCOLORS} = {
-  'cancer': 'red',
-  'non-cancer': 'orange',
-  'viral': 'yellow',
-  'default': 'grey'
-}
-
-const REMOVE_TAG_FROM_DATASET = gql`
-  mutation RemoveTagFromDataset($tagID: ID!, $datasetID: ID!) {
-    removeTagFromDataset(tagID: $tagID, datasetID: $datasetID) {
-      tagID
-    }
-  }
-`
-
-function DatasetTag({ tag, datasetID, setTags }) {
-  const { tagID, name, category } = tag
-  const [removeTag] = useMutation(REMOVE_TAG_FROM_DATASET, {
-    variables: {
-      tagID: tagID,
-      datasetID: datasetID
-    },
-    onCompleted: (data) => {
-      setTags(prevState => prevState.filter((tag) => data.removeTagFromDataset.tagID !== tag.tagID))
-    }
-  }
-  );
-  return (
-    <Label key={tagID} color={tagColors[category?.toLowerCase() ?? 'default']}>
-      {name}
-      <Icon name="delete" onClick={() => removeTag()} />
-    </Label>
-  )
-}
 
 function DatasetListItem({ dataset }) {
   const { datasetID, name, tags: datasetTags } = dataset;
@@ -100,9 +61,8 @@ function DatasetListItem({ dataset }) {
               }
               return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
             })
-            .map((tag) => <DatasetTag key={tag.tagID} tag={tag} datasetID={datasetID} setTags={setTags} />)
+            .map((tag) => <DatasetTag key={tag.tagID} tag={tag} datasetID={datasetID} setTags={setTags} canDelete={true} />)
           }
-          <br /><br />
           <AddTagModal datasetID={datasetID} setTags={setTags} categories={Object.keys(tagColors)} />
           {/* <List.Description content={`${description}`} /> */}
         </List.Content>
@@ -123,7 +83,7 @@ export default function DatasetsList({ projectID }) {
     refetch();
   }, [location.key]);
 
-  const datasets = data?.datasets ? data.datasets : [];
+  const datasets = data?.datasets ?? [];
   let datasetList
 
   if (loading) {
