@@ -16,22 +16,23 @@ export const resolvers = {
           OR: [
             { createdBy: user[0] },
             { isPublic: true },
-            //{ sharedWith_IN: [user[0]] }
+            { sharedWith: user[0] }
           ]
         }
 
-        // Optionally add projectID to the filters if provided
-        if (args.projectID) {
+        if (args?.projectID) {
           filters.projectID = args.projectID;
         }
 
-        // if (name) {
-        //   filters.name = name
-        // }
-
-        // if (description) {
-        //   filters.description = description
-        // }
+        if (args?.query !== '') {
+          filters.AND = [{
+            OR: [
+              { name_CONTAINS: args.query },
+              { description_CONTAINS: args.query },
+              { datasets: { tags: { name_CONTAINS: args.query }} }
+            ]
+          }]
+        }
 
         const ProjectModel = ogm.model('Project')
         const selectionSet = `{
@@ -43,6 +44,11 @@ export const resolvers = {
           datasets {
             datasetID
             name
+            tags {
+              tagID
+              name
+              category
+            }
           }
           createdBy {
             keycloakUserID
@@ -53,9 +59,9 @@ export const resolvers = {
         ProjectModel.selectionSet = selectionSet
         const projects = await ProjectModel.find({
           where: filters,
-        }
-      )
+        })
 
+        console.log(`args: ${JSON.stringify(args)}`)
         return projects
       } catch (error) {
         console.log('getProjects', error)
