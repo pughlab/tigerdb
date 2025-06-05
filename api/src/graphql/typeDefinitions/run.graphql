@@ -116,6 +116,10 @@ type Mutation {
     #   runID: ID!
     # ): String
 
+    deleteRun(
+      runID: ID!
+    ): String!
+
 }
 
 extend type Run @auth(

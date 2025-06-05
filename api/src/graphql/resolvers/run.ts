@@ -68,9 +68,6 @@ export const resolvers = {
         throw new ApolloError("getRuns", error as string);
       }
     }
-
-
-
   },
   Mutation: {
     createRunWithMinioBucket: async (
@@ -179,6 +176,34 @@ export const resolvers = {
         throw new ApolloError("createRunWithMinioBucket", error as string);
       }
     },
+    deleteRun: async (parent, { runID }, { ogm, kauth, driver }) => {
+      try  {
+        const { sub: keycloakUserID } = kauth.accessToken.content
+        const UserModel = ogm.model('KeycloakUser')
+        const user = await UserModel.find({
+          where: {keycloakUserID: keycloakUserID}
+        })
+        if (!user) {
+          throw new Error('User not found')
+        }
+        const RunModel = ogm.model("Run");
+        const run = await RunModel.find({ where: { runID: runID, createdBy: user[0] }})
+        if (!run) {
+          throw new Error('Run not found')
+        }
+        const session = driver.session()
+        await session.run(`MATCH (x:Run)-[r]-(n)
+          WHERE
+            NOT type(r) = 'CREATED_BY'
+            AND NOT 'ProcessedDataset' in labels(n)
+            AND x.runID = '${run[0].runID}'
+          DETACH DELETE x, n`
+        )
+        return JSON.stringify(run[0])
+      } catch (error) {
+        throw new ApolloError("deleteRun", error as string);
+      }
+    }
     // updateRun: async (
     //   parent,
     //   { runID, wesID, name, description, datasets },
