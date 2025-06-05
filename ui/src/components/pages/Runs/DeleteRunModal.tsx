@@ -1,6 +1,6 @@
 import { gql, useMutation } from '@apollo/client';
 import * as React from 'react';
-import { Button, Icon, Modal } from 'semantic-ui-react';
+import { Button, Icon, Modal, Popup } from 'semantic-ui-react';
 
 export function DeleteRunModal({ run, refetch }) {
   const [open, setOpen] = React.useState(false);
@@ -27,10 +27,17 @@ export function DeleteRunModal({ run, refetch }) {
       onClose={(e) => {toggleOpen(e)}}
       size="small"
       trigger={
-        <Button color="red" icon onClick={(e) => {toggleOpen(e)}} fluid>
-          <Icon name="trash" style={{marginRight: '10px'}} />
-          Delete run
+        <Popup
+          trigger={
+          <Button size='tiny' floated='right' color="red" icon onClick={(e) => {toggleOpen(e)}}>
+          <Icon name="trash" />
         </Button>
+          }
+          content="Delete Run"
+          position='top center'
+          inverted
+          >
+        </Popup>
       }
     >
     <Modal.Header>Delete Run</Modal.Header>

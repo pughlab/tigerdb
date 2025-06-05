@@ -15,6 +15,7 @@ import {
   Divider,
   Grid,
 	SemanticCOLORS,
+  Button,
 } from "semantic-ui-react";
 import { useLocation } from "react-router-dom";
 
@@ -74,7 +75,11 @@ function RunsListItem({ run, refetch }) {
       }}
     >
       <Card.Content floated="right" as={Segment} basic>
-        <Label color={colorStatus} content={`Run`} />
+        <div>
+          <Button floated="left" size='tiny' color={colorStatus} content={`Run`} />
+          <DeleteRunModal run={run} refetch={refetch}/>   
+        </div>
+     
       </Card.Content>
       <Card.Content>
         <Card.Header as={Header}>
@@ -96,7 +101,6 @@ function RunsListItem({ run, refetch }) {
               : null
           }
           <Divider hidden />
-          <DeleteRunModal run={run} refetch={refetch}/>
         </List.Description>
       </Card.Content>
     </Card>
