@@ -8,7 +8,8 @@ function ProjectCard({
   toggleProject,
   updateAvailableDatasets
 }) {
-  const color = project.isPublic ? 'black' : 'grey'
+  const color = project.isPublic ? 'black' : 'facebook'
+  const creationDate = new Date(project.createdOn).toDateString()
   const [selected, setSelected] = React.useState(false)
   const [getDatasets] = useLazyQuery(gql`
     query Datasets($projectID: ID!) {
@@ -45,14 +46,14 @@ function ProjectCard({
       setSelected(!selected)
     }}>
       <Popup
-        size='large' wide='very'
+        size='large' wide='very' inverted position="top center"
         trigger={
           <Button attached='top' color={color} basic={!selected}>
             <Icon name={selected ? 'folder open' : 'folder outline'} size='large' />
           </Button>
         }        
       >
-        stuff here
+        {project.isPublic ? 'Public' : 'Private'} project
       </Popup>
       <Card.Content extra>
         <Header size='small'>
@@ -63,7 +64,9 @@ function ProjectCard({
       </Card.Content>
       <Card.Content>
         <Label.Group>
+          <Label as={Button} color={color} content={<Icon style={{margin: 0}} name={project.isPublic ? 'lock open' : 'lock'} />} detail={project.isPublic ? 'Public' : 'Private'} />
           <Label content={<Icon style={{margin: 0}} name='user' />} detail={project.createdBy.name} />
+          {/* <Label content={<Icon style={{margin: 0}} name='calendar alternate outline' />} detail={creationDate} /> */}
         </Label.Group>
       </Card.Content>
     </Card>
@@ -89,7 +92,6 @@ function ProjectCardList({
   return (
     <>
       <Checkbox 
-        toggle
         label='Include public projects'
         checked={usingPublicProjects}
         onChange={() => setUsingPublicProjects(!usingPublicProjects)}
@@ -154,7 +156,7 @@ function DatasetTag({dataset, updateSelectedDatasets, updateAvailableUploads}) {
   return (
     <Label
       as={Button}
-      color={selected ? 'grey' : undefined}
+      color={selected ? 'blue' : undefined}
       basic={!selected}
       onClick={() => {setSelected(!selected)}}
     ><Icon name={selected ? 'folder open' : 'folder outline'} />{`${dataset.name}`}</Label>
@@ -192,10 +194,11 @@ function ProcessedUpload({upload, updateSelectedUploads}) {
       updateSelectedUploads((prev)  => prev.filter(({objectName}) => objectName!== upload.objectName))
     }
   }, [selected])
+
   return (
     <Label
       as={Button}
-      color={selected ? 'grey' : undefined}
+      color={selected ? 'green' : undefined}
       basic={!selected}
       onClick={() => {setSelected(!selected)}}
     ><Icon name={selected ? 'file' : 'file outline'} />{`${upload.filename}`}</Label>
@@ -238,9 +241,7 @@ export default function AddRunModal({refetch}) {
   // const [datasets, {data, loading, error}] = useQuery(gql`
   // let projectID = '2f6d441e-fbbe-40ff-87da-35c469bb9e9b'
   const { data: projectsData, loading: projectsLoading, error: projectsError } = useProjectsQuery();
-  // const { data: datasetsData, loading: datasetsLoading, error: datasetsError } = useDatasetsQuery({ projectIDs });
   // const { data: minioUploadsData, loading: minioUploadsLoading, error: minioUploadsError } = useMinioUploadsQuery({ datasetIDs });
-  // const { data: processedDatasetsData, loading: processedDatasetsLoading, error: processedDatasetsError } = useProcessedDatasetsQuery({ datasetIDs: selectedDatasets });
   
   function toggleProject(projectID: string){
     if (projectIDs.includes(projectID)) {
@@ -288,13 +289,12 @@ export default function AddRunModal({refetch}) {
       onClose={() => setOpen(!open)}
       size="large"
       trigger={
-        // <Button fluid icon='plus' color='black' size='large' onClick={() => setOpen(!open)} />
         <Button fluid size='large' color='black' animated='vertical' onClick={() => setOpen(!open)}>
           <Button.Content visible>
               <Icon name='plus'/>
           </Button.Content>
           <Button.Content hidden content="Add a new run"/>
-      </Button>
+        </Button>
       }
     >
       <Modal.Content>
@@ -324,14 +324,14 @@ export default function AddRunModal({refetch}) {
       </Modal.Content>
       <Modal.Actions>
         <Button fluid color='violet' content='CREATE RUN' loading={loading} 
-        disabled={!name || !description || selectedDatasets.length === 0 || processedDatasets.length === 0}
-        onClick={async () => {
-          await createRunWithMinioBucket({variables: {name, description, processedDatasets} })
+          disabled={!name || !description || selectedDatasets.length === 0 || selectedUploads.length === 0}
+          onClick={async () => {
+            await createRunWithMinioBucket({variables: {name, description, processedDatasets : selectedUploads.map(upload => upload.objectName)} })
           // setOpen(!open)
           // setDescription('')
           // setName('')
-        }}/>
-        
+          }}
+        />
       </Modal.Actions>
     </Modal>
   );

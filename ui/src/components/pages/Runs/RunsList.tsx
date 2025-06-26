@@ -76,10 +76,9 @@ function RunsListItem({ run, refetch }) {
     >
       <Card.Content floated="right" as={Segment} basic>
         <div>
-          <Button floated="left" size='tiny' color={colorStatus} content={`Run`} />
+          <Button floated="left" size='tiny' color={colorStatus} content={run.status.charAt(0).toUpperCase() + run.status.slice(1)} />
           <DeleteRunModal run={run} refetch={refetch}/>   
         </div>
-     
       </Card.Content>
       <Card.Content>
         <Card.Header as={Header}>
@@ -88,18 +87,20 @@ function RunsListItem({ run, refetch }) {
         <List.Description content={description} />
         <List.Description>
           <Divider />
-          {
-            processedDatasets.length > 0
-              ? processedDatasets.map((processedDataset) => (
-                  <Label
-                    basic
-                    color="green"
-                    key={processedDataset.objectName}
-                    content={processedDataset.filename}
-                  />
-                ))
-              : null
-          }
+          <Label.Group>
+            {
+              processedDatasets.length > 0
+                ? processedDatasets.map((processedDataset) => (
+                    <Label
+                      basic
+                      color="green"
+                      key={processedDataset.objectName}
+                      content={processedDataset.filename}
+                    />
+                  ))
+                : null
+            }
+          </Label.Group>
           <Divider hidden />
         </List.Description>
       </Card.Content>
