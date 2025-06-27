@@ -108,13 +108,13 @@ export default function Portal() {
   // console.log(location)
   const [meMutationState] = useKeycloakMeMutation()
   let routes = [
+    { path: 'search', icon: 'certificate', description: 'global CDR3 search', element: <Annotations /> },
     { path: 'data', icon: 'database', description: 'upload TCR data', element: <Projects /> },
-    { path: 'analysis', icon: 'react', description: 'run GLIPH2 analysis', element: <Runs /> },
+    { path: 'analysis', icon: 'react', description: 'run GLIPH2 analysis', element: <Runs /> }
     // {path: 'datasets', icon: 'database', element: <Datasets />},
     // {path: 'explore', icon: 'search', element: <Explore />},
     // {path: 'export', icon: 'download', element: <DataExports />},
     // {path: 'metadata', icon: 'search plus', element: <Metadata />},
-    { path: 'search', icon: 'certificate', description: 'global CDR3 search', element: <Annotations /> }
   ]
 
   const const_adminRole = 'role|allowedRoles|admin'

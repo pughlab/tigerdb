@@ -92,9 +92,9 @@ export default function PublicPortal() {
   const { navigate, location, isActivePathElement } = useRouter()
   // console.log(location)
   let routes = [
+    { path: 'search', icon: 'certificate', description: 'global CDR3 search', disabled: false, element: <Annotations />},
     { path: 'data', icon: 'database', description: 'login to upload TCR data', disabled: true },
-    { path: 'analysis', icon: 'react', description: 'login to run GLIPH2 analysis', disabled: true},
-    { path: 'search', icon: 'certificate', description: 'global CDR3 search', disabled: false, element: <Annotations /> }
+    { path: 'analysis', icon: 'react', description: 'login to run GLIPH2 analysis', disabled: true}
   ]
 
   return (
@@ -110,10 +110,11 @@ export default function PublicPortal() {
               <Step.Group fluid>
                 {routes.map(
                   ({ path, description, icon, disabled }) => (
-                    <Step key={path} description={description} icon={icon} disabled={disabled} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`public/${path}`)} />
+                    <Step key={path} title={path} description={description} icon={icon} disabled={disabled} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`public/${path}`)} />
                   )
                 )}
               </Step.Group>
+              
             </Segment>
             <Segment attached='bottom'>
               <Outlet />
