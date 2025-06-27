@@ -1,11 +1,18 @@
 input CDR3Filters {
     trbv: [String]
     trbj: [String]
+    trav: [String]
+    traj: [String]
     mhc: [String]
     mhcClass: [String]
-    epitopeAAseq: [String]
     epitopeGene: [String]
+    epitopeAAseq: [String]
     epitopeSpecies: [String]
+    mutation: [String]
+    recognizesWTEpitope: [Boolean]
+    reference: [String]
+    uniProt: [String]
+
 }
 
 input CDR3SearchInput {
@@ -33,6 +40,9 @@ type CDR3SearchResult {
     epitopeGene: String
     epitopeAAseq: String
     epitopeSpecies: String
+    mutation: String
+    recognizesWTEpitope: Boolean
+    uniProt: String
     score: Decimal
 }
 

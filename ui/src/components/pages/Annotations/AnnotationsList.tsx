@@ -5,13 +5,13 @@ import useRouter from '../../../hooks/useRouter'
 import { useDebounce } from 'use-debounce'
 import { CSVLink } from 'react-csv';
 import { v4 as uuidv4 } from 'uuid';
-import { ANNOTATION_FILTERS } from './filters'
-
+// import { ANNOTATION_FILTERS } from './filters'
+import useCuratedAnnotationsFiltersQuery from '../../../hooks/useCuratedAnnotationsFiltersQuery'
 import SegmentPlaceholder from '../../common/SegmentPlaceholder'
 
 import { useLocation } from 'react-router-dom'
 
-import { gql, useLazyQuery } from '@apollo/client'
+import { gql, useLazyQuery, useQuery } from '@apollo/client'
 
 const ITEMS_PER_PAGE = 20; // Adjust as needed
 
@@ -44,7 +44,7 @@ function DropdownOptions({
 }
 
 function AnnotationListItemLabels({ dropdownFilters, values }) {
-  const { highlightedCDR3b, trbv, trbj, mhc, mhcClass, epitopeAAseq, epitopeGene, epitopeSpecies } = values
+  const { highlightedCDR3b, trbv, trbj, trav, traj, mhc, mhcClass, epitopeAAseq, epitopeGene, epitopeSpecies, mutation, recognizesWTEpitope, uniProt, reference } = values
   return (
     <Grid textAlign="center">
       <Grid.Row>
@@ -56,7 +56,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
           </List.Header>
         </Grid.Column>
       </Grid.Row>
-      <Grid.Row columns={3} divided textAlign="center">
+      <Grid.Row columns={5} divided textAlign="center">
         <Grid.Column>
           <Grid.Row>
             <Label
@@ -75,6 +75,26 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
               detail={`${trbj}`}
               color={
                 dropdownFilters["trbj"].includes(trbj) ? "blue" : "grey"
+              }
+            />
+          </Grid.Row>
+          <Grid.Row>
+            <Label
+              basic={!dropdownFilters["trav"].includes(trav)}
+              content="TRAV"
+              detail={`${trav}`}
+              color={
+                dropdownFilters["trav"].includes(trav) ? "blue" : "grey"
+              }
+            />
+          </Grid.Row>
+          <Grid.Row>
+            <Label
+              basic={!dropdownFilters["traj"].includes(traj)}
+              content="TRAJ"
+              detail={`${traj}`}
+              color={
+                dropdownFilters["traj"].includes(traj) ? "blue" : "grey"
               }
             />
           </Grid.Row>
@@ -135,6 +155,50 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             />
           </Grid.Row>
         </Grid.Column>
+        <Grid.Column>
+          <Grid.Row>
+            <Label
+              basic={!dropdownFilters["mutation"].includes(mutation)}
+              content="Mutation"
+              detail={`${mutation}`}
+              color={
+                dropdownFilters["mutation"].includes(mutation) ? "blue" : "grey"
+              }
+            />
+          </Grid.Row>
+          <Grid.Row>
+            <Label
+              basic={!dropdownFilters["recognizesWTEpitope"].includes(recognizesWTEpitope)}
+              content="Recognizes Wild Type Epitope"
+              detail={`${recognizesWTEpitope}`}
+              color={
+                dropdownFilters["recognizesWTEpitope"].includes(recognizesWTEpitope) ? "blue" : "grey"
+              }
+            />
+          </Grid.Row>
+        </Grid.Column>
+        <Grid.Column>
+          <Grid.Row>
+            <Label
+              basic={!dropdownFilters["reference"].includes(reference)}
+              content="Reference"
+              detail={`${reference}`}
+              color={
+                dropdownFilters["reference"].includes(reference) ? "blue" : "grey"
+              }
+            />
+          </Grid.Row>
+          <Grid.Row>
+            <Label
+              basic={!dropdownFilters["uniProt"].includes(uniProt)}
+              content="UniProt"
+              detail={`${uniProt}`}
+              color={
+                dropdownFilters["uniProt"].includes(uniProt) ? "blue" : "grey"
+              }
+            />
+          </Grid.Row>
+        </Grid.Column>
       </Grid.Row>
     </Grid>
   )
@@ -149,6 +213,8 @@ function AnnotationListItem({
     cdr3b,
     trbv,
     trbj,
+    trav,
+    traj,
     mhc,
     mhcClass,
     epitopeAAseq,
@@ -272,6 +338,18 @@ function SearchForm({
   dropdownFilters,
   setDropdownFilters,
 }) {
+  const { 
+    data: curatedAnnotationFiltersData, 
+    loading: filtersLoading, 
+    error: filtersError 
+  } = useCuratedAnnotationsFiltersQuery();
+  // console.log("curatedAnnotationFilters", curatedAnnotationFiltersData);
+
+
+  // 3. Only use data after you know it's not loading and there's no error
+  const filters = curatedAnnotationFiltersData?.curatedAnnotationFilters || [];
+  console.log("Filters:", filters);
+
   const [findCDR3s, { data, loading }] = useLazyQuery(gql`
     query FindCDR3s ($input: CDR3SearchInput!) {
       findCDR3s(input: $input) {
@@ -289,6 +367,9 @@ function SearchForm({
         epitopeAAseq
         epitopeGene
         epitopeSpecies
+        mutation
+        recognizesWTEpitope
+        uniProt
         score
       }
     }
@@ -342,9 +423,9 @@ function SearchForm({
           onChange={(_e, { value }) => setSearchText(value)}
           size="huge"
         />
-        <Segment as={Grid} loading={loading}>
-          {ANNOTATION_FILTERS.map((filter) => (
-            <Grid.Column width={4} key={filter.filterKey}>
+        <Segment as={Grid} loading={filtersLoading}>
+          {filters.map((filter) => (
+            <Grid.Column width={3} key={filter.filterKey}>
               <DropdownOptions {...{ ...filter, setDropdownFilters, dropdownFilters }} />
             </Grid.Column>
           ))}
@@ -447,11 +528,17 @@ export default function AnnotationsList() {
     // locus: ["TRB"],
     trbv: [],
     trbj: [],
+    trav: [],
+    traj: [],
     mhc: [],
     mhcClass: [],
-    epitopeAAseq: [],
     epitopeGene: [],
+    epitopeAAseq: [],
     epitopeSpecies: [],
+    mutation: [],
+    recognizesWTEpitope: [],
+    reference: [],
+    uniProt: []
   });
 
   let toolsComponents;
