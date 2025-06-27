@@ -29,7 +29,7 @@ export function DeleteRunModal({ run, refetch }) {
       trigger={
         <Popup
           trigger={
-          <Button size='tiny' floated='right' color="red" icon onClick={(e) => {toggleOpen(e)}}>
+          <Button size='tiny' inverted floated='right' color="red" icon onClick={(e) => {toggleOpen(e)}}>
           <Icon name="trash" />
         </Button>
           }

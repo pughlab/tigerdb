@@ -50,7 +50,7 @@ function DatasetListItem({ dataset }) {
 }
 
 export default function DatasetsList({ projectID }) {
-  const { data, loading, error, refetch, searchText, setSearchText } = useDatasetsQuery({projectID})
+  const { data, loading, error, refetch, searchText, setSearchText } = useDatasetsQuery({projectIDs: [projectID]})
 
 	const location = useLocation()
 	useEffect(() => {

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Sticky, Menu, Header, Divider, Image, Segment, Step } from 'semantic-ui-react'
+import { Sticky, Menu, Header, Divider, Image, Segment, Step, Container, Icon, Message } from 'semantic-ui-react'
 import useKeycloakMeMutation from '../hooks/useKeycloakMeMutation'
 import { Routes, Route, Outlet, useNavigate, useLocation, matchPath, Link } from 'react-router-dom'
 
@@ -26,6 +26,7 @@ import RenderOnApproved from './authentication/RenderOnApproved'
 import RenderOnAcceptedTOS from './authentication/RenderOnAcceptedTOS'
 import { keycloakRefreshToken } from '../common'
 import { useState } from 'react'
+import { EnhancedBarChart } from './visualizations/bar/EnhancedBarChart';
 
 import tigerdb from './logos/tigerdb.png'
 
@@ -91,9 +92,9 @@ export default function PublicPortal() {
   const { navigate, location, isActivePathElement } = useRouter()
   // console.log(location)
   let routes = [
+    { path: 'search', icon: 'certificate', description: 'global CDR3 search', disabled: false, element: <Annotations />},
     { path: 'data', icon: 'database', description: 'login to upload TCR data', disabled: true },
-    { path: 'analysis', icon: 'react', description: 'login to run GLIPH2 analysis', disabled: true},
-    { path: 'search', icon: 'certificate', description: 'global CDR3 search', disabled: false, element: <Annotations /> }
+    { path: 'analysis', icon: 'react', description: 'login to run GLIPH2 analysis', disabled: true}
   ]
 
   return (
@@ -109,17 +110,42 @@ export default function PublicPortal() {
               <Step.Group fluid>
                 {routes.map(
                   ({ path, description, icon, disabled }) => (
-                    <Step key={path} description={description} icon={icon} disabled={disabled} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`public/${path}`)} />
+                    <Step key={path} title={path} description={description} icon={icon} disabled={disabled} active={isActivePathElement(path, 2)} onClick={(e, d) => navigate(`public/${path}`)} />
                   )
                 )}
               </Step.Group>
+              
             </Segment>
             <Segment attached='bottom'>
               <Outlet />
             </Segment>
           </>
         }>
-          <Route key='index' index element={<SegmentPlaceholder text='Select a part of the process' icon='info' />} />
+          <Route key='index' index element={
+            <Container as={Segment} placeholder>
+              <Divider horizontal>
+                <Header as='h1'>
+                  {/* <Icon name='tint' color='red' size='big' /> */}
+                  <Header.Content>
+                    TIGERdb: <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>T</span>-cell & <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>I</span>mmuno<span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>G</span>lobulin <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>E</span>pitope <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>R</span>eceptor <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>D</span>ata<span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>B</span>ase
+                  </Header.Content>
+                </Header>
+              </Divider>
+
+              <Message color='teal'>
+                <Icon name='lock open' />
+                This website is free and open to all users.
+              </Message>
+              <Message attached color='grey' >
+                <Icon name='info circle' />
+                TIGERdb is a scalable web portal powered by a Neo4J graph database. Features include a TCR sequence search and functions for integrative analysis.
+
+              </Message>
+                <Message style={{color: 'white', backgroundColor: '#1f1f1f'}}>
+                  <EnhancedBarChart />
+                </Message>
+            </Container>
+          } />
           {routes.map(
             ({ path, icon, element }) => (
               <Route key={path} path={`${path}/*`} element={element} />
