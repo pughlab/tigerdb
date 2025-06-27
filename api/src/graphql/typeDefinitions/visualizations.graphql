@@ -4,15 +4,15 @@ type CalendarHeatmapDatum @exclude {
 }
 
 type Query {
-    datasetCalendarHeatmap(
+    projectsCalendarHeatmap(
         startDate: Date!
         endDate: Date!
     ): [CalendarHeatmapDatum!]!
         @cypher(
             statement: """
-            MATCH (n:Dataset)
-            WITH n WHERE (date($startDate) <= date(n.createdAt) <= date($endDate))
-            RETURN {date: date(n.createdAt), count: count(n)}
+            MATCH (n:Project {isPublic: true})
+            WITH n WHERE (date($startDate) <= date(n.createdOn) <= date($endDate))
+            RETURN {date: date(n.createdOn), count: count(n)}
             """
         )
 }
