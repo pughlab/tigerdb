@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Sticky, Menu, Header, Divider, Image, Segment, Step } from 'semantic-ui-react'
+import { Sticky, Menu, Header, Divider, Image, Segment, Step, Button, Container, Icon, Message } from 'semantic-ui-react'
 import useKeycloakMeMutation from '../hooks/useKeycloakMeMutation'
 import { Routes, Route, Outlet, useNavigate, useLocation, matchPath, Link } from 'react-router-dom'
 
@@ -27,6 +27,7 @@ import RenderOnApproved from './authentication/RenderOnApproved'
 import RenderOnAcceptedTOS from './authentication/RenderOnAcceptedTOS'
 import { keycloakRefreshToken } from '../common'
 import { useState } from 'react'
+import { EnhancedBarChart } from './visualizations/bar/EnhancedBarChart';
 
 function Layout({ }) {
   const { navigate, location, isActivePath } = useRouter()
@@ -107,13 +108,13 @@ export default function Portal() {
   // console.log(location)
   const [meMutationState] = useKeycloakMeMutation()
   let routes = [
+    { path: 'search', icon: 'certificate', description: 'global CDR3 search', element: <Annotations /> },
     { path: 'data', icon: 'database', description: 'upload TCR data', element: <Projects /> },
-    { path: 'analysis', icon: 'react', description: 'run GLIPH2 analysis', element: <Runs /> },
+    { path: 'analysis', icon: 'react', description: 'run GLIPH2 analysis', element: <Runs /> }
     // {path: 'datasets', icon: 'database', element: <Datasets />},
     // {path: 'explore', icon: 'search', element: <Explore />},
     // {path: 'export', icon: 'download', element: <DataExports />},
     // {path: 'metadata', icon: 'search plus', element: <Metadata />},
-    { path: 'search', icon: 'certificate', description: 'global CDR3 search', element: <Annotations /> }
   ]
 
   const const_adminRole = 'role|allowedRoles|admin'
@@ -149,7 +150,31 @@ export default function Portal() {
             </Segment>
           </>
         }>
-          <Route key='index' index element={<SegmentPlaceholder text='Select a part of the process' icon='info' />} />
+          <Route key='index' index element={
+            <Container as={Segment} placeholder>
+      <Divider horizontal>
+        <Header as='h1'>
+          {/* <Icon name='tint' color='red' size='big' /> */}
+          <Header.Content>
+            TIGERdb: <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>T</span>-cell & <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>I</span>mmuno<span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>G</span>lobulin <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>E</span>pitope <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>R</span>eceptor <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>D</span>ata<span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>B</span>ase
+          </Header.Content>
+        </Header>
+      </Divider>
+
+      <Message color='teal'>
+        <Icon name='lock open' />
+        This website is free and open to all users.
+      </Message>
+      <Message attached color='grey' >
+        <Icon name='info circle' />
+        TIGERdb is a scalable web portal powered by a Neo4J graph database. Features include a TCR sequence search and functions for integrative analysis.
+
+      </Message>
+        <Message style={{color: 'white', backgroundColor: '#1f1f1f'}}>
+          <EnhancedBarChart />
+        </Message>
+        </Container>
+          } />
           {routes.map(
             ({ path, icon, element }) => (
               <Route key={path} path={`${path}/*`} element={element} />

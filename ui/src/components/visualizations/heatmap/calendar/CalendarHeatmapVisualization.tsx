@@ -9,11 +9,11 @@ import { addDays, addMonths, addYears, format } from 'date-fns'
 import {atom, useAtom} from 'jotai'
 import { Button, Divider, Icon, Label, Segment } from 'semantic-ui-react';
 
-import useRawDatasetCalendarHeatmapQuery from '../../../../hooks/useRawDatasetCalendarHeatmapQuery';
+import useProjectsCalendarHeatmapQuery from '../../../../hooks/useProjectsCalendarHeatmapQuery';
 
 export default function CalendarHeatmapVisualization() {
-  const {variables: {startDate, endDate, setEndDate}, heatmapData, loading} = useRawDatasetCalendarHeatmapQuery()
-
+  const {variables: {startDate, endDate, setEndDate}, heatmapData, loading} = useProjectsCalendarHeatmapQuery()
+  console.log('heatmapData', heatmapData)
   return (
     <Segment loading={loading}>
       <Divider horizontal>

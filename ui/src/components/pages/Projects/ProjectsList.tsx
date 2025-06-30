@@ -8,9 +8,13 @@ import {
   Label,
   Input,
   Segment,
-  List,
+  Message,
   Divider,
   Grid,
+  Card,
+  Popup,
+  Button,
+  Icon
 } from "semantic-ui-react";
 import { useLocation } from "react-router-dom";
 import useRouter from "../../../hooks/useRouter";
@@ -19,70 +23,90 @@ import useProjectsQuery from "../../../hooks/useProjectsQuery";
 import AddProjectModal from "./AddProjectModal";
 import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
 
-function ProjectsListItem({ project }) {
-  const { projectID, name, description, createdBy, datasets } = project;
-  const { navigate } = useRouter();
+function ProjectDetailsCard({ project }) {
+	const { projectID, name, description, createdBy, datasets, isPublic, createdOn } = project
+  const creationDate = new Date(createdOn).toDateString()
+	const { navigate } = useRouter()
   const tags = new Set();
 	datasets?.forEach((dataset) => {
 		dataset.tags?.forEach((tag) => {
 			tags.add(tag);
 		});
 	});
-
-  return (
-    <>
-      <List.Item
-        as={Segment}
-        onClick={() => {
-          navigate(projectID);
-        }}
+  const color = isPublic ? 'black' : 'facebook'
+	return (
+		<Card link color={color}  onClick={() => { navigate(projectID) }}>
+      <Popup
+        size='large' wide='very' position="top center"
+        trigger={
+          <Button attached='top' size='large'>
+            <Icon name='folder open' size='large' />
+          </Button>
+        }        
       >
-        <List.Content>
-          <List.Header as={Header}>
-            {`${name}`}
-            <Label
-              content="Project"
-              style={{ backgroundColor: "#3B5998", color: "white" }}
-            />
-            <Header.Subheader content={createdBy.email} />
-          </List.Header>
-
-          <List.Description content={description} />
-          <List.Description>
-            <Divider />
-            {
-							datasets.length > 0
-							? datasets.map((dataset) => (
-                  <Label
-                    color="blue"
-                    key={dataset.datasetID}
-                    content={dataset.name}
-                  />
-                ))
-              : null
-						}
-						<br /><br />
-						{
-							[...tags]
-							.sort((tag1, tag2) => {
-								if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
-									return 0
-								}
-								return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
-							})
-							.map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
-						}
-          </List.Description>
-        </List.Content>
-      </List.Item>
-      <Divider horizontal hidden />
-    </>
-  );
+        <Message size='mini'>
+          <Message.Content>
+            <Divider horizontal content='Details' />
+            {description}
+          </Message.Content>
+        </Message>
+        <Segment.Group>
+          <Segment>
+            <Label.Group>
+              <Label>
+                <Icon name='user' />
+                {'Created by'}
+                <Label.Detail content={createdBy.name} />
+                <Label.Detail content={createdBy.email} />
+              </Label>
+              <Label >
+                <Icon name='calendar alternate outline' />
+                {'Created on'}
+                <Label.Detail content={creationDate}  />
+              </Label>
+            </Label.Group>
+          </Segment>
+        </Segment.Group>
+      </Popup>
+      <Card.Content extra>
+        <Header size='medium'>
+          <Header.Content>
+            {name}
+          </Header.Content>
+        </Header>
+      </Card.Content>
+      <Card.Content>
+        <Label.Group>
+          <Label as={Button} color={color} content={<Icon style={{margin: 0}} name={isPublic ? 'lock open' : 'lock'} />} detail={isPublic ? 'Public' : 'Private'} />
+          <Label content={<Icon style={{margin: 0}} name='user' />} detail={createdBy.name} />
+          <Label content={<Icon style={{margin: 0}} name='calendar alternate outline' />} detail={creationDate} />
+        </Label.Group>
+        <Divider />
+        <Label.Group>
+          {
+            (datasets.length > 0) ? datasets.map(dataset => <Label color='blue' key={dataset.datasetID} content={dataset.name} />) : null
+          }
+        </Label.Group>
+        <Divider />
+        <Label.Group>
+          {
+						[...tags]
+						.sort((tag1, tag2) => {
+							if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
+								return 0
+							}
+							return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
+						})
+					  .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
+					}
+        </Label.Group>
+      </Card.Content>
+		</Card>
+	)
 }
 
 export default function ProjectsList() {
   const { data, loading, refetch } = useProjectsQuery();
-
   const location = useLocation();
   useEffect(() => {
     refetch();
@@ -117,7 +141,6 @@ export default function ProjectsList() {
 		)
 	}
 
-  // const allStudySites = studies.map(study => study.studySites).flat()
   return (
     <Grid>
       <Grid.Column>
