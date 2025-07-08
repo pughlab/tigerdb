@@ -20,6 +20,7 @@ input CDR3SearchInput {
     filters: CDR3Filters
     limit: Int
     differenceFactor: Decimal
+    tags: [String]
 }
 
 type CDR3SearchResult {
@@ -44,6 +45,7 @@ type CDR3SearchResult {
     recognizesWTEpitope: Boolean
     uniProt: String
     score: Decimal
+    tags: [Tag]
 }
 
 type Query {

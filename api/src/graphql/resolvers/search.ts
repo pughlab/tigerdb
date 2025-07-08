@@ -27,7 +27,7 @@ function buildFilters(filters) {
       filterArray.push(filterStr);
     })
     if (filterArray.length > 0) {
-      result = 'WHERE ' + filterArray.join(' AND ');
+      result = 'AND ' + filterArray.join(' AND ');
     }
   }
   return result;
@@ -83,47 +83,86 @@ export const resolvers = {
   Query: {
     findCDR3s: async (_parent, args, { driver }) => {
       const { input } = args;
-      const { cdr3b, filters, limit, differenceFactor } = input;
+      const { cdr3b, filters, limit, differenceFactor, tags } = input;
       const session = driver.session();
+      const tagCondition = tags?.length > 0 ? `WHERE t.name IN [${tags.map((tag) => '"' + tag + '"').join(',')}]` : ''
 
       try {
         const builtFilters = buildFilters(filters);
-        let query = `MATCH (p:Project)-[]->(d:Dataset)-[]->(c:CuratedAnnotation)-[]->(v:AnnotationVariable)
-          ${builtFilters}
-          RETURN {
+        let query = `MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
+          ${tagCondition}
+          WITH p, d, collect(t.name) AS tagNames
+          WITH p, d, tagNames, {
               projectID: p.projectID,
               projectName: p.name,
               datasetID: d.datasetID,
-              datasetName: d.name,
-              variableID: v.annotationVariableID,
-              reference: v.reference,
-              cdr3b: v.cdr3b,
-              trbv: v.trbv,
-              trbj: v.trbj,
-              mhc: v.mhc,
-              mhcClass: v.mhcClass,
-              epitopeGene: v.epitopeGene,
-              epitopeAAseq: v.epitopeAAseq,
-              epitopeSpecies: v.epitopeSpecies
+              datasetName: d.name
+          } AS data1
+          WITH data1
+          MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
+          WHERE d.datasetID in data1.datasetID
+          WITH data1, collect({
+              tagID: t.tagID,
+              category: t.category,
+              name: t.name
+          }) AS tags
+          MATCH (d:Dataset)-[]->(c:CuratedAnnotation)-[]->(v:AnnotationVariable)
+          WHERE d.datasetID in data1.datasetID
+          ${builtFilters}
+          RETURN {
+            projectID: data1.projectID,
+            projectName: data1.projectName,
+            datasetID: d.datasetID,
+            datasetName: d.name,
+            variableID: v.annotationVariableID,
+            reference: v.reference,
+            cdr3b: v.cdr3b,
+            trbv: v.trbv,
+            trbj: v.trbj,
+            mhc: v.mhc,
+            mhcClass: v.mhcClass,
+            epitopeGene: v.epitopeGene,
+            epitopeAAseq: v.epitopeAAseq,
+            epitopeSpecies: v.epitopeSpecies,
+            tags: tags
           } AS data
           UNION
-          MATCH (p:Project)-[]->(d:Dataset)-[]->(c:CuratedDataset)-[]->(v:DatasetVariable)
-          ${builtFilters}
-          RETURN {
+          MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
+          ${tagCondition}
+          WITH p, d, collect(t.name) AS tagNames
+          WITH p, d, tagNames, {
               projectID: p.projectID,
               projectName: p.name,
               datasetID: d.datasetID,
-              datasetName: d.name,
-              variableID: v.datasetVariableID,
-              reference: null,
-              cdr3b: v.cdr3b,
-              trbv: v.trbv,
-              trbj: v.trbj,
-              mhc: null,
-              mhcClass: null,
-              epitopeGene: null,
-              epitopeAAseq: null,
-              epitopeSpecies: null
+              datasetName: d.name
+          } AS data1
+          WITH data1
+          MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
+          WHERE d.datasetID in data1.datasetID
+          WITH data1, collect({
+              tagID: t.tagID,
+              category: t.category,
+              name: t.name
+          }) AS tags
+          MATCH (d:Dataset)-[]->(c:CuratedDataset)-[]->(v:DatasetVariable)
+          WHERE d.datasetID in data1.datasetID
+          ${builtFilters}
+          RETURN {
+            projectID: data1.projectID,
+            projectName: data1.projectName,
+            datasetID: d.datasetID,
+            datasetName: d.name,
+            variableID: v.datasetVariableID,
+            reference: null,
+            cdr3b: v.cdr3b,
+            trbv: v.trbv,
+            trbj: v.trbj,
+            mhc: null,
+            mhcClass: null,
+            epitopeGene: null,
+            epitopeAAseq: null,
+            epitopeSpecies: null,
+            tags: tags
           } AS data
         `
         if (limit) {

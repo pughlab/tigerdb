@@ -35,39 +35,41 @@ function ProjectDetailsCard({ project }) {
 	});
   const color = isPublic ? 'black' : 'facebook'
 	return (
-		<Card link color={color}  onClick={() => { navigate(projectID) }}>
-      <Popup
-        size='large' wide='very' position="top center"
-        trigger={
-          <Button attached='top' size='large'>
-            <Icon name='folder open' size='large' />
-          </Button>
-        }        
-      >
-        <Message size='mini'>
-          <Message.Content>
-            <Divider horizontal content='Details' />
-            {description}
-          </Message.Content>
-        </Message>
-        <Segment.Group>
-          <Segment>
-            <Label.Group>
-              <Label>
-                <Icon name='user' />
-                {'Created by'}
-                <Label.Detail content={createdBy.name} />
-                <Label.Detail content={createdBy.email} />
-              </Label>
-              <Label >
-                <Icon name='calendar alternate outline' />
-                {'Created on'}
-                <Label.Detail content={creationDate}  />
-              </Label>
-            </Label.Group>
-          </Segment>
-        </Segment.Group>
-      </Popup>
+		<Card link color={color} onClick={() => { navigate(projectID) }}>
+      <Card.Header fluid>
+        <Popup
+          size='large' wide='very' position="top center"
+          trigger={
+            <Button size='large' fluid>
+              <Icon name='folder open' size='large' />
+            </Button>
+          }        
+        >
+          <Message size='mini'>
+            <Message.Content>
+              <Divider horizontal content='Details' />
+              {description}
+            </Message.Content>
+          </Message>
+          <Segment.Group>
+            <Segment>
+              <Label.Group>
+                <Label>
+                  <Icon name='user' />
+                  {'Created by'}
+                  <Label.Detail content={createdBy.name} />
+                  <Label.Detail content={createdBy.email} />
+                </Label>
+                <Label >
+                  <Icon name='calendar alternate outline' />
+                  {'Created on'}
+                  <Label.Detail content={creationDate}  />
+                </Label>
+              </Label.Group>
+            </Segment>
+          </Segment.Group>
+        </Popup>
+      </Card.Header>
       <Card.Content extra>
         <Header size='medium'>
           <Header.Content>
@@ -77,7 +79,7 @@ function ProjectDetailsCard({ project }) {
       </Card.Content>
       <Card.Content>
         <Label.Group>
-          <Label as={Button} color={color} content={<Icon style={{margin: 0}} name={isPublic ? 'lock open' : 'lock'} />} detail={isPublic ? 'Public' : 'Private'} />
+          <Label color={color} content={<Icon style={{margin: 0}} name={isPublic ? 'lock open' : 'lock'} />} detail={isPublic ? 'Public' : 'Private'} />
           <Label content={<Icon style={{margin: 0}} name='user' />} detail={createdBy.name} />
           <Label content={<Icon style={{margin: 0}} name='calendar alternate outline' />} detail={creationDate} />
         </Label.Group>
@@ -97,7 +99,7 @@ function ProjectDetailsCard({ project }) {
 							}
 							return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
 						})
-					  .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
+            .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
 					}
         </Label.Group>
       </Card.Content>
@@ -132,11 +134,11 @@ export default function ProjectsList() {
 	} else {
 		content = (
 			<Segment placeholder>
-				<List relaxed="very" selection size="large">
+				<Card.Group itemsPerRow={3}>
 					{projects.map((project) => (
-						<ProjectsListItem key={project.projectID} {...{ project }} />
+						<ProjectDetailsCard key={project.projectID} {...{ project }} />
 					))}
-				</List>
+				</Card.Group>
 			</Segment>
 		)
 	}

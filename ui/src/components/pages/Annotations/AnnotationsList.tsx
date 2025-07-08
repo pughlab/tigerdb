@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import * as React from 'react'
-import { Button, Form, Header, Label, Input, Container, Segment, Dimmer, Loader, Message, List, Divider, Dropdown, Grid, Card, Icon, Popup } from 'semantic-ui-react'
+import { Button, Form, Header, Label, Input, Container, Segment, Dimmer, Loader, Message, List, Divider, Dropdown, Grid, Card, Icon, Popup, Select } from 'semantic-ui-react'
 import useRouter from '../../../hooks/useRouter'
 import { useDebounce } from 'use-debounce'
 import { CSVLink } from 'react-csv';
@@ -12,6 +12,7 @@ import SegmentPlaceholder from '../../common/SegmentPlaceholder'
 import { useLocation } from 'react-router-dom'
 
 import { gql, useLazyQuery, useQuery } from '@apollo/client'
+import { DatasetReadonlyTag } from '../Datasets/DatasetTag'
 
 const ITEMS_PER_PAGE = 20; // Adjust as needed
 
@@ -224,7 +225,8 @@ function AnnotationListItem({
     datasetName,
     projectID,
     projectName,
-    score
+    score,
+    tags
   } = variable;
   const { navigate } = useRouter();
 
@@ -320,6 +322,18 @@ function AnnotationListItem({
               values={{highlightedCDR3b, trbv, trbj, mhc, mhcClass, epitopeAAseq, epitopeGene, epitopeSpecies}} 
             />
             <Divider horizontal />
+            <Label.Group>
+              {
+                [...tags]
+                .sort((tag1, tag2) => {
+                  if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
+                    return 0
+                  }
+                  return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
+                })
+                .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
+              }
+            </Label.Group>
             {referenceButton}
           </List.Item>
         }
@@ -340,17 +354,18 @@ function SearchForm({
 }) {
   const { 
     data: curatedAnnotationFiltersData, 
-    loading: filtersLoading, 
-    error: filtersError 
+    loading: filtersLoading
   } = useCuratedAnnotationsFiltersQuery();
-  // console.log("curatedAnnotationFilters", curatedAnnotationFiltersData);
 
+  const filters = curatedAnnotationFiltersData?.curatedAnnotationFilters ?? [];
+  const [selectedTags, setSelectedTags] = useState([]);
+  const { data: tags } = useQuery(gql`
+    query TagNames {
+      tagNames
+    }
+  `);
 
-  // 3. Only use data after you know it's not loading and there's no error
-  const filters = curatedAnnotationFiltersData?.curatedAnnotationFilters || [];
-  console.log("Filters:", filters);
-
-  const [findCDR3s, { data, loading }] = useLazyQuery(gql`
+  const [findCDR3s, { data }] = useLazyQuery(gql`
     query FindCDR3s ($input: CDR3SearchInput!) {
       findCDR3s(input: $input) {
         variableID
@@ -371,6 +386,11 @@ function SearchForm({
         recognizesWTEpitope
         uniProt
         score
+        tags {
+          tagID
+          name
+          category
+        }
       }
     }
   `);
@@ -382,6 +402,7 @@ function SearchForm({
         variables: {
           input: {
             cdr3b: debouncedSearchText,
+            tags: selectedTags,
             filters: Object.entries(dropdownFilters).reduce(
               (acc, [key, value]) => {
                 if (Array.isArray(value) && value.length  > 0) {
@@ -422,6 +443,14 @@ function SearchForm({
           value={searchText}
           onChange={(_e, { value }) => setSearchText(value)}
           size="huge"
+        />
+        <Form.Field
+          control={Select}
+          multiple
+          options={tags?.tagNames.map((tag) => ({key: tag, value: tag, text: tag})) ?? []}
+          placeholder='Select tags...'
+          label="Filter by tag(s)"
+          onChange={(_e, { value }) => setSelectedTags(value)}
         />
         <Segment as={Grid} loading={filtersLoading}>
           {filters.map((filter) => (
