@@ -14,6 +14,7 @@ type Project {
   createdOn: DateTime! @timestamp(operations: [CREATE])
   sharedWith: [KeycloakUser!]! @relationship(type: "SHARED_WITH", direction: OUT)
   isPublic: Boolean!
+  isReference: Boolean
   runs: [Run!]! @relationship(type: "HAS_RUN", direction: OUT)
 }
 
@@ -29,6 +30,7 @@ input ProjectInput {
   datasets: [DatasetInput]
   sharedWith: [KeycloakUserInput]
   isPublic: Boolean
+  isReference: Boolean
   runs: [RunInput]
 }
 
@@ -41,6 +43,7 @@ type Mutation {
   createProject(
     name: String!
     description: String!
+    isReference: Boolean
     # datasets: [DatasetInput!]!
   ): Project!,
   updateProject(
