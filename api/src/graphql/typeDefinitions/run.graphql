@@ -43,6 +43,8 @@ type Run {
     # project: Project! @relationship(type: "HAS_RUN", direction: IN)
     # minioUploads: [MinioUpload!]! @relationship(type: "HAS_RUN", direction: IN)
     processedDatasets: [ProcessedDataset!]! @relationship(type: "HAS_RUN", direction: IN)
+    # TODO: Uncomment next line to enable reference datasets
+    # referenceDatasets: [MinioUpload!]! @relationship(type: "HAS_RUN", direction: IN)
     createdOn: DateTime! @timestamp(operations: [CREATE])
     submittedOn: String
     completedOn: DateTime
@@ -86,6 +88,7 @@ type Mutation {
         # datasetIDs: [ID!]!
         # minioUploads: [MinioUploadInput!]!
         processedDatasets: [ID!]!
+        referenceDatasets: [ID!]!
     ): Run!,
 
     # updateRun(

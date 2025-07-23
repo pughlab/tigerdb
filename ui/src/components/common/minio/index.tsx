@@ -32,7 +32,7 @@ const headerOptions = [
 ]
 
 
-export default function MinioBucket({ datasetID } : { datasetID:String }) {
+export default function MinioBucket({ datasetID, isReference } : { datasetID:String, isReference?:Boolean }) {
     const bucketName = `dataset-${datasetID}`
     const { data, loading, error, refetch } = useQuery(gql`
         query MinioUploads($bucketName: ID!) {
@@ -252,7 +252,8 @@ export default function MinioBucket({ datasetID } : { datasetID:String }) {
                                 }
 
                                 {/* table button/modal */}
-                                <Modal
+                                {!isReference && (
+                                    <Modal
                                 size='large'
                                 closeIcon
                                 closeOnDimmerClick={false}
@@ -298,6 +299,7 @@ export default function MinioBucket({ datasetID } : { datasetID:String }) {
                                         </Segment.Group>
                                 </Modal.Content>
                                 </Modal>
+                                )}
 
 
                                 <Divider />

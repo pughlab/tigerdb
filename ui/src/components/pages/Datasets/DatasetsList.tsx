@@ -1,4 +1,4 @@
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { gql, isReference, useMutation, useQuery } from '@apollo/client'
 import { useCallback, useEffect, useState } from 'react'
 import * as React from 'react'
 import { Loader, Dimmer, Form, Header, Label, Input, Segment, Icon, Message, List, Divider, Modal, Container, Dropdown } from 'semantic-ui-react'
@@ -42,7 +42,7 @@ function DatasetListItem({ dataset }) {
         </List.Content>
 
       </List.Item>
-      {isMinioBucketOpen && <MinioBucket datasetID={`${datasetID}`} />} {/* Conditionally render MinioBucket */}
+      {isMinioBucketOpen && <MinioBucket datasetID={`${datasetID}`} isReference={project.isReference} />} {/* Conditionally render MinioBucket */}
 
       <Divider horizontal hidden />
     </>

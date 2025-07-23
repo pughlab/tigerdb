@@ -39,6 +39,7 @@ export const resolvers = {
           name
           createdOn
           isPublic
+          isReference
           description
           datasets {
             datasetID
@@ -101,7 +102,7 @@ export const resolvers = {
   Mutation: {
     createProject: async (
       obj,
-      {name, description}, // missing data fill out here
+      {name, description, isReference}, // missing data fill out here
       { ogm, kauth }
     ) => {
       try {
@@ -118,6 +119,7 @@ export const resolvers = {
           name,
           description,
           isPublic: false,
+          isReference: isReference ?? false,
           sharedWith: [],
           // datasets: [],
           // runs: [],
