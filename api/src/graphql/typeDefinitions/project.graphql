@@ -35,7 +35,7 @@ input ProjectInput {
 }
 
 type Query{
-  getProjects(projectID: ID): [Project],  # projectID is optional here
+  getProjects(projectID: ID, query: String): [Project],
   countUnlabelledVariables: [UnlabelledVariablesCount]
 }
 

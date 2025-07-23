@@ -1,21 +1,38 @@
-import * as React from 'react'
-import { gql, useMutation, useQuery } from '@apollo/client'
-import { useEffect, useReducer, useState } from 'react'
-import { Loader, Dimmer, Form, Header, Label, Input, Segment, Dropdown, Message, List, Divider, Modal, Grid, Card, Popup, Button, Icon } from 'semantic-ui-react'
+import * as React from "react";
+import { useEffect } from "react";
+import {
+  Loader,
+  Dimmer,
+  Form,
+  Header,
+  Label,
+  Input,
+  Segment,
+  Message,
+  Divider,
+  Grid,
+  Card,
+  Popup,
+  Button,
+  Icon
+} from "semantic-ui-react";
+import { useLocation } from "react-router-dom";
+import useRouter from "../../../hooks/useRouter";
 
-// import GeographyVisualization from '../../visualizations/geography/GeographyVisualization'
-
-import { Route, Routes, useLocation, useParams } from 'react-router-dom'
-import useRouter from '../../../hooks/useRouter'
-
-import useProjectsQuery from '../../../hooks/useProjectsQuery'
-
-import AddProjectModal from './AddProjectModal'
+import useProjectsQuery from "../../../hooks/useProjectsQuery";
+import AddProjectModal from "./AddProjectModal";
+import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
 
 function ProjectDetailsCard({ project }) {
 	const { projectID, name, description, createdBy, datasets, isPublic, createdOn, isReference } = project
   const creationDate = new Date(createdOn).toDateString()
 	const { navigate } = useRouter()
+  const tags = new Set();
+	datasets?.forEach((dataset) => {
+		dataset.tags?.forEach((tag) => {
+			tags.add(tag);
+		});
+	});
   const color = isPublic ? 'black' : 'facebook'
 	return (
 		<Card link color={color} onClick={() => { navigate(projectID) }}>
@@ -61,7 +78,7 @@ function ProjectDetailsCard({ project }) {
       </Card.Content>
       <Card.Content>
         <Label.Group>
-          <Label as={Button} color={color} content={<Icon style={{margin: 0}} name={isPublic ? 'lock open' : 'lock'} />} detail={isPublic ? 'Public' : 'Private'} />
+          <Label color={color} content={<Icon style={{margin: 0}} name={isPublic ? 'lock open' : 'lock'} />} detail={isPublic ? 'Public' : 'Private'} />
           <Label content={<Icon style={{margin: 0}} name='user' />} detail={createdBy.name} />
           <Label content={<Icon style={{margin: 0}} name='calendar alternate outline' />} detail={creationDate} />
         </Label.Group>
@@ -71,71 +88,76 @@ function ProjectDetailsCard({ project }) {
             (datasets.length > 0) ? datasets.map(dataset => <Label color='blue' key={dataset.datasetID} content={dataset.name} />) : null
           }
         </Label.Group>
+        <Divider />
+        <Label.Group>
+          {
+						[...tags]
+						.sort((tag1, tag2) => {
+							if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
+								return 0
+							}
+							return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
+						})
+            .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
+					}
+        </Label.Group>
       </Card.Content>
 		</Card>
 	)
 }
 
 export default function ProjectsList() {
+  const { data, loading, refetch } = useProjectsQuery();
+  const location = useLocation();
+  useEffect(() => {
+    refetch();
+  }, [location.key]);
+	const projects = data?.getProjects ?? [];
 
-	const { data, loading, error, refetch } = useProjectsQuery()
-
-	console.log(data)
-	const location = useLocation()
-	useEffect(() => {
-		refetch()
-	}, [location.key])
-
-	let projects
-	if (!data?.getProjects) {
-		projects = []
+	let content;
+	if (loading) {
+		content = (
+			<Segment placeholder textAlign="center">
+				<Dimmer active inverted>
+					<Loader size="large">Loading...</Loader>
+				</Dimmer>
+			</Segment>
+		)
+	} else if (projects.length === 0) {
+		content = (
+			<Label>
+				No projects available. Add a project above or ask your administrator
+				to update your permissions.
+			</Label>
+		)
 	} else {
-		projects = data.getProjects
+		content = (
+			<Segment placeholder>
+				<Card.Group itemsPerRow={3}>
+					{projects.map((project) => (
+						<ProjectDetailsCard key={project.projectID} {...{ project }} />
+					))}
+				</Card.Group>
+			</Segment>
+		)
 	}
 
-	console.log(projects)
-
-	// const allStudySites = studies.map(study => study.studySites).flat()
-	return (
-		<Grid>
-				{/* <Grid.Column width={7}>
-					<GeographyVisualization cityMarkers={allStudySites}/>
-				</Grid.Column> */}
-				<Grid.Column>
-
-					<Divider horizontal content='Projects' />
-					<Segment basic>
-						<AddProjectModal refetch={refetch} />
-						</Segment>					
-					<Form>
-						<Form.Field
-							control={Input}
-							label='Search projects'
-							placeholder='Names and descriptions'
-						// value={description}
-						// onChange={(e, {value}) => dispatch({type: 'SET_DESCRIPTION', description: value})}
-						/>
-					</Form>
-          <Divider hidden />
-					{
-					(loading) ?  
-					<Segment placeholder textAlign='center'>
-						{/* <Icon size='massive' name='react' loading /> */}
-						<Dimmer active inverted>
-							<Loader size='large'>Loading...</Loader>
-						</Dimmer>
-					</Segment>
-					:
-					(projects.length === 0) ?
-					<Label>No projects available. Add a project above or ask your administrator to update your permissions.
-					</Label> :
-					<Card.Group itemsPerRow={3}>
-            {
-              projects.map(project => <ProjectDetailsCard key={project.projectID} {...{ project }} />)
-            }
-          </Card.Group>
-					}
-				</Grid.Column>
-			</Grid>
-	)
+  return (
+    <Grid>
+      <Grid.Column>
+        <Divider horizontal content="Projects" />
+        <Segment basic>
+          <AddProjectModal refetch={refetch} />
+        </Segment>
+        <Form>
+          <Form.Field
+            control={Input}
+            label="Search projects"
+            placeholder="Names and descriptions"
+          />
+        </Form>
+        { content }
+      </Grid.Column>
+    </Grid>
+  );
 }

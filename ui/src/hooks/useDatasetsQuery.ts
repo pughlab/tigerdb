@@ -23,6 +23,11 @@ export default function useDatasetsQuery({ projectIDs }: { projectIDs: string[] 
         isPublic
         isReference
       }
+      tags {
+        tagID
+        name
+        category
+      }
     }
   }`, { variables: { projectIDs, searchText }, fetchPolicy: 'network-only' })
   return { data, loading, error, refetch, searchText, setSearchText }

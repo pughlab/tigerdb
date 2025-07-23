@@ -1,5 +1,4 @@
-import { gql, useMutation, useQuery } from '@apollo/client'
-import { useEffect, useReducer, useState } from 'react'
+import { gql,  useQuery } from '@apollo/client'
 
 export default function useProjectsQuery() {
 	const { data, loading, error, refetch } = useQuery(gql`
@@ -11,6 +10,11 @@ export default function useProjectsQuery() {
 				datasets {
 					datasetID
 					name
+					tags {
+						tagID
+						name
+						category
+					}
 				}
 				createdBy {
 					keycloakUserID
