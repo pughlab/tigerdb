@@ -74,13 +74,13 @@ function ProjectDetailsCard({ project }) {
           {name}
         </Header>
         <Label.Group>
-          <Label color={color} content={<Icon style={{margin: 0}} name={isPublic ? 'lock open' : 'lock'} />} detail={isPublic ? 'Public' : 'Private'} />
+          <Label color={color} as={Button} content={<Icon style={{margin: 0}} name={isPublic ? 'lock open' : 'lock'} />} detail={isPublic ? 'Public' : 'Private'} />
           <Label content={<Icon style={{margin: 0}} name='user' />} detail={createdBy.name} />
           <Label content={<Icon style={{margin: 0}} name='calendar alternate outline' />} detail={creationDate} />
           {
             (datasets.length > 0) && (
               <>
-                <Divider />
+                <Divider horizontal content="Data" />
                 {
                   datasets.map(dataset => <Label color='blue' key={dataset.datasetID} content={dataset.name} />)
                 }
@@ -89,7 +89,7 @@ function ProjectDetailsCard({ project }) {
           }
           { tags.size > 0 && (
             <>
-              <Divider />
+              <Divider horizontal content="Tags"/>
               {
                 [...tags]
                 .sort((tag1, tag2) => {
