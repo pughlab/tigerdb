@@ -14,7 +14,7 @@ import { useLocation } from "react-router-dom";
 
 
 function DatasetListItem({ dataset }) {
-  const { datasetID, name, tags: datasetTags } = dataset;
+  const { datasetID, name, tags: datasetTags, project } = dataset;
   const [isMinioBucketOpen, setIsMinioBucketOpen] = useState(false); // State to control MinioBucket visibility
   const [tags, setTags] = useState(datasetTags.reduce((acc, tag) => [...acc, { tagID: tag.tagID, name: tag.name, category: tag.category }], []));
 

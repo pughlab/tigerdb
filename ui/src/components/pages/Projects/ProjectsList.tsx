@@ -71,35 +71,37 @@ function ProjectDetailsCard({ project }) {
       </Popup>
       <Card.Content extra>
         <Header size='medium'>
-          <Header.Content>
-            {name}
-          </Header.Content>
+          {name}
         </Header>
-      </Card.Content>
-      <Card.Content>
         <Label.Group>
           <Label color={color} content={<Icon style={{margin: 0}} name={isPublic ? 'lock open' : 'lock'} />} detail={isPublic ? 'Public' : 'Private'} />
           <Label content={<Icon style={{margin: 0}} name='user' />} detail={createdBy.name} />
           <Label content={<Icon style={{margin: 0}} name='calendar alternate outline' />} detail={creationDate} />
-        </Label.Group>
-        <Divider />
-        <Label.Group>
           {
-            (datasets.length > 0) ? datasets.map(dataset => <Label color='blue' key={dataset.datasetID} content={dataset.name} />) : null
+            (datasets.length > 0) && (
+              <>
+                <Divider />
+                {
+                  datasets.map(dataset => <Label color='blue' key={dataset.datasetID} content={dataset.name} />)
+                }
+              </>
+            )
           }
-        </Label.Group>
-        <Divider />
-        <Label.Group>
-          {
-						[...tags]
-						.sort((tag1, tag2) => {
-							if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
-								return 0
-							}
-							return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
-						})
-            .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
-					}
+          { tags.size > 0 && (
+            <>
+              <Divider />
+              {
+                [...tags]
+                .sort((tag1, tag2) => {
+                  if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
+                    return 0
+                  }
+                  return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
+                })
+                .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
+              }
+            </>
+          )}
         </Label.Group>
       </Card.Content>
 		</Card>
@@ -132,13 +134,11 @@ export default function ProjectsList() {
 		)
 	} else {
 		content = (
-			<Segment placeholder>
-				<Card.Group itemsPerRow={3}>
-					{projects.map((project) => (
-						<ProjectDetailsCard key={project.projectID} {...{ project }} />
-					))}
-				</Card.Group>
-			</Segment>
+			<Card.Group itemsPerRow={3}>
+        {projects.map((project) => (
+          <ProjectDetailsCard key={project.projectID} {...{ project }} />
+        ))}
+      </Card.Group>
 		)
 	}
 
@@ -156,6 +156,7 @@ export default function ProjectsList() {
             placeholder="Names and descriptions"
           />
         </Form>
+        <Divider hidden />
         { content }
       </Grid.Column>
     </Grid>
