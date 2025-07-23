@@ -24,7 +24,7 @@ import AddProjectModal from "./AddProjectModal";
 import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
 
 function ProjectDetailsCard({ project }) {
-	const { projectID, name, description, createdBy, datasets, isPublic, createdOn } = project
+	const { projectID, name, description, createdBy, datasets, isPublic, createdOn, isReference } = project
   const creationDate = new Date(createdOn).toDateString()
 	const { navigate } = useRouter()
   const tags = new Set();
@@ -36,40 +36,39 @@ function ProjectDetailsCard({ project }) {
   const color = isPublic ? 'black' : 'facebook'
 	return (
 		<Card link color={color} onClick={() => { navigate(projectID) }}>
-      <Card.Header fluid>
-        <Popup
-          size='large' wide='very' position="top center"
-          trigger={
-            <Button size='large' fluid>
-              <Icon name='folder open' size='large' />
-            </Button>
-          }        
-        >
-          <Message size='mini'>
-            <Message.Content>
-              <Divider horizontal content='Details' />
-              {description}
-            </Message.Content>
-          </Message>
-          <Segment.Group>
-            <Segment>
-              <Label.Group>
-                <Label>
-                  <Icon name='user' />
-                  {'Created by'}
-                  <Label.Detail content={createdBy.name} />
-                  <Label.Detail content={createdBy.email} />
-                </Label>
-                <Label >
-                  <Icon name='calendar alternate outline' />
-                  {'Created on'}
-                  <Label.Detail content={creationDate}  />
-                </Label>
-              </Label.Group>
-            </Segment>
-          </Segment.Group>
-        </Popup>
-      </Card.Header>
+      <Popup
+        size='large' wide='very' position="top center"
+        trigger={
+          <Button attached='top' size='large' color={isReference ? 'black' : undefined}>
+            <Icon name='folder open' size='large' />
+          </Button>
+        }        
+      >
+        {/* {project.isPublic ? 'Public' : 'Private'} project */}
+        <Message size='mini'>
+          <Message.Content>
+            <Divider horizontal content='Details' />
+            {description}
+          </Message.Content>
+        </Message>
+        <Segment.Group>
+          <Segment>
+            <Label.Group>
+              <Label>
+                <Icon name='user' />
+                {'Created by'}
+                <Label.Detail content={createdBy.name} />
+                <Label.Detail content={createdBy.email} />
+              </Label>
+              <Label >
+                <Icon name='calendar alternate outline' />
+                {'Created on'}
+                <Label.Detail content={creationDate}  />
+              </Label>
+            </Label.Group>
+          </Segment>
+        </Segment.Group>
+      </Popup>
       <Card.Content extra>
         <Header size='medium'>
           <Header.Content>

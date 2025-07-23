@@ -1,285 +1,73 @@
-import { gql, useLazyQuery, useMutation } from "@apollo/client";
-import * as React from "react";
-import { Button, Form, Input, Modal, TextArea, Message, Dropdown, Icon, Divider, Card, Popup, Header, Label, Checkbox } from "semantic-ui-react";
+import { gql, useMutation } from "@apollo/client";
+import React from "react";
+import { Button, Form, Input, Modal, TextArea, Icon, Divider, Tab, Segment, Dropdown, Loader, Dimmer } from "semantic-ui-react";
 import useProjectsQuery from '../../../hooks/useProjectsQuery'
-
-function ProjectCard({
-  project,
-  toggleProject,
-  updateAvailableDatasets
-}) {
-  const color = project.isPublic ? 'black' : 'facebook'
-  const creationDate = new Date(project.createdOn).toDateString()
-  const [selected, setSelected] = React.useState(false)
-  const [getDatasets] = useLazyQuery(gql`
-    query Datasets($projectID: ID!) {
-      datasets (
-        where: {project: {projectID: $projectID}}
-      ) {
-        datasetID
-        name
-        project {
-          projectID
-          name
-        }
-      }
-    }
-  `, { 
-    variables: { projectID: '' },
-    fetchPolicy: 'network-only',
-    onCompleted(data) {
-      if (selected) {
-        updateAvailableDatasets((prev) => [...prev, ...data.datasets])
-      } else {
-        updateAvailableDatasets((prev) => prev.filter((item) => !data.datasets.some((dataset) => dataset.datasetID === item.datasetID)))
-      }
-    }
-  })
-
-  React.useEffect(() => {
-    getDatasets({ variables: { projectID:  project.projectID }})
-  }, [selected]);
-
-  return (
-    <Card link color={color} onClick={() => {
-      toggleProject(project.projectID)
-      setSelected(!selected)
-    }}>
-      <Popup
-        size='large' wide='very' inverted position="top center"
-        trigger={
-          <Button attached='top' color={color} basic={!selected}>
-            <Icon name={selected ? 'folder open' : 'folder outline'} size='large' />
-          </Button>
-        }        
-      >
-        {project.isPublic ? 'Public' : 'Private'} project
-      </Popup>
-      <Card.Content extra>
-        <Header size='small'>
-          <Header.Content>
-            {project.name}
-          </Header.Content>
-        </Header>
-      </Card.Content>
-      <Card.Content>
-        <Label.Group>
-          <Label as={Button} color={color} content={<Icon style={{margin: 0}} name={project.isPublic ? 'lock open' : 'lock'} />} detail={project.isPublic ? 'Public' : 'Private'} />
-          <Label content={<Icon style={{margin: 0}} name='user' />} detail={project.createdBy.name} />
-          {/* <Label content={<Icon style={{margin: 0}} name='calendar alternate outline' />} detail={creationDate} /> */}
-        </Label.Group>
-      </Card.Content>
-    </Card>
-  )
-}
-
-function ProjectCardList({
-  projects,
-  toggleProject,
-  updateAvailableDatasets
-}) {
-  const [usingPublicProjects, setUsingPublicProjects] = React.useState(true)
-  const [projectsList, setProjectsList] = React.useState(projects)
-
-  React.useEffect(() => {
-    if (usingPublicProjects) {
-      setProjectsList(projects)
-    } else {
-      setProjectsList(projects?.filter((p) => !p.isPublic))
-    }
-  }, [usingPublicProjects])
-
-  return (
-    <>
-      <Checkbox 
-        label='Include public projects'
-        checked={usingPublicProjects}
-        onChange={() => setUsingPublicProjects(!usingPublicProjects)}
-      />
-      <Divider hidden/>
-      <Card.Group itemsPerRow={3}>
-        {projectsList?.map((project) => <ProjectCard 
-          key={project.projectID}
-          project={project}
-          toggleProject={toggleProject}
-          updateAvailableDatasets={updateAvailableDatasets}
-        />)}
-      </Card.Group>
-      <Divider hidden/>
-    </>
-  )
-}
-
-function DatasetTag({dataset, updateSelectedDatasets, updateAvailableUploads}) {
-  const [selected, setSelected] = React.useState(false)
-  const [getProcessedUploads] = useLazyQuery(gql`
-    query processedDatasets($datasetID: ID!) {
-        processedDatasets(
-          where: {
-            minioUpload: {
-              dataset: {
-                datasetID: $datasetID
-              }
-            }
-          }
-        ) {
-          objectName
-          bucketName
-          filename
-          minioUpload {
-            dataset {
-              datasetID
-              name
-            }
-          }
-        }
-      }
-    `, {
-      variables: { datasetID: dataset.datasetID },
-      fetchPolicy: 'network-only',
-      onCompleted(data) {
-        if (selected) {
-          updateAvailableUploads((prev) => [...prev, ...data.processedDatasets])
-        } else {
-          updateAvailableUploads((prev) => prev.filter((item) => !data.processedDatasets.some((dataset) => dataset.minioUpload.dataset.datasetID === item.datasetID)))
-        }
-      }
-    })
-
-  React.useEffect(() => {
-    if (selected) {
-      updateSelectedDatasets((prev) => [...prev, dataset])
-      getProcessedUploads()
-    }
-  }, [selected])
-
-  return (
-    <Label
-      as={Button}
-      color={selected ? 'blue' : undefined}
-      basic={!selected}
-      onClick={() => {setSelected(!selected)}}
-    ><Icon name={selected ? 'folder open' : 'folder outline'} />{`${dataset.name}`}</Label>
-  )
-}
-
-function DatasetTagList({datasets,  updateSelectedDatasets, updateAvailableUploads}) {
-  const datasetIDs = new Set()
-  const distinctDatasets = datasets.filter((dataset) => {
-    if (!datasetIDs.has(dataset.datasetID)) {
-      datasetIDs.add(dataset.datasetID)
-      return true
-    }
-    return false
-  })
-  return (
-    <Label.Group>
-      {distinctDatasets.map((dataset) => <DatasetTag
-        key={dataset.datasetID}
-        dataset={dataset}
-        updateSelectedDatasets={updateSelectedDatasets}
-        updateAvailableUploads={updateAvailableUploads} />
-      )}
-    </Label.Group>
-  )
-}
-
-function ProcessedUpload({upload, updateSelectedUploads}) {
-  const [selected, setSelected] = React.useState(false)
-
-  React.useEffect(() => {
-    if (selected) {
-      updateSelectedUploads((prev) => [...prev, upload])
-    } else {
-      updateSelectedUploads((prev)  => prev.filter(({objectName}) => objectName!== upload.objectName))
-    }
-  }, [selected])
-
-  return (
-    <Label
-      as={Button}
-      color={selected ? 'green' : undefined}
-      basic={!selected}
-      onClick={() => {setSelected(!selected)}}
-    ><Icon name={selected ? 'file' : 'file outline'} />{`${upload.filename}`}</Label>
-  )
-}
-
-function ProcessedUploadsList({uploads, updateSelectedUploads}) {
-  const uploadIDs = new Set()
-  const distinctUploads = uploads.filter((upload) => {
-    if (!uploadIDs.has(upload.objectName)) {
-      uploadIDs.add(upload.objectName)
-      return true
-    }
-    return false
-  })
-  return (
-    <Label.Group>
-      {distinctUploads.map((upload) => <ProcessedUpload
-          key={upload.objectName}
-          upload={upload}
-          updateSelectedUploads={updateSelectedUploads}
-        />
-      )}
-    </Label.Group>
-  )
-}
+import ProjectCardList from "./ProjectCardList";
 
 export default function AddRunModal({refetch}) {
   const [name, setName]= React.useState('')
   const [description, setDescription]= React.useState('')
-  const [projectIDs, setProjectIDs] = React.useState([]);
-  const [selectedDatasets, setSelectedDatasets] = React.useState([]);
-  const [availableDatasets, setAvailableDatasets] = React.useState([]);
-  const [availableUploads, setAvailableUploads] = React.useState([]);
-  const [selectedUploads, setSelectedUploads] = React.useState([]);
-  // const [minioUploads, setMinioUploads] = React.useState([]);
-  const [processedDatasets, setProcessedDatasets] = React.useState([]);
+  const [selectedQueryUploads, setSelectedQueryUploads] = React.useState([]);
+  const [selectedReferenceUploads, setSelectedReferenceUploads] = React.useState([]);
   const [open, setOpen] = React.useState(false);
 
-  // const [datasets, {data, loading, error}] = useQuery(gql`
-  // let projectID = '2f6d441e-fbbe-40ff-87da-35c469bb9e9b'
-  const { data: projectsData, loading: projectsLoading, error: projectsError } = useProjectsQuery();
-  // const { data: minioUploadsData, loading: minioUploadsLoading, error: minioUploadsError } = useMinioUploadsQuery({ datasetIDs });
-  
-  function toggleProject(projectID: string){
-    if (projectIDs.includes(projectID)) {
-      setProjectIDs(projectIDs.filter((id) => id !== projectID))
-    } else {
-      setProjectIDs([...projectIDs, projectID])
-    }
-  }
+  const { data: projectsData } = useProjectsQuery();
 
-  //console.log(processedDatasetsData)
-  const [createRunWithMinioBucket, {data, loading, error}] = useMutation(gql`
-    mutation CreateRunWithMinioBucket($name: String!, $description: String!, $processedDatasets: [ID!]!){
-      createRunWithMinioBucket(name: $name, description: $description, processedDatasets: $processedDatasets) {
+  const [createRunWithMinioBucket, { loading }] = useMutation(gql`
+    mutation CreateRunWithMinioBucket($name: String!, $description: String!, $processedDatasets: [ID!]!, $referenceDatasets: [ID!]!){
+      createRunWithMinioBucket(name: $name, description: $description, processedDatasets: $processedDatasets, referenceDatasets: $referenceDatasets) {
         runID
         name
         description
-        # createdBy {
-        #   keycloakUserID
-        # }
         createdOn
         status
-        # datasets {
-        #   datasetID
-        # }
       }
     }`, {onCompleted: () => { 
       refetch() 
       setOpen(!open)
-      setProjectIDs([]);
-      setSelectedDatasets([]);
-      // setMinioUploads([]);
-      setProcessedDatasets([]);
       setDescription('')
       setName('')
+      setSelectedQueryUploads([]);
+      setSelectedReferenceUploads([]);
     }
   })
 
   const projects = projectsData?.getProjects
+  const queryProjects: any[] = []
+  const referenceProjects: any[] = []
+  projects?.forEach((project) => {
+    if (project.isReference) {
+      referenceProjects.push(project)
+    } else {
+      queryProjects.push(project)
+    }
+  })
+  const panes = [
+    {
+      menuItem: 'Query',
+      pane: 
+        <Tab.Pane>
+          <Form>
+            <Segment color='violet'>
+              <Divider horizontal content="Select projects" />
+              <ProjectCardList projects={queryProjects} updateSelectedUploads={setSelectedQueryUploads} />
+            </Segment>
+          </Form>
+        </Tab.Pane>
+    },
+    {
+      menuItem: 'Reference',
+      pane: 
+        <Tab.Pane disabled={true}>
+          <Form>
+            <Segment color='violet'>
+              <Divider horizontal content='SELECT REFERENCE PROJECTS - COMING SOON'/>
+              <ProjectCardList projects={referenceProjects} updateSelectedUploads={setSelectedReferenceUploads} />
+            </Segment>
+          </Form>
+        </Tab.Pane>
+    },
+  ]
 
   return (
     <Modal
@@ -288,10 +76,11 @@ export default function AddRunModal({refetch}) {
       open={open}
       onClose={() => setOpen(!open)}
       size="large"
+      
       trigger={
         <Button fluid size='large' color='black' animated='vertical' onClick={() => setOpen(!open)}>
           <Button.Content visible>
-              <Icon name='plus'/>
+            <Icon name='plus'/>
           </Button.Content>
           <Button.Content hidden content="Add a new run"/>
         </Button>
@@ -314,22 +103,23 @@ export default function AddRunModal({refetch}) {
             value={description}
             onChange={(_e, { value }) => setDescription(value)}
           />
-          <Divider horizontal content="Select projects" />
-          <ProjectCardList projects={projects} toggleProject={toggleProject} updateAvailableDatasets={setAvailableDatasets} />
-          <Divider horizontal content="Select datasets" />
-          <DatasetTagList datasets={availableDatasets} updateSelectedDatasets={setSelectedDatasets} updateAvailableUploads={setAvailableUploads} />
-          <Divider horizontal content="Select processed uploads" />
-          <ProcessedUploadsList uploads={availableUploads} updateSelectedUploads={setSelectedUploads} />
         </Form>
+        <Divider hidden />
+        <Tab renderActiveOnly={false} panes={panes} />
       </Modal.Content>
       <Modal.Actions>
         <Button fluid color='violet' content='CREATE RUN' loading={loading} 
-          disabled={!name || !description || selectedDatasets.length === 0 || selectedUploads.length === 0}
+          disabled={!name || !description || selectedQueryUploads.length === 0}
+          // disabled={!name || !description || selectedQueryUploads.length === 0 || selectedReferenceUploads.length === 0}
           onClick={async () => {
-            await createRunWithMinioBucket({variables: {name, description, processedDatasets : selectedUploads.map(upload => upload.objectName)} })
-          // setOpen(!open)
-          // setDescription('')
-          // setName('')
+            await createRunWithMinioBucket({
+              variables: {
+                name,
+                description,
+                processedDatasets: selectedQueryUploads.map(upload => upload.objectName),
+                referenceDatasets: selectedReferenceUploads.map(upload => upload.objectName),
+              }
+            })
           }}
         />
       </Modal.Actions>

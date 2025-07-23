@@ -1,18 +1,7 @@
-import { useEffect, useState } from "react";
-import * as React from "react";
-import {
-  Loader,
-  Dimmer,
-  Form,
-  Header,
-  Label,
-  Input,
-  Segment,
-  Icon,
-  Message,
-  List,
-  Divider, Container
-} from "semantic-ui-react";
+import { gql, useMutation, useQuery } from '@apollo/client'
+import { useCallback, useEffect, useState } from 'react'
+import * as React from 'react'
+import { Loader, Dimmer, Form, Header, Label, Input, Segment, Icon, Message, List, Divider, Modal, Container, Dropdown } from 'semantic-ui-react'
 // import useRouter from '../../../hooks/useRouter'
 import useDatasetsQuery from "../../../hooks/useDatasetsQuery";
 import { tagColors, DatasetTag } from "./DatasetTag";
@@ -67,8 +56,7 @@ function DatasetListItem({ dataset }) {
           {/* <List.Description content={`${description}`} /> */}
         </List.Content>
       </List.Item>
-      {/* Conditionally render MinioBucket */}
-      {isMinioBucketOpen && <MinioBucket datasetID={`${datasetID}`} />}{" "}
+      {isMinioBucketOpen && <MinioBucket datasetID={`${datasetID}`} isReference={project.isReference} />} {/* Conditionally render MinioBucket */}
       <Divider horizontal hidden />
     </>
   );

@@ -72,7 +72,7 @@ export const resolvers = {
   Mutation: {
     createRunWithMinioBucket: async (
       parent,
-      { name, description, processedDatasets },
+      { name, description, processedDatasets, referenceDatasets },
       { ogm, kauth, minioClient }
     ) => {
       try {
@@ -121,6 +121,12 @@ export const resolvers = {
               where: { node: { objectName: objectName } }
             }))
           },
+          // TODO: Uncomment this to enable reference datasets
+          // referenceDatasets: {
+          //   connect: referenceDatasets.map((objectName: string) => ({
+          //     where: { node: { objectName: objectName } }
+          //   }))
+          // },
 
           // should we connect to project?
           // project: {
