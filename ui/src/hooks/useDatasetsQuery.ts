@@ -20,6 +20,8 @@ export default function useDatasetsQuery({ projectIDs }: { projectIDs: string[] 
       project {
         projectID
         name
+        isPublic
+        isReference
       }
     }
   }`, { variables: { projectIDs, searchText }, fetchPolicy: 'network-only' })

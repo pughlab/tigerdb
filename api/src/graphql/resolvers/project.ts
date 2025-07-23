@@ -39,6 +39,7 @@ export const resolvers = {
           name
           createdOn
           isPublic
+          isReference
           description
           datasets {
             datasetID

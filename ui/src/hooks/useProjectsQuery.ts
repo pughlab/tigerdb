@@ -18,7 +18,8 @@ export default function useProjectsQuery() {
 					name
 				}
 				createdOn
-				isPublic				
+				isPublic
+				isReference
 			}
 		}
 	`, {fetchPolicy: 'network-only'})

@@ -13,16 +13,16 @@ import useProjectsQuery from '../../../hooks/useProjectsQuery'
 import AddProjectModal from './AddProjectModal'
 
 function ProjectDetailsCard({ project }) {
-	const { projectID, name, description, createdBy, datasets, isPublic, createdOn } = project
+	const { projectID, name, description, createdBy, datasets, isPublic, createdOn, isReference } = project
   const creationDate = new Date(createdOn).toDateString()
 	const { navigate } = useRouter()
   const color = isPublic ? 'black' : 'facebook'
 	return (
-		<Card link color={color}  onClick={() => { navigate(projectID) }}>
+		<Card link color={color} onClick={() => { navigate(projectID) }}>
       <Popup
         size='large' wide='very' position="top center"
         trigger={
-          <Button attached='top' size='large'>
+          <Button attached='top' size='large' color={isReference ? 'black' : undefined}>
             <Icon name='folder open' size='large' />
           </Button>
         }        
