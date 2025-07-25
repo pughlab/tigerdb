@@ -127,6 +127,10 @@ export default function ProjectsList() {
 	const projects = data?.getProjects ?? [];
 
   useEffect(() => {
+  setFilteredProjects(projects); // Initialize with all projects
+}, [projects]);
+
+  useEffect(() => {
     if (selectedTags.length > 0) {
       const tempProjects: any[] = []
       projects.forEach((project) => {
