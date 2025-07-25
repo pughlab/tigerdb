@@ -51,7 +51,7 @@ function Layout({ }) {
           <Menu.Menu position='left' >
             <div>
               <Link to="/">
-                <Logo size='small' />
+                <Logo size='small' style={{ margin: 5 }} />
 
               </Link>
               {/* {process.env.NODE_ENV !== 'production' ? process.env.NODE_ENV : ''} */}
