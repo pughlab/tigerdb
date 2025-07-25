@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import SegmentPlaceholder from './common/SegmentPlaceholder'
 import { Dimmer, Loader, Segment, Icon, Header } from 'semantic-ui-react';
 
-export default function NotFoundRedirect() {
+export default function NotFoundRedirect({isLoggedIn}: {isLoggedIn: boolean}) {
   const navigate = useNavigate();
 
+  let redirectRoute = isLoggedIn ? '/home' : '/public';
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigate('/', { replace: true });
-    }, 3000); // Redirect after 3 seconds
+      navigate(redirectRoute, { replace: true });
+    }, 1000); // Redirect after 1 second
 
     return () => clearTimeout(timer); // Clean up timer on unmount
   }, [navigate]);

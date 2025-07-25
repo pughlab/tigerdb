@@ -9,9 +9,10 @@ import NotFoundRedirect from './NotFoundRedirect'
 import { Logo } from './logos'
 
 import useRouter from '../hooks/useRouter'
-import About from './pages/About'
+// import About from './pages/About'
+import Stats from './pages/Stats'
 import PublicLoginModal from './authentication/PublicLoginModal'
-import Studies from './pages/Studies'
+import Projects from './pages/Projects'
 import Datasets from './pages/Datasets'
 import Explore from './pages/Explore'
 import DataExports from './pages/DataExports'
@@ -35,7 +36,8 @@ function Layout({ }) {
 
   const routes = [
     // {path: '/', icon: 'info circle', introID: HOME_MENU_ELEMENT_ID},
-    { path: '/public', icon: 'database', introID: DATA_MENU_ELEMENT_ID },
+    { path: '/public', icon: 'home', introID: DATA_MENU_ELEMENT_ID },
+    { path: '/stats', icon: 'chart bar', introID: 'stats-menu-element'},
   ]
 
   // const { keycloak } = useKeycloak()
@@ -101,9 +103,9 @@ export default function PublicPortal() {
     <>
       <Layout />
       <Routes>
-        <Route index element={
+        {/* <Route index element={
           <About />
-        } />
+        } /> */}
         <Route key='/public' path='public/*' element={
           <>
             <Segment attached='top'>
@@ -134,7 +136,7 @@ export default function PublicPortal() {
 
               <Message color='teal'>
                 <Icon name='lock open' />
-                This website is free and open to all users.
+                This website is free and open to all users. Please select a menu item above to get started.
               </Message>
               <Message attached color='grey' >
                 <Icon name='info circle' />
@@ -152,8 +154,9 @@ export default function PublicPortal() {
             )
           )}
         </Route>
+        <Route key="stats" path="/stats" element={<Stats />} />
         {/* <Route key='notfound' path="*" element={<SegmentPlaceholder text='404 - Not Found!' icon='exclamation triangle' />} /> */}
-        <Route key="notfound" path="*" element={<NotFoundRedirect />} />
+        <Route key="notfound" path="*" element={<NotFoundRedirect isLoggedIn={false} />} />
       </Routes>
     </>
   )

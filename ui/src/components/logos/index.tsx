@@ -14,7 +14,7 @@ export function Logo({ size = 'medium', ...props }) {
   )
 }
 
-export function AboutPortal({ }) {
+export function StatsPortal({ }) {
 
   const { keycloak } = useKeycloak();
   const isLoggedIn = keycloak.authenticated;
@@ -24,12 +24,12 @@ export function AboutPortal({ }) {
         <Header as='h1'>
           {/* <Icon name='tint' color='red' size='big' /> */}
           <Header.Content>
-            TIGERdb: <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>T</span>-cell & <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>I</span>mmuno<span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>G</span>lobulin <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>E</span>pitope <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>R</span>eceptor <span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>D</span>ata<span style={{ textDecoration: 'underline', textDecorationColor: 'tomato' }}>B</span>ase
+            STATS
           </Header.Content>
         </Header>
       </Divider>
 
-      <Message color='teal'>
+      {/* <Message color='teal'>
         <Icon name='lock open' />
         This website is free and open to all users.
       </Message>
@@ -37,7 +37,7 @@ export function AboutPortal({ }) {
         <Icon name='info circle' />
         TIGERdb is a scalable web portal powered by a Neo4J graph database. Features include a TCR sequence search and functions for integrative analysis.
 
-      </Message>
+      </Message> */}
       {/* <Message attached='bottom'>
         <Button as={Link} to={isLoggedIn ? '/home/data' : '/public/search'} fluid  >
           <Image size='large' src={tigerdb} centered />

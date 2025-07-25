@@ -2,13 +2,13 @@ import * as React from 'react';
 import { Container, Segment, Grid, Header, Divider, Icon } from 'semantic-ui-react'
 
 import CalendarHeatmapVisualization from '../../visualizations/heatmap/calendar/CalendarHeatmapVisualization'
-import {AboutPortal} from '../../logos'
+import {StatsPortal} from '../../logos'
 
-export default function About() {
+export default function Stats() {
   return (
     <Container as={Segment}>
       <Segment>
-        <AboutPortal />
+        <StatsPortal />
       </Segment>
       {/* <Segment>
         <CalendarHeatmapVisualization />

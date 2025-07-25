@@ -9,7 +9,8 @@ import { Logo } from './logos'
 import tigerdb from './logos/tigerdb.png'
 
 import useRouter from '../hooks/useRouter'
-import About from './pages/About'
+// import About from './pages/About'
+import Stats from './pages/Stats'
 import LoginModal from './authentication/LoginModal'
 import Projects from './pages/Projects'
 import Datasets from './pages/Datasets'
@@ -34,7 +35,8 @@ function Layout({ }) {
 
   const routes = [
     // {path: '/', icon: 'info circle', introID: HOME_MENU_ELEMENT_ID},
-    { path: '/home', icon: 'database', introID: DATA_MENU_ELEMENT_ID },
+    { path: '/home', icon: 'home', introID: DATA_MENU_ELEMENT_ID },
+    { path: '/stats', icon: 'chart bar', introID: 'stats-menu-element'},
   ]
 
   const { keycloak } = useKeycloak()
@@ -131,9 +133,9 @@ export default function Portal() {
       {/* <RenderOnApproved>
         <RenderOnAcceptedTOS> */}
       <Routes>
-        <Route index element={
+        {/* <Route index element={
           <About />
-        } />
+        } /> */}
         <Route key='home' path='home/*' element={
           <>
             <Segment attached='top'>
@@ -163,7 +165,7 @@ export default function Portal() {
 
       <Message color='teal'>
         <Icon name='lock open' />
-        This website is free and open to all users.
+          This website is free and open to all users. Please select a menu item above to get started.
       </Message>
       <Message attached color='grey' >
         <Icon name='info circle' />
@@ -181,8 +183,9 @@ export default function Portal() {
             )
           )}
         </Route>
+        <Route key="stats" path="/stats" element={<Stats />} />
         {/* <Route key='notfound' path="*" element={<SegmentPlaceholder text='404 - Not Found!' icon='exclamation triangle' />} /> */}
-        <Route key="notfound" path="*" element={<NotFoundRedirect />} />
+        <Route key="notfound" path="*" element={<NotFoundRedirect isLoggedIn={true} />} />
       </Routes>
       {/* </RenderOnAcceptedTOS>
         </RenderOnApproved> */}
