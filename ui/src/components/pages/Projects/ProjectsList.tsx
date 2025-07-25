@@ -14,7 +14,8 @@ import {
   Card,
   Popup,
   Button,
-  Icon
+  Icon,
+  Select
 } from "semantic-ui-react";
 import { useLocation } from "react-router-dom";
 import useRouter from "../../../hooks/useRouter";
@@ -22,6 +23,7 @@ import useRouter from "../../../hooks/useRouter";
 import useProjectsQuery from "../../../hooks/useProjectsQuery";
 import AddProjectModal from "./AddProjectModal";
 import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
+import { gql, useQuery } from "@apollo/client";
 
 function ProjectDetailsCard({ project }) {
 	const { projectID, name, description, createdBy, datasets, isPublic, createdOn, isReference } = project
@@ -111,13 +113,39 @@ function ProjectDetailsCard({ project }) {
 export default function ProjectsList() {
   const { data, loading, refetch } = useProjectsQuery();
   const location = useLocation();
+  const [selectedTags, setSelectedTags] = React.useState([]);
+  const [filteredProjects, setFilteredProjects] = React.useState([])
+  const { loading: tagsLoading, data: tags } = useQuery(gql`
+    query TagNames {
+      tagNames
+    }
+  `);
+
   useEffect(() => {
     refetch();
   }, [location.key]);
 	const projects = data?.getProjects ?? [];
 
+  useEffect(() => {
+    if (selectedTags.length > 0) {
+      const tempProjects: any[] = []
+      projects.forEach((project) => {
+        project.datasets.forEach((dataset) => {
+          dataset.tags.forEach((tag) => {
+            if (selectedTags.includes(tag.name)) {
+              tempProjects.push(project)
+            }
+          })
+        })
+      })
+      setFilteredProjects(tempProjects)
+    } else {
+      setFilteredProjects(projects)
+    }
+  }, [selectedTags])
+
 	let content;
-	if (loading) {
+	if (loading && tagsLoading) {
 		content = (
 			<Segment placeholder textAlign="center">
 				<Dimmer active inverted>
@@ -135,7 +163,7 @@ export default function ProjectsList() {
 	} else {
 		content = (
 			<Card.Group itemsPerRow={3}>
-        {projects.map((project) => (
+        {filteredProjects.map((project) => (
           <ProjectDetailsCard key={project.projectID} {...{ project }} />
         ))}
       </Card.Group>
@@ -154,6 +182,14 @@ export default function ProjectsList() {
             control={Input}
             label="Search projects"
             placeholder="Names and descriptions"
+          />
+          <Form.Field
+            control={Select}
+            multiple
+            options={tags?.tagNames.map((tag) => ({key: tag, value: tag, text: tag})) ?? []}
+            placeholder='Select tags...'
+            label="Filter by dataset tag(s)"
+            onChange={(_e, { value }) => setSelectedTags(value)}
           />
         </Form>
         <Divider hidden />
