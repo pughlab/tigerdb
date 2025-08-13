@@ -50,6 +50,10 @@ export const resolvers = {
               name
               category
             }
+            minioUpload {
+              objectName
+              filename
+            }
           }
           createdBy {
             keycloakUserID
@@ -103,6 +107,23 @@ export const resolvers = {
       //   }
       // })
       return projectData
+    },
+    isProjectOwner: async (_obj, { projectID }, { driver, kauth }) => {
+      try {
+        const keycloakUserID = kauth.accessToken?.content?.sub ?? undefined
+        if (!keycloakUserID) {
+          throw new Error('User not logged in')
+        }
+        const session = driver.session()
+        const project = await session.run(
+          `MATCH (p:Project { projectID: $projectID })-[:CREATED_BY]->(u:KeycloakUser { keycloakUserID: $keycloakUserID }) RETURN p, u`,
+          { projectID, keycloakUserID }
+        )
+        return project.records.length > 0
+      } catch (error) {
+        console.log('isProjectOwner', error)
+        throw new ApolloError('isProjectOwner', error as string)
+      }
     }
   },
   Mutation: {
@@ -183,6 +204,36 @@ export const resolvers = {
         console.log('updateProject', error)
         throw new ApolloError('updateProject', error as string)
       }
+    },
+    makeProjectPublic: async (parent, { projectID }, { ogm, kauth }) => {
+      try {
+        const { sub: keycloakUserID } = kauth.accessToken.content
+        const UserModel = ogm.model('KeycloakUser')
+        const user = await UserModel.find({
+          where: {keycloakUserID: keycloakUserID}
+        })
+        if (!user) {
+          throw new Error('User not found')
+        }
+        const ProjectModel = ogm.model('Project')
+
+        const project = await ProjectModel.find({
+          where: { projectID: projectID }
+        })
+        if (project?.length === 0) {
+          throw new Error('Project not found')
+        }
+
+        const result = await ProjectModel.update({
+          where: { projectID: projectID },
+          update: { isPublic: true }
+        })
+        
+        return result.projects[0]
+      } catch (error) {
+        console.log("makeProjectPublic", error);
+        throw new ApolloError("makeProjectPublic", error as string);
+      } 
     },
     addDatasetsToProject: async (
       parent,

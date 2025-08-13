@@ -36,7 +36,8 @@ input ProjectInput {
 
 type Query{
   getProjects(projectID: ID, query: String): [Project],
-  countUnlabelledVariables: [UnlabelledVariablesCount]
+  countUnlabelledVariables: [UnlabelledVariablesCount],
+  isProjectOwner (projectID: ID!): Boolean,
 }
 
 type Mutation {
@@ -56,6 +57,9 @@ type Mutation {
   addDatasetsToProject(
     projectID: ID!
     datasets: [DatasetInput!]!
+  ): Project!,
+  makeProjectPublic(
+    projectID: ID!
   ): Project!
 }
 # turned off for public but not sure..

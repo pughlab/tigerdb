@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
 import { useEffect, useReducer, useState } from 'react'
 import { Button, Icon, Header, Dimmer, Loader, Segment, Dropdown, Message, List, Divider, Modal, Grid } from 'semantic-ui-react'
 
@@ -15,8 +15,30 @@ import SegmentPlaceholder from '../../common/SegmentPlaceholder'
 
 export default function ProjectDetails() {
 	const { projectID } = useParams()
-	const { project, loading: detailsLoading, error } = useProjectDetailsQuery({ projectID })
-	const { isAdmin, loading: adminLoading, error: adminError, refetch } = useIsAdmin();
+	const { project, loading: detailsLoading } = useProjectDetailsQuery({ projectID })
+	const { isAdmin } = useIsAdmin();
+	const { data: ownerData } = useQuery(gql`
+		query IsProjectOwner($projectID: ID!) {
+			isProjectOwner(projectID: $projectID)
+		}
+	`, { variables: { projectID } })
+	const [makeProjectPublic] = useMutation(gql`
+		mutation MakeProjectPublic($projectID: ID!) {
+			makeProjectPublic(projectID: $projectID) {
+				projectID
+				name
+				isPublic
+			}
+		}
+	`, { variables: { projectID }, onCompleted() {
+		setCanMakePublic(false)
+	}, })
+	const isOwner = ownerData?.isProjectOwner ?? false
+	const [canMakePublic, setCanMakePublic] = useState(false)
+
+	useEffect(() => {
+		setCanMakePublic((isAdmin || isOwner))
+	}, [isAdmin, isOwner])
 
 	// const { state: { searchText, results }, dispatch, loading: searchLoading } = useSearchGeographyCitiesQuery({})
 
@@ -36,8 +58,6 @@ export default function ProjectDetails() {
 			<SegmentPlaceholder text='Not found!' icon='exclamation triangle' />
 		)
 	}
-
-
 	
 	// console.log(results)
 	const { name, description, createdOn, createdBy, isPublic, sharedWith } = project
@@ -67,7 +87,7 @@ export default function ProjectDetails() {
 					<Message content={description} />
 					<Divider horizontal />
 					{
-					isAdmin ? 
+					canMakePublic && !isPublic ? 
 					<Button 
 					fluid
 					color='facebook' 
@@ -76,7 +96,7 @@ export default function ProjectDetails() {
 					//  disabled={success || !adminQueryData.isAdmin || curatedDatasetLoading || minioUpload.processedDataset === null || minioUpload.processedDataset === undefined}
 					icon='globe'
 					content='MAKE PROJECT PUBLIC'
-					onClick={() => console.log('make public')}
+					onClick={() => makeProjectPublic()}
 					/> :
 					<Button 
 					fluid

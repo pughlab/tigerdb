@@ -16,6 +16,7 @@ export default function useProjectDetailsQuery({ projectID }: { projectID: strin
 					email
 					name
 				}
+				isPublic
 			}
 		}
 	`, {

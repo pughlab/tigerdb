@@ -32,7 +32,7 @@ const headerOptions = [
 ]
 
 
-export default function MinioBucket({ datasetID, isReference } : { datasetID:String, isReference?:Boolean }) {
+export default function MinioBucket({ datasetID, isReference, isPublic } : { datasetID:String, isReference?:Boolean, isPublic?:Boolean }) {
     const bucketName = `dataset-${datasetID}`
     const { data, loading, error, refetch } = useQuery(gql`
         query MinioUploads($bucketName: ID!) {
@@ -142,12 +142,12 @@ export default function MinioBucket({ datasetID, isReference } : { datasetID:Str
         <Segment >
             <Divider horizontal content='Uploads' />
 
-            <MinioUploadModal datasetID={datasetID} />
+            {!isPublic && <MinioUploadModal datasetID={datasetID} />}
             <Divider />
-            {!minioUploads.length ? <SegmentPlaceholder text={'No uploads yet'} /> :
+            {minioUploads.length === 0 ? <SegmentPlaceholder text={'No uploads yet'} /> :
                 
                 <List celled divided>
-                    {minioUploads.map(minioUpload => {
+                    {!isPublic && minioUploads.map(minioUpload => {
 
                         // const isRawdataFile = !!minioUpload.rawdataFileRawDataset
 
