@@ -1,6 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import React from "react";
-import { Button, Form, Input, Modal, TextArea, Icon, Divider, Tab, Segment, Dropdown, Loader, Dimmer } from "semantic-ui-react";
+import { Button, Form, Input, Modal, TextArea, Icon, Divider, Tab, Segment } from "semantic-ui-react";
 import useProjectsQuery from '../../../hooks/useProjectsQuery'
 import ProjectCardList from "./ProjectCardList";
 
@@ -46,11 +46,11 @@ export default function AddRunModal({refetch}) {
     {
       menuItem: 'Query',
       pane: 
-        <Tab.Pane>
+        <Tab.Pane key="Query">
           <Form>
             <Segment color='violet'>
               <Divider horizontal content="Select projects" />
-              <ProjectCardList projects={queryProjects} updateSelectedUploads={setSelectedQueryUploads} />
+              <ProjectCardList projects={queryProjects} updateSelectedUploads={setSelectedQueryUploads} canSelectAll={false} />
             </Segment>
           </Form>
         </Tab.Pane>
@@ -58,11 +58,11 @@ export default function AddRunModal({refetch}) {
     {
       menuItem: 'Reference',
       pane: 
-        <Tab.Pane disabled={true}>
+        <Tab.Pane key="Reference">
           <Form>
             <Segment color='violet'>
               <Divider horizontal content='SELECT REFERENCE PROJECTS - COMING SOON'/>
-              <ProjectCardList projects={referenceProjects} updateSelectedUploads={setSelectedReferenceUploads} />
+              <ProjectCardList projects={referenceProjects} updateSelectedUploads={setSelectedReferenceUploads} canSelectAll={true} />
             </Segment>
           </Form>
         </Tab.Pane>
@@ -109,15 +109,17 @@ export default function AddRunModal({refetch}) {
       </Modal.Content>
       <Modal.Actions>
         <Button fluid color='violet' content='CREATE RUN' loading={loading} 
-          disabled={!name || !description || selectedQueryUploads.length === 0}
-          // disabled={!name || !description || selectedQueryUploads.length === 0 || selectedReferenceUploads.length === 0}
+          // disabled={!name || !description || selectedQueryUploads.length === 0}
+          disabled={!name || !description || selectedQueryUploads.length === 0 || selectedReferenceUploads.length === 0}
           onClick={async () => {
+            const queryNames = Array.from(new Set(selectedQueryUploads.map(upload => upload.objectName)))
+            const referenceNames = Array.from(new Set(selectedReferenceUploads.map(upload => upload.objectName)))
             await createRunWithMinioBucket({
               variables: {
                 name,
                 description,
-                processedDatasets: selectedQueryUploads.map(upload => upload.objectName),
-                referenceDatasets: selectedReferenceUploads.map(upload => upload.objectName),
+                processedDatasets: queryNames,
+                referenceDatasets: referenceNames,
               }
             })
           }}

@@ -1,13 +1,13 @@
-import { useLazyQuery } from "@apollo/client";
-import { gql } from '@apollo/client'
+import { gql, useLazyQuery } from "@apollo/client";
 import * as React from "react";
 import { Label, Button, Icon } from "semantic-ui-react";
 
-function DatasetTag({
+function DatasetNameTag({
   dataset,
   updateSelectedDatasets,
   updateAvailableUploads,
-  setProjectSelected,
+  // setProjectSelected,
+  projectSelected,
 }) {
   const [selected, setSelected] = React.useState(false);
   const [getProcessedUploads] = useLazyQuery(
@@ -58,6 +58,10 @@ function DatasetTag({
     }
   }, [selected]);
 
+  React.useEffect(() => {
+    setSelected(projectSelected)
+  }, [projectSelected])
+
   return (
     <Label
       as={Button}
@@ -65,7 +69,7 @@ function DatasetTag({
       basic={!selected}
       onClick={(e) => {
         e.stopPropagation();
-        setProjectSelected(true);
+        // setProjectSelected(true);
         setSelected(!selected);
       }}
     >
@@ -75,11 +79,12 @@ function DatasetTag({
   );
 }
 
-export default function DatasetTagList({
+export default function DatasetNameList({
   datasets,
   updateSelectedDatasets,
   updateAvailableUploads,
-  setProjectSelected,
+  // setProjectSelected,
+  projectSelected,
 }) {
   const datasetIDs = new Set();
   const distinctDatasets = datasets.filter((dataset) => {
@@ -93,12 +98,13 @@ export default function DatasetTagList({
     <Label.Group>
       {distinctDatasets.length > 0 ? (
         distinctDatasets.map((dataset) => (
-          <DatasetTag
+          <DatasetNameTag
             key={dataset.datasetID}
             dataset={dataset}
             updateSelectedDatasets={updateSelectedDatasets}
             updateAvailableUploads={updateAvailableUploads}
-            setProjectSelected={setProjectSelected}
+            // setProjectSelected={setProjectSelected}
+            projectSelected={projectSelected}
           />
         ))
       ) : (

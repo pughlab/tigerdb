@@ -113,6 +113,7 @@ function ProjectDetailsCard({ project }) {
 export default function ProjectsList() {
   const { data, loading, refetch } = useProjectsQuery();
   const location = useLocation();
+  const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedTags, setSelectedTags] = React.useState([]);
   const [filteredProjects, setFilteredProjects] = React.useState([])
   const { loading: tagsLoading, data: tags } = useQuery(gql`
@@ -121,32 +122,36 @@ export default function ProjectsList() {
     }
   `);
 
+  const projects = data?.getProjects ?? [];
+
+  function datasetIncludesTag(dataset, tagList) {
+    return dataset.tags?.some((tag) => tagList?.includes(tag.name)) ?? false
+  }
+
+  function doSearch() {
+    let tempProjects = [...projects]
+    if (searchTerm.trim().length > 0) {
+      tempProjects = projects.filter((project) => project.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()))
+    }
+    if (selectedTags.length > 0) {
+      tempProjects = tempProjects.filter((project) => project.datasets.reduce(
+        (acc, dataset) => acc || datasetIncludesTag(dataset, selectedTags), false)
+      )
+    }
+    setFilteredProjects(tempProjects)
+  }
+
   useEffect(() => {
     refetch();
   }, [location.key]);
-	const projects = data?.getProjects ?? [];
 
   useEffect(() => {
   setFilteredProjects(projects); // Initialize with all projects
 }, [projects]);
 
   useEffect(() => {
-    if (selectedTags.length > 0) {
-      const tempProjects: any[] = []
-      projects.forEach((project) => {
-        project.datasets.forEach((dataset) => {
-          dataset.tags.forEach((tag) => {
-            if (selectedTags.includes(tag.name)) {
-              tempProjects.push(project)
-            }
-          })
-        })
-      })
-      setFilteredProjects(tempProjects)
-    } else {
-      setFilteredProjects(projects)
-    }
-  }, [selectedTags])
+    doSearch()
+  }, [searchTerm, selectedTags])
 
 	let content;
 	if (loading && tagsLoading) {
@@ -186,6 +191,7 @@ export default function ProjectsList() {
             control={Input}
             label="Search projects"
             placeholder="Names and descriptions"
+            onChange={(_e, { value }) => setSearchTerm(value)}
           />
           <Form.Field
             control={Select}

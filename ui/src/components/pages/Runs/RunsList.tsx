@@ -16,6 +16,7 @@ import {
   Grid,
 	SemanticCOLORS,
   Button,
+  Select,
 } from "semantic-ui-react";
 import { useLocation } from "react-router-dom";
 
@@ -25,6 +26,8 @@ import useRunsQuery from "../../../hooks/useRunsQuery";
 import AddRunModal from "./AddRunModal";
 import SegmentPlaceholder from "../../common/SegmentPlaceholder";
 import { DeleteRunModal } from "./DeleteRunModal";
+import { gql, useQuery } from "@apollo/client";
+import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
 
 function RunsListItem({ run, refetch }) {
   const {
@@ -49,6 +52,13 @@ function RunsListItem({ run, refetch }) {
     });
     return newDate;
   };
+  const tags = new Set()
+
+  processedDatasets?.forEach((processedUpload) => {
+    processedUpload.minioUpload?.dataset?.tags?.forEach((tag) => {
+      tags.add(tag)
+    })
+  })
 
   let colorStatus: SemanticCOLORS = 'black';
 	switch (status) {
@@ -86,6 +96,19 @@ function RunsListItem({ run, refetch }) {
         </Card.Header>
         <List.Description content={description} />
         <List.Description>
+          { tags.size > 0 && <Divider horizontal content="Dataset tags" />}
+          <Label.Group>
+            {
+              [...tags]
+              .sort((tag1, tag2) => {
+                if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
+                  return 0
+                }
+                return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
+              })
+              .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
+            }
+          </Label.Group>
           <Divider />
           <Label.Group>
             {
@@ -111,16 +134,50 @@ function RunsListItem({ run, refetch }) {
 export default function RunsList() {
   const { data, loading, refetch } = useRunsQuery();
   const [activeFilter, setActiveFilter] = useState("all"); // State to track the active filter
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTags, setSelectedTags] = React.useState([]);
+  const [filteredRuns, setFilteredRuns] = React.useState([])
+  const { data: tagNames } = useQuery(gql`
+    query TagNames {
+      tagNames
+    }
+  `);
 
-  console.log(data);
   const location = useLocation();
+  const runs = data?.getRuns ?? [];
+
   useEffect(() => {
     refetch();
   }, [location.key]);
 
-  const runs = data?.getRuns ?? [];
+  useEffect(() => {
+    setFilteredRuns(runs)
+  }, [runs])
 
-  console.log(runs);
+  function uploadIncludesTag(upload, tagList) {
+    return upload.minioUpload.dataset.tags.some((tag) => tagList.includes(tag.name))
+  }
+
+  function doSearch() {
+    let tempRuns = activeFilter === "all" 
+      ? runs 
+      : runs.filter((run) => run.status === activeFilter)
+    if (searchTerm.trim().length > 0) {
+        tempRuns = tempRuns.filter((run) => 
+          run.name?.toLowerCase()?.includes(searchTerm.toLowerCase()) 
+        || run.description?.toLowerCase()?.includes(searchTerm.toLowerCase())
+      )
+    }
+    let results: any[] = [...tempRuns]
+    if (selectedTags.length > 0) {
+      results = results.filter((run) => run.processedDatasets?.reduce((acc, upload) => acc || uploadIncludesTag(upload, selectedTags), false))
+    }
+    setFilteredRuns(results)
+  }
+
+  useEffect(() => {
+    doSearch()
+  }, [activeFilter, searchTerm, selectedTags])
 
   // Initialize the counts object
   const counts = {
@@ -149,7 +206,6 @@ export default function RunsList() {
       }
       return runCountsByStatus; // Return the updated counts object
     }, counts);
-  console.log(pendingCount, submittedCount, completedCount, failedCount);
 
   // Calculate the total count of project runs
   const totalCount = runs.length;
@@ -190,10 +246,6 @@ export default function RunsList() {
       description: "Errored",
     },
   ];
-  const filteredRuns =
-    activeFilter === "all"
-      ? runs
-      : runs.filter((run) => run.status === activeFilter);
 
   let content
   if (loading) {
@@ -227,13 +279,25 @@ export default function RunsList() {
       <Grid.Column>
         <Divider horizontal content="Runs" />
         <Segment basic>
-          <AddRunModal refetch={refetch} />
+          <React.StrictMode>
+            <AddRunModal refetch={refetch} />
+          </React.StrictMode>
         </Segment>
         <Form>
           <Form.Field
             control={Input}
             label="Search runs"
             placeholder="Names and descriptions"
+            onChange={(_e, { value }) => setSearchTerm(value)}
+          />
+          <Divider horizontal />
+          <Form.Field
+            control={Select}
+            multiple
+            options={Array.from(new Set(tagNames?.tagNames)).map((tag) => ({key: tag, value: tag, text: tag})) ?? []}
+            placeholder='Select tags...'
+            label="Filter by dataset tag(s)"
+            onChange={(_e, { value }) => setSelectedTags(value)}
           />
         </Form>
         <Step.Group fluid widths={5}>

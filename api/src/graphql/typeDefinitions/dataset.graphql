@@ -4,7 +4,7 @@ type Dataset {
     # size: Int # will be stored in minio upload schema
     # filename: String # will be stored in minio upload schema
     minioBucket: MinioBucket @relationship(type: "HAS_MINIO_BUCKET", direction: OUT)
-    minioUpload: MinioUpload @relationship(type: "HAS_FILE", direction: OUT)
+    minioUpload: [MinioUpload!]! @relationship(type: "HAS_FILE", direction: OUT)
 
     # custom createDatasetWithUploads makes adding timestamps difficult for autogeneration
     createdOn: DateTime! @timestamp(operations: [CREATE])

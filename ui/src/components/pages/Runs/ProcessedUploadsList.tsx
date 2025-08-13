@@ -1,19 +1,24 @@
 import React from "react";
 import { Label, Button, Icon } from "semantic-ui-react";
 
-function ProcessedUpload({ upload, updateSelectedUploads }) {
+function ProcessedUpload({ upload, updateSelectedUploads, projectSelected }) {
   const [selected, setSelected] = React.useState(false);
 
   React.useEffect(() => {
     updateSelectedUploads((prev) => selected ? [...prev, upload] : prev.filter(({objectName}) => objectName !== upload.objectName))
   }, [selected]);
 
+  React.useEffect(() => {
+    setSelected(projectSelected)
+  }, [projectSelected])
+
   return (
     <Label
       as={Button}
       color={selected ? "green" : undefined}
       basic={!selected}
-      onClick={() => {
+      onClick={(e) => {
+        e.stopPropagation();
         setSelected(!selected);
       }}
     >
@@ -23,7 +28,7 @@ function ProcessedUpload({ upload, updateSelectedUploads }) {
   );
 }
 
-export default function ProcessedUploadsList({ uploads, updateSelectedUploads }) {
+export default function ProcessedUploadsList({ uploads, updateSelectedUploads, projectSelected }) {
   const uploadIDs = new Set();
   const distinctUploads = uploads.filter((upload) => {
     if (!uploadIDs.has(upload.objectName)) {
@@ -40,6 +45,7 @@ export default function ProcessedUploadsList({ uploads, updateSelectedUploads })
             key={upload.objectName}
             upload={upload}
             updateSelectedUploads={updateSelectedUploads}
+            projectSelected={projectSelected}
           />
         ))
       ) : (

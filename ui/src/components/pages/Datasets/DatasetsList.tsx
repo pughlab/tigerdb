@@ -11,12 +11,16 @@ import AddTagModal from "./AddTagModal";
 import MinioBucket from "../../common/minio";
 
 import { useLocation } from "react-router-dom";
+import useIsAdmin from '../../../hooks/useIsAdmin';
+import useIsCurator from '../../../hooks/useIsCurator';
 
 
 function DatasetListItem({ dataset }) {
   const { datasetID, name, tags: datasetTags, project } = dataset;
   const [isMinioBucketOpen, setIsMinioBucketOpen] = useState(false); // State to control MinioBucket visibility
   const [tags, setTags] = useState(datasetTags.reduce((acc, tag) => [...acc, { tagID: tag.tagID, name: tag.name, category: tag.category }], []));
+  const { isAdmin } = useIsAdmin()
+  const { isCurator } = useIsCurator()
 
   // const navigate = useNavigate()
   // const { navigate } = useRouter()
@@ -50,9 +54,9 @@ function DatasetListItem({ dataset }) {
               }
               return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
             })
-            .map((tag) => <DatasetTag key={tag.tagID} tag={tag} datasetID={datasetID} setTags={setTags} canDelete={true} />)
+            .map((tag) => <DatasetTag key={tag.tagID} tag={tag} datasetID={datasetID} setTags={setTags} canDelete={!project.isPublic && (isAdmin || isCurator)} />)
           }
-          <AddTagModal datasetID={datasetID} setTags={setTags} categories={Object.keys(tagColors)} />
+          {!project.isPublic && (isAdmin || isCurator) && <AddTagModal datasetID={datasetID} setTags={setTags} categories={Object.keys(tagColors)} />}
           {/* <List.Description content={`${description}`} /> */}
         </List.Content>
       </List.Item>
