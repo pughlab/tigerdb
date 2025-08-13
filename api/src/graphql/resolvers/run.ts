@@ -45,6 +45,15 @@ export const resolvers = {
             objectName
             bucketName
             filename
+            minioUpload {
+              dataset {
+                tags {
+                  tagID
+                  name
+                  category
+                }
+              }
+            }
           }
           runParameters {
             outPrefix

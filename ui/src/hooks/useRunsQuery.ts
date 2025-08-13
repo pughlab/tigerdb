@@ -16,6 +16,15 @@ export default function useRunsQuery() {
 					objectName
 					bucketName
 					filename
+					minioUpload {
+						dataset {
+							tags {
+								tagID
+								name
+								category
+							}
+						}
+					}
 				}
 				createdBy {
 					keycloakUserID
