@@ -45,7 +45,7 @@ export default function AddRunModal({refetch}) {
   const panes = [
     {
       menuItem: 'Query',
-      pane: 
+      render: () => ( 
         <Tab.Pane key="Query">
           <Form>
             <Segment color='violet'>
@@ -54,10 +54,11 @@ export default function AddRunModal({refetch}) {
             </Segment>
           </Form>
         </Tab.Pane>
+      )
     },
     {
       menuItem: 'Reference',
-      pane: 
+      render: () => ( 
         <Tab.Pane key="Reference">
           <Form>
             <Segment color='violet'>
@@ -66,6 +67,7 @@ export default function AddRunModal({refetch}) {
             </Segment>
           </Form>
         </Tab.Pane>
+      )
     },
   ]
 
@@ -105,11 +107,10 @@ export default function AddRunModal({refetch}) {
           />
         </Form>
         <Divider hidden />
-        <Tab renderActiveOnly={false} panes={panes} />
+        <Tab renderActiveOnly={true} panes={panes} />
       </Modal.Content>
       <Modal.Actions>
         <Button fluid color='violet' content='CREATE RUN' loading={loading} 
-          // disabled={!name || !description || selectedQueryUploads.length === 0}
           disabled={!name || !description || selectedQueryUploads.length === 0 || selectedReferenceUploads.length === 0}
           onClick={async () => {
             const queryNames = Array.from(new Set(selectedQueryUploads.map(upload => upload.objectName)))
