@@ -15,7 +15,7 @@ import useIsAdmin from '../../../hooks/useIsAdmin';
 import useIsCurator from '../../../hooks/useIsCurator';
 
 
-function DatasetListItem({ dataset }) {
+function DatasetListItem({ dataset, isPublicProject }) {
   const { datasetID, name, tags: datasetTags, project } = dataset;
   const [isMinioBucketOpen, setIsMinioBucketOpen] = useState(false); // State to control MinioBucket visibility
   const [tags, setTags] = useState(datasetTags.reduce((acc, tag) => [...acc, { tagID: tag.tagID, name: tag.name, category: tag.category }], []));
@@ -54,19 +54,21 @@ function DatasetListItem({ dataset }) {
               }
               return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
             })
-            .map((tag) => <DatasetTag key={tag.tagID} tag={tag} datasetID={datasetID} setTags={setTags} canDelete={!project.isPublic && (isAdmin || isCurator)} />)
+            .map((tag) => <DatasetTag key={tag.tagID} tag={tag} datasetID={datasetID} setTags={setTags} canDelete={!isPublicProject && (isAdmin || isCurator)} />)
           }
-          {!project.isPublic && (isAdmin || isCurator) && <AddTagModal datasetID={datasetID} setTags={setTags} categories={Object.keys(tagColors)} />}
+          {!isPublicProject && (isAdmin || isCurator) && <AddTagModal datasetID={datasetID} setTags={setTags} categories={Object.keys(tagColors)} />}
           {/* <List.Description content={`${description}`} /> */}
         </List.Content>
       </List.Item>
-      {isMinioBucketOpen && <MinioBucket datasetID={`${datasetID}`} isReference={project.isReference} />} {/* Conditionally render MinioBucket */}
+      {isMinioBucketOpen && <MinioBucket datasetID={`${datasetID}`} isReference={project.isReference} isPublic={project.isPublic} />} {/* Conditionally render MinioBucket */}
       <Divider horizontal hidden />
     </>
   );
 }
 
-export default function DatasetsList({ projectID }) {
+export default function DatasetsList({ project, isPublicProject }) {
+
+  const { projectID } = project
 
   const { data, loading, refetch, searchText, setSearchText } =
     useDatasetsQuery({projectIDs: [projectID]});
@@ -100,7 +102,7 @@ export default function DatasetsList({ projectID }) {
       <Container>
         <List selection size="large" key="dataset">
           {datasets.map((dataset) => (
-            <DatasetListItem key={dataset.datasetID} {...{ dataset }} />
+            <DatasetListItem key={dataset.datasetID} isPublicProject={isPublicProject} {...{ dataset }} />
           ))}
         </List>
       </Container>
@@ -125,7 +127,7 @@ export default function DatasetsList({ projectID }) {
             label="Search datasets"
             placeholder="Names and descriptions"
             value={searchText}
-            onChange={(e, { value }) => setSearchText(value)}
+            onChange={(_e, { value }) => setSearchText(value)}
           />
         </Form>
         <Divider horizontal />

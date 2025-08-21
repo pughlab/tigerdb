@@ -1,9 +1,7 @@
-import { gql, useMutation, useQuery } from '@apollo/client'
-import { useEffect, useReducer, useState } from 'react'
+import { gql, useQuery } from '@apollo/client'
 
 export default function useProjectDetailsQuery({ projectID }: { projectID: string }) {
-	const [project, setProject] = useState()
-	const { data, loading, error } = useQuery(gql`
+	const { data, loading, error, refetch } = useQuery(gql`
 		query ProjectDetails ($projectID: ID!) {
 			getProjects(projectID: $projectID) {
 				projectID
@@ -23,10 +21,5 @@ export default function useProjectDetailsQuery({ projectID }: { projectID: strin
 		variables: { projectID },
 		fetchPolicy: 'network-only'
 	})
-	useEffect(() => {
-		if (!!data?.getProjects && data.getProjects.length > 0) {
-			setProject(data.getProjects[0])
-		}
-	}, [data])
-	return { project, loading, error }
+	return { data, loading, error, refetch, project: data?.getProjects[0] ?? {} }
 }

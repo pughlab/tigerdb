@@ -1,7 +1,7 @@
 import * as React from 'react'
-import { gql, useLazyQuery, useMutation, useQuery } from '@apollo/client'
-import { useEffect, useReducer, useState } from 'react'
-import { Button, Icon, Header, Dimmer, Loader, Segment, Dropdown, Message, List, Divider, Modal, Grid } from 'semantic-ui-react'
+import { gql, useMutation, useQuery } from '@apollo/client'
+import { useEffect, useState } from 'react'
+import { Button, Dimmer, Loader, Segment, Message, List, Divider, Grid } from 'semantic-ui-react'
 
 import { useParams } from 'react-router-dom'
 
@@ -15,7 +15,7 @@ import SegmentPlaceholder from '../../common/SegmentPlaceholder'
 
 export default function ProjectDetails() {
 	const { projectID } = useParams()
-	const { project, loading: detailsLoading } = useProjectDetailsQuery({ projectID })
+	const { project, loading: detailsLoading, refetch } = useProjectDetailsQuery({ projectID })
 	const { isAdmin } = useIsAdmin();
 	const { data: ownerData } = useQuery(gql`
 		query IsProjectOwner($projectID: ID!) {
@@ -32,6 +32,7 @@ export default function ProjectDetails() {
 		}
 	`, { variables: { projectID }, onCompleted() {
 		setCanMakePublic(false)
+		refetch()
 	}, })
 	const isOwner = ownerData?.isProjectOwner ?? false
 	const [canMakePublic, setCanMakePublic] = useState(false)
@@ -69,8 +70,7 @@ export default function ProjectDetails() {
 		hour: 'numeric',  // "4"
 		minute: 'numeric', // "41"
 		hour12: true,     // 12-hour format with AM/PM
-	  })
-	console.log(project)
+	})
 
 	return (
 		<Grid columns={1}>
@@ -81,47 +81,36 @@ export default function ProjectDetails() {
 					<List size='large'>
 						<List.Item icon='calendar' content={`${createdOnDate}`} />
 						<List.Item icon='user' content={`${createdBy.email}`} />
-						{/* <Message.Item content={`Public: ${isPublic}`} /> */}
+						<Message.Item content={`${isPublic ? 'Public': 'Private'} project`} />
 						{/* <Message.Item content={`Shared with: ${sharedWith}`} /> */}
 					</List>
 					<Message content={description} />
 					<Divider horizontal />
-					{
-					canMakePublic && !isPublic ? 
-					<Button 
-					fluid
-					color='facebook' 
-					
-					//  loading={curatedDatasetLoading}
-					//  disabled={success || !adminQueryData.isAdmin || curatedDatasetLoading || minioUpload.processedDataset === null || minioUpload.processedDataset === undefined}
-					icon='globe'
-					content='MAKE PROJECT PUBLIC'
-					onClick={() => makeProjectPublic()}
-					/> :
-					<Button 
-					fluid
-					color='facebook' 
-					
-					//  loading={curatedDatasetLoading}
-					//  disabled={success || !adminQueryData.isAdmin || curatedDatasetLoading || minioUpload.processedDataset === null || minioUpload.processedDataset === undefined}
-					icon='users'
-					content='SHARE'
-					disabled
-					onClick={() => console.log('share')}
-					/>
+					{ canMakePublic && !isPublic ? 
+						<Button 
+							fluid
+							color='facebook' 
+							
+							//  loading={curatedDatasetLoading}
+							//  disabled={success || !adminQueryData.isAdmin || curatedDatasetLoading || minioUpload.processedDataset === null || minioUpload.processedDataset === undefined}
+							icon='globe'
+							content='MAKE PROJECT PUBLIC'
+							onClick={() => makeProjectPublic()}
+						/> :
+						<Button 
+							fluid
+							color='facebook' 
+							
+							//  loading={curatedDatasetLoading}
+							//  disabled={success || !adminQueryData.isAdmin || curatedDatasetLoading || minioUpload.processedDataset === null || minioUpload.processedDataset === undefined}
+							icon='users'
+							content='SHARE'
+							disabled
+							onClick={() => console.log('share')}
+						/>
 					}
 				</Message>
-
-
-					{/* should be eventually list of datasets: */}
-					{/* <Label.Group>
-					{projectSites.map(({cityID, city, country, latitude, longitude }) => (
-						<Label key={cityID} basic>
-							{`${city} (${country})`}
-						</Label>
-					))}
-					</Label.Group> */}
-					<DatasetsList projectID={projectID} />
+				<DatasetsList project={project} isPublicProject={isPublic} />
 			</Grid.Column>
 		</Grid>
 	)
