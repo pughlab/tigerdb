@@ -1,6 +1,6 @@
 import { gql, useQuery } from "@apollo/client";
 import React, { useState, useEffect } from "react";
-import { Card, Popup, Button, Icon, Header, Label, Divider, Checkbox } from "semantic-ui-react";
+import { Card, Popup, Button, Icon, Header, Label, Divider, Checkbox, Select, Form } from "semantic-ui-react";
 import DatasetNameList from "./DatasetNameList";
 import ProcessedUploadsList from "./ProcessedUploadsList";
 import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
@@ -138,6 +138,8 @@ function ProjectCard({
           <React.Fragment key="reference-data">
             <Divider horizontal content="Datasets" />
             { datasets.length > 0 ? datasets.map((dataset) => <Label key={`reference-dataset-${dataset.datasetID}`}>{dataset.name}</Label>) : "No datasets available." }
+            { allTags.size > 0 && <Divider horizontal content="Dataset tags" /> }
+            { allTags.size > 0 && Array.from(allTags).map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />) }
             { datasets.length > 0 && <Divider horizontal content="Reference uploads" /> }
             { datasets.length > 0 && datasets.map((dataset) => dataset.minioUpload.map((upload) => <Label key={`reference-upload-${upload.objectName}`}>{upload.filename}</Label>)) }
           </React.Fragment>
@@ -170,16 +172,31 @@ export default function ProjectCardList({
   const [usingPublicProjects, setUsingPublicProjects] = React.useState(true);
   const [projectsList, setProjectsList] = React.useState(projects);
   const [selectedAll, setSelectedAll] = React.useState(false)
+  const [selectedTags, setSelectedTags] = React.useState([]);
+  const { data: tagNames } = useQuery(gql`
+    query TagNames {
+      tagNames
+    }
+  `);
+
+  function datasetIncludesTag(dataset, tagList) {
+    return dataset.tags.some((tag) => tagList.includes(tag.name))
+  }
+
+  function doFilter() {
+    let tempProjects = usingPublicProjects ? [...projects] : projects?.filter((p) => !p.isPublic)
+    if (selectedTags.length > 0) {
+      tempProjects = tempProjects.filter((p) => p.datasets?.reduce(
+        (acc, dataset) => acc || datasetIncludesTag(dataset, selectedTags),
+        false
+      ))
+    }
+    setProjectsList(tempProjects)
+  }
 
   useEffect(() => {
-    if (usingPublicProjects) {
-      setProjectsList(projects);
-    } else {
-      setProjectsList(projects?.filter((p) => !p.isPublic));
-    }
-  }, [usingPublicProjects]);
-
-
+    doFilter()
+  }, [usingPublicProjects, selectedTags]);
 
   return (
     <>
@@ -187,6 +204,15 @@ export default function ProjectCardList({
         label="Include public projects"
         checked={usingPublicProjects}
         onChange={() => setUsingPublicProjects(!usingPublicProjects)}
+      />
+      <Divider hidden />
+      <Form.Field
+        control={Select}
+        multiple
+        options={Array.from(new Set(tagNames?.tagNames)).map((tag) => ({key: tag, value: tag, text: tag})) ?? []}
+        placeholder='Select tags...'
+        label="Filter by dataset tag(s)"
+        onChange={(_e, { value }) => setSelectedTags(value)}
       />
       <Divider hidden />
       { canSelectAll && (
