@@ -146,14 +146,6 @@ export default function RunsList() {
   const location = useLocation();
   const runs = data?.getRuns ?? [];
 
-  useEffect(() => {
-    refetch();
-  }, [location.key]);
-
-  useEffect(() => {
-    setFilteredRuns(runs)
-  }, [runs])
-
   function uploadIncludesTag(upload, tagList) {
     return upload.minioUpload.dataset.tags.some((tag) => tagList.includes(tag.name))
   }
@@ -174,6 +166,14 @@ export default function RunsList() {
     }
     setFilteredRuns(results)
   }
+
+  useEffect(() => {
+    refetch();
+  }, [location.key]);
+
+  useEffect(() => {
+    setFilteredRuns(data?.getRuns ?? [])
+  }, [data])
 
   useEffect(() => {
     doSearch()

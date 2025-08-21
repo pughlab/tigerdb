@@ -146,10 +146,6 @@ export default function ProjectsList() {
   }, [location.key]);
 
   useEffect(() => {
-  setFilteredProjects(projects); // Initialize with all projects
-}, [projects]);
-
-  useEffect(() => {
     doSearch()
   }, [searchTerm, selectedTags])
 
@@ -172,7 +168,9 @@ export default function ProjectsList() {
 	} else {
 		content = (
 			<Card.Group itemsPerRow={3}>
-        {filteredProjects.map((project) => (
+        {filteredProjects.length > 0 ? filteredProjects.map((project) => (
+          <ProjectDetailsCard key={project.projectID} {...{ project }} />
+        )) : projects.map((project) => (
           <ProjectDetailsCard key={project.projectID} {...{ project }} />
         ))}
       </Card.Group>
