@@ -21,6 +21,7 @@ input CDR3SearchInput {
     limit: Int
     differenceFactor: Decimal
     tags: [String]
+    categories: [String]
 }
 
 type CDR3SearchResult {

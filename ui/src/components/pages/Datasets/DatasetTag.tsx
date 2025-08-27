@@ -3,13 +3,14 @@ import { Icon, Label, SemanticCOLORS } from "semantic-ui-react";
 import { gql, useMutation } from "@apollo/client";
 
 // Colors for the tags, depending on their category.
-// Since we are limited by the options available in Semantic UI React, thecolors must be picked from the following list:
+// Since we are limited by the options available in Semantic UI React, colors must be picked from the following list:
 // [ 'red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black']
 export const tagColors: { [key: string]: SemanticCOLORS } = {
   cancer: "red",
   "non-cancer": "orange",
   viral: "yellow",
-  default: "black",
+  bacterial: "green",
+  other: "black",
 };
 
 const REMOVE_TAG_FROM_DATASET = gql`
@@ -22,7 +23,7 @@ const REMOVE_TAG_FROM_DATASET = gql`
 
 export function DatasetTag({ tag, datasetID, setTags, canDelete = false }) {
   const { tagID, name, category } = tag;
-  const color = category ? tagColors[category.toLowerCase()] : tagColors["default"];
+  const color = category ? tagColors[category.toLowerCase()] : tagColors["other"];
   const [removeTag] = useMutation(REMOVE_TAG_FROM_DATASET, {
     variables: {
       tagID: tagID,
@@ -44,7 +45,7 @@ export function DatasetTag({ tag, datasetID, setTags, canDelete = false }) {
 
 export function DatasetReadonlyTag({ tag }) {
   const { tagID, name, category } = tag;
-  const color = category ? tagColors[category.toLowerCase()] : tagColors["default"];
+  const color = category ? tagColors[category.toLowerCase()] : tagColors["other"];
   return (
     <Label key={tagID} color={color}>
       {name}

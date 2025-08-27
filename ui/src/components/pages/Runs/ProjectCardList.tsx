@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Card, Popup, Button, Icon, Header, Label, Divider, Checkbox, Select, Form } from "semantic-ui-react";
 import DatasetNameList from "./DatasetNameList";
 import ProcessedUploadsList from "./ProcessedUploadsList";
-import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
+import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
 
 function ProjectCard({
   project,
@@ -172,19 +172,34 @@ export default function ProjectCardList({
   const [usingPublicProjects, setUsingPublicProjects] = React.useState(true);
   const [projectsList, setProjectsList] = React.useState(projects);
   const [selectedAll, setSelectedAll] = React.useState(false)
+  const [selectedCategories, setSelectedCategories] = React.useState([])
   const [selectedTags, setSelectedTags] = React.useState([]);
   const { data: tagNames } = useQuery(gql`
     query TagNames {
       tagNames
     }
   `);
+  const { data: categories } = useQuery(gql`
+    query TagCategories {
+      tagCategories
+    }  
+  `)
 
   function datasetIncludesTag(dataset, tagList) {
     return dataset.tags.some((tag) => tagList.includes(tag.name))
   }
 
+  function datasetIncludesCategory(dataset, categoryList) {
+    return dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
+  }
+
   function doFilter() {
     let tempProjects = usingPublicProjects ? [...projects] : projects?.filter((p) => !p.isPublic)
+    if (selectedCategories.length > 0) {
+      tempProjects = tempProjects.filter(
+        (project) => project.datasets.reduce((acc, dataset) => acc || datasetIncludesCategory(dataset, selectedCategories), false)
+      )
+    }
     if (selectedTags.length > 0) {
       tempProjects = tempProjects.filter((p) => p.datasets?.reduce(
         (acc, dataset) => acc || datasetIncludesTag(dataset, selectedTags),
@@ -194,9 +209,17 @@ export default function ProjectCardList({
     setProjectsList(tempProjects)
   }
 
+  function toggleCategory(category) {
+    if (!selectedCategories.includes(category)) {
+      setSelectedCategories((prev) => [...prev, category])
+    } else {
+      setSelectedCategories((prev) => prev.filter((cat) => cat !== category))
+    }
+  }
+
   useEffect(() => {
     doFilter()
-  }, [usingPublicProjects, selectedTags]);
+  }, [usingPublicProjects, selectedTags, selectedCategories]);
 
   return (
     <>
@@ -206,6 +229,21 @@ export default function ProjectCardList({
         onChange={() => setUsingPublicProjects(!usingPublicProjects)}
       />
       <Divider hidden />
+      <Form.Field label="Filter by tag categories" />
+      <Form.Group inline>
+        {
+          categories?.tagCategories?.map((category) => 
+            <Button
+              key={category}
+              content={category ?? 'other'} 
+              size='tiny'
+              basic={!selectedCategories.includes(category)}
+              color={tagColors[category] ?? 'black'}
+              onClick={() => toggleCategory(category)}
+            />
+          )
+        }
+      </Form.Group>
       <Form.Field
         control={Select}
         multiple
@@ -217,7 +255,7 @@ export default function ProjectCardList({
       <Divider hidden />
       { canSelectAll && (
         <>
-          <Button fluid onClick={() => setSelectedAll(!selectedAll)}>Select {selectedAll ? 'none' : 'all'}</Button>
+          <Button fluid onClick={() => setSelectedAll(!selectedAll)}>{selectedAll ? 'Deselect' : 'Select'} all</Button>
           <Divider hidden />
         </>
       )}

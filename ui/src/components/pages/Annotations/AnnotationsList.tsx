@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 // import { ANNOTATION_FILTERS } from './filters'
 import useCuratedAnnotationsFiltersQuery from '../../../hooks/useCuratedAnnotationsFiltersQuery'
 import SegmentPlaceholder from '../../common/SegmentPlaceholder'
+import { tagColors } from '../Datasets/DatasetTag'
 
 import { useLocation } from 'react-router-dom'
 
@@ -359,11 +360,17 @@ function SearchForm({
 
   const filters = curatedAnnotationFiltersData?.curatedAnnotationFilters ?? [];
   const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([])
   const { data: tags } = useQuery(gql`
     query TagNames {
       tagNames
     }
   `);
+  const { data: categories } = useQuery(gql`
+    query TagCategories {
+      tagCategories
+    }  
+  `)
 
   const [findCDR3s, { data }] = useLazyQuery(gql`
     query FindCDR3s ($input: CDR3SearchInput!) {
@@ -403,6 +410,7 @@ function SearchForm({
           input: {
             cdr3b: debouncedSearchText,
             tags: selectedTags,
+            categories: selectedCategories,
             filters: Object.entries(dropdownFilters).reduce(
               (acc, [key, value]) => {
                 if (Array.isArray(value) && value.length  > 0) {
@@ -422,6 +430,14 @@ function SearchForm({
   };
 
   const location = useLocation();
+
+  function toggleCategory(category) {
+    if (!selectedCategories.includes(category)) {
+      setSelectedCategories((prev) => [...prev, category])
+    } else {
+      setSelectedCategories((prev) => prev.filter((cat) => cat !== category))
+    }
+  }
 
   useEffect(() => {
     handleSearch();
@@ -444,6 +460,21 @@ function SearchForm({
           onChange={(_e, { value }) => setSearchText(value)}
           size="huge"
         />
+        <Form.Field label="Filter by tag categories" />
+        <Form.Group inline>
+          {
+            categories?.tagCategories?.map((category) => 
+              <Button
+                key={category}
+                content={category ?? 'other'} 
+                size='tiny'
+                basic={!selectedCategories.includes(category)}
+                color={tagColors[category] ?? 'black'}
+                onClick={() => toggleCategory(category)}
+              />
+            )
+          }
+        </Form.Group>
         <Form.Field
           control={Select}
           multiple
