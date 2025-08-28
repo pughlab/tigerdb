@@ -13,8 +13,9 @@ input TagInput {
 }
 
 type Query {
+    tagCategories: [String] @cypher(statement: "MATCH (t:Tag) RETURN collect(DISTINCT t.category)")
     tagNames: [String] @cypher(
-        statement: "MATCH (t:Tag) RETURN DISTINCT collect(t.name)"
+        statement: "MATCH (t:Tag) RETURN collect(DISTINCT t.name)"
     )
     findAvailableTags(datasetID: ID!): [Tag!]!  @cypher(
         statement: "MATCH (t:Tag) WHERE NOT (t)<-[:HAS_TAG]-(:Dataset {datasetID: $datasetID}) RETURN t"

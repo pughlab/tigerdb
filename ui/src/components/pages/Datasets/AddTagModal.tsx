@@ -69,7 +69,7 @@ function NewTagPane({
   async function createAndAddTag() {
     const tagMutation = await gqlClient.mutate({
       mutation: gql`
-        mutation CreateTag($name: String!, $category: String = "default") {
+        mutation CreateTag($name: String!, $category: String = "other") {
           findOrCreateTag(name: $name, category: $category) {
             tagID
           }

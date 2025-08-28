@@ -63,6 +63,23 @@ function bitapSearch(text: string, pattern: string, max_differences: number = 2)
   return true;
 }
 
+function buildCondition(tags, categories) {
+  let condition = ''
+  if (tags?.length > 0 || categories?.length > 0) {
+    condition += 'WHERE '
+  }
+  if (tags?.length > 0) {
+    condition += `t.name IN [${tags.map((tag) => '"' + tag + '"').join(',')}]`
+  }
+  if (tags?.length > 0 && categories?.length > 0) {
+    condition += ' AND '
+  }
+  if (categories?.length > 0) {
+    condition += `t.category IN [${categories.map((category) => '"' + category + '"').join(',')}]`
+  }
+  return condition
+}
+
 export const resolvers = {
   Decimal: new GraphQLScalarType({
     name: 'Decimal',
@@ -83,9 +100,11 @@ export const resolvers = {
   Query: {
     findCDR3s: async (_parent, args, { driver }) => {
       const { input } = args;
-      const { cdr3b, filters, limit, differenceFactor, tags } = input;
+      const { cdr3b, filters, limit, differenceFactor, tags, categories } = input;
       const session = driver.session();
-      const tagCondition = tags?.length > 0 ? `WHERE t.name IN [${tags.map((tag) => '"' + tag + '"').join(',')}]` : ''
+      // const tagCondition = tags?.length > 0 ? `WHERE t.name IN [${tags.map((tag) => '"' + tag + '"').join(',')}]` : ''
+      // const categoryCondition = categories?.length > 0 ? `WHERE t.category IN [${categories.map((category) => '"' + category + '"').join(',')}]` : ''
+      const tagCondition = buildCondition(tags, categories)
 
       try {
         const builtFilters = buildFilters(filters);
@@ -168,6 +187,7 @@ export const resolvers = {
         if (limit) {
           query += ` LIMIT ${limit}`;
         }
+        console.log(query)
         const results = await session.run(query);
         const maxDifferences = Math.max(1, Math.ceil(differenceFactor * cdr3b.length))
         const variables: any[] = results.records.map((record) => record.get('data'));

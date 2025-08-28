@@ -27,7 +27,7 @@ import AddRunModal from "./AddRunModal";
 import SegmentPlaceholder from "../../common/SegmentPlaceholder";
 import { DeleteRunModal } from "./DeleteRunModal";
 import { gql, useQuery } from "@apollo/client";
-import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
+import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
 
 function RunsListItem({ run, refetch }) {
   const {
@@ -136,18 +136,28 @@ export default function RunsList() {
   const [activeFilter, setActiveFilter] = useState("all"); // State to track the active filter
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTags, setSelectedTags] = React.useState([]);
+  const [selectedCategories, setSelectedCategories] = React.useState([])
   const [filteredRuns, setFilteredRuns] = React.useState([])
   const { data: tagNames } = useQuery(gql`
     query TagNames {
       tagNames
     }
   `);
+  const { data: categories } = useQuery(gql`
+    query TagCategories {
+      tagCategories
+    }  
+  `)
 
   const location = useLocation();
   const runs = data?.getRuns ?? [];
 
   function uploadIncludesTag(upload, tagList) {
-    return upload.minioUpload.dataset.tags.some((tag) => tagList.includes(tag.name))
+    return upload.minioUpload.dataset.tags?.some((tag) => tagList.includes(tag.name)) ?? false
+  }
+
+  function uploadIncludesCategory(upload, categoryList) {
+    return upload.minioUpload.dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
   }
 
   function doSearch() {
@@ -161,10 +171,23 @@ export default function RunsList() {
       )
     }
     let results: any[] = [...tempRuns]
+    if (selectedCategories.length > 0) {
+      results = results.filter(
+        (run) => run.processedDatasets?.reduce((acc, upload) => acc || uploadIncludesCategory(upload, selectedCategories), false)
+      )
+    }
     if (selectedTags.length > 0) {
       results = results.filter((run) => run.processedDatasets?.reduce((acc, upload) => acc || uploadIncludesTag(upload, selectedTags), false))
     }
     setFilteredRuns(results)
+  }
+
+  function toggleCategory(category) {
+    if (!selectedCategories.includes(category)) {
+      setSelectedCategories((prev) => [...prev, category])
+    } else {
+      setSelectedCategories((prev) => prev.filter((cat) => cat !== category))
+    }
   }
 
   useEffect(() => {
@@ -177,7 +200,7 @@ export default function RunsList() {
 
   useEffect(() => {
     doSearch()
-  }, [activeFilter, searchTerm, selectedTags])
+  }, [activeFilter, searchTerm, selectedTags, selectedCategories])
 
   // Initialize the counts object
   const counts = {
@@ -291,6 +314,21 @@ export default function RunsList() {
             onChange={(_e, { value }) => setSearchTerm(value)}
           />
           <Divider horizontal />
+          <Form.Field label="Filter by tag categories" />
+          <Form.Group inline>
+            {
+              categories?.tagCategories?.map((category) => 
+                <Button
+                  key={category}
+                  content={category} 
+                  size='tiny'
+                  basic={!selectedCategories.includes(category)}
+                  color={tagColors[category] ?? 'black'}
+                  onClick={() => toggleCategory(category)}
+                />
+              )
+            }
+          </Form.Group>
           <Form.Field
             control={Select}
             multiple

@@ -22,7 +22,7 @@ import useRouter from "../../../hooks/useRouter";
 
 import useProjectsQuery from "../../../hooks/useProjectsQuery";
 import AddProjectModal from "./AddProjectModal";
-import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
+import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
 import { gql, useQuery } from "@apollo/client";
 
 function ProjectDetailsCard({ project }) {
@@ -115,12 +115,18 @@ export default function ProjectsList() {
   const location = useLocation();
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedTags, setSelectedTags] = React.useState([]);
+  const [selectedCategories, setSelectedCategories] = React.useState([])
   const [filteredProjects, setFilteredProjects] = React.useState([])
   const { loading: tagsLoading, data: tags } = useQuery(gql`
     query TagNames {
       tagNames
     }
   `);
+  const { data: categories } = useQuery(gql`
+    query TagCategories {
+      tagCategories
+    }  
+  `)
 
   const projects = data?.getProjects ?? [];
 
@@ -128,10 +134,19 @@ export default function ProjectsList() {
     return dataset.tags?.some((tag) => tagList?.includes(tag.name)) ?? false
   }
 
+  function datasetIncludesCategory(dataset, categoryList) {
+    return dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
+  }
+
   function doSearch() {
     let tempProjects = [...projects]
     if (searchTerm.trim().length > 0) {
       tempProjects = projects.filter((project) => project.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()))
+    }
+    if (selectedCategories.length > 0) {
+      tempProjects = tempProjects.filter(
+        (project) => project.datasets.reduce((acc, dataset) => acc || datasetIncludesCategory(dataset, selectedCategories), false)
+      )
     }
     if (selectedTags.length > 0) {
       tempProjects = tempProjects.filter((project) => project.datasets.reduce(
@@ -141,13 +156,21 @@ export default function ProjectsList() {
     setFilteredProjects(tempProjects)
   }
 
+  function toggleCategory(category) {
+    if (!selectedCategories.includes(category)) {
+      setSelectedCategories((prev) => [...prev, category])
+    } else {
+      setSelectedCategories((prev) => prev.filter((cat) => cat !== category))
+    }
+  }
+
   useEffect(() => {
     refetch();
   }, [location.key]);
 
   useEffect(() => {
     doSearch()
-  }, [searchTerm, selectedTags])
+  }, [searchTerm, selectedTags, selectedCategories])
 
 	let content;
 	if (loading && tagsLoading) {
@@ -191,6 +214,21 @@ export default function ProjectsList() {
             placeholder="Names and descriptions"
             onChange={(_e, { value }) => setSearchTerm(value)}
           />
+          <Form.Field label="Filter by tag categories" />
+          <Form.Group inline>
+            {
+              categories?.tagCategories?.map((category) => 
+                <Button
+                  key={category}
+                  content={category ?? 'other'} 
+                  size='tiny'
+                  basic={!selectedCategories.includes(category)}
+                  color={tagColors[category] ?? 'black'}
+                  onClick={() => toggleCategory(category)}
+                />
+              )
+            }
+          </Form.Group>
           <Form.Field
             control={Select}
             multiple
