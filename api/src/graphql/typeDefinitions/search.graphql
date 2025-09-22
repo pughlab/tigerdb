@@ -16,7 +16,9 @@ input CDR3Filters {
 }
 
 input CDR3SearchInput {
+    projectIDs: [ID]
     cdr3b: String
+    text: String # this allows searching cdr3s by project name or description
     filters: CDR3Filters
     limit: Int
     differenceFactor: Decimal
@@ -27,6 +29,12 @@ input CDR3SearchInput {
 type CDR3SearchResult {
     projectID: String
     projectName: String
+    projectDescription: String
+    projectIsPublic: String
+    projectIsReference: Boolean
+    projectCreationDate: Boolean
+    creatorName: String
+    creatorEmail: String
     datasetID: String
     datasetName: String
     variableID: ID
@@ -48,7 +56,49 @@ type CDR3SearchResult {
     score: Decimal
     tags: [Tag]
 }
+# The following input and type definitions are used in the findElements query,
+# which aims to create more complete search results.
+# This query will break the frontend if used in its current state.
+input SearchInput {
+    projectID: ID
+    cdr3b: String
+    text: String
+    filters: CDR3Filters
+    limit: Int
+    differenceFactor: Decimal
+    tags: [String]
+    categories: [String]
+}
+
+type CDR3 {
+    trav: String
+    traj: String
+    trbj: String
+    trbv: String
+    epitopeGene: String
+    mhcClass: String
+    epitopeSpecies: String
+    epitopeAAseq: String
+    mhc: String
+    reference: String
+    variableID: String
+    cdr3b: String
+    cdr3a: String
+    mutation: String
+    recognizesWTEpitope: Boolean
+    uniProt: String
+    score: Decimal
+}
+
+type SearchResult {
+    project: Project!
+    creator: KeycloakUser!
+    datasets: [Dataset]
+    cdr3s: [CDR3]
+    tags: [Tag]
+}
 
 type Query {
-    findCDR3s(input: CDR3SearchInput!): [CDR3SearchResult]!
+    findCDR3s(input: CDR3SearchInput!, page: Int, pageSize: Int): [CDR3SearchResult]!
+    findElements(input: SearchInput!): [SearchResult]!
 }

@@ -4,24 +4,32 @@ export const resolvers = {
   Query: {
     getProjects: async (obj, args, {ogm, kauth})=> {
       try {
-        const { sub: keycloakUserID } = kauth.accessToken.content
-        const UserModel = ogm.model('KeycloakUser')
-        const user = await UserModel.find({
-          where: {keycloakUserID: keycloakUserID}
-        })
-        if (!user) {
-          throw new Error('User not found')
-        }
-        const filters = {
-          OR: [
+        const keycloakUserID = kauth.accessToken?.content.sub ?? null
+        const filters = {}
+
+        if (keycloakUserID) {
+          const UserModel = ogm.model('KeycloakUser')
+          const user = await UserModel.find({
+            where: {keycloakUserID: keycloakUserID}
+          })
+          if (!user) {
+            throw new Error('User not found')
+          }
+          filters.OR = [
             { createdBy: user[0] },
             { isPublic: true },
             { sharedWith: user[0] }
           ]
+        } else {
+          filters.isPublic = true;
         }
 
-        if (args?.projectID) {
+        // Use the single projectID only if no projectIDs array was provided.
+        // If both are provided, projectIDs will be used.
+        if (args?.projectID && !args?.projectIDs) {
           filters.projectID = args.projectID;
+        } else if (args?.projectIDs) {
+          filters.projectID_IN = args.projectIDs;
         }
 
         if (args?.query !== '') {
@@ -29,7 +37,15 @@ export const resolvers = {
             OR: [
               { name_CONTAINS: args.query },
               { description_CONTAINS: args.query },
-              { datasets: { tags: { name_CONTAINS: args.query }} }
+              { datasets: { 
+                  tags: { 
+                    OR: [
+                      { name_CONTAINS: args.query },
+                      { category_CONTAINS: args.query}
+                    ]
+                  }
+                } 
+              }
             ]
           }]
         }
