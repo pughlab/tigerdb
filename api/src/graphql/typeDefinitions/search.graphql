@@ -49,6 +49,12 @@ type CDR3SearchResult {
     tags: [Tag]
 }
 
+type CDR3SearchResultPage {
+  items: [CDR3SearchResult]!
+  totalCount: Int!
+}
+
 type Query {
     findCDR3s(input: CDR3SearchInput!): [CDR3SearchResult]!
+    findCDR3sPaged(input: CDR3SearchInput!, skip: Int!, limit: Int!): CDR3SearchResultPage!
 }

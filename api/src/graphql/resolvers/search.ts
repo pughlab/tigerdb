@@ -202,5 +202,127 @@ export const resolvers = {
         session.close();
       }
     },
+      findCDR3sPaged: async (_parent, args, { driver }) => {
+      const { input } = args;
+      const { cdr3b, filters, limit: queryLimit, differenceFactor = 0.2, tags, categories } = input;
+      const skip = Number(args.skip) || 0;
+      const limit = Number(args.limit) || queryLimit || 50;
+
+      const session = driver.session();
+      const tagCondition = buildCondition(tags, categories);
+
+      try {
+        const builtFilters = buildFilters(filters);
+        let query = `MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
+          ${tagCondition}
+          WITH p, d, collect(t.name) AS tagNames
+          WITH p, d, tagNames, {
+              projectID: p.projectID,
+              projectName: p.name,
+              datasetID: d.datasetID,
+              datasetName: d.name
+          } AS data1
+          WITH data1
+          MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
+          WHERE d.datasetID in data1.datasetID
+          WITH data1, collect({
+              tagID: t.tagID,
+              category: t.category,
+              name: t.name
+          }) AS tags
+          MATCH (d:Dataset)-[]->(c:CuratedAnnotation)-[]->(v:AnnotationVariable)
+          WHERE d.datasetID in data1.datasetID
+          ${builtFilters}
+          RETURN {
+            projectID: data1.projectID,
+            projectName: data1.projectName,
+            datasetID: d.datasetID,
+            datasetName: d.name,
+            variableID: v.annotationVariableID,
+            reference: v.reference,
+            cdr3b: v.cdr3b,
+            trbv: v.trbv,
+            trbj: v.trbj,
+            mhc: v.mhc,
+            mhcClass: v.mhcClass,
+            epitopeGene: v.epitopeGene,
+            epitopeAAseq: v.epitopeAAseq,
+            epitopeSpecies: v.epitopeSpecies,
+            tags: tags
+          } AS data
+          UNION
+          MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
+          ${tagCondition}
+          WITH p, d, collect(t.name) AS tagNames
+          WITH p, d, tagNames, {
+              projectID: p.projectID,
+              projectName: p.name,
+              datasetID: d.datasetID,
+              datasetName: d.name
+          } AS data1
+          WITH data1
+          MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
+          WHERE d.datasetID in data1.datasetID
+          WITH data1, collect({
+              tagID: t.tagID,
+              category: t.category,
+              name: t.name
+          }) AS tags
+          MATCH (d:Dataset)-[]->(c:CuratedDataset)-[]->(v:DatasetVariable)
+          WHERE d.datasetID in data1.datasetID
+          ${builtFilters}
+          RETURN {
+            projectID: data1.projectID,
+            projectName: data1.projectName,
+            datasetID: d.datasetID,
+            datasetName: d.name,
+            variableID: v.datasetVariableID,
+            reference: null,
+            cdr3b: v.cdr3b,
+            trbv: v.trbv,
+            trbj: v.trbj,
+            mhc: null,
+            mhcClass: null,
+            epitopeGene: null,
+            epitopeAAseq: null,
+            epitopeSpecies: null,
+            tags: tags
+          } AS data
+        `;
+
+        if (queryLimit) {
+          // keep an optional safety limit to avoid fetching massively large sets
+          query += ` LIMIT ${queryLimit * 10}`; // fetch some extra before fuzzy filtering
+        }
+
+        const results = await session.run(query);
+        const variables: any[] = results.records.map((record) => record.get('data'));
+
+        const term = (cdr3b || '').trim();
+        let filtered: any[];
+        if (!term) {
+          // no cdr3 term: return all variables (score undefined)
+          filtered = variables.map(v => ({ ...v, score: undefined }));
+        } else {
+          const maxDifferences = Math.max(1, Math.ceil(differenceFactor * term.length));
+          filtered = variables
+            .filter((variable) => bitapSearch(variable.cdr3b || '', term, maxDifferences))
+            .map((result) => ({ ...result, score: fuzzinessScore(result.cdr3b || '', term) }))
+            .sort((a, b) => (b.score || 0) - (a.score || 0));
+        }
+
+        const totalCount = filtered.length;
+        const items = filtered.slice(skip, skip + limit);
+
+        return {
+          items,
+          totalCount,
+        };
+      } catch (e: any) {
+        throw new ApolloError(e);
+      } finally {
+        session.close();
+      }
+    },
   },
 };
