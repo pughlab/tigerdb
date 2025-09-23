@@ -37,7 +37,7 @@ function Layout({ }) {
   const routes = [
     // {path: '/', icon: 'info circle', introID: HOME_MENU_ELEMENT_ID},
     { path: '/public', icon: 'home', introID: DATA_MENU_ELEMENT_ID },
-    { path: '/stats', icon: 'chart bar', introID: 'stats-menu-element'},
+    // { path: '/stats', icon: 'chart bar', introID: 'stats-menu-element'},
   ]
 
   // const { keycloak } = useKeycloak()
@@ -94,8 +94,8 @@ export default function PublicPortal() {
   const { navigate, location, isActivePathElement } = useRouter()
   // console.log(location)
   let routes = [
-    { path: 'search', icon: 'certificate', description: 'global CDR3 search', disabled: false, element: <Annotations />},
-    { path: 'data', icon: 'database', description: 'login to upload TCR data', disabled: true },
+    // { path: 'search', icon: 'certificate', description: 'global CDR3 search', disabled: false, element: <Annotations />},
+    { path: 'data', icon: 'database', description: 'login to upload TCR data', disabled: false, element: <Projects /> },
     { path: 'analysis', icon: 'react', description: 'login to run GLIPH2 analysis', disabled: true}
   ]
 

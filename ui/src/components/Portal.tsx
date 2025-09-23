@@ -36,7 +36,7 @@ function Layout({ }) {
   const routes = [
     // {path: '/', icon: 'info circle', introID: HOME_MENU_ELEMENT_ID},
     { path: '/home', icon: 'home', introID: DATA_MENU_ELEMENT_ID },
-    { path: '/stats', icon: 'chart bar', introID: 'stats-menu-element'},
+    // { path: '/stats', icon: 'chart bar', introID: 'stats-menu-element'},
   ]
 
   const { keycloak } = useKeycloak()
@@ -110,7 +110,7 @@ export default function Portal() {
   // console.log(location)
   const [meMutationState] = useKeycloakMeMutation()
   let routes = [
-    { path: 'search', icon: 'certificate', description: 'global CDR3 search', element: <Annotations /> },
+    // { path: 'search', icon: 'certificate', description: 'global CDR3 search', element: <Annotations /> },
     { path: 'data', icon: 'database', description: 'upload TCR data', element: <Projects /> },
     { path: 'analysis', icon: 'react', description: 'run GLIPH2 analysis', element: <Runs /> }
     // {path: 'datasets', icon: 'database', element: <Datasets />},
