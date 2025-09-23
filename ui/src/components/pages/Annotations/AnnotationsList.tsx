@@ -208,7 +208,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
 
 function AnnotationListItem({
   variable,
-  searchText,
+  cdr3SearchTerm,
   dropdownFilters,
 }) {
   const {
@@ -232,7 +232,7 @@ function AnnotationListItem({
   const { navigate } = useRouter();
 
   // In the AnnotationListItem component
-  let searchTerms = searchText
+  let searchTerms = cdr3SearchTerm
     .split("|")
     .map((term) => term.trim())
     .filter((term) => term.length > 0);
@@ -308,7 +308,7 @@ function AnnotationListItem({
                   color="red"
                   ribbon
                   content="SCORE"
-                  detail={`${score.toFixed(2)}%`}
+                  detail={`${score?.toFixed(2)}%`}
                 />
               }
             />
@@ -345,13 +345,15 @@ function AnnotationListItem({
 }
 
 function SearchForm({
-  searchText,
+  cdr3SearchTerm,
   setSearchText,
   setSearchResults,
   setCurrentPage,
   setLoadingResults,
   dropdownFilters,
   setDropdownFilters,
+  selectedTags = [],
+  selectedCategories = []
 }) {
   const { 
     data: curatedAnnotationFiltersData, 
@@ -359,8 +361,8 @@ function SearchForm({
   } = useCuratedAnnotationsFiltersQuery();
 
   const filters = curatedAnnotationFiltersData?.curatedAnnotationFilters ?? [];
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([])
+  // const [selectedTags, setSelectedTags] = useState([]);
+  // const [selectedCategories, setSelectedCategories] = useState([])
   const { data: tags } = useQuery(gql`
     query TagNames {
       tagNames
@@ -373,8 +375,9 @@ function SearchForm({
   `)
 
   const [findCDR3s, { data }] = useLazyQuery(gql`
-    query FindCDR3s ($input: CDR3SearchInput!) {
-      findCDR3s(input: $input) {
+    query FindCDR3s ($input: CDR3SearchInput!, $skip: Int!, $limit: Int!) {
+      findCDR3sPaged(input: $input, skip: $skip, limit: $limit) {
+        items {
         variableID
         projectID
         datasetName
@@ -399,16 +402,18 @@ function SearchForm({
           category
         }
       }
+      totalCount
+    }
     }
   `);
-  const [debouncedSearchText] = useDebounce(searchText, 1000);
+  const [debouncedSearchText] = useDebounce(cdr3SearchTerm, 1000);
   const handleSearch = () => {
-    if (debouncedSearchText) {
+    // if (debouncedSearchText) {
       setLoadingResults(true);
       findCDR3s({
         variables: {
           input: {
-            cdr3b: debouncedSearchText,
+            cdr3b: debouncedSearchText || '',
             tags: selectedTags,
             categories: selectedCategories,
             filters: Object.entries(dropdownFilters).reduce(
@@ -424,43 +429,46 @@ function SearchForm({
             // Higher factor values result in more fuzziness.
             differenceFactor: 0.2
           },
+          skip: 0,
+          limit:5000,
         },
       });
-    }
+    // }
   };
 
   const location = useLocation();
 
-  function toggleCategory(category) {
-    if (!selectedCategories.includes(category)) {
-      setSelectedCategories((prev) => [...prev, category])
-    } else {
-      setSelectedCategories((prev) => prev.filter((cat) => cat !== category))
-    }
-  }
+  // function toggleCategory(category) {
+  //   if (!selectedCategories.includes(category)) {
+  //     setSelectedCategories((prev) => [...prev, category])
+  //   } else {
+  //     setSelectedCategories((prev) => prev.filter((cat) => cat !== category))
+  //   }
+  // }
 
   useEffect(() => {
     handleSearch();
-  }, [location.key, debouncedSearchText]);
+  }, [location.key, debouncedSearchText, dropdownFilters, selectedTags, selectedCategories]);
 
   useEffect(() => {
-    setSearchResults(data?.findCDR3s ?? []);
+    setSearchResults(data?.findCDR3sPaged?.items ?? []);
     setLoadingResults(false);
     setCurrentPage(1);
+
   }, [data])
 
   return (
     <Segment>
       <Form onSubmit={handleSearch}>
-        <Form.Field
+        {/* <Form.Field
           control={Input}
           label="Search by CDR3b sequence(s)"
           placeholder="CASS | CASSYS | ..."
           value={searchText}
           onChange={(_e, { value }) => setSearchText(value)}
           size="huge"
-        />
-        <Form.Field label="Filter by tag categories" />
+        /> */}
+        {/* <Form.Field label="Filter by tag categories" />
         <Form.Group inline>
           {
             categories?.tagCategories?.map((category) => 
@@ -482,14 +490,14 @@ function SearchForm({
           placeholder='Select tags...'
           label="Filter by tag(s)"
           onChange={(_e, { value }) => setSelectedTags(value)}
-        />
-        <Segment as={Grid} loading={filtersLoading}>
+        /> */}
+        {/* <Segment as={Grid} loading={filtersLoading}>
           {filters.map((filter) => (
             <Grid.Column width={3} key={filter.filterKey}>
               <DropdownOptions {...{ ...filter, setDropdownFilters, dropdownFilters }} />
             </Grid.Column>
           ))}
-        </Segment>
+        </Segment> */}
         <Button
           fluid
           size="large"
@@ -573,7 +581,7 @@ function ResultsPager({
   );
 }
 
-export default function AnnotationsList() {
+export default function AnnotationsList({ cdr3SearchTerm, selectedTags, selectedCategories }) {
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [loadingResults, setLoadingResults] = useState(false);
@@ -646,7 +654,11 @@ export default function AnnotationsList() {
         setLoadingResults={setLoadingResults}
         dropdownFilters={dropdownFilters}
         setDropdownFilters={setDropdownFilters}
+        cdr3SearchTerm={cdr3SearchTerm}
+        selectedTags={selectedTags}
+        selectedCategories={selectedCategories}
       />
+      <Divider horizontal content="RESULTS" />
       <Message>
         {toolsComponents}
         <Container>
@@ -660,7 +672,8 @@ export default function AnnotationsList() {
                 <AnnotationListItem
                   key={result.variableID}
                   variable={result}
-                  searchText={searchText}
+                  // searchText={cdr3SearchTerm}
+                  cdr3SearchTerm={cdr3SearchTerm ?? searchText}
                   dropdownFilters={dropdownFilters}
                 />
               ))}

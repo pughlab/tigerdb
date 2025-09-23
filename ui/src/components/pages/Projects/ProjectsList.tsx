@@ -15,15 +15,19 @@ import {
   Popup,
   Button,
   Icon,
-  Select
+  Select,
+  ButtonOr
 } from "semantic-ui-react";
 import { useLocation } from "react-router-dom";
 import useRouter from "../../../hooks/useRouter";
 
 import useProjectsQuery from "../../../hooks/useProjectsQuery";
 import AddProjectModal from "./AddProjectModal";
+import AnnotationsList from "../Annotations/AnnotationsList";
+
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
 import { gql, useQuery } from "@apollo/client";
+import useAnnotationAndDatasetVariablesQuery from "../../../hooks/pages/useAnnotationVariablesQuery";
 
 function ProjectDetailsCard({ project }) {
 	const { projectID, name, description, createdBy, datasets, isPublic, createdOn, isReference } = project
@@ -112,11 +116,15 @@ function ProjectDetailsCard({ project }) {
 
 export default function ProjectsList() {
   const { data, loading, refetch } = useProjectsQuery();
+  // const { data: annotationsData } = useAnnotationAndDatasetVariablesQuery();
   const location = useLocation();
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [cdr3SearchTerm, setCdr3SearchTerm] = React.useState('');
   const [selectedTags, setSelectedTags] = React.useState([]);
   const [selectedCategories, setSelectedCategories] = React.useState([])
   const [filteredProjects, setFilteredProjects] = React.useState([])
+  const [activeView, setActiveView] = React.useState('projects') // 'projects' or 'cdr3');
+
   const { loading: tagsLoading, data: tags } = useQuery(gql`
     query TagNames {
       tagNames
@@ -129,6 +137,7 @@ export default function ProjectsList() {
   `)
 
   const projects = data?.getProjects ?? [];
+
 
   function datasetIncludesTag(dataset, tagList) {
     return dataset.tags?.some((tag) => tagList?.includes(tag.name)) ?? false
@@ -156,6 +165,10 @@ export default function ProjectsList() {
     setFilteredProjects(tempProjects)
   }
 
+  function doCdr3Search() {
+    let tempCDR3s = []
+  }
+
   function toggleCategory(category) {
     if (!selectedCategories.includes(category)) {
       setSelectedCategories((prev) => [...prev, category])
@@ -172,9 +185,9 @@ export default function ProjectsList() {
     doSearch()
   }, [searchTerm, selectedTags, selectedCategories])
 
-	let content;
+  let projectsContent;
 	if (loading && tagsLoading) {
-		content = (
+		projectsContent = (
 			<Segment placeholder textAlign="center">
 				<Dimmer active inverted>
 					<Loader size="large">Loading...</Loader>
@@ -182,65 +195,126 @@ export default function ProjectsList() {
 			</Segment>
 		)
 	} else if (projects.length === 0) {
-		content = (
+		projectsContent = (
 			<Label>
 				No projects available. Add a project above or ask your administrator
 				to update your permissions.
 			</Label>
 		)
 	} else {
-		content = (
-			<Card.Group itemsPerRow={3}>
-        {filteredProjects.length > 0 ? filteredProjects.map((project) => (
-          <ProjectDetailsCard key={project.projectID} {...{ project }} />
-        )) : projects.map((project) => (
-          <ProjectDetailsCard key={project.projectID} {...{ project }} />
-        ))}
+		projectsContent = (
+			<Card.Group itemsPerRow={4}>
+        {
+          filteredProjects.length > 0 ? filteredProjects.map((project) => (
+            <ProjectDetailsCard key={project.projectID} {...{ project }} />
+          )) : projects.map((project) => (
+            <ProjectDetailsCard key={project.projectID} {...{ project }} />
+          ))
+        }
       </Card.Group>
 		)
 	}
+  let cdr3Content = (
+    <Segment basic>
+      <AnnotationsList cdr3SearchTerm={cdr3SearchTerm} selectedTags={selectedTags} selectedCategories={selectedCategories} />
+    </Segment>
+  )
+  
+  const content = activeView === 'projects' ? projectsContent : cdr3Content;
 
   return (
+    <>
     <Grid>
       <Grid.Column>
-        <Divider horizontal content="Projects" />
-        <Segment basic>
+        {/* <Divider horizontal content="Projects" /> */}
           <AddProjectModal refetch={refetch} />
-        </Segment>
         <Form>
           <Form.Field
             control={Input}
-            label="Search projects"
-            placeholder="Names and descriptions"
-            onChange={(_e, { value }) => setSearchTerm(value)}
+            label="Search CDR3b sequences:"
+            placeholder="CASSIRSSYEQYF | CASS..."
+            onChange={(_e, { value }) => setCdr3SearchTerm(value)}
+            size='massive'
+            style={{
+              // width: "100%",
+              height: "6rem",     // taller
+              fontSize: "2rem",  // bigger text
+              // padding: "1em",       // more inner space
+              // margin: "0.5em" // space below
+              marginBottom: 0
+            }}            
+            icon='search'
+            iconPosition='left'
           />
-          <Form.Field label="Filter by tag categories" />
-          <Form.Group inline>
+          <Form.Field/>
+          <Divider horizontal />
+          <Form.Group inline >
+            <label>Tags:</label>
             {
               categories?.tagCategories?.map((category) => 
                 <Button
                   key={category}
                   content={category ?? 'other'} 
-                  size='tiny'
+                  size='medium'
                   basic={!selectedCategories.includes(category)}
                   color={tagColors[category] ?? 'black'}
                   onClick={() => toggleCategory(category)}
                 />
               )
             }
-          </Form.Group>
-          <Form.Field
+            <Form.Field
+            width={4}
             control={Select}
             multiple
             options={tags?.tagNames.map((tag) => ({key: tag, value: tag, text: tag})) ?? []}
             placeholder='Select tags...'
-            label="Filter by dataset tag(s)"
+            // label="Filter by dataset tag(s)"
             onChange={(_e, { value }) => setSelectedTags(value)}
           />
+          <Form.Field
+          // move to right side
+            fluid
+            width={12}
+            control={Input}
+            label="Search Projects:"
+            placeholder="Names and descriptions"
+            onChange={(_e, { value }) => setSearchTerm(value)}
+          />
+          </Form.Group>
+
         </Form>
         <Divider hidden />
+          <Button.Group fluid widths={2} attached='top'>
+            <Button
+              color='black'
+              onClick={() => setActiveView('projects')}
+              basic={activeView !== 'projects'}
+            >
+              <Header
+                inverted={activeView === 'projects'}
+                content='Projects'
+                subheader='Browse projects, download data'
+              />
+            </Button>
+            {/* <ButtonOr /> */}
+            <Button
+              color='teal'
+              onClick={() => setActiveView('cdr3')}
+              basic={activeView !== 'cdr3'}
+            >
+              <Header
+                inverted={activeView === 'cdr3'}
+                content='CDR3'
+                subheader='Explore CDR3 sequences'
+              />
+            </Button>
+          </Button.Group>
+        <Segment attached='bottom'>
         { content }
+        </Segment>
       </Grid.Column>
     </Grid>
+    </>
   );
 }
+
