@@ -4,22 +4,36 @@ export const resolvers = {
   Query: {
     getProjects: async (obj, args, {ogm, kauth})=> {
       try {
-        const { sub: keycloakUserID } = kauth.accessToken.content
-        const UserModel = ogm.model('KeycloakUser')
-        const user = await UserModel.find({
-          where: {keycloakUserID: keycloakUserID}
-        })
-        if (!user) {
-          throw new Error('User not found')
-        }
-        const filters = {
-          OR: [
-            { createdBy: user[0] },
-            { isPublic: true },
-            { sharedWith: user[0] }
-          ]
-        }
+        const isAuthenticated = !!kauth?.accessToken?.content?.sub;
+        let filters: any;
 
+        if (!isAuthenticated) {
+          // Unauthenticated: only public projects
+          filters = {
+            OR: [
+              { isPublic: true }
+            ]
+          };
+        } else {
+          const { sub: keycloakUserID } = kauth.accessToken.content
+          const UserModel = ogm.model('KeycloakUser')
+          const user = await UserModel.find({
+            where: { keycloakUserID: keycloakUserID }
+          })
+          
+          if (!user || user.length === 0) {
+            // Fallback to public only if user record missing
+            filters = { isPublic: true };
+        } else {
+          filters = {
+            OR: [
+              { createdBy: user[0] },
+              { isPublic: true },
+              { sharedWith: user[0] }
+            ]
+          };
+        }
+      }
         if (args?.projectID) {
           filters.projectID = args.projectID;
         }
