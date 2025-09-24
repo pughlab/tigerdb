@@ -27,7 +27,7 @@ export const resolvers = {
         }
 
         command = `CREATE (t:Tag { name: $name, tagID: $tagID, category: $category }) RETURN t`
-        const createTag = await session.run(command, { name, tagID: uuid4(), category: category ?? '' })
+        const createTag = await session.run(command, { name, tagID: uuid4(), category: category || 'other' })
 
         return createTag.records[0].get(0).properties
       } catch (error) {

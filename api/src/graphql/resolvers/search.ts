@@ -302,7 +302,7 @@ export const resolvers = {
         let filtered: any[];
         if (!term) {
           // no cdr3 term: return all variables (score undefined)
-          filtered = variables.map(v => ({ ...v, score: undefined }));
+          filtered = variables.map(v => ({ ...v, score: 0 }));
         } else {
           const maxDifferences = Math.max(1, Math.ceil(differenceFactor * term.length));
           filtered = variables
