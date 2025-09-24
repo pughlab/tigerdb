@@ -203,7 +203,7 @@ export default function ProjectsList() {
 		)
 	} else {
 		projectsContent = (
-			<Card.Group itemsPerRow={4}>
+			<Card.Group itemsPerRow={3}>
         {
           filteredProjects.length > 0 ? filteredProjects.map((project) => (
             <ProjectDetailsCard key={project.projectID} {...{ project }} />
@@ -228,12 +228,21 @@ export default function ProjectsList() {
       <Grid.Column>
         {/* <Divider horizontal content="Projects" /> */}
           <AddProjectModal refetch={refetch} />
+        <Message >
         <Form>
           <Form.Field
             control={Input}
             label="Search CDR3b sequences:"
             placeholder="CASSIRSSYEQYF | CASS..."
-            onChange={(_e, { value }) => setCdr3SearchTerm(value)}
+            onChange={(_e, { value }) => {
+              setCdr3SearchTerm(value);
+              setActiveView('cdr3');
+            }}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+              }
+            }}
             size='massive'
             style={{
               // width: "100%",
@@ -241,7 +250,9 @@ export default function ProjectsList() {
               fontSize: "2rem",  // bigger text
               // padding: "1em",       // more inner space
               // margin: "0.5em" // space below
-              marginBottom: 0
+              marginBottom: 0,
+              // border: '1px solid green',
+              // borderRadius: '50%'
             }}            
             icon='search'
             iconPosition='left'
@@ -278,15 +289,19 @@ export default function ProjectsList() {
             control={Input}
             label="Search Projects:"
             placeholder="Names and descriptions"
-            onChange={(_e, { value }) => setSearchTerm(value)}
+            onChange={(_e, { value }) => {
+              setSearchTerm(value)
+              setActiveView('projects')
+            }}
           />
           </Form.Group>
 
         </Form>
+        </Message>
         <Divider hidden />
           <Button.Group fluid widths={2} attached='top'>
             <Button
-              color='black'
+              color='grey'
               onClick={() => setActiveView('projects')}
               basic={activeView !== 'projects'}
             >

@@ -374,7 +374,7 @@ function SearchForm({
     }  
   `)
 
-  const [findCDR3s, { data }] = useLazyQuery(gql`
+  const [findCDR3s, { data, loading }] = useLazyQuery(gql`
     query FindCDR3s ($input: CDR3SearchInput!, $skip: Int!, $limit: Int!) {
       findCDR3sPaged(input: $input, skip: $skip, limit: $limit) {
         items {
@@ -406,6 +406,12 @@ function SearchForm({
     }
     }
   `);
+
+  if (loading) {
+    setLoadingResults(true);
+  } else {
+    setLoadingResults(false);
+  }
   const [debouncedSearchText] = useDebounce(cdr3SearchTerm, 1000);
   const handleSearch = () => {
     // if (debouncedSearchText) {
@@ -452,13 +458,12 @@ function SearchForm({
 
   useEffect(() => {
     setSearchResults(data?.findCDR3sPaged?.items ?? []);
-    setLoadingResults(false);
+    // setLoadingResults(false);
     setCurrentPage(1);
 
   }, [data])
 
   return (
-    <Segment>
       <Form onSubmit={handleSearch}>
         {/* <Form.Field
           control={Input}
@@ -498,7 +503,7 @@ function SearchForm({
             </Grid.Column>
           ))}
         </Segment> */}
-        <Button
+        {/* <Button
           fluid
           size="large"
           color="teal"
@@ -509,9 +514,8 @@ function SearchForm({
             <Icon name="search" />
           </Button.Content>
           <Button.Content hidden content="Search TIGERdb" />
-        </Button>
+        </Button> */}
       </Form>
-    </Segment>
   );
 }
 
@@ -531,7 +535,8 @@ function CSVDownloadButton({ searchResults }) {
         position="top center"
         trigger={
           <Button
-            basic
+            // basic
+            inverted
             color="green"
             fluid
             icon="file excel"
@@ -619,14 +624,14 @@ export default function AnnotationsList({ cdr3SearchTerm, selectedTags, selected
         </Dimmer>
       </Segment>
     );
-  } else if (searchResults.length === 0) {
-    toolsComponents = (
-      <SegmentPlaceholder
-        basic
-        icon="exclamation circle"
-        text="No Search Results Found!"
-      />
-    );
+  // } else if (searchResults.length === 0) {
+  //   toolsComponents = (
+  //     <SegmentPlaceholder
+  //       basic
+  //       icon="exclamation circle"
+  //       text="No Search Results Found!"
+  //     />
+  //   );
   } else {
     toolsComponents = (
       <>
@@ -645,7 +650,7 @@ export default function AnnotationsList({ cdr3SearchTerm, selectedTags, selected
 
   return (
     <>
-      <Divider horizontal content="SEARCH" />
+      {/* <Divider horizontal content="SEARCH" /> */}
       <SearchForm
         searchText={searchText}
         setSearchText={setSearchText}
@@ -658,7 +663,7 @@ export default function AnnotationsList({ cdr3SearchTerm, selectedTags, selected
         selectedTags={selectedTags}
         selectedCategories={selectedCategories}
       />
-      <Divider horizontal content="RESULTS" />
+      {/* <Divider horizontal content="RESULTS" /> */}
       <Message>
         {toolsComponents}
         <Container>
