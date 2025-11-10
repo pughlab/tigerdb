@@ -1,6 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import React from "react";
-import { Button, Form, Input, Modal, TextArea, Icon, Divider, Tab, Segment } from "semantic-ui-react";
+import { Button, Form, Input, Modal, TextArea, Icon, Divider, Tab, Segment, Card } from "semantic-ui-react";
 import useProjectsQuery from '../../../hooks/useProjectsQuery'
 import ProjectCardList from "./ProjectCardList";
 
@@ -10,6 +10,7 @@ export default function AddRunModal({refetch}) {
   const [selectedQueryUploads, setSelectedQueryUploads] = React.useState([]);
   const [selectedReferenceUploads, setSelectedReferenceUploads] = React.useState([]);
   const [open, setOpen] = React.useState(false);
+  const [hovered, setHovered] = React.useState(false);
 
   const { data: projectsData } = useProjectsQuery();
 
@@ -78,14 +79,45 @@ export default function AddRunModal({refetch}) {
       open={open}
       onClose={() => setOpen(!open)}
       size="large"
-      
       trigger={
-        <Button fluid size='large' color='black' animated='vertical' onClick={() => setOpen(!open)}>
-          <Button.Content visible>
-            <Icon name='plus'/>
-          </Button.Content>
-          <Button.Content hidden content="Add a new run"/>
-        </Button>
+        // <Button fluid size='large' color='black' animated='vertical' onClick={() => setOpen(!open)}>
+        //   <Button.Content visible>
+        //     <Icon name='plus'/>
+        //   </Button.Content>
+        //   <Button.Content hidden content="Add a new run"/>
+        // </Button>
+        <Card color="black" onClick={() => setOpen(!open)}>
+          <Card.Header>
+            <Button fluid attached='top' size='large'>
+              <Icon name='plus' size="large" />
+            </Button>
+          </Card.Header>
+          <Card.Content>
+            <div
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                color: "black",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textDecoration: hovered ? "underline" : "none"
+              }}
+            >
+              <p style={{
+                fontWeight: "bold",
+                fontSize: "2rem",
+                textAlign: "center",
+                color: "black"
+              }}>Add new run</p>
+            </div>
+          </Card.Content>
+        </Card>
       }
     >
       <Modal.Content>

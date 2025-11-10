@@ -287,13 +287,12 @@ export default function RunsList() {
     />
   } else {
     content = (
-      <Segment placeholder>
-        <Card.Group itemsPerRow={4} size="large">
-          {filteredRuns.map((run) => (
-            <RunsListItem key={run.runID} run={run} refetch={refetch} />
-          ))}
-        </Card.Group>
-      </Segment>
+      <Card.Group itemsPerRow={4} size="large">
+        <AddRunModal refetch={refetch} />
+        {filteredRuns.map((run) => (
+          <RunsListItem key={run.runID} run={run} refetch={refetch} />
+        ))}
+      </Card.Group>
     )
   }
 
@@ -301,11 +300,6 @@ export default function RunsList() {
     <Grid>
       <Grid.Column>
         <Divider horizontal content="Runs" />
-        <Segment basic>
-          <React.StrictMode>
-            <AddRunModal refetch={refetch} />
-          </React.StrictMode>
-        </Segment>
         <Form>
           <Form.Field
             control={Input}

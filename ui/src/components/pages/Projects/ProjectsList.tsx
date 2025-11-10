@@ -16,7 +16,6 @@ import {
   Button,
   Icon,
   Select,
-  ButtonOr
 } from "semantic-ui-react";
 import { useLocation } from "react-router-dom";
 import useRouter from "../../../hooks/useRouter";
@@ -27,30 +26,28 @@ import AnnotationsList from "../Annotations/AnnotationsList";
 
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
 import { gql, useQuery } from "@apollo/client";
-import useAnnotationAndDatasetVariablesQuery from "../../../hooks/pages/useAnnotationVariablesQuery";
 
 function ProjectDetailsCard({ project }) {
-	const { projectID, name, description, createdBy, datasets, isPublic, createdOn, isReference } = project
+  const { projectID, name, description, createdBy, datasets, isPublic, createdOn, isReference } = project
   const creationDate = new Date(createdOn).toDateString()
-	const { navigate } = useRouter()
+  const { navigate } = useRouter()
   const tags = new Set();
-	datasets?.forEach((dataset) => {
-		dataset.tags?.forEach((tag) => {
-			tags.add(tag);
-		});
-	});
+  datasets?.forEach((dataset) => {
+    dataset.tags?.forEach((tag) => {
+      tags.add(tag);
+    });
+  });
   const color = isPublic ? 'black' : 'facebook'
-	return (
-		<Card link color={color} onClick={() => { navigate(projectID) }}>
+  return (
+    <Card link color={color} onClick={() => { navigate(projectID) }}>
       <Popup
         size='large' wide='very' position="top center"
         trigger={
           <Button attached='top' size='large' color={isReference ? 'black' : undefined}>
             <Icon name='folder open' size='large' />
           </Button>
-        }        
+        }
       >
-        {/* {project.isPublic ? 'Public' : 'Private'} project */}
         <Message size='mini'>
           <Message.Content>
             <Divider horizontal content='Details' />
@@ -69,7 +66,7 @@ function ProjectDetailsCard({ project }) {
               <Label >
                 <Icon name='calendar alternate outline' />
                 {'Created on'}
-                <Label.Detail content={creationDate}  />
+                <Label.Detail content={creationDate} />
               </Label>
             </Label.Group>
           </Segment>
@@ -80,9 +77,9 @@ function ProjectDetailsCard({ project }) {
           {name}
         </Header>
         <Label.Group>
-          <Label color={color} as={Button} content={<Icon style={{margin: 0}} name={isPublic ? 'lock open' : 'lock'} />} detail={isPublic ? 'Public' : 'Private'} />
-          <Label content={<Icon style={{margin: 0}} name='user' />} detail={createdBy.name} />
-          <Label content={<Icon style={{margin: 0}} name='calendar alternate outline' />} detail={creationDate} />
+          <Label color={color} as={Button} content={<Icon style={{ margin: 0 }} name={isPublic ? 'lock open' : 'lock'} />} detail={isPublic ? 'Public' : 'Private'} />
+          <Label content={<Icon style={{ margin: 0 }} name='user' />} detail={createdBy.name} />
+          <Label content={<Icon style={{ margin: 0 }} name='calendar alternate outline' />} detail={creationDate} />
           {
             (datasets.length > 0) && (
               <>
@@ -93,30 +90,29 @@ function ProjectDetailsCard({ project }) {
               </>
             )
           }
-          { tags.size > 0 && (
+          {tags.size > 0 && (
             <>
-              <Divider horizontal content="Tags"/>
+              <Divider horizontal content="Tags" />
               {
                 [...tags]
-                .sort((tag1, tag2) => {
-                  if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
-                    return 0
-                  }
-                  return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
-                })
-                .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
+                  .sort((tag1, tag2) => {
+                    if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
+                      return 0
+                    }
+                    return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
+                  })
+                  .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
               }
             </>
           )}
         </Label.Group>
       </Card.Content>
-		</Card>
-	)
+    </Card>
+  )
 }
 
 export default function ProjectsList() {
   const { data, loading, refetch } = useProjectsQuery();
-  // const { data: annotationsData } = useAnnotationAndDatasetVariablesQuery();
   const location = useLocation();
   const [searchTerm, setSearchTerm] = React.useState('');
   const [cdr3SearchTerm, setCdr3SearchTerm] = React.useState('');
@@ -165,10 +161,6 @@ export default function ProjectsList() {
     setFilteredProjects(tempProjects)
   }
 
-  function doCdr3Search() {
-    let tempCDR3s = []
-  }
-
   function toggleCategory(category) {
     if (!selectedCategories.includes(category)) {
       setSelectedCategories((prev) => [...prev, category])
@@ -186,24 +178,24 @@ export default function ProjectsList() {
   }, [searchTerm, selectedTags, selectedCategories])
 
   let projectsContent;
-	if (loading && tagsLoading) {
-		projectsContent = (
-			<Segment placeholder textAlign="center">
-				<Dimmer active inverted>
-					<Loader size="large">Loading...</Loader>
-				</Dimmer>
-			</Segment>
-		)
-	} else if (projects.length === 0) {
-		projectsContent = (
-			<Label>
-				No projects available. Add a project above or ask your administrator
-				to update your permissions.
-			</Label>
-		)
-	} else {
-		projectsContent = (
-			<Card.Group itemsPerRow={3}>
+  if (loading && tagsLoading) {
+    projectsContent = (
+      <Segment placeholder textAlign="center">
+        <Dimmer active inverted>
+          <Loader size="large">Loading...</Loader>
+        </Dimmer>
+      </Segment>
+    )
+  } else if (projects.length === 0) {
+    projectsContent = (
+      <Card.Group itemsPerRow={3}>
+        <AddProjectModal refetch={refetch} />
+      </Card.Group>
+    )
+  } else {
+    projectsContent = (
+      <Card.Group itemsPerRow={3}>
+        <AddProjectModal refetch={refetch} />
         {
           filteredProjects.length > 0 ? filteredProjects.map((project) => (
             <ProjectDetailsCard key={project.projectID} {...{ project }} />
@@ -212,93 +204,89 @@ export default function ProjectsList() {
           ))
         }
       </Card.Group>
-		)
-	}
+    )
+  }
   let cdr3Content = (
     <Segment basic>
       <AnnotationsList cdr3SearchTerm={cdr3SearchTerm} selectedTags={selectedTags} selectedCategories={selectedCategories} />
     </Segment>
   )
-  
+
   const content = activeView === 'projects' ? projectsContent : cdr3Content;
 
   return (
     <>
-    <Grid>
-      <Grid.Column>
-        {/* <Divider horizontal content="Projects" /> */}
-          <AddProjectModal refetch={refetch} />
-        <Message >
-        <Form>
-          <Form.Field
-            control={Input}
-            label="Search CDR3b sequences:"
-            placeholder="CASSIRSSYEQYF | CASS..."
-            onChange={(_e, { value }) => {
-              setCdr3SearchTerm(value);
-              setActiveView('cdr3');
-            }}
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              if (e.key === 'Enter') {
-                e.preventDefault();
-              }
-            }}
-            size='massive'
-            style={{
-              // width: "100%",
-              height: "6rem",     // taller
-              fontSize: "2rem",  // bigger text
-              // padding: "1em",       // more inner space
-              // margin: "0.5em" // space below
-              marginBottom: 0,
-              // border: '1px solid green',
-              // borderRadius: '50%'
-            }}            
-            icon='search'
-            iconPosition='left'
-          />
-          <Form.Field/>
-          <Divider horizontal />
-          <Form.Group inline >
-            <label>Tags:</label>
-            {
-              categories?.tagCategories?.map((category) => 
-                <Button
-                  key={category}
-                  content={category ?? 'other'} 
-                  size='medium'
-                  basic={!selectedCategories.includes(category)}
-                  color={tagColors[category] ?? 'black'}
-                  onClick={() => toggleCategory(category)}
+      <Grid>
+        <Grid.Column>
+          <Message>
+            <Form>
+              <Form.Field
+                control={Input}
+                label="Search CDR3b sequences:"
+                placeholder="CASSIRSSYEQYF | CASS..."
+                onChange={(_e, { value }) => {
+                  setCdr3SearchTerm(value);
+                  setActiveView('cdr3');
+                }}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                  }
+                }}
+                size='massive'
+                style={{
+                  // width: "100%",
+                  height: "6rem",     // taller
+                  fontSize: "2rem",  // bigger text
+                  // padding: "1em",       // more inner space
+                  // margin: "0.5em" // space below
+                  marginBottom: 0,
+                  // border: '1px solid green',
+                  // borderRadius: '50%'
+                }}
+                icon='search'
+                iconPosition='left'
+              />
+              <Form.Field />
+              <Divider horizontal />
+              <Form.Group inline >
+                <label>Tags:</label>
+                {
+                  categories?.tagCategories?.map((category) =>
+                    <Button
+                      key={category}
+                      content={category ?? 'other'}
+                      size='medium'
+                      basic={!selectedCategories.includes(category)}
+                      color={tagColors[category] ?? 'black'}
+                      onClick={() => toggleCategory(category)}
+                    />
+                  )
+                }
+                <Form.Field
+                  width={4}
+                  control={Select}
+                  multiple
+                  options={tags?.tagNames.map((tag) => ({ key: tag, value: tag, text: tag })) ?? []}
+                  placeholder='Select tags...'
+                  onChange={(_e, { value }) => setSelectedTags(value)}
                 />
-              )
-            }
-            <Form.Field
-            width={4}
-            control={Select}
-            multiple
-            options={tags?.tagNames.map((tag) => ({key: tag, value: tag, text: tag})) ?? []}
-            placeholder='Select tags...'
-            // label="Filter by dataset tag(s)"
-            onChange={(_e, { value }) => setSelectedTags(value)}
-          />
-          <Form.Field
-          // move to right side
-            fluid
-            width={12}
-            control={Input}
-            label="Search Projects:"
-            placeholder="Names and descriptions"
-            onChange={(_e, { value }) => {
-              setSearchTerm(value)
-              setActiveView('projects')
-            }}
-          />
-          </Form.Group>
-
-        </Form>
-        </Message>
-        <Divider hidden />
+                <Form.Field
+                  // move to right side
+                  fluid
+                  width={12}
+                  control={Input}
+                  label="Search Projects:"
+                  placeholder="Names and descriptions"
+                  onChange={(_e, { value }) => {
+                    setSearchTerm(value)
+                    setActiveView('projects')
+                  }}
+                />
+              </Form.Group>
+            </Form>
+          </Message>
+          <Divider hidden />
           <Button.Group fluid widths={2} attached='top'>
             <Button
               color='grey'
@@ -311,7 +299,6 @@ export default function ProjectsList() {
                 subheader='Browse projects, download data'
               />
             </Button>
-            {/* <ButtonOr /> */}
             <Button
               color='teal'
               onClick={() => setActiveView('cdr3')}
@@ -324,11 +311,11 @@ export default function ProjectsList() {
               />
             </Button>
           </Button.Group>
-        <Segment attached='bottom'>
-        { content }
-        </Segment>
-      </Grid.Column>
-    </Grid>
+          <Segment attached='bottom'>
+            {content}
+          </Segment>
+        </Grid.Column>
+      </Grid>
     </>
   );
 }
