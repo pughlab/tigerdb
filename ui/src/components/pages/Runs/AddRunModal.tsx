@@ -125,14 +125,14 @@ export default function AddRunModal({refetch}) {
         <Form>
           <Form.Field 
             control={Input}
-            label='Name'
+            label='Name (required)'
             placeholder='Run name'
             value={name}
             onChange={(_e, { value }) => setName(value)}
           />
           <Form.Field 
             control={TextArea}
-            label='Description'
+            label='Description (required)'
             placeholder='Run description'
             value={description}
             onChange={(_e, { value }) => setDescription(value)}
