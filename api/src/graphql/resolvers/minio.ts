@@ -52,11 +52,6 @@ const validateFile = async (ogm, rawDatasetID, objectName, preview, header) => {
 }
 
 const checkNoPrefix = (keys) => {
-    // keys.push('%permission_test1') // test invalid keys
-    // keys.push('%permission_test2') // test invalid keys
-
-    let toReturn
-
     const invalid_keys = keys.filter((key) => key.startsWith('%permission_'))
     const isValid = invalid_keys.length === 0
     let message
@@ -68,6 +63,115 @@ const checkNoPrefix = (keys) => {
     }
 
     return {isValid, message}
+}
+
+async function getFileRows(minioClient, bucketName, objectName, includesHeader) {
+  const stream = await minioClient.getObject(bucketName, objectName);
+  const chunks = [];
+  for await (const chunk of stream) {
+    chunks.push(chunk);
+  }
+
+  const text = Buffer.concat(chunks).toString('utf-8');
+  let rows = text.split('\n');
+
+  // Skip the first row if headers are included
+  if (includesHeader) {
+    rows = rows.slice(1);
+  }
+
+  return rows
+}
+
+async function createAndGetProcessedDataset(ogm, data) {
+  const { minioClient, bucketName, newObjectName, newFileName, processedData, selectedDelimiter } = data
+  // Generate a presigned URL for the newly uploaded file
+  const processedPresignedURL = await makePresignedURL(minioClient, bucketName, newObjectName);
+
+  // Create the `ProcessedDataset` node
+  const ProcessedDatasetModel = ogm.model('ProcessedDataset');
+  const processedDatasetInput = {
+    objectName: newObjectName,
+    bucketName,
+    filename: newFileName,
+    // headers: headers.map(header => ({ name: header.name, index: header.index })),
+    rows: processedData.length,
+    createdAt: new Date().toISOString(),
+    // presignedURL: processedPresignedURL,
+    selectedDelimiter,
+  };
+
+  const { processedDatasets: [processedDataset] } = await ProcessedDatasetModel.create({
+    input: [processedDatasetInput],
+  });
+
+  return processedDataset
+}
+
+async function createHeaderNodes(ogm, headers, processedDataset) {
+  const HeaderModel = ogm.model('Header');
+  const headerInputs = headers.map(({ name, index }) => ({
+    name,
+    index,
+    processedDataset: {
+      connect: { where: { node: { objectName: processedDataset.objectName } } },
+    },
+  }))
+
+  await HeaderModel.create({
+    input: headerInputs,
+  })
+}
+
+// Find the existing `MinioUpload` node and connect `ProcessedDataset` via HAS_PROCESSED_FILE
+async function findAndUpdateMinioUpload(ogm, objectName, processedDataset) {
+  const MinioUploadModel = ogm.model('MinioUpload');
+
+  // Find the existing MinioUpload by objectName (as it's the ID field)
+  const [existingMinioUpload] = await MinioUploadModel.find({
+    where: { objectName: objectName },
+  });
+
+  if (!existingMinioUpload) {
+    throw new Error(`MinioUpload with objectName ${objectName} not found`);
+  }
+
+  // Update the existing `MinioUpload` to connect the processed dataset
+  await MinioUploadModel.update({
+    where: { objectName: objectName },
+    connect: {
+      processedDataset: {
+        where: { node: { objectName: processedDataset.objectName }},
+      },
+    },
+  });
+}
+
+export async function getHeaders(session, objectName) {
+  const headerResults = await session.run(`
+    MATCH (:ProcessedDataset {objectName: "${objectName}"})-->(h:Header)
+    RETURN h
+  `)
+  const headers = headerResults.records.map(record => record.get("h").properties)
+  return headers
+}
+
+function createFileStream(processedData) {
+  const requiredKeys = ['cdr3b', 'trbv', 'trbj', 'cdr3a', 'subject:condition', 'count']
+  const defaults = {
+    cdr3a: 'NA',
+    cdr3b: 'NA',
+    trbj: 'NA',
+    'subject:condition': 'TIGERDB:Default',
+    count: 'NA',
+    trbv: 'NA'
+  }
+  const processedFile = processedData.map(row => {
+    const formattedRow = requiredKeys.map(key => row[key] || defaults[key]).join("\t")
+    return formattedRow
+  })
+  const processedFileStream = Buffer.from(processedFile.join("\n"))
+  return processedFileStream
 }
 
 export const resolvers = {
@@ -140,24 +244,14 @@ export const resolvers = {
       try {
         console.log("PARAMS CHECK:")
         console.log(bucketName, objectName, filename, headers, selectedDelimiter, includesHeader)
-        // Step 1: Retrieve the object directly from MinIO
-        const stream = await minioClient.getObject(bucketName, objectName);
         
-        // Step 2: Read the stream into a string (you can use a buffer or a string reader)
-        const chunks = [];
-        for await (const chunk of stream) {
-          chunks.push(chunk);
-        }
-        const text = Buffer.concat(chunks).toString('utf-8');
-
-        // Step 3: Process the CSV file based on selected headers and delimiter
-        let rows = text.split('\n');
-
-        // Check if the file includes a header row
-        if (includesHeader) {
-          rows = rows.slice(1);  // Skip the first row
+        // Ensure the original filename has an extension
+        const fileExtension = path.extname(filename); // Extract the file extension (e.g., ".tsv" or ".csv")
+        if (!fileExtension) {
+          throw new Error(`File "${filename}" lacks an extension.`);
         }
 
+        const rows = await getFileRows(minioClient, bucketName, objectName, includesHeader)
         const processedData = rows.map((row) => {
           const cells = row.split(selectedDelimiter); // Use the selected delimiter for splitting
           return headers.reduce((acc, { name, index }) => {
@@ -165,86 +259,31 @@ export const resolvers = {
             return acc;
           }, {});
         });
-  
-        // Step 4: Convert processed data into a stream format for uploading
-        const processedFileStream = Buffer.from(processedData.map(row => Object.values(row).join('\t')).join('\n'));
-  
+        console.log(processedData)
 
-        // Extract the file extension
-        const fileExtension = path.extname(filename); // e.g., ".tsv" or ".csv"
-
-        // Ensure the original filename has an extension
-        if (!fileExtension) {
-          throw new Error(`File "${filename}" lacks an extension.`);
-        }
+        // Convert processed data into a stream format for uploading
+        const processedFileStream = createFileStream(processedData);
 
         // Construct the new object name by combining the object ID and the original filename
         const newObjectName = `processed-${objectName}`; // e.g., "processed-123e4567-e89b-12d3-a456-426614174000_data.tsv"
 
-
-        // Step 5: Upload the processed file using putObjectBucket
-        // const newObjectName = `processed-${objectName}`;
-        const newFileName = `processed-${filename}`;
+        // Upload the processed file using putObjectBucket
         await putObjectBucket(minioClient, processedFileStream, bucketName, newObjectName);
-  
-        // Step 6: Generate a presigned URL for the newly uploaded file
-        const processedPresignedURL = await makePresignedURL(minioClient, bucketName, newObjectName);
-  
-        // Step 7: Create the `ProcessedDataset` node
-        const ProcessedDatasetModel = ogm.model('ProcessedDataset');
-        const processedDatasetInput = {
-          objectName: newObjectName,
+
+        // Create processed dataset and connect it to the minio upload 
+        const processedDataset = await createAndGetProcessedDataset(ogm, {
+          minioClient,
           bucketName,
-          filename: newFileName,
-          // headers: headers.map(header => ({ name: header.name, index: header.index })),
-          rows: processedData.length,
-          createdAt: new Date().toISOString(),
-          // presignedURL: processedPresignedURL,
-          selectedDelimiter,
-        };
-
-        const { processedDatasets: [processedDataset] } = await ProcessedDatasetModel.create({
-          input: [processedDatasetInput],
-        });
-
-        const HeaderModel = ogm.model('Header');
-        const headerInputs = headers.map(({ name, index }) => ({
-          name,
-          index,
-          processedDataset: {
-            connect: { where: { node: { objectName: processedDataset.objectName } } },
-          },
-        }))
-    
-        await HeaderModel.create({
-          input: headerInputs,
+          newObjectName,
+          newFileName: `processed-${filename}`,
+          processedData,
+          selectedDelimiter
         })
-
-        // Step 8: Find the existing `MinioUpload` node and connect `ProcessedDataset` via HAS_PROCESSED_FILE
-        const MinioUploadModel = ogm.model('MinioUpload');
-
-        // Find the existing MinioUpload by objectName (as it's the ID field)
-        const [existingMinioUpload] = await MinioUploadModel.find({
-          where: { objectName: objectName },  // Find using objectName as it's unique (ID)
-        });
-
-        if (!existingMinioUpload) {
-          throw new Error(`MinioUpload with objectName ${objectName} not found`);
-        }
-
-        // Step 9: Update the existing `MinioUpload` to connect the newly created `ProcessedDataset`
-        await MinioUploadModel.update({
-          where: { objectName: objectName },
-          connect: {
-            processedDataset: {
-              where: { node: { objectName: processedDataset.objectName }},
-            },
-          },
-        });
+        await createHeaderNodes(ogm, headers, processedDataset)
+        const existingMinioUpload = await findAndUpdateMinioUpload(ogm, objectName, processedDataset)
 
         return existingMinioUpload;  // Return the updated MinioUpload node
 
-  
       } catch (error) {
         console.error('Error processing and uploading dataset:', error);
         throw new Error('Failed to upload processed headers');

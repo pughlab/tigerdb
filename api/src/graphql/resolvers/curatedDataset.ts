@@ -2,6 +2,7 @@ import { listBucketObjects, makePresignedURL } from '../../minio/minio'
 import papa from 'papaparse'
 import { ApolloError } from 'apollo-server'
 import zlib from 'zlib'
+import { getHeaders } from './minio'
 
 
 export const resolvers = {
@@ -107,16 +108,8 @@ export const resolvers = {
     // },
     createCuratedDatasetFromDataset: async (parent, { datasetID, bucketName, objectName, selectedDelimiter }, { driver, ogm, minioClient }) => {
       try {
-
-        const inputFields = [
-          { name: 'cdr3b', index: 0 },
-          { name: 'trbv', index: 1 },
-          { name: 'trbj', index: 2 },
-          { name: 'cdr3a', index: 3 },
-          { name: 'subjectcondition', index: 4 },
-          { name: 'count', index: 5 },
-          // Add more fields as needed
-        ];
+        const session = driver.session()
+        const inputFields = await getHeaders(session, objectName)
 
         // Create model and add a curated dataset node to db
         const CuratedDatasetModel = ogm.model("CuratedDataset")
@@ -128,9 +121,6 @@ export const resolvers = {
         }
         const { curatedDatasets: [curatedDataset] } = await CuratedDatasetModel.create({ input: [curatedDatasetInput],  })
         const { curatedDatasetID } = curatedDataset
-
-        const session = driver.session()
-
 
         const presignedURL = await makePresignedURL(minioClient, bucketName, objectName)
         // const accessibleURL = presignedURL.replace('localhost', 'host.docker.internal'); // Replace with accessible hostname or IP
@@ -147,7 +137,7 @@ export const resolvers = {
           CALL apoc.periodic.iterate(
             'CALL apoc.load.csv($presignedURL, {sep: $selectedDelimiter}) YIELD list',
             'MATCH (b:CuratedDataset {curatedDatasetID: $curatedDatasetID}) 
-            CREATE (a:DatasetVariable {datasetVariableID: apoc.create.uuid(), ${inputFields.map(field => `${field.name}: list[${field.index}]`).join(', ')} }), 
+            CREATE (a:DatasetVariable {datasetVariableID: apoc.create.uuid(), ${inputFields.map(field => `${field.name.replace(/[^a-zA-Z0-9]/g, '')}: list[${field.index}]`).join(', ')} }), 
             (b)-[:HAS_DATASET_VARIABLE]->(a) 
             RETURN a',
             { batchSize: 10000, iterateList: true, parallel: true, params: { curatedDatasetID: $curatedDatasetID, presignedURL: $presignedURL, selectedDelimiter: $selectedDelimiter, inputFields: $inputFields } }
