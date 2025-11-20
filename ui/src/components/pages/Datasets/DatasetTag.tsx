@@ -36,7 +36,7 @@ export function DatasetTag({ tag, datasetID, setTags, canDelete = false }) {
     },
   });
   return (
-    <Label key={tagID} color={color}>
+    <Label key={tagID} color={color} style={{marginBottom: "5px"}}>
       {name}
       {canDelete ? (<Icon name="delete" onClick={() => removeTag()} />) : null}
     </Label>
@@ -47,7 +47,7 @@ export function DatasetReadonlyTag({ tag }) {
   const { tagID, name, category } = tag;
   const color = category ? tagColors[category.toLowerCase()] : tagColors["other"];
   return (
-    <Label key={tagID} color={color}>
+    <Label key={tagID} color={color} style={{marginBottom: "5px"}}>
       {name}
     </Label>
   );
