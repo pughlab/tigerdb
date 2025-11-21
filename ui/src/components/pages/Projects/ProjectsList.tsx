@@ -134,7 +134,6 @@ export default function ProjectsList() {
 
   const projects = data?.getProjects ?? [];
 
-
   function datasetIncludesTag(dataset, tagList) {
     return dataset.tags?.some((tag) => tagList?.includes(tag.name)) ?? false
   }
@@ -178,7 +177,7 @@ export default function ProjectsList() {
   }, [searchTerm, selectedTags, selectedCategories])
 
   let projectsContent;
-  if (loading && tagsLoading) {
+  if (loading || tagsLoading) {
     projectsContent = (
       <Segment placeholder textAlign="center">
         <Dimmer active inverted>
@@ -215,108 +214,106 @@ export default function ProjectsList() {
   const content = activeView === 'projects' ? projectsContent : cdr3Content;
 
   return (
-    <>
-      <Grid>
-        <Grid.Column>
-          <Message>
-            <Form>
-              <Form.Field
-                control={Input}
-                label="Search CDR3b sequences:"
-                placeholder="CASSIRSSYEQYF | CASS..."
-                onChange={(_e, { value }) => {
-                  setCdr3SearchTerm(value);
-                  setActiveView('cdr3');
-                }}
-                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                  if (e.key === 'Enter') {
-                    e.preventDefault();
-                  }
-                }}
-                size='massive'
-                style={{
-                  // width: "100%",
-                  height: "6rem",     // taller
-                  fontSize: "2rem",  // bigger text
-                  // padding: "1em",       // more inner space
-                  // margin: "0.5em" // space below
-                  marginBottom: 0,
-                  // border: '1px solid green',
-                  // borderRadius: '50%'
-                }}
-                icon='search'
-                iconPosition='left'
-              />
-              <Form.Field />
-              <Divider horizontal />
-              <Form.Group inline >
-                <label>Tags:</label>
-                {
-                  categories?.tagCategories?.map((category) =>
-                    <Button
-                      key={category}
-                      content={category ?? 'other'}
-                      size='medium'
-                      basic={!selectedCategories.includes(category)}
-                      color={tagColors[category] ?? 'black'}
-                      onClick={() => toggleCategory(category)}
-                    />
-                  )
+    <Grid>
+      <Grid.Column>
+        <Message>
+          <Form>
+            <Form.Field
+              control={Input}
+              label="Search CDR3b sequences:"
+              placeholder="CASSIRSSYEQYF | CASS..."
+              onChange={(_e, { value }) => {
+                setCdr3SearchTerm(value);
+                setActiveView('cdr3');
+              }}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
                 }
-                <Form.Field
-                  width={4}
-                  control={Select}
-                  multiple
-                  options={tags?.tagNames.map((tag) => ({ key: tag, value: tag, text: tag })) ?? []}
-                  placeholder='Select tags...'
-                  onChange={(_e, { value }) => setSelectedTags(value)}
-                />
-                <Form.Field
-                  // move to right side
-                  fluid
-                  width={12}
-                  control={Input}
-                  label="Search Projects:"
-                  placeholder="Names and descriptions"
-                  onChange={(_e, { value }) => {
-                    setSearchTerm(value)
-                    setActiveView('projects')
-                  }}
-                />
-              </Form.Group>
-            </Form>
-          </Message>
-          <Divider hidden />
-          <Button.Group fluid widths={2} attached='top'>
-            <Button
-              color='grey'
-              onClick={() => setActiveView('projects')}
-              basic={activeView !== 'projects'}
-            >
-              <Header
-                inverted={activeView === 'projects'}
-                content='Projects'
-                subheader='Browse projects, download data'
+              }}
+              size='massive'
+              style={{
+                // width: "100%",
+                height: "6rem",     // taller
+                fontSize: "2rem",  // bigger text
+                // padding: "1em",       // more inner space
+                // margin: "0.5em" // space below
+                marginBottom: 0,
+                // border: '1px solid green',
+                // borderRadius: '50%'
+              }}
+              icon='search'
+              iconPosition='left'
+            />
+            <Form.Field />
+            <Divider horizontal />
+            <Form.Group inline >
+              <label>Tags:</label>
+              {
+                categories?.tagCategories?.map((category) =>
+                  <Button
+                    key={category}
+                    content={category ?? 'other'}
+                    size='medium'
+                    basic={!selectedCategories.includes(category)}
+                    color={tagColors[category] ?? 'black'}
+                    onClick={() => toggleCategory(category)}
+                  />
+                )
+              }
+              <Form.Field
+                width={4}
+                control={Select}
+                multiple
+                options={tags?.tagNames.map((tag) => ({ key: tag, value: tag, text: tag })) ?? []}
+                placeholder='Select tags...'
+                onChange={(_e, { value }) => setSelectedTags(value)}
               />
-            </Button>
-            <Button
-              color='teal'
-              onClick={() => setActiveView('cdr3')}
-              basic={activeView !== 'cdr3'}
-            >
-              <Header
-                inverted={activeView === 'cdr3'}
-                content='CDR3'
-                subheader='Explore CDR3 sequences'
+              <Form.Field
+                // move to right side
+                fluid
+                width={12}
+                control={Input}
+                label="Search Projects:"
+                placeholder="Names and descriptions"
+                onChange={(_e, { value }) => {
+                  setSearchTerm(value)
+                  setActiveView('projects')
+                }}
               />
-            </Button>
-          </Button.Group>
-          <Segment attached='bottom'>
-            {content}
-          </Segment>
-        </Grid.Column>
-      </Grid>
-    </>
+            </Form.Group>
+          </Form>
+        </Message>
+        <Divider hidden />
+        <Button.Group fluid widths={2} attached='top'>
+          <Button
+            color='grey'
+            onClick={() => setActiveView('projects')}
+            basic={activeView !== 'projects'}
+          >
+            <Header
+              inverted={activeView === 'projects'}
+              content='Projects'
+              subheader='Browse projects, download data'
+            />
+          </Button>
+          <Button
+            color='teal'
+            onClick={() => setActiveView('cdr3')}
+            basic={activeView !== 'cdr3'}
+          >
+            <Header
+              inverted={activeView === 'cdr3'}
+              content='CDR3'
+              subheader='Explore CDR3 sequences'
+            />
+          </Button>
+        </Button.Group>
+        <Segment attached='bottom'>
+          {content}
+        </Segment>
+      </Grid.Column>
+    </Grid>
   );
 }
 

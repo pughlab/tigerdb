@@ -210,10 +210,10 @@ export default function ProjectCardList({
   }
 
   function toggleCategory(category) {
-    if (!selectedCategories.includes(category)) {
-      setSelectedCategories((prev) => [...prev, category])
-    } else {
+    if (selectedCategories.includes(category)) {
       setSelectedCategories((prev) => prev.filter((cat) => cat !== category))
+    } else {
+      setSelectedCategories((prev) => [...prev, category])
     }
   }
 
@@ -259,7 +259,7 @@ export default function ProjectCardList({
           <Divider hidden />
         </>
       )}
-      <Card.Group itemsPerRow={3}>
+      <Card.Group itemsPerRow={3} style={{overflowY: "auto", minHeight: "460px", maxHeight: "500px"}}>
         {projectsList?.map((project) => (
           <ProjectCard
             key={project.projectID}

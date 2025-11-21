@@ -48,7 +48,7 @@ export default function AddProjectModal({refetch}) {
       onClose={toggleOpen}
       size="large"
       trigger={
-        <Card color="black" onClick={toggleOpen}>
+        <Card color="black" onClick={toggleOpen} style={{minHeight: "250px"}}>
           <Card.Header>
             <Button attached='top' size='large'>
               <Icon name={isAuthenticated ? 'plus' : 'lock'} size="large" />

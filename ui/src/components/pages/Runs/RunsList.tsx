@@ -279,12 +279,6 @@ export default function RunsList() {
         </Dimmer>
       </Segment>
     )
-  } else if (filteredRuns.length === 0) {
-    content = <SegmentPlaceholder
-      icon="exclamation circle"
-      text="No Runs Found!"
-      textAlign="center"
-    />
   } else {
     content = (
       <Card.Group itemsPerRow={4} size="large">

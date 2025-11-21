@@ -63,7 +63,7 @@ export default function AddRunModal({refetch}) {
         <Tab.Pane key="Reference">
           <Form>
             <Segment color='violet'>
-              <Divider horizontal content='SELECT REFERENCE PROJECTS - COMING SOON'/>
+              <Divider horizontal content='SELECT REFERENCE PROJECTS'/>
               <ProjectCardList projects={referenceProjects} updateSelectedUploads={setSelectedReferenceUploads} canSelectAll={true} />
             </Segment>
           </Form>
@@ -86,7 +86,7 @@ export default function AddRunModal({refetch}) {
         //   </Button.Content>
         //   <Button.Content hidden content="Add a new run"/>
         // </Button>
-        <Card color="black" onClick={() => setOpen(!open)}>
+        <Card color="black" onClick={() => setOpen(!open)} style={{minHeight: "250px"}}>
           <Card.Header>
             <Button fluid attached='top' size='large'>
               <Icon name='plus' size="large" />
