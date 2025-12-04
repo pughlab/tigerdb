@@ -138,7 +138,6 @@ export default function ProjectsList() {
 
   const projects = data?.getProjects ?? [];
 
-
   function datasetIncludesTag(dataset, tagList) {
     return dataset.tags?.some((tag) => tagList?.includes(tag.name)) ?? false
   }
@@ -148,9 +147,11 @@ export default function ProjectsList() {
   }
 
   function doSearch() {
-    let tempProjects = [...projects]
+    let tempProjects = []
     if (searchTerm.trim().length > 0) {
       tempProjects = projects.filter((project) => project.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()))
+    } else {
+      tempProjects = [...projects]
     }
     if (selectedCategories.length > 0) {
       tempProjects = tempProjects.filter(
@@ -163,10 +164,6 @@ export default function ProjectsList() {
       )
     }
     setFilteredProjects(tempProjects)
-  }
-
-  function doCdr3Search() {
-    let tempCDR3s = []
   }
 
   function toggleCategory(category) {
@@ -182,6 +179,10 @@ export default function ProjectsList() {
   }, [location.key]);
 
   useEffect(() => {
+    setFilteredProjects(data?.getProjects ?? [])
+  }, [data])
+
+  useEffect(() => {
     doSearch()
   }, [searchTerm, selectedTags, selectedCategories])
 
@@ -194,7 +195,7 @@ export default function ProjectsList() {
 				</Dimmer>
 			</Segment>
 		)
-	} else if (projects.length === 0) {
+	} else if (filteredProjects.length === 0) {
 		projectsContent = (
 			<Label>
 				No projects available. Add a project above or ask your administrator
@@ -203,15 +204,20 @@ export default function ProjectsList() {
 		)
 	} else {
 		projectsContent = (
-			<Card.Group itemsPerRow={3}>
-        {
-          filteredProjects.length > 0 ? filteredProjects.map((project) => (
-            <ProjectDetailsCard key={project.projectID} {...{ project }} />
-          )) : projects.map((project) => (
-            <ProjectDetailsCard key={project.projectID} {...{ project }} />
-          ))
-        }
-      </Card.Group>
+      <>
+        <Divider horizontal>
+          <Header as="h4">
+            Showing {filteredProjects.length} of {projects.length} projects
+          </Header>
+        </Divider>
+        <Card.Group itemsPerRow={3}>
+          {
+            filteredProjects.map((project) => (
+              <ProjectDetailsCard key={project.projectID} {...{ project }} />
+            ))
+          }
+        </Card.Group>
+      </>
 		)
 	}
   let cdr3Content = (
