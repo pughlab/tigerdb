@@ -67,6 +67,11 @@ export const resolvers = {
             minioUpload {
               objectName
               filename
+              bucketName
+              processedDataset {
+                objectName
+                filename
+              }
             }
           }
           createdBy {

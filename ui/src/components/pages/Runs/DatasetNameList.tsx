@@ -6,7 +6,6 @@ function DatasetNameTag({
   dataset,
   updateSelectedDatasets,
   updateAvailableUploads,
-  // setProjectSelected,
   projectSelected,
 }) {
   const [selected, setSelected] = React.useState(false);
@@ -45,7 +44,11 @@ function DatasetNameTag({
   React.useEffect(() => {
     if (selected) {
       updateSelectedDatasets((prev) => [...prev, dataset]);
-      getProcessedUploads();
+      updateAvailableUploads((prev) => [
+        ...prev,
+        ...dataset.minioUpload
+      ])
+      // getProcessedUploads();
     } else {
       updateSelectedDatasets((prev) =>
         prev.filter((item) => item.datasetID !== dataset.datasetID)
@@ -69,7 +72,6 @@ function DatasetNameTag({
       basic={!selected}
       onClick={(e) => {
         e.stopPropagation();
-        // setProjectSelected(true);
         setSelected(!selected);
       }}
     >
@@ -83,7 +85,6 @@ export default function DatasetNameList({
   datasets,
   updateSelectedDatasets,
   updateAvailableUploads,
-  // setProjectSelected,
   projectSelected,
 }) {
   const datasetIDs = new Set();

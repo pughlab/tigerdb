@@ -4,6 +4,7 @@ import { Card, Popup, Button, Icon, Header, Label, Divider, Checkbox, Select, Fo
 import DatasetNameList from "./DatasetNameList";
 import ProcessedUploadsList from "./ProcessedUploadsList";
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
+import { useKeycloak } from "@react-keycloak/web";
 
 function ProjectCard({
   project,
@@ -19,25 +20,48 @@ function ProjectCard({
   const allTags = new Set()
   const { data } = useQuery(
     gql`
-      query Datasets($projectID: ID!) {
-        datasets(where: { project: { projectID: $projectID } }) {
-          datasetID
+      # query Datasets($projectID: ID!) {
+      #   datasets(where: { project: { projectID: $projectID } }) {
+      #     datasetID
+      #     name
+      #     project {
+      #       projectID
+      #       name
+      #     }
+      #     tags {
+      #       tagID
+      #       name
+      #       category
+      #     }
+      #     minioUpload {
+      #       objectName
+      #       filename
+      #       processedDataset {
+      #         objectName
+      #         filename
+      #       }
+      #     }
+      #   }
+      # }
+      query GetProject($projectID: ID!) {
+        getProjects(projectID: $projectID) {
+          projectID
           name
-          project {
-            projectID
+          datasets {
+            datasetID
             name
-          }
-          tags {
-            tagID
-            name
-            category
-          }
-          minioUpload {
-            objectName
-            filename
-            processedDataset {
+            tags {
+              name
+              category
+            }
+            minioUpload {
               objectName
+              bucketName
               filename
+              processedDataset {
+                objectName
+                filename
+              }
             }
           }
         }
@@ -71,7 +95,7 @@ function ProjectCard({
     return <></>;
   }
 
-  const datasets = data?.datasets;
+  const datasets = data?.getProjects[0]?.datasets || [];
   datasets.forEach((dataset) => {
     dataset.tags?.forEach((tag) => {
       allTags.add(tag)
@@ -169,6 +193,7 @@ export default function ProjectCardList({
   updateSelectedUploads,
   canSelectAll
 }) {
+  const { keycloak } = useKeycloak();
   const [usingPublicProjects, setUsingPublicProjects] = React.useState(true);
   const [projectsList, setProjectsList] = React.useState(projects);
   const [selectedAll, setSelectedAll] = React.useState(false)
@@ -221,10 +246,13 @@ export default function ProjectCardList({
     doFilter()
   }, [usingPublicProjects, selectedTags, selectedCategories]);
 
+  const isAuthenticated = !!keycloak?.authenticated;
+
   return (
     <>
       <Checkbox
         label="Include public projects"
+        disabled={!isAuthenticated}
         checked={usingPublicProjects}
         onChange={() => setUsingPublicProjects(!usingPublicProjects)}
       />

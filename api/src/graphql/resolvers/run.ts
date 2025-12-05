@@ -5,22 +5,22 @@ export const resolvers = {
   Query: {
     getRuns: async (obj, args, { ogm, kauth }) => {
       try {
-        const { sub: keycloakUserID } = kauth.accessToken.content;
+        const { sub: keycloakUserID } = kauth?.accessToken?.content ?? {};
         const UserModel = ogm.model("KeycloakUser");
-        const user = await UserModel.find({
+        const user = keycloakUserID ? await UserModel.find({
           where: { keycloakUserID: keycloakUserID },
-        });
-        if (!user) {
-          throw new Error("User not found");
-        }
+        }) : undefined;
+        // if (!user) {
+        //   throw new Error("User not found");
+        // }
 
-        const filters = {
+        const filters = user ? {
           OR: [
             { createdBy: user[0] },
             // { isPublic: true },
             //{ sharedWith_IN: [user[0]] }
           ]
-        }
+        } : {}
 
         // Optionally add projectID to the filters if provided
         if (args.runID) {
@@ -85,14 +85,26 @@ export const resolvers = {
       { ogm, kauth, minioClient }
     ) => {
       try {
-        const { sub: keycloakUserID } = kauth.accessToken.content;
+        const isAuthenticated = !!kauth?.accessToken?.content?.sub;
         const UserModel = ogm.model("KeycloakUser");
-        const user = await UserModel.find({
-          where: { keycloakUserID: keycloakUserID }
-        });
+        let user
+        if (isAuthenticated) {
+          const { sub: keycloakUserID } = kauth.accessToken.content;
+          user = await UserModel.find({
+            where: { keycloakUserID: keycloakUserID }
+          });
+        } else {
+          // hardcoded default user email to get sample user.
+          // Must move this email to env file after feature is finished.
+          user = await UserModel.find({
+            where: { email: 'sample@tigerdb.ca' }
+          });
+        }
         if (!user) {
           throw new Error("User not found");
         }
+        console.log("processedDatasets: ", processedDatasets)
+        console.log("referenceDatasets: ", referenceDatasets)
 
         // const ProjectModel = ogm.model("Project");
         // const { project } = await ProjectModel.find({
@@ -130,7 +142,6 @@ export const resolvers = {
               where: { node: { objectName: objectName } }
             }))
           },
-          // TODO: Uncomment this to enable reference datasets
           // referenceDatasets: {
           //   connect: referenceDatasets.map((objectName: string) => ({
           //     where: { node: { objectName: objectName } }
