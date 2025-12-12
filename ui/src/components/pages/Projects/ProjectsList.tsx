@@ -241,8 +241,11 @@ export default function ProjectsList() {
             label="Search CDR3b sequences:"
             placeholder="CASSIRSSYEQYF | CASS..."
             onChange={(_e, { value }) => {
-              setCdr3SearchTerm(value);
-              setActiveView('cdr3');
+              const isUppercase = /^[A-Za-z]+$/.test(value)
+              if (isUppercase) {
+                setCdr3SearchTerm(value);
+                setActiveView('cdr3');
+              }
             }}
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
               if (e.key === 'Enter') {
