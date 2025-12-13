@@ -221,7 +221,7 @@ export default function ProjectsList() {
             <Form.Field
               control={Input}
               label="Search CDR3b sequences:"
-              placeholder="CASSIRSSYEQYF | CASS..."
+              placeholder="CASSEDGMNTEAFF | CASS..."
               onChange={(_e, { value }) => {
                 setCdr3SearchTerm(value);
                 setActiveView('cdr3');
