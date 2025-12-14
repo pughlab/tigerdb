@@ -1,6 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import * as React from "react";
-import { Button, Form, Input, Modal, TextArea, Icon, Divider, Checkbox, Segment } from "semantic-ui-react";
+import { Button, Form, Input, Modal, TextArea, Icon, Divider, Checkbox, Segment, Card } from "semantic-ui-react";
 import useIsCurator from '../../../hooks/useIsCurator'
 import { useKeycloak } from '@react-keycloak/web';
 
@@ -8,11 +8,12 @@ export default function AddProjectModal({refetch}) {
   const { keycloak } = useKeycloak();
   const isAuthenticated = !!keycloak?.authenticated;
 
-  if (!isAuthenticated) return null;
+  // if (!isAuthenticated) return null;
 
   const [name, setName]= React.useState('')
   const [description, setDescription]= React.useState('')
   const [open, setOpen] = React.useState(false);
+  const [hovered, setHovered] = React.useState(false);
   const [isReference, setIsReference] = React.useState(false)
 
   const [createProject, {data, loading, error}] = useMutation(gql`
@@ -32,23 +33,61 @@ export default function AddProjectModal({refetch}) {
   )
 
   const { isCurator } = useIsCurator()
+  
+  function toggleOpen() {
+    if (isAuthenticated) {
+      setOpen(!open)
+    }
+  }
 
   return (
     <Modal
       closeIcon
       closeOnDimmerClick={false}
       open={open}
-      onClose={() => setOpen(!open)}
+      onClose={toggleOpen}
       size="large"
       trigger={
-        <Segment basic>
-        <Button disabled={!isAuthenticated} fluid size='large' color='black' animated='vertical' onClick={() => setOpen(!open)}>
-            <Button.Content visible>
-                <Icon name={isAuthenticated ? 'plus' : 'lock'}/>
-            </Button.Content>
-            <Button.Content hidden content="Add a new project"/>
-        </Button>
-        </Segment>
+        <Card color="black" onClick={toggleOpen} style={{minHeight: "250px"}}>
+          <Card.Header>
+            <Button attached='top' size='large'>
+              <Icon name={isAuthenticated ? 'plus' : 'lock'} size="large" />
+            </Button>
+          </Card.Header>
+          <Card.Content>
+            <div
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+              style={isAuthenticated ? {
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                color: "black",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                textDecoration: hovered ? "underline" : "none"
+              } : undefined }
+            >
+              <p style={{
+                fontWeight: "bold",
+                fontSize: isAuthenticated ? "2rem" : "1rem",
+                textAlign: "center",
+                color: "black"
+              }}>
+                Upload new project
+                {!isAuthenticated ?
+                  <>
+                    <br/>
+                    (log in required)
+                  </>
+                : null}
+              </p>
+            </div>
+          </Card.Content>
+        </Card>
       }
     >
       <Modal.Content>

@@ -104,15 +104,13 @@ export default function DatasetsList({ project, isPublicProject }) {
     );
   } else if (filteredDatasets.length === 0) {
     datasetList = (
-      <Label>
-        No datasets available. Add a dataset above or ask your administrator
-        to update your permissions.
-      </Label>
+      <AddDatasetModal projectID={projectID} refetch={refetch} />
     ) 
   } else {
     datasetList = (
       <Container>
         <List selection size="large" key="dataset">
+          <AddDatasetModal projectID={projectID} refetch={refetch} />
           {filteredDatasets.map((dataset) => (
             <DatasetListItem key={dataset.datasetID} isPublicProject={isPublicProject} {...{ dataset }} />
           ))}
@@ -130,7 +128,7 @@ export default function DatasetsList({ project, isPublicProject }) {
       <Message>
         <Divider horizontal content="Datasets" />
         <Segment basic>
-          <AddDatasetModal projectID={projectID} refetch={refetch} />
+          
         </Segment>
 
         <Form>

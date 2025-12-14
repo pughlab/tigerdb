@@ -145,6 +145,8 @@ function ProjectCard({
           </React.Fragment>
         ) : (
           <React.Fragment key="query-data">
+            { allTags.size > 0 && <Divider horizontal content="Tags" /> }
+            { allTags.size > 0 && Array.from(allTags).map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />) }
             <Divider horizontal content="Select datasets" />
             <DatasetNameList
               datasets={datasets}
@@ -153,8 +155,6 @@ function ProjectCard({
               // setProjectSelected={setSelected}
               projectSelected={selected}
             />
-            { allTags.size > 0 && <Divider horizontal content="Dataset tags" /> }
-            { allTags.size > 0 && Array.from(allTags).map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />) }
             <Divider horizontal content="Select processed uploads" />
             <ProcessedUploadsList uploads={!project.isReference ? availableUploads : allUploads} updateSelectedUploads={updateSelectedUploads} projectSelected={selected} />
           </React.Fragment>
@@ -210,10 +210,10 @@ export default function ProjectCardList({
   }
 
   function toggleCategory(category) {
-    if (!selectedCategories.includes(category)) {
-      setSelectedCategories((prev) => [...prev, category])
-    } else {
+    if (selectedCategories.includes(category)) {
       setSelectedCategories((prev) => prev.filter((cat) => cat !== category))
+    } else {
+      setSelectedCategories((prev) => [...prev, category])
     }
   }
 
@@ -259,7 +259,7 @@ export default function ProjectCardList({
           <Divider hidden />
         </>
       )}
-      <Card.Group itemsPerRow={3}>
+      <Card.Group itemsPerRow={3} style={{overflowY: "auto", minHeight: "460px", maxHeight: "500px"}}>
         {projectsList?.map((project) => (
           <ProjectCard
             key={project.projectID}

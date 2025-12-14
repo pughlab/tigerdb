@@ -5,12 +5,18 @@ import React from 'react'
 
 import Portal from '../Portal'
 import PublicPortal from '../PublicPortal'
+import CookieConsent from "../CookieConsent";
 const RenderOnAuthenticated = () => {
     const { keycloak } = useKeycloak();
 
     const isLoggedIn = keycloak.authenticated;
 
-    return isLoggedIn ? <Portal/> : <PublicPortal/>;
+    return (
+        <>
+            {isLoggedIn ? <Portal/> : <PublicPortal/>}
+            <CookieConsent />
+        </>
+    );
 };
 
 export default RenderOnAuthenticated;

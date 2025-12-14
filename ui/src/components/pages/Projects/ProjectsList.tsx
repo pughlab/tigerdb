@@ -16,7 +16,6 @@ import {
   Button,
   Icon,
   Select,
-  ButtonOr
 } from "semantic-ui-react";
 import { useLocation } from "react-router-dom";
 import useRouter from "../../../hooks/useRouter";
@@ -27,30 +26,28 @@ import AnnotationsList from "../Annotations/AnnotationsList";
 
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
 import { gql, useQuery } from "@apollo/client";
-import useAnnotationAndDatasetVariablesQuery from "../../../hooks/pages/useAnnotationVariablesQuery";
 
 function ProjectDetailsCard({ project }) {
-	const { projectID, name, description, createdBy, datasets, isPublic, createdOn, isReference } = project
+  const { projectID, name, description, createdBy, datasets, isPublic, createdOn, isReference } = project
   const creationDate = new Date(createdOn).toDateString()
-	const { navigate } = useRouter()
+  const { navigate } = useRouter()
   const tags = new Set();
-	datasets?.forEach((dataset) => {
-		dataset.tags?.forEach((tag) => {
-			tags.add(tag);
-		});
-	});
+  datasets?.forEach((dataset) => {
+    dataset.tags?.forEach((tag) => {
+      tags.add(tag);
+    });
+  });
   const color = isPublic ? 'black' : 'facebook'
-	return (
-		<Card link color={color} onClick={() => { navigate(projectID) }}>
+  return (
+    <Card link color={color} onClick={() => { navigate(projectID) }}>
       <Popup
         size='large' wide='very' position="top center"
         trigger={
           <Button attached='top' size='large' color={isReference ? 'black' : undefined}>
             <Icon name='folder open' size='large' />
           </Button>
-        }        
+        }
       >
-        {/* {project.isPublic ? 'Public' : 'Private'} project */}
         <Message size='mini'>
           <Message.Content>
             <Divider horizontal content='Details' />
@@ -69,7 +66,7 @@ function ProjectDetailsCard({ project }) {
               <Label >
                 <Icon name='calendar alternate outline' />
                 {'Created on'}
-                <Label.Detail content={creationDate}  />
+                <Label.Detail content={creationDate} />
               </Label>
             </Label.Group>
           </Segment>
@@ -80,9 +77,9 @@ function ProjectDetailsCard({ project }) {
           {name}
         </Header>
         <Label.Group>
-          <Label color={color} as={Button} content={<Icon style={{margin: 0}} name={isPublic ? 'lock open' : 'lock'} />} detail={isPublic ? 'Public' : 'Private'} />
-          <Label content={<Icon style={{margin: 0}} name='user' />} detail={createdBy.name} />
-          <Label content={<Icon style={{margin: 0}} name='calendar alternate outline' />} detail={creationDate} />
+          <Label color={color} as={Button} content={<Icon style={{ margin: 0 }} name={isPublic ? 'lock open' : 'lock'} />} detail={isPublic ? 'Public' : 'Private'} />
+          <Label content={<Icon style={{ margin: 0 }} name='user' />} detail={createdBy.name} />
+          <Label content={<Icon style={{ margin: 0 }} name='calendar alternate outline' />} detail={creationDate} />
           {
             (datasets.length > 0) && (
               <>
@@ -93,30 +90,29 @@ function ProjectDetailsCard({ project }) {
               </>
             )
           }
-          { tags.size > 0 && (
+          {tags.size > 0 && (
             <>
-              <Divider horizontal content="Tags"/>
+              <Divider horizontal content="Tags" />
               {
                 [...tags]
-                .sort((tag1, tag2) => {
-                  if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
-                    return 0
-                  }
-                  return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
-                })
-                .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
+                  .sort((tag1, tag2) => {
+                    if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
+                      return 0
+                    }
+                    return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
+                  })
+                  .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
               }
             </>
           )}
         </Label.Group>
       </Card.Content>
-		</Card>
-	)
+    </Card>
+  )
 }
 
 export default function ProjectsList() {
   const { data, loading, refetch } = useProjectsQuery();
-  // const { data: annotationsData } = useAnnotationAndDatasetVariablesQuery();
   const location = useLocation();
   const [searchTerm, setSearchTerm] = React.useState('');
   const [cdr3SearchTerm, setCdr3SearchTerm] = React.useState('');
@@ -211,6 +207,7 @@ export default function ProjectsList() {
           </Header>
         </Divider>
         <Card.Group itemsPerRow={3}>
+          <AddProjectModal refetch={refetch} />
           {
             filteredProjects.map((project) => (
               <ProjectDetailsCard key={project.projectID} {...{ project }} />
@@ -225,16 +222,13 @@ export default function ProjectsList() {
       <AnnotationsList cdr3SearchTerm={cdr3SearchTerm} selectedTags={selectedTags} selectedCategories={selectedCategories} />
     </Segment>
   )
-  
+
   const content = activeView === 'projects' ? projectsContent : cdr3Content;
 
   return (
-    <>
     <Grid>
       <Grid.Column>
-        {/* <Divider horizontal content="Projects" /> */}
-          <AddProjectModal refetch={refetch} />
-        <Message >
+        <Message>
         <Form>
           <Form.Field
             control={Input}
@@ -304,41 +298,38 @@ export default function ProjectsList() {
             }}
           />
           </Form.Group>
-
         </Form>
         </Message>
         <Divider hidden />
-          <Button.Group fluid widths={2} attached='top'>
-            <Button
-              color='grey'
-              onClick={() => setActiveView('projects')}
-              basic={activeView !== 'projects'}
-            >
-              <Header
-                inverted={activeView === 'projects'}
-                content='Projects'
-                subheader='Browse projects, download data'
-              />
-            </Button>
-            {/* <ButtonOr /> */}
-            <Button
-              color='teal'
-              onClick={() => setActiveView('cdr3')}
-              basic={activeView !== 'cdr3'}
-            >
-              <Header
-                inverted={activeView === 'cdr3'}
-                content='CDR3'
-                subheader='Explore CDR3 sequences'
-              />
-            </Button>
-          </Button.Group>
+        <Button.Group fluid widths={2} attached='top'>
+          <Button
+            color='grey'
+            onClick={() => setActiveView('projects')}
+            basic={activeView !== 'projects'}
+          >
+            <Header
+              inverted={activeView === 'projects'}
+              content='Projects'
+              subheader='Browse projects, download data'
+            />
+          </Button>
+          <Button
+            color='teal'
+            onClick={() => setActiveView('cdr3')}
+            basic={activeView !== 'cdr3'}
+          >
+            <Header
+              inverted={activeView === 'cdr3'}
+              content='CDR3'
+              subheader='Explore CDR3 sequences'
+            />
+          </Button>
+        </Button.Group>
         <Segment attached='bottom'>
-        { content }
+          {content}
         </Segment>
       </Grid.Column>
     </Grid>
-    </>
   );
 }
 
