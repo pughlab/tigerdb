@@ -35,12 +35,12 @@ $(document).ready(function() {
     
 
     /* ====== Activate scrollspy menu ===== */
-    $('body').scrollspy({target: '#docs-nav', offset: 100});
+    $('body').scrollspy({target: '#docs-nav', offset: 75});
     
     
     
     /* ===== Smooth scrolling ====== */
-	$('#docs-sidebar a.scrollto').on('click', function(e){
+	$('#docs-sidebar').on('click', 'a.scrollto', function(e){
         //store hash
         var target = this.hash;    
         e.preventDefault();
