@@ -35,20 +35,6 @@ const tigerDbContent = {
                         "The TIGERdb interface is represented by two main pages: Data and Analysis. The Data page (1) serves as the homepage, and here you can upload and view your own data, or explore public projects curated by the TIGERdb team or other users. The data page also features a search bar, allowing users to search based on TCR CDR3β amino acid sequence or by project. Once a project is uploaded, the Analysis page (2) shows all the runs/jobs that have been submitted. Run statuses are displayed by the run card colour (e.g. green for completed, yellow for in progress, etc.). Once a run is selected, the run details and results are shown, which users can download."
                     ]
                 },
-                                {
-                    id: "item-1-4",
-                    title: "Test",
-                    content: [
-                        "We'd like to hear from you! Please feel free to reach the TIGERdb team to report bugs, suggest features, provide feedback, etc. Email us at [tigerdb@uhn.ca](mailto:tigerdb@uhn.ca) or [submit an issue on Github.](https://github.com/pughlab/tigerdb/issues)"
-                    ]
-                },
-                                {
-                    id: "item-1-5",
-                    title: "Test2",
-                    content: [
-                        "We'd like to hear from you! Please feel free to reach the TIGERdb team to report bugs, suggest features, provide feedback, etc. Email us at [tigerdb@uhn.ca](mailto:tigerdb@uhn.ca) or [submit an issue on Github.](https://github.com/pughlab/tigerdb/issues)"
-                    ]
-                },
             ]
         },
         {
