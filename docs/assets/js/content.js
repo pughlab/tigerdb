@@ -239,6 +239,78 @@ const tigerDbContent = {
                 }
             ],
             subsections: []
+        },
+        {
+            id: "section-10",
+            title: "EXAMPLES",
+            icon: "fas fa-vial",
+            intro: [
+            ],
+            subsections: [
+                {
+                    id: "item-10-1",
+                    title: "EXAMPLE",
+                    content: [
+                        {
+                            type: "table",
+                            title: "Gene-by-Barcode Matrix:", // Optional header
+                            headers: ["", "BARCODE1", "BARCODE2", "BARCODE3"],
+                            firstColumnIsHeader: true, // Optional: makes the first cell in each row a <th>
+                            rows: [
+                                ["GENE1", "0", "1", "0"],
+                                ["GENE2", "2", "1", "7"],
+                                ["GENE3", "1", "4", "0"]
+                            ]
+                        },
+                        "This RUN-ID is specific to your run and only viewable by the user account who created it. Results are available for [download](#item-5-3) following run completion."
+                    ]
+                },
+                {
+                    id: "item-10-2",
+                    title: "EXAMPLE",
+                    content: [
+                        {
+                            type: "figure",
+                            src: "assets/images/search-intro.png",
+                            title: "Portal Overview", // Optional: for lightbox title
+                            caption: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional: displayed below image
+                            alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
+                            width: "800px" // Optional: defaults to 800px
+                        },
+                        "Putting some text underneath the figure",
+                        {
+                            type: "callout",
+                            style: "warning", // or "warning", "tip", "danger"
+                            title: "PHI Warning", // Optional: overrides default title
+                            content: "PHI is not permitted in public datasets."
+                        },
+                                                {
+                            type: "callout",
+                            style: "info", // or "warning", "tip", "danger"
+                            title: "this is a note ", // Optional: overrides default title
+                            content: "PHI is not permitted in public datasets."
+                        },
+                                                {
+                            type: "callout",
+                            style: "tip", // or "warning", "tip", "danger"
+                            // title: "tip", // Optional: overrides default title
+                            content: "PHI is not permitted in public datasets."
+                        },
+                                                {
+                            type: "callout",
+                            style: "danger", // or "warning", "tip", "danger"
+                            title: "danger danger", // Optional: overrides default title
+                            content: "PHI is not permitted in public datasets."
+                        },
+                                                                        {
+                            type: "callout",
+                            style: "none", // or "warning", "tip", "danger"
+                            title: "this is a generic callout ", // Optional: overrides default title
+                            content: "PHI is not permitted in public datasets."
+                        },
+                    ]
+                },
+            ]
         }
     ]
 };
