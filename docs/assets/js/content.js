@@ -75,7 +75,7 @@ const tigerDbContent = {
         {
             id: "section-3",
             title: "Data",
-            icon: "fas fa-paper-plane",
+            icon: "fas fa-database",
             intro: [],
             subsections: [
                 {
@@ -173,7 +173,7 @@ const tigerDbContent = {
         {
             id: "section-5",
             title: "Downloads",
-            icon: "fas fa-arrow-down",
+            icon: "fas fa-cloud-download-alt",
             intro: [],
             subsections: [
                 {
@@ -200,7 +200,7 @@ const tigerDbContent = {
         {
             id: "section-6",
             title: "For Curators",
-            icon: "fas fa-clipboard-check",
+            icon: "fas fa-user-shield",
             intro: [
                 "Coming soon."
             ],
