@@ -40,7 +40,7 @@ $(document).ready(function() {
     
     
     /* ===== Smooth scrolling ====== */
-	$('#docs-sidebar').on('click', 'a.scrollto', function(e){
+	$('body').on('click', 'a.scrollto', function(e){
         //store hash
         var target = this.hash;    
         e.preventDefault();

@@ -15,7 +15,12 @@ $(document).ready(function() {
     function parseText(text) {
         if (!text) return '';
         // Links: [text](url)
-        let parsed = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+        let parsed = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function(match, text, url) {
+            const isInternal = url.startsWith('#');
+            const target = isInternal ? '' : ' target="_blank" rel="noopener noreferrer"';
+            const classes = isInternal ? ' class="scrollto"' : '';
+            return `<a href="${url}"${target}${classes}>${text}</a>`;
+        });
         // Bold: **text**
         parsed = parsed.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
         // Italic: *text*
