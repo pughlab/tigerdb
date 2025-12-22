@@ -16,7 +16,8 @@ function ProjectCard({
   const [selectedDatasets, setSelectedDatasets] = React.useState([]);
   const [availableUploads, setAvailableUploads] = React.useState([]);
   const allUploads: any[] = []
-  const allTags = new Set()
+  let allTags: any[] = []
+  const seenTagnames = new Set()
   const { data } = useQuery(
     gql`
       query Datasets($projectID: ID!) {
@@ -73,9 +74,14 @@ function ProjectCard({
 
   const datasets = data?.datasets;
   datasets.forEach((dataset) => {
-    dataset.tags?.forEach((tag) => {
-      allTags.add(tag)
+    const uniqueTags = dataset.tags?.filter((tag) => {
+      if (seenTagnames.has(tag.name)) {
+        return false
+      }
+      seenTagnames.add(tag.name)
+      return true
     })
+    allTags = [...allTags, ...uniqueTags]
     dataset.minioUpload?.forEach((upload) => {
       if (project.isReference) {
         allUploads.push(upload)
@@ -138,15 +144,15 @@ function ProjectCard({
           <React.Fragment key="reference-data">
             <Divider horizontal content="Datasets" />
             { datasets.length > 0 ? datasets.map((dataset) => <Label key={`reference-dataset-${dataset.datasetID}`}>{dataset.name}</Label>) : "No datasets available." }
-            { allTags.size > 0 && <Divider horizontal content="Dataset tags" /> }
-            { allTags.size > 0 && Array.from(allTags).map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />) }
+            { allTags.length > 0 && <Divider horizontal content="Dataset tags" /> }
+            { allTags.length > 0 && allTags.map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />) }
             { datasets.length > 0 && <Divider horizontal content="Reference uploads" /> }
             { datasets.length > 0 && datasets.map((dataset) => dataset.minioUpload.map((upload) => <Label key={`reference-upload-${upload.objectName}`}>{upload.filename}</Label>)) }
           </React.Fragment>
         ) : (
           <React.Fragment key="query-data">
-            { allTags.size > 0 && <Divider horizontal content="Tags" /> }
-            { allTags.size > 0 && Array.from(allTags).map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />) }
+            { allTags.length > 0 && <Divider horizontal content="Tags" /> }
+            { allTags.length > 0 && allTags.map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />) }
             <Divider horizontal content="Select datasets" />
             <DatasetNameList
               datasets={datasets}

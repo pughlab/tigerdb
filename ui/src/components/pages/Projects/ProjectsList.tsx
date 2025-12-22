@@ -31,11 +31,17 @@ function ProjectDetailsCard({ project }) {
   const { projectID, name, description, createdBy, datasets, isPublic, createdOn, isReference } = project
   const creationDate = new Date(createdOn).toDateString()
   const { navigate } = useRouter()
-  const tags = new Set();
+  const seenTagnames = new Set();
+  let tags: any[] = []
   datasets?.forEach((dataset) => {
-    dataset.tags?.forEach((tag) => {
-      tags.add(tag);
+    const uniqueTags = dataset.tags?.filter((tag) => {
+      if (seenTagnames.has(tag.name)) {
+        return false
+      }
+      seenTagnames.add(tag.name)
+      return true
     });
+    tags = [...tags, ...uniqueTags];
   });
   const color = isPublic ? 'black' : 'facebook'
   return (
@@ -90,7 +96,7 @@ function ProjectDetailsCard({ project }) {
               </>
             )
           }
-          {tags.size > 0 && (
+          {tags.length > 0 && (
             <>
               <Divider horizontal content="Tags" />
               {

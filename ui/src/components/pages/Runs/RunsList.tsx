@@ -24,7 +24,6 @@ import useRouter from "../../../hooks/useRouter";
 import useRunsQuery from "../../../hooks/useRunsQuery";
 
 import AddRunModal from "./AddRunModal";
-import SegmentPlaceholder from "../../common/SegmentPlaceholder";
 import { DeleteRunModal } from "./DeleteRunModal";
 import { gql, useQuery } from "@apollo/client";
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
@@ -52,12 +51,18 @@ function RunsListItem({ run, refetch }) {
     });
     return newDate;
   };
-  const tags = new Set()
+  const seenTagnames = new Set()
+  let tags: any[] = []
 
   processedDatasets?.forEach((processedUpload) => {
-    processedUpload.minioUpload?.dataset?.tags?.forEach((tag) => {
-      tags.add(tag)
-    })
+    const uniqueTags = processedUpload.minioUpload?.dataset?.tags?.filter((tag) => {
+      if (seenTagnames.has(tag.name)) {
+        return false
+      }
+      seenTagnames.add(tag.name)
+      return true
+    }) || []
+    tags = [...tags, ...uniqueTags]
   })
 
   let colorStatus: SemanticCOLORS = 'black';
@@ -96,7 +101,7 @@ function RunsListItem({ run, refetch }) {
         </Card.Header>
         <List.Description content={description} />
         <List.Description>
-          { tags.size > 0 && <Divider horizontal content="Dataset tags" />}
+          { tags.length > 0 && <Divider horizontal content="Dataset tags" />}
           <Label.Group>
             {
               [...tags]
@@ -183,10 +188,10 @@ export default function RunsList() {
   }
 
   function toggleCategory(category) {
-    if (!selectedCategories.includes(category)) {
-      setSelectedCategories((prev) => [...prev, category])
-    } else {
+    if (selectedCategories.includes(category)) {
       setSelectedCategories((prev) => prev.filter((cat) => cat !== category))
+    } else {
+      setSelectedCategories((prev) => [...prev, category])
     }
   }
 
