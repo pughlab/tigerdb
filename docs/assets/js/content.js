@@ -10,29 +10,28 @@ const tigerDbContent = {
                     id: "item-1-1",
                     title: "About us",
                     content: [
-                        "TIGERdb (T-cell and ImmunoGlobulin Epitope Receptor Database) is a curated, web-based platform developed to support the storage, analysis, and access of antigen specific T-cell receptor (TCR) data. TIGERdb incorporates a manually curated compendium of experimentally validated TRB-CDR3B sequences from published studies"
+                        "TIGERdb (T-cell and ImmunoGlobulin Epitope Receptor Database) is a curated, web-based platform developed to support the storage, analysis, and access of antigen specific T-cell receptor (TCR) data. TIGERdb incorporates a manually curated compendium of experimentally validated TRB-CDR3B sequences from published studies with a growing atlas of orphan TCRs derived from diverse biospecimens. TIGERdb further provides an automated GLIPHII-based clustering and network analysis pipeline that integrates user-uploaded repertoires with reference datasets to identify shared motifs and global sequence homologies, enabling TCR similarity mapping and specificity inference."
                     ]
                 },
+
                 {
                     id: "item-1-2",
-                    title: "Contact us",
-                    content: [
-                        "We'd like to hear from you! Please feel free to reach the TIGERdb team to report bugs, suggest features, provide feedback, etc. Email us at [tigerdb@uhn.ca](mailto:tigerdb@uhn.ca) or [submit an issue on Github.](https://github.com/pughlab/tigerdb/issues)"
-                    ]
-                },
-                {
-                    id: "item-1-3",
-                    title: "Portal Overview",
+                    title: "Portal overview",
                     content: [
                         {
                             type: "figure",
                             src: "assets/images/search-intro.png",
-                            title: "Portal Overview", // Optional: for lightbox title
+                            title: "Portal overview", // Optional: for lightbox title
                             caption: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional: displayed below image
                             alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
                             width: "800px" // Optional: defaults to 800px
                         },
-                        "The TIGERdb interface is represented by two main pages: Data and Analysis. The Data page (1) serves as the homepage, and here you can upload and view your own data, or explore public projects curated by the TIGERdb team or other users. The data page also features a search bar, allowing users to search based on TCR CDR3β amino acid sequence or by project. Once a project is uploaded, the Analysis page (2) shows all the runs/jobs that have been submitted. Run statuses are displayed by the run card colour (e.g. green for completed, yellow for in progress, etc.). Once a run is selected, the run details and results are shown, which users can download."
+                        "The TIGERdb interface is represented by two main pages: Data and Analysis. The Data page (1) serves as the homepage, and here you can upload and view your own data, or explore public projects curated by the TIGERdb team or other users. The data page also features a search bar, allowing users to search based on TCR CDR3β amino acid sequence or by project. Once a project is uploaded, the Analysis page (2) shows all the runs/jobs that have been submitted. Run statuses are displayed by the run card colour (e.g. green for completed, yellow for in progress, etc.). Once a run is selected, the run details and results are shown, which users can download.",
+                                        {type: "callout",
+                    style: "none", // or "warning", "tip", "danger"
+                    title: "Contact us", // Optional: overrides default title
+                    content: "We'd like to hear from you! Please feel free to reach the TIGERdb team to report bugs, suggest features, provide feedback, etc. Email us at [tigerdb@uhn.ca](mailto:tigerdb@uhn.ca)" 
+                },
                     ]
                 },
             ]
@@ -42,19 +41,19 @@ const tigerDbContent = {
             title: "Search",
             icon: "fas fa-search",
             intro: [
-                "The search bar appears at the top of the Data page. Here, users may search by CDR3β amino acid sequences, projects, and use tags to filter searches across the curated publications and user-uploaded datasets."
+                "The search bar appears at the top of the Data page. Here, users may search by CDR3β amino acid sequences, projects, and use tags to filter searches across the curated publications and user-uploaded datasets. The search functionality is designed to help users quickly locate relevant TCRs and projects within TIGERdb."
             ],
             subsections: [
                 {
                     id: "item-2-1",
-                    title: "TCR Search",
+                    title: "TCR search",
                     content: [
                         "Searches can be performed against the full set of curated public TCRs as well as user uploaded project data. Search for one or more CDR3β (CDR3b) sequences. Separate multiple sequences using vertical bars ( | )."
                     ]
                 },
                 {
                     id: "item-2-2",
-                    title: "Projects Search",
+                    title: "Projects search",
                     content: [
                         "Here, you can search for curated publications (196 total studies) of validated TCRs. You may search by the project name or description."
                     ]
@@ -65,7 +64,7 @@ const tigerDbContent = {
                     content: [
                         "Data (both TCRs and Projects) in TIGERdb can be easily filtered by tags. There are two hierarchies of tags: 1) Tag Categories and 2) Individual Tags.",
                         { type: "heading", level: 3, text: "Tag categories" },
-                        "Examples include cancer, bacterial, viral, etc.",
+                        "Options for tag categories include cancer, non-cancer, viral, bacterial, and other.",
                         { type: "heading", level: 3, text: "Individual tags" },
                         "Examples include cancer type, source, etc."
                     ]
@@ -80,45 +79,56 @@ const tigerDbContent = {
             subsections: [
                 {
                     id: "item-3-1",
-                    title: "Creating a Project",
+                    title: "Creating a project",
                     content: [
-                        "You must be logged in to create a new project. To create a new project, click on the 'Upload new project' card in the list of projects. A 'New Project' window will appear where you can enter a name and description for the project. If the project you are uploading will be used as a reference project, select the 'This is a reference project' option as well. Finally, click on the 'Create Project' button."
+                        "You must be logged in to create a new project. To create a new project, click on the 'Upload new project' card in the list of projects.",
+                        "A 'New Project' window will appear where you can enter a name and description for the project.", 
+                        {
+                            type: "figure",
+                            src: "assets/images/createproject.png",
+                            title: "Create a project", // Optional: for lightbox title
+                            caption: "Creating a project", // Optional: displayed below image
+                            alt: "Creating a project", // Optional
+                            width: "800px" // Optional: defaults to 800px
+                        }
                     ]
+                    
                 },
                 {
                     id: "item-3-2",
-                    title: "Creating a Dataset",
+                    title: "Creating a dataset",
                     content: [
                         "To add a dataset to a project you have created, first select it by clicking on its card in the Project view of the Data page. When the project details are shown, click on the “Add new dataset” button. A “New Dataset” window will open. Here, type the dataset's name and click on the 'Create Dataset' button. Once created, the dataset will be listed within the project and will be ready for data upload."
                     ]
                 },
                 {
                     id: "item-3-3",
-                    title: "Uploading to a Dataset",
+                    title: "Uploading to a dataset",
                     content: [
                         "To upload data to an existing dataset, click on the data set and then the “Upload TCR Data” button. A window will show up, where you can upload a dataset either by clicking on the 'Upload' button, or by dragging and dropping the dataset's file into the window. After the upload is successful, the Uploads section will be updated to show the name of the file you uploaded, as well as the options to select headers for annotation/curation, annotate and curate the dataset, and finally the Delete button."
                     ]
                 },
                 {
                     id: "item-3-4",
-                    title: "Setting Dataset Headers for Analysis",
+                    title: "Setting dataset headers for analysis",
                     content: [
-                        {
-                            type: "table",
-                            title: "Gene-by-Barcode Matrix:", // Optional header
-                            headers: ["", "BARCODE1", "BARCODE2", "BARCODE3"],
-                            firstColumnIsHeader: true, // Optional: makes the first cell in each row a <th>
+                            {type: "table",
+                            title: "Header format for datasets", // Optional header
+                            headers: ["CDR3b", "TRBV", "TRBJ", "CDR3a","Subject:Condition", "Clone Count"],
+                            firstColumnIsHeader: false, // Optional: makes the first cell in each row a <th>
+                            // TBD - fill in example rows
+
                             rows: [
-                                ["GENE1", "0", "1", "0"],
-                                ["GENE2", "2", "1", "7"],
-                                ["GENE3", "1", "4", "0"]
+                                ["CAPPGLAGGTDTQYF", "TRBV30", "TRBJ2-3", "NA", "INSPIRE:INS-A-002_ST_SCCHN_ShortTermSD", "1"],
+                                ["CARAGSNEQFF", "TRBV19", "TRBJ2-1", "NA", "INSPIRE:INS-A-002_ST-C3T_SCCHN_ShortTermSD", "1"],
+                                ["CARIGQSYEQYF", "TRBV6-7", "TRBJ2-7", "NA", "INSPIRE:INS-A-002_ST_SCCHN_ShortTermSD", "1"]
                             ]
                         },
                         {
                             type: "callout",
                             style: "info", // or "warning", "tip", "danger"
                             // title: "Note", // Optional: overrides default title
-                            content: "One-line-command R script to convert gene-by-barcode text files..." 
+                            content: "Download example dataset file [here](https://github.com/pughlab/tigerdb) ." 
                             // content can also be an array of strings for multiple paragraphs
                         },
                         "When you upload a file for the dataset, you must select the headers that will be used for processing. To do so, click on the 'Set Headers' button (symbolized by a blue table button). A new window will appear, showing you the first five rows of your file. Select the file delimiter in the dropdown menu. The options are tab, comma, semicolon, and pipe. Select the checkbox below if the file includes a header as the first row.",
@@ -137,7 +147,7 @@ const tigerDbContent = {
             subsections: [
                 {
                     id: "item-4-1",
-                    title: "Creating a Run",
+                    title: "Creating a run",
                     content: [
                         "To create a new run, select the Add New Run card from the runs list. This opens the New Run window, where you must enter a name and description for the run. These fields are used to document the purpose of the analysis and distinguish it from other runs.",
                         "Next, users select the projects and datasets that will serve as input for the analysis. At least one query project and one reference project must be selected. Query projects provide the datasets to be analyzed, while reference projects supply curated datasets used for comparison.",
@@ -147,14 +157,14 @@ const tigerDbContent = {
                 },
                 {
                     id: "item-4-2",
-                    title: "Submitting a Run",
+                    title: "Submitting a run",
                     content: [
                         "To submit a run, click on it. The details for the run will appear. You can change some parameters for the run before submission by inputting the values you need in their corresponding fields. After you have finished, click on the 'Submit Run' button at the bottom of the page. The run's status will change to Submitted, and the run logs will be shown and updated in real time."
                     ]
                 },
                 {
                     id: "item-4-3",
-                    title: "Run Status",
+                    title: "Run status",
                     content: [
                         "The status of each analysis run is displayed on the Analysis page and is updated automatically as the run progresses. Each status is also visually indicated by color: Pending runs are shown in orange, Submitted runs in yellow, Completed runs in green, and Failed runs in red.",
                         { type: "heading", level: 3, text: "Public Runs" }
@@ -162,10 +172,10 @@ const tigerDbContent = {
                 },
                 {
                     id: "item-4-4",
-                    title: "Interpreting GLIPHII and Network Visualization Results",
+                    title: "Interpreting GLIPHII and network visualization results",
                     content: [
-                        { type: "heading", level: 3, text: "GLIPHII Results" },
-                        { type: "heading", level: 3, text: "Network Visualization Results" }
+                        { type: "heading", level: 3, text: "GLIPHII results" },
+                        { type: "heading", level: 3, text: "Network visualization results" }
                     ]
                 }
             ]
@@ -192,7 +202,7 @@ const tigerDbContent = {
                 },
                 {
                     id: "item-5-3",
-                    title: "Downloading GLIPHII Analysis and Network Visualization Results",
+                    title: "Downloading GLIPHII analysis and network visualization results",
                     content: []
                 }
             ]
@@ -202,13 +212,94 @@ const tigerDbContent = {
             title: "For Curators",
             icon: "fas fa-user-shield",
             intro: [
-                "Coming soon."
+                "The curator role is intended for users who manage curated reference datasets in TIGERdb. A reference project in TIGERdb is a curated project that contains validated datasets and provide high-quality T-cell receptor data with known or well-characterized specificities and serve as the basis for specificity annotation and comparative analysis across user-submitted datasets.",
+                {
+                    type: "callout",
+                    style: "none", // or "warning", "tip", "danger"
+                    title: "Become a TIGERdb Curator", // Optional: overrides default title
+                    content: "To request curator access, please contact [tigerdb@uhn.ca](mailto:tigerdb@uhn.ca)"
+                }
             ],
-            subsections: []
+            subsections: [
+                {
+                    id: "item-6-1",
+                    title: "Creating a reference project",
+                    content: [
+                        "Curators create reference projects by following the [standard project creation process](#item-3-1) and selecting the Reference Project checkbox during setup.",
+                        "Projects must be named using the full article title followed by (First Author, Journal Abbreviation, Year), and the project description should begin with [ABSTRACT] followed by the complete pasted abstract text. Finally, click on the 'Create Project' button.",                      
+                         {
+                            type: "figure",
+                            src: "assets/images/curator-refproject.png",
+                            title: "Portal Overview", // Optional: for lightbox title
+                            caption: "Selecting the “Reference Project” option during project creation.", // Optional: displayed below image
+                            alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
+                            width: "800px" // Optional: defaults to 800px
+                        }
+                    ]
+                },
+             { id: "item-6-2",
+                    title: "Format for reference project datasets",
+                    content: [
+                        "Reference datasets in TIGERdb must follow a standardized header format to ensure consistent processing and integration with downstream analyses. Uploaded files should include the required columns exactly as specified in the table below, with each column containing appropriately formatted values.",
+                            {type: "table",
+                            title: "Header format for datasets", // Optional header
+                            headers: ["CDR3b", "CDR3a", "TRBV", "TRAV", "TRBJ", "TRAJ", "MHC", "MHC class", "WT/Mutant epitope amino acid sequence", "Epitope gene/protein name", "Mutation", "Recognizes WT epitope", "Epitope species", "Reference", "Uniprot", "Notes"],
+                            firstColumnIsHeader: false, // Optional: makes the first cell in each row a <th>
+                            // TBD - fill in example rows
+                            rows: [
+                                ["CASSQAPPGGAYEQYF", "NA", "TRBV7-6", "NA", "TRBJ2-7", "NA", "B*08", "MHCI", "FLRGRAYGL", "EBNA3", "WT", "TRUE", "EBV", "PMID:9788968", "UniProt:P12977", "51 chromium cytotoxicity Positive"],
+                                ["CASSQAPPRGAYEQYF", "NA", "TRBV7-6", "NA", "TRBJ2-7", "NA", "B*08", "MHCI", "FLRGRAYGL", "EBNA3", "WT", "TRUE", "EBV", "PMID:9788968", "UniProt:P12977", "51 chromium cytotoxicity Positive"],
+                                ["CASRYRDDSYNEQFF", "NA", "TRBV7-9", "NA", "TRBJ2-1", "NA", "B*08", "MHCI", "FLRGRAYGL", "EBNA3", "WT", "TRUE", "EBV", "PMID:9788968", "UniProt:P12977", "51 chromium cytotoxicity Positive"]
+                            ]
+                        },
+                        // info callout for example download link 
+                        {
+                            type: "callout",
+                            style: "info", // or "warning", "tip", "danger"
+                            // title: "Note", // Optional: overrides default title
+                            content: "Download example reference dataset file [here](#) ." 
+                            // content can also be an array of strings for multiple paragraphs
+                        },
+                    ]
+                }, 
+                
+             {id: "item-6-3",
+                    title: "Making your reference project public",
+                    content: [
+                        "Projects in TIGERdb are private by default. To make your reference project public, navigate to the project details page and click on the 'Make Project Public' button. Once public, the reference project will be accessible to all users of TIGERdb for use in their analyses.",
+                        {
+                            type: "figure",
+                            src: "assets/images/curator-publicproj.png",
+                            title: "Making a project public", // Optional: for lightbox title
+                            caption: "Making a project public", // Optional: displayed below image
+                            alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
+                            width: "800px" // Optional: defaults to 800px
+                        },
+                        {
+                    type: "callout",
+                    style: "warning", // or "warning", "tip", "danger"
+                    title: "Warning", // Optional: overrides default title
+                    content: "This action is irreversible. If you make a project public by mistake, please contact the TIGERdb team at [tigerdb@uhn.ca](mailto:tigerdb@uhn.ca)"
+                        }
+                    
+                    ]
+                }, 
+                {id: "item-6-4",
+                    title: "Tagging Projects",
+                    content: [
+                    " Datasets can be tagged to help users find relevant data when searching TIGERdb. To add tags to your reference project datasets, navigate to the project details page and click on the 'Add Tags' button. A window will appear where you can select from existing tags or create new ones. After selecting the appropriate tags, click 'Save' to apply them to the project.",
+                    "There are two hierarchies of tags: 1) Tag Categories and 2) Individual Tags.",
+                        { type: "heading", level: 3, text: "Use an existing tag" },
+                        "To use an existing tag, select its name from the list of available tags and click on the 'Add tag' button.",
+                        { type: "heading", level: 3, text: "Create a new tag" },
+                        "To create a new tag, write the tag's name and select its category (cancer, non-cancer, viral, bacterial, or other), then click 'Create tag'. If you create a new tag, it will be available for other projects within TIGERdb.",
+                    ]
+                }
+            ]
         },
         {
             id: "section-7",
-            title: "Privacy and Security Policy",
+            title: "Privacy and security policy",
             icon: "fas fa-key",
             intro: [],
             subsections: []
