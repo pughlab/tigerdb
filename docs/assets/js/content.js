@@ -41,9 +41,19 @@ const tigerDbContent = {
             title: "Search",
             icon: "fas fa-search",
             intro: [
-                "The search bar appears at the top of the Data page. Here, users may search by CDR3β amino acid sequences, projects, and use tags to filter searches across the curated publications and user-uploaded datasets. The search functionality is designed to help users quickly locate relevant TCRs and projects within TIGERdb."
-            ],
+                "The search bar appears at the top of the Data page. Here, users may search by CDR3β amino acid sequences, projects, and use tags to filter searches across the curated publications and user-uploaded datasets. The search functionality is designed to help users quickly locate relevant TCRs and projects within TIGERdb.", 
+                 {
+                            type: "figure",
+                            src: "assets/images/searchgif.gif",
+                            title: "Search bar", // Optional: for lightbox title
+                            caption: "Search bar", // Optional: displayed below image
+                            alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
+                            width: "800px" // Optional: defaults to 800px
+                        },
+            ], 
+
             subsections: [
+                
                 {
                     id: "item-2-1",
                     title: "TCR search",
@@ -51,6 +61,7 @@ const tigerDbContent = {
                         "Searches can be performed against the full set of curated public TCRs as well as user uploaded project data. Search for one or more CDR3β (CDR3b) sequences. Separate multiple sequences using vertical bars ( | )."
                     ]
                 },
+                
                 {
                     id: "item-2-2",
                     title: "Projects search",
@@ -62,6 +73,14 @@ const tigerDbContent = {
                     id: "item-2-3",
                     title: "Filtering by tags",
                     content: [
+                         {
+                            type: "figure",
+                            src: "assets/images/searchfilter.gif",
+                            title: "Searching by figure", // Optional: for lightbox title
+                            caption: "Searching by figure", // Optional: displayed below image
+                            alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
+                            width: "800px" // Optional: defaults to 800px
+                        },
                         "Data (both TCRs and Projects) in TIGERdb can be easily filtered by tags. There are two hierarchies of tags: 1) Tag Categories and 2) Individual Tags.",
                         { type: "heading", level: 3, text: "Tag categories" },
                         "Options for tag categories include cancer, non-cancer, viral, bacterial, and other.",
@@ -75,7 +94,9 @@ const tigerDbContent = {
             id: "section-3",
             title: "Data",
             icon: "fas fa-database",
-            intro: [],
+            intro: [
+                "The Data page of TIGERdb is the central hub for managing and exploring T-cell receptor (TCR) datasets. This page allows users to upload new projects and datasets and access existing information. "
+            ],
             subsections: [
                 {
                     id: "item-3-1",
@@ -105,13 +126,31 @@ const tigerDbContent = {
                     id: "item-3-3",
                     title: "Uploading to a dataset",
                     content: [
-                        "To upload data to an existing dataset, click on the data set and then the “Upload TCR Data” button. A window will show up, where you can upload a dataset either by clicking on the 'Upload' button, or by dragging and dropping the dataset's file into the window. After the upload is successful, the Uploads section will be updated to show the name of the file you uploaded, as well as the options to select headers for annotation/curation, annotate and curate the dataset, and finally the Delete button."
+
+                        "To upload data to an existing dataset, click on the data set and then the “Upload TCR Data” button. A window will show up, where you can upload a dataset either by clicking on the 'Upload' button, or by dragging and dropping the dataset's file into the window. After the upload is successful, the Uploads section will be updated to show the name of the file you uploaded, as well as the options to select headers for annotation/curation, annotate and curate the dataset, and finally the Delete button.",
+                        {
+                            type: "figure",
+                            src: "assets/images/createdata.gif",
+                            title:"Uploading data", // Optional: for lightbox title
+                            caption: "Uploading data", // Optional: displayed below image
+                            alt: "Creating a project", // Optional
+                            width: "800px" // Optional: defaults to 800px
+                        }
                     ]
+                    
                 },
                 {
                     id: "item-3-4",
                     title: "Setting dataset headers for analysis",
                     content: [
+                        {
+                            type: "figure",
+                            src: "assets/images/header.gif",
+                            title:"Uploading data", // Optional: for lightbox title
+                            caption: "Uploading data", // Optional: displayed below image
+                            alt: "Creating a project", // Optional
+                            width: "800px" // Optional: defaults to 800px
+                        },
                             {type: "table",
                             title: "Header format for datasets", // Optional header
                             headers: ["CDR3b", "TRBV", "TRBJ", "CDR3a","Subject:Condition", "Clone Count"],
@@ -131,7 +170,8 @@ const tigerDbContent = {
                             content: "Download example dataset file [here](https://github.com/pughlab/tigerdb) ." 
                             // content can also be an array of strings for multiple paragraphs
                         },
-                        "When you upload a file for the dataset, you must select the headers that will be used for processing. To do so, click on the 'Set Headers' button (symbolized by a blue table button). A new window will appear, showing you the first five rows of your file. Select the file delimiter in the dropdown menu. The options are tab, comma, semicolon, and pipe. Select the checkbox below if the file includes a header as the first row.",
+                        "When you upload a file for the dataset, you must select the headers that will be used for processing. To do so, click on the 'Set Headers' button (symbolized by a blue table button).", 
+                        "A new window will appear, showing you the first five rows of your file. Select the file delimiter in the dropdown menu. The options are tab, comma, semicolon, and pipe. Select the checkbox below if the file includes a header as the first row.",
                         "Next, map the appropriate columns for the following fields: CDR3b, TRBV, TRBJ, CDR3a, subject condition, and clone count. Once all required fields have been assigned, the header information can be submitted."
                     ]
                 }
@@ -142,14 +182,22 @@ const tigerDbContent = {
             title: "Analysis",
             icon: "fab fa-react",
             intro: [
-                "The Analysis page of TIGERdb provides tools for running and managing GLIPHII analyses using datasets available within the platform. This page displays all analysis runs created by the user, allows new runs to be configured and submitted, provides real-time status updates, and enables downloading of results or logs."
+                "The Analysis page of TIGERdb provides tools for running and managing GLIPHII analyses using datasets available within the platform. This page displays all analysis runs created by the user, allows new runs to be configured and submitted, provides real-time status updates, and enables downloading of results or logs.", 
+                {
+                            type: "figure",
+                            src: "assets/images/rungif.gif",
+                            title: "Howtorun", // Optional: for lightbox title
+                            caption: "How to do a run", // Optional: displayed below image
+                            alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
+                            width: "800px" // Optional: defaults to 800px
+                        }
             ],
             subsections: [
                 {
                     id: "item-4-1",
                     title: "Creating a run",
                     content: [
-                        "To create a new run, select the Add New Run card from the runs list. This opens the New Run window, where you must enter a name and description for the run. These fields are used to document the purpose of the analysis and distinguish it from other runs.",
+                        "To create a new run, select the Add New Run card from the runs list. This opens the New Run window, where you must enter a name and description for the run.", 
                         "Next, users select the projects and datasets that will serve as input for the analysis. At least one query project and one reference project must be selected. Query projects provide the datasets to be analyzed, while reference projects supply curated datasets used for comparison.",
                         "To select a query project, locate the project containing the desired dataset and select the dataset name to view its uploaded files. One or more files may be selected as input sources. Multiple datasets and projects can be included as needed. Selecting the project itself will automatically include all datasets and uploaded files associated with that project.",
                         "Reference projects are selected in a similar manner; however, all uploaded datasets within a reference project are automatically included once the project is selected. After all required inputs have been chosen, the run can be created and will be saved to the database with an initial status of Pending."
@@ -161,20 +209,37 @@ const tigerDbContent = {
                     content: [
                         "To submit a run, click on it. The details for the run will appear. You can change some parameters for the run before submission by inputting the values you need in their corresponding fields. After you have finished, click on the 'Submit Run' button at the bottom of the page. The run's status will change to Submitted, and the run logs will be shown and updated in real time."
                     ]
+                    
                 },
                 {
                     id: "item-4-3",
                     title: "Run status",
                     content: [
-                        "The status of each analysis run is displayed on the Analysis page and is updated automatically as the run progresses. Each status is also visually indicated by color: Pending runs are shown in orange, Submitted runs in yellow, Completed runs in green, and Failed runs in red.",
-                        { type: "heading", level: 3, text: "Public Runs" }
+                        "The status of each analysis run is displayed on the Analysis page and is updated automatically as the run progresses.",
+                        {
+                            type: "figure",
+                            src: "assets/images/runstatus.png",
+                            title: "Project run status", // Optional: for lightbox title
+                            caption: "Project run status: Pending runs are shown in orange, Submitted runs in yellow, Completed runs in green, and Failed runs in red. ” option during project creation.", // Optional: displayed below image
+                            alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
+                            width: "800px" // Optional: defaults to 800px
+                        }
                     ]
                 },
                 {
                     id: "item-4-4",
-                    title: "Interpreting GLIPHII and network visualization results",
+                    title: "Interpreting Visualizations",
                     content: [
                         { type: "heading", level: 3, text: "GLIPHII results" },
+                        {
+                            type: "figure",
+                            src: "assets/images/gliph.png",
+                            title:"Uploading data", // Optional: for lightbox title
+                            caption: "Uploading data", // Optional: displayed below image
+                            alt: "Creating a project", // Optional
+                            width: "800px" // Optional: defaults to 800px
+                        },
+                        "GLIPHII (Grouping of Lymphocyte Interactions by Paratope Hotspots) is an algorithm that groups TRB-CDR3 sequences into shared specificity signatures based on global sequence similarity and recurring local motifs, then integrates internal and external datasets to improve clustering power. The resulting networks are filtered, refined into communities, and annotated using known antigen specificities and HLA convergence, producing an abstract “specificity landscape” that highlights predicted shared TCR antigen recognition patterns.", 
                         { type: "heading", level: 3, text: "Network visualization results" }
                     ]
                 }
@@ -198,12 +263,30 @@ const tigerDbContent = {
                 {
                     id: "item-5-2",
                     title: "Downloading raw TCRs",
-                    content: []
+                    content: [
+                        "Raw TCR data from any dataset within TIGERdb can be downloaded as a CSV file. To download the raw TCRs, navigate to the Data page and select the desired project. Within the project details, locate the dataset containing the TCRs you wish to download. Click on the 'Download TCRs' button to initiate the download of the dataset in CSV format.",
+                        {type: "figure",
+                            src: "assets/images/downloadtcr.png",
+                            title: "Downloading raw TCRs", // Optional: for lightbox title
+                            caption: "Downloading raw TCRs", // Optional: displayed below image
+                            alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
+                            width: "800px" // Optional: defaults to 800px  
+                        }
+                    ]
                 },
                 {
                     id: "item-5-3",
-                    title: "Downloading GLIPHII analysis and network visualization results",
-                    content: []
+                    title: "Downloading Visualizations",
+                    content: [
+                        "Analysis results, including visualizations generated by GLIPHII and network analyses, can be downloaded directly from the Analysis page. Once a run is completed, navigate to the run details page where the results are displayed. Each visualization will have an associated 'Download' button that allows users to save the images in high-resolution formats suitable for publication or further analysis.", 
+                        {type: "figure",
+                            src: "assets/images/downloadvis.png",
+                            title: "Downloading visualizations", // Optional: for lightbox title
+                            caption: "Downloading visualizations", // Optional: displayed below image
+                            alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
+                            width: "800px" // Optional: defaults to 800px
+                        }
+                    ]
                 }
             ]
         },
@@ -229,8 +312,8 @@ const tigerDbContent = {
                         "Projects must be named using the full article title followed by (First Author, Journal Abbreviation, Year), and the project description should begin with [ABSTRACT] followed by the complete pasted abstract text. Finally, click on the 'Create Project' button.",                      
                          {
                             type: "figure",
-                            src: "assets/images/curator-refproject.png",
-                            title: "Portal Overview", // Optional: for lightbox title
+                            src: "assets/images/createref.png",
+                            title: "Creating a reference project", // Optional: for lightbox title
                             caption: "Selecting the “Reference Project” option during project creation.", // Optional: displayed below image
                             alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
                             width: "800px" // Optional: defaults to 800px
@@ -269,7 +352,7 @@ const tigerDbContent = {
                         "Projects in TIGERdb are private by default. To make your reference project public, navigate to the project details page and click on the 'Make Project Public' button. Once public, the reference project will be accessible to all users of TIGERdb for use in their analyses.",
                         {
                             type: "figure",
-                            src: "assets/images/curator-publicproj.png",
+                            src: "assets/images/publicproject.png",
                             title: "Making a project public", // Optional: for lightbox title
                             caption: "Making a project public", // Optional: displayed below image
                             alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
@@ -330,78 +413,8 @@ const tigerDbContent = {
                 }
             ],
             subsections: []
-        },
-        {
-            id: "section-10",
-            title: "EXAMPLES",
-            icon: "fas fa-vial",
-            intro: [
-            ],
-            subsections: [
-                {
-                    id: "item-10-1",
-                    title: "EXAMPLE",
-                    content: [
-                        {
-                            type: "table",
-                            title: "Gene-by-Barcode Matrix:", // Optional header
-                            headers: ["", "BARCODE1", "BARCODE2", "BARCODE3"],
-                            firstColumnIsHeader: true, // Optional: makes the first cell in each row a <th>
-                            rows: [
-                                ["GENE1", "0", "1", "0"],
-                                ["GENE2", "2", "1", "7"],
-                                ["GENE3", "1", "4", "0"]
-                            ]
-                        },
-                        "This RUN-ID is specific to your run and only viewable by the user account who created it. Results are available for [download](#item-5-3) following run completion."
-                    ]
-                },
-                {
-                    id: "item-10-2",
-                    title: "EXAMPLE",
-                    content: [
-                        {
-                            type: "figure",
-                            src: "assets/images/search-intro.png",
-                            title: "Portal Overview", // Optional: for lightbox title
-                            caption: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional: displayed below image
-                            alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
-                            width: "800px" // Optional: defaults to 800px
-                        },
-                        "Putting some text underneath the figure",
-                        {
-                            type: "callout",
-                            style: "warning", // or "warning", "tip", "danger"
-                            title: "PHI Warning", // Optional: overrides default title
-                            content: "PHI is not permitted in public datasets."
-                        },
-                                                {
-                            type: "callout",
-                            style: "info", // or "warning", "tip", "danger"
-                            title: "this is a note ", // Optional: overrides default title
-                            content: "PHI is not permitted in public datasets."
-                        },
-                                                {
-                            type: "callout",
-                            style: "tip", // or "warning", "tip", "danger"
-                            // title: "tip", // Optional: overrides default title
-                            content: "PHI is not permitted in public datasets."
-                        },
-                                                {
-                            type: "callout",
-                            style: "danger", // or "warning", "tip", "danger"
-                            title: "danger danger", // Optional: overrides default title
-                            content: "PHI is not permitted in public datasets."
-                        },
-                                                                        {
-                            type: "callout",
-                            style: "none", // or "warning", "tip", "danger"
-                            title: "this is a generic callout ", // Optional: overrides default title
-                            content: "PHI is not permitted in public datasets."
-                        },
-                    ]
-                },
-            ]
         }
     ]
 };
+
+
