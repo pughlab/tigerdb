@@ -76,7 +76,7 @@ const tigerDbContent = {
                          {
                             type: "figure",
                             src: "assets/images/searchfilter.gif",
-                            title: "Searching by figure", // Optional: for lightbox title
+                            title: "Filtering by tags", // Optional: for lightbox title
                             caption: "Searching by figure", // Optional: displayed below image
                             alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
                             width: "800px" // Optional: defaults to 800px
@@ -146,7 +146,7 @@ const tigerDbContent = {
                         {
                             type: "figure",
                             src: "assets/images/header.gif",
-                            title:"Uploading data", // Optional: for lightbox title
+                            title:"Setting headers", // Optional: for lightbox title
                             caption: "Uploading data", // Optional: displayed below image
                             alt: "Creating a project", // Optional
                             width: "800px" // Optional: defaults to 800px
@@ -220,7 +220,7 @@ const tigerDbContent = {
                             type: "figure",
                             src: "assets/images/runstatus.png",
                             title: "Project run status", // Optional: for lightbox title
-                            caption: "Project run status: Pending runs are shown in orange, Submitted runs in yellow, Completed runs in green, and Failed runs in red. ” option during project creation.", // Optional: displayed below image
+                            caption: "Project run status: Pending runs are shown in orange, Submitted runs in yellow, Completed runs in green, and Failed runs in red.", // Optional: displayed below image
                             alt: "The two main pages within TIGERdb: 1) Data, 2) Analysis.", // Optional
                             width: "800px" // Optional: defaults to 800px
                         }
@@ -234,7 +234,7 @@ const tigerDbContent = {
                         {
                             type: "figure",
                             src: "assets/images/gliph.png",
-                            title:"Uploading data", // Optional: for lightbox title
+                            title:"GLIPHII Results", // Optional: for lightbox title
                             caption: "Uploading data", // Optional: displayed below image
                             alt: "Creating a project", // Optional
                             width: "800px" // Optional: defaults to 800px
