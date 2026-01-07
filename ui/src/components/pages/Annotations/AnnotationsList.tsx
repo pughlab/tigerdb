@@ -180,7 +180,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
           </Grid.Row>
         </Grid.Column>
         <Grid.Column>
-          <Grid.Row>
+          {/* <Grid.Row>
             <Label
               basic={!dropdownFilters["reference"].includes(reference)}
               content="Reference"
@@ -189,7 +189,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
                 dropdownFilters["reference"].includes(reference) ? "blue" : "grey"
               }
             />
-          </Grid.Row>
+          </Grid.Row> */}
           <Grid.Row>
             <Label
               basic={!dropdownFilters["uniProt"].includes(uniProt)}
@@ -222,6 +222,9 @@ function AnnotationListItem({
     epitopeAAseq,
     epitopeGene,
     epitopeSpecies,
+    mutation,
+    recognizesWTEpitope,
+    uniProt,
     reference,
     datasetName,
     projectID,
@@ -320,7 +323,9 @@ function AnnotationListItem({
             />
             <AnnotationListItemLabels 
               dropdownFilters={dropdownFilters}
-              values={{highlightedCDR3b, trbv, trbj, mhc, mhcClass, epitopeAAseq, epitopeGene, epitopeSpecies}} 
+              values={{highlightedCDR3b, trbv, trbj, trav, traj, mhc, mhcClass, epitopeAAseq, epitopeGene, epitopeSpecies, mutation, recognizesWTEpitope, uniProt}} 
+              // const { highlightedCDR3b, trbv, trbj, trav, traj, mhc, mhcClass, epitopeAAseq, epitopeGene, epitopeSpecies, mutation, recognizesWTEpitope, uniProt, reference } = values
+
             />
             <Divider horizontal />
             <Label.Group>
@@ -386,6 +391,8 @@ function SearchForm({
         reference
         trbv
         trbj
+        trav
+        traj
         cdr3a
         mhc
         mhcClass
@@ -436,7 +443,7 @@ function SearchForm({
             differenceFactor: 0.2
           },
           skip: 0,
-          limit:5000,
+          limit:7000,
         },
       });
     // }
@@ -570,7 +577,12 @@ function ResultsPager({
           </Button>
         </Button.Group>
         <span>
-          Showing {start} to {end} of {totalResults} results{" "}
+          {/* if total results === 0 then dont show */}
+          {totalResults > 0 ? (
+             <>Showing {start} to {end} of {totalResults} results{" "}</>
+          ) : 
+          <>No results </>
+          }
         </span>
         <Button.Group size="massive">
           <Button
