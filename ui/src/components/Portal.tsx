@@ -97,10 +97,11 @@ function Layout({ }) {
         </Menu>
 
       </Sticky>
-      <Divider horizontal />
-      <div style={{ padding: '1em' }}>
-        <Outlet />
-      </div>
+      {/* <Divider horizontal /> */}
+      
+      {/* <div style={{ padding: '1em' }}> */}
+        {/* <Outlet /> */}
+      {/* </div> */}
     </>
   )
 }
@@ -138,7 +139,8 @@ export default function Portal() {
         } /> */}
         <Route key='home' path='home/*' element={
           <>
-            <Segment attached='top'>
+            <div style={{ margin: '2em' }}>
+            <Segment basic attached='top'>
               <Step.Group size='large' fluid>
                 {routes.map(
                   ({ path, icon, description }) => (
@@ -150,6 +152,7 @@ export default function Portal() {
             <Segment attached='bottom'>
               <Outlet />
             </Segment>
+          </div>
           </>
         }>
           <Route key='index' index element={
