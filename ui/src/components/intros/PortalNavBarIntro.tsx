@@ -27,12 +27,18 @@ export default function PortalNavBarIntro ({}) {
     ]
     return (
         <>
-        <Menu.Item onClick={() => setEnabled(true)} content="Help" />
+        {/* <Menu.Item onClick={() => setEnabled(true)} content="Help" />
         <Steps
           enabled={enabled}
           steps={steps}
           initialStep={initialStep}
           onExit={() => setEnabled(false)}
+        /> */}
+        <Menu.Item 
+            as='a'
+            href='https://pughlab.github.io/tigerdb/' 
+            target='_blank'
+            content="Help" 
         />
         </>
     )
