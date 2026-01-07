@@ -26,6 +26,7 @@ import AnnotationsList from "../Annotations/AnnotationsList";
 
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
 import { gql, useQuery } from "@apollo/client";
+import SegmentPlaceholder from "../../common/SegmentPlaceholder";
 
 function ProjectDetailsCard({ project }) {
   const { projectID, name, description, createdBy, datasets, isPublic, createdOn, isReference } = project
@@ -159,6 +160,17 @@ export default function ProjectsList() {
         (acc, dataset) => acc || datasetIncludesTag(dataset, selectedTags), false)
       )
     }
+    // Sort: Private first, then by Date (Newest first)
+    tempProjects.sort((a, b) => {
+      // Primary sort: isPublic (false/Private before true/Public)
+      if (a.isPublic !== b.isPublic) {
+        return a.isPublic ? 1 : -1;
+      }
+      // // Secondary sort: createdOn (Newest first)
+      // const dateA = new Date(a.createdOn).getTime();
+      // const dateB = new Date(b.createdOn).getTime();
+      // return dateB - dateA;
+    })
     setFilteredProjects(tempProjects)
   }
 
@@ -174,13 +186,13 @@ export default function ProjectsList() {
     refetch();
   }, [location.key]);
 
-  useEffect(() => {
-    setFilteredProjects(data?.getProjects ?? [])
-  }, [data])
+  // useEffect(() => {
+  //   setFilteredProjects(data?.getProjects ?? [])
+  // }, [data])
 
   useEffect(() => {
     doSearch()
-  }, [searchTerm, selectedTags, selectedCategories])
+  }, [data, searchTerm, selectedTags, selectedCategories])
 
   let projectsContent;
 	if (loading && tagsLoading) {
@@ -193,10 +205,11 @@ export default function ProjectsList() {
 		)
 	} else if (filteredProjects.length === 0) {
 		projectsContent = (
-			<Label>
-				No projects available. Add a project above or ask your administrator
-				to update your permissions.
-			</Label>
+			// <Label>
+			// 	No projects available. Add a project above or ask your administrator
+			// 	to update your permissions.
+			// </Label>
+      <SegmentPlaceholder text={"No projects found"} />
 		)
 	} else {
 		projectsContent = (
@@ -234,11 +247,27 @@ export default function ProjectsList() {
             control={Input}
             label="Search CDR3b sequences:"
             placeholder="CASSIRSSYEQYF | CASS..."
+            // onChange={(_e, { value }) => {
+            //   const isUppercase = /^[A-Za-z]+$/.test(value)
+            //   if (isUppercase) {
+            //     setCdr3SearchTerm(value);
+            //     setActiveView('cdr3');
+            //   }
+            // }}
             onChange={(_e, { value }) => {
-              const isUppercase = /^[A-Za-z]+$/.test(value)
-              if (isUppercase) {
-                setCdr3SearchTerm(value);
-                setActiveView('cdr3');
+              // Convert to uppercase immediately
+              const uppercased = value.toUpperCase();
+              
+              // Optional: Only update if valid characters (A-Z and separator | etc)
+              // Currently checks for letters only, adjust regex if you want to allow dividers like '|'
+              const isValid = /^[A-Z|]+$/.test(uppercased) || uppercased === '';
+              
+              if (isValid) {
+                setCdr3SearchTerm(uppercased);
+                // Switch view if user is typing
+                if (uppercased.length > 0) {
+                    setActiveView('cdr3');
+                }
               }
             }}
             onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -276,12 +305,13 @@ export default function ProjectsList() {
                 />
               )
             }
-            <Form.Field
+            <Form.Dropdown
             width={4}
             control={Select}
             multiple
             options={tags?.tagNames.map((tag) => ({key: tag, value: tag, text: tag})) ?? []}
             placeholder='Select tags...'
+            search
             // label="Filter by dataset tag(s)"
             onChange={(_e, { value }) => setSelectedTags(value)}
           />
@@ -295,6 +325,11 @@ export default function ProjectsList() {
             onChange={(_e, { value }) => {
               setSearchTerm(value)
               setActiveView('projects')
+            }}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+              }
             }}
           />
           </Form.Group>
