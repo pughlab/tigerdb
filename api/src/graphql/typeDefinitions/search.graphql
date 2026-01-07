@@ -43,7 +43,7 @@ type CDR3SearchResult {
     epitopeAAseq: String
     epitopeSpecies: String
     mutation: String
-    recognizesWTEpitope: Boolean
+    recognizesWTEpitope: String
     uniProt: String
     score: Decimal
     tags: [Tag]
