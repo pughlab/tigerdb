@@ -244,13 +244,14 @@ export default function ProjectCardList({
           )
         }
       </Form.Group>
-      <Form.Field
+      <Form.Dropdown
         control={Select}
         multiple
         options={Array.from(new Set(tagNames?.tagNames)).map((tag) => ({key: tag, value: tag, text: tag})) ?? []}
         placeholder='Select tags...'
         label="Filter by dataset tag(s)"
         onChange={(_e, { value }) => setSelectedTags(value)}
+        search
       />
       <Divider hidden />
       { canSelectAll && (
