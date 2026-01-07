@@ -243,51 +243,57 @@ export const resolvers = {
             cdr3b: v.cdr3b,
             trbv: v.trbv,
             trbj: v.trbj,
+            trav: v.trav,
+            traj: v.traj,
             mhc: v.mhc,
             mhcClass: v.mhcClass,
             epitopeGene: v.epitopeGene,
             epitopeAAseq: v.epitopeAAseq,
             epitopeSpecies: v.epitopeSpecies,
+            mutation: v.mutation,
+            recognizesWTEpitope: v.recognizesWTEpitope,
+            uniProt: v.uniProt,
+            reference: v.reference,
             tags: tags
           } AS data
-          UNION
-          MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
-          ${tagCondition}
-          WITH p, d, collect(t.name) AS tagNames
-          WITH p, d, tagNames, {
-              projectID: p.projectID,
-              projectName: p.name,
-              datasetID: d.datasetID,
-              datasetName: d.name
-          } AS data1
-          WITH data1
-          MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
-          WHERE d.datasetID in data1.datasetID
-          WITH data1, collect({
-              tagID: t.tagID,
-              category: t.category,
-              name: t.name
-          }) AS tags
-          MATCH (d:Dataset)-[]->(c:CuratedDataset)-[]->(v:DatasetVariable)
-          WHERE d.datasetID in data1.datasetID
-          ${builtFilters}
-          RETURN {
-            projectID: data1.projectID,
-            projectName: data1.projectName,
-            datasetID: d.datasetID,
-            datasetName: d.name,
-            variableID: v.datasetVariableID,
-            reference: null,
-            cdr3b: v.cdr3b,
-            trbv: v.trbv,
-            trbj: v.trbj,
-            mhc: null,
-            mhcClass: null,
-            epitopeGene: null,
-            epitopeAAseq: null,
-            epitopeSpecies: null,
-            tags: tags
-          } AS data
+          // UNION
+          // MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
+          // ${tagCondition}
+          // WITH p, d, collect(t.name) AS tagNames
+          // WITH p, d, tagNames, {
+          //     projectID: p.projectID,
+          //     projectName: p.name,
+          //     datasetID: d.datasetID,
+          //     datasetName: d.name
+          // } AS data1
+          // WITH data1
+          // MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
+          // WHERE d.datasetID in data1.datasetID
+          // WITH data1, collect({
+          //     tagID: t.tagID,
+          //     category: t.category,
+          //     name: t.name
+          // }) AS tags
+          // MATCH (d:Dataset)-[]->(c:CuratedDataset)-[]->(v:DatasetVariable)
+          // WHERE d.datasetID in data1.datasetID
+          // ${builtFilters}
+          // RETURN {
+          //   projectID: data1.projectID,
+          //   projectName: data1.projectName,
+          //   datasetID: d.datasetID,
+          //   datasetName: d.name,
+          //   variableID: v.datasetVariableID,
+          //   reference: null,
+          //   cdr3b: v.cdr3b,
+          //   trbv: v.trbv,
+          //   trbj: v.trbj,
+          //   mhc: null,
+          //   mhcClass: null,
+          //   epitopeGene: null,
+          //   epitopeAAseq: null,
+          //   epitopeSpecies: null,
+          //   tags: tags
+          // } AS data
         `;
 
         if (queryLimit) {
