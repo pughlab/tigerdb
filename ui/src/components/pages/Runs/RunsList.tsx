@@ -40,18 +40,19 @@ function RunsListItem({ run, refetch }) {
     submittedOn,
     status,
   } = run;
-  const dateCreator = (date) => {
-    const newDate = new Date(date).toLocaleString("en-US", {
-      weekday: "long", // "Sunday"
-      year: "numeric", // "2024"
-      month: "short", // "Oct"
-      day: "numeric", // "2"
-      hour: "numeric", // "4"
-      minute: "numeric", // "41"
-      hour12: true, // 12-hour format with AM/PM
-    });
-    return newDate;
-  };
+  // const dateCreator = (date) => {
+  //   const newDate = new Date(date).toLocaleString("en-US", {
+  //     weekday: "long", // "Sunday"
+  //     year: "numeric", // "2024"
+  //     month: "short", // "Oct"
+  //     day: "numeric", // "2"
+  //     hour: "numeric", // "4"
+  //     minute: "numeric", // "41"
+  //     hour12: true, // 12-hour format with AM/PM
+  //   });
+  //   return newDate;
+  // };
+  const creationDate = new Date(createdOn).toDateString()
   const tags = new Set()
 
   processedDatasets?.forEach((processedUpload) => {
@@ -92,24 +93,11 @@ function RunsListItem({ run, refetch }) {
       </Card.Content>
       <Card.Content>
         <Card.Header as={Header}>
-          {`${name}`}
+          {`${name}`} <Label content={<Icon style={{ margin: 0 }} name='calendar alternate outline' />} detail={creationDate} />
         </Card.Header>
         <List.Description content={description} />
         <List.Description>
-          { tags.size > 0 && <Divider horizontal content="Dataset tags" />}
-          <Label.Group>
-            {
-              [...tags]
-              .sort((tag1, tag2) => {
-                if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
-                  return 0
-                }
-                return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
-              })
-              .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
-            }
-          </Label.Group>
-          <Divider />
+          <Divider horizontal content="Data" />
           <Label.Group>
             {
               processedDatasets.length > 0
@@ -122,6 +110,19 @@ function RunsListItem({ run, refetch }) {
                     />
                   ))
                 : null
+            }
+          </Label.Group>
+          { tags.size > 0 && <Divider horizontal content="Tags" />}
+          <Label.Group>
+            {
+              [...tags]
+              .sort((tag1, tag2) => {
+                if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
+                  return 0
+                }
+                return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
+              })
+              .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
             }
           </Label.Group>
           <Divider hidden />
@@ -317,13 +318,14 @@ export default function RunsList() {
               )
             }
           </Form.Group>
-          <Form.Field
+          <Form.Dropdown
             control={Select}
             multiple
             options={Array.from(new Set(tagNames?.tagNames)).map((tag) => ({key: tag, value: tag, text: tag})) ?? []}
             placeholder='Select tags...'
             label="Filter by dataset tag(s)"
             onChange={(_e, { value }) => setSelectedTags(value)}
+            search
           />
         </Form>
         <Step.Group fluid widths={5}>
