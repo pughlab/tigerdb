@@ -37,8 +37,28 @@ export const resolvers = {
     createCuratedAnnotationFromDataset: async (parent, { datasetID, bucketName, objectName, selectedDelimiter }, { driver, ogm, minioClient }) => {
       try {
         const session = driver.session()
-        const inputFields = await getHeaders(session, objectName)
+        // get input headers later from non-header generated file
+        // const inputFields = await getHeaders(session, objectName)
 
+        const inputFields = [
+          { name: 'cdr3b', index: 0 },
+          { name: 'cdr3a', index: 1 },
+          { name: 'trbv', index: 2 },
+          { name: 'trav', index: 3 },
+          { name: 'trbj', index: 4 },
+          { name: 'traj', index: 5 },
+          { name: 'mhc', index: 6 },
+          { name: 'mhcClass', index: 7 },
+          { name: 'epitopeAAseq', index: 8 },
+          { name: 'epitopeGene', index: 9 },
+          { name: 'mutation', index: 10 },
+          { name: 'recognizesWTEpitope', index: 11 },
+          { name: 'epitopeSpecies', index: 12 },
+          { name: 'reference', index: 13 },
+          { name: 'uniProt', index: 14 },
+          { name: 'notes', index: 15 },
+        ]
+        
         // cdr3b: String
         // cdr3a: String
         // trbv: String
@@ -80,7 +100,7 @@ export const resolvers = {
           CALL apoc.periodic.iterate(
             'CALL apoc.load.csv($presignedURL, {sep: "TAB"}) YIELD list',
             'MATCH (b:CuratedAnnotation {curatedAnnotationID: $curatedAnnotationID}) 
-            CREATE (a:AnnotationVariable {annotationVariableID: apoc.create.uuid(), ${inputFields.map(field => `${field.name.replace(/[^a-zA-Z0-9]/g, '')}: list[${field.index}]`).join(', ')} }), 
+            CREATE (a:AnnotationVariable {annotationVariableID: apoc.create.uuid(), ${inputFields.map(field => `${field.name}: list[${field.index}]`).join(', ')} }), 
             (b)-[:HAS_ANNOTATION_VARIABLE]->(a) 
             RETURN a',
             { batchSize: 10000, iterateList: true, parallel: true, params: { curatedAnnotationID: $curatedAnnotationID, presignedURL: $presignedURL, inputFields: $inputFields } }
