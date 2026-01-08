@@ -1,10 +1,9 @@
 import { gql, useQuery } from '@apollo/client'
 import { useState } from 'react'
 
-export default function useDatasetsQuery({ projectIDs }: { projectIDs: string[] }) {
-  const [searchText, setSearchText] = useState('')
+export default function useDatasetsQuery({ projectIDs, searchText }: { projectIDs: string[], searchText?: string }) {
   const { data, loading, error, refetch } = useQuery(gql`
-  query Datasets($projectIDs: [ID!], $searchText: String!) {
+  query Datasets($projectIDs: [ID!], $searchText: String) {
     datasets (
       # where: {OR :[{name_CONTAINS: $searchText}, {description_CONTAINS: $searchText}]}
       where: {
@@ -30,5 +29,5 @@ export default function useDatasetsQuery({ projectIDs }: { projectIDs: string[] 
       }
     }
   }`, { variables: { projectIDs, searchText }, fetchPolicy: 'network-only' })
-  return { data, loading, error, refetch, searchText, setSearchText }
+  return { data, loading, error, refetch }
 }

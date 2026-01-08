@@ -26,6 +26,7 @@ import AnnotationsList from "../Annotations/AnnotationsList";
 
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
 import { gql, useQuery } from "@apollo/client";
+import SegmentPlaceholder from "../../common/SegmentPlaceholder";
 
 function ProjectDetailsCard({ project }) {
   const { projectID, name, description, createdBy, datasets, isPublic, createdOn, isReference } = project
@@ -143,9 +144,11 @@ export default function ProjectsList() {
   }
 
   function doSearch() {
-    let tempProjects = [...projects]
+    let tempProjects = []
     if (searchTerm.trim().length > 0) {
       tempProjects = projects.filter((project) => project.name?.toLowerCase()?.includes(searchTerm?.toLowerCase()))
+    } else {
+      tempProjects = [...projects]
     }
     if (selectedCategories.length > 0) {
       tempProjects = tempProjects.filter(
@@ -157,6 +160,17 @@ export default function ProjectsList() {
         (acc, dataset) => acc || datasetIncludesTag(dataset, selectedTags), false)
       )
     }
+    // Sort: Private first, then by Date (Newest first)
+    tempProjects.sort((a, b) => {
+      // Primary sort: isPublic (false/Private before true/Public)
+      if (a.isPublic !== b.isPublic) {
+        return a.isPublic ? 1 : -1;
+      }
+      // // Secondary sort: createdOn (Newest first)
+      // const dateA = new Date(a.createdOn).getTime();
+      // const dateB = new Date(b.createdOn).getTime();
+      // return dateB - dateA;
+    })
     setFilteredProjects(tempProjects)
   }
 
@@ -172,39 +186,50 @@ export default function ProjectsList() {
     refetch();
   }, [location.key]);
 
+  // useEffect(() => {
+  //   setFilteredProjects(data?.getProjects ?? [])
+  // }, [data])
+
   useEffect(() => {
     doSearch()
-  }, [searchTerm, selectedTags, selectedCategories])
+  }, [data, searchTerm, selectedTags, selectedCategories])
 
   let projectsContent;
-  if (loading || tagsLoading) {
-    projectsContent = (
-      <Segment placeholder textAlign="center">
-        <Dimmer active inverted>
-          <Loader size="large">Loading...</Loader>
-        </Dimmer>
-      </Segment>
-    )
-  } else if (projects.length === 0) {
-    projectsContent = (
-      <Card.Group itemsPerRow={3}>
-        <AddProjectModal refetch={refetch} />
-      </Card.Group>
-    )
-  } else {
-    projectsContent = (
-      <Card.Group itemsPerRow={3}>
-        <AddProjectModal refetch={refetch} />
-        {
-          filteredProjects.length > 0 ? filteredProjects.map((project) => (
-            <ProjectDetailsCard key={project.projectID} {...{ project }} />
-          )) : projects.map((project) => (
-            <ProjectDetailsCard key={project.projectID} {...{ project }} />
-          ))
-        }
-      </Card.Group>
-    )
-  }
+	if (loading && tagsLoading) {
+		projectsContent = (
+			<Segment placeholder textAlign="center">
+				<Dimmer active inverted>
+					<Loader size="large">Loading...</Loader>
+				</Dimmer>
+			</Segment>
+		)
+	} else if (filteredProjects.length === 0) {
+		projectsContent = (
+			// <Label>
+			// 	No projects available. Add a project above or ask your administrator
+			// 	to update your permissions.
+			// </Label>
+      <SegmentPlaceholder text={"No projects found"} />
+		)
+	} else {
+		projectsContent = (
+      <>
+        <Divider horizontal>
+          <Header as="h4">
+            Showing {filteredProjects.length} of {projects.length} projects
+          </Header>
+        </Divider>
+        <Card.Group itemsPerRow={3}>
+          <AddProjectModal refetch={refetch} />
+          {
+            filteredProjects.map((project) => (
+              <ProjectDetailsCard key={project.projectID} {...{ project }} />
+            ))
+          }
+        </Card.Group>
+      </>
+		)
+	}
   let cdr3Content = (
     <Segment basic>
       <AnnotationsList cdr3SearchTerm={cdr3SearchTerm} selectedTags={selectedTags} selectedCategories={selectedCategories} />
@@ -217,72 +242,98 @@ export default function ProjectsList() {
     <Grid>
       <Grid.Column>
         <Message>
-          <Form>
-            <Form.Field
-              control={Input}
-              label="Search CDR3b sequences:"
-              placeholder="CASSEDGMNTEAFF | CASS..."
-              onChange={(_e, { value }) => {
-                setCdr3SearchTerm(value);
-                setActiveView('cdr3');
-              }}
-              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault();
+        <Form>
+          <Form.Field
+            control={Input}
+            label="Search CDR3b sequences:"
+            placeholder="CASSIRSSYEQYF | CASS..."
+            // onChange={(_e, { value }) => {
+            //   const isUppercase = /^[A-Za-z]+$/.test(value)
+            //   if (isUppercase) {
+            //     setCdr3SearchTerm(value);
+            //     setActiveView('cdr3');
+            //   }
+            // }}
+            onChange={(_e, { value }) => {
+              // Convert to uppercase immediately
+              const uppercased = value.toUpperCase();
+              
+              // Optional: Only update if valid characters (A-Z and separator | etc)
+              // Currently checks for letters only, adjust regex if you want to allow dividers like '|'
+              const isValid = /^[A-Z|]+$/.test(uppercased) || uppercased === '';
+              
+              if (isValid) {
+                setCdr3SearchTerm(uppercased);
+                // Switch view if user is typing
+                if (uppercased.length > 0) {
+                    setActiveView('cdr3');
                 }
-              }}
-              size='massive'
-              style={{
-                // width: "100%",
-                height: "6rem",     // taller
-                fontSize: "2rem",  // bigger text
-                // padding: "1em",       // more inner space
-                // margin: "0.5em" // space below
-                marginBottom: 0,
-                // border: '1px solid green',
-                // borderRadius: '50%'
-              }}
-              icon='search'
-              iconPosition='left'
-            />
-            <Form.Field />
-            <Divider horizontal />
-            <Form.Group inline >
-              <label>Tags:</label>
-              {
-                categories?.tagCategories?.map((category) =>
-                  <Button
-                    key={category}
-                    content={category ?? 'other'}
-                    size='medium'
-                    basic={!selectedCategories.includes(category)}
-                    color={tagColors[category] ?? 'black'}
-                    onClick={() => toggleCategory(category)}
-                  />
-                )
               }
-              <Form.Field
-                width={4}
-                control={Select}
-                multiple
-                options={tags?.tagNames.map((tag) => ({ key: tag, value: tag, text: tag })) ?? []}
-                placeholder='Select tags...'
-                onChange={(_e, { value }) => setSelectedTags(value)}
-              />
-              <Form.Field
-                // move to right side
-                fluid
-                width={12}
-                control={Input}
-                label="Search Projects:"
-                placeholder="Names and descriptions"
-                onChange={(_e, { value }) => {
-                  setSearchTerm(value)
-                  setActiveView('projects')
-                }}
-              />
-            </Form.Group>
-          </Form>
+            }}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+              }
+            }}
+            size='massive'
+            style={{
+              // width: "100%",
+              height: "6rem",     // taller
+              fontSize: "2rem",  // bigger text
+              // padding: "1em",       // more inner space
+              // margin: "0.5em" // space below
+              marginBottom: 0,
+              // border: '1px solid green',
+              // borderRadius: '50%'
+            }}            
+            icon='search'
+            iconPosition='left'
+          />
+          <Form.Field/>
+          <Divider horizontal />
+          <Form.Group inline >
+            <label>Tags:</label>
+            {
+              categories?.tagCategories?.map((category) => 
+                <Button
+                  key={category}
+                  content={category ?? 'other'} 
+                  size='medium'
+                  basic={!selectedCategories.includes(category)}
+                  color={tagColors[category] ?? 'black'}
+                  onClick={() => toggleCategory(category)}
+                />
+              )
+            }
+            <Form.Dropdown
+            width={4}
+            control={Select}
+            multiple
+            options={tags?.tagNames.map((tag) => ({key: tag, value: tag, text: tag})) ?? []}
+            placeholder='Select tags...'
+            search
+            // label="Filter by dataset tag(s)"
+            onChange={(_e, { value }) => setSelectedTags(value)}
+          />
+          <Form.Field
+          // move to right side
+            fluid
+            width={12}
+            control={Input}
+            label="Search Projects:"
+            placeholder="Names and descriptions"
+            onChange={(_e, { value }) => {
+              setSearchTerm(value)
+              setActiveView('projects')
+            }}
+            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+              }
+            }}
+          />
+          </Form.Group>
+        </Form>
         </Message>
         <Divider hidden />
         <Button.Group fluid widths={2} attached='top'>

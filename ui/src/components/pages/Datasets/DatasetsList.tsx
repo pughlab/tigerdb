@@ -70,17 +70,29 @@ export default function DatasetsList({ project, isPublicProject }) {
 
   const { projectID } = project
 
-  const { data, loading, refetch, searchText, setSearchText } =
-    useDatasetsQuery({projectIDs: [projectID]});
+  const { data, loading, refetch } = useDatasetsQuery({projectIDs: [projectID]});
 
   const location = useLocation();
+  
+  const [searchText, setSearchText] = useState('')
+  const [filteredDatasets, setFilteredDatasets] = useState([])
   useEffect(() => {
     refetch();
   }, [location.key]);
 
-  const datasets = data?.datasets ?? [];
+  useEffect(() => {
+    setFilteredDatasets(data?.datasets ?? [])
+  }, [data])
+  
+  useEffect(() => {
+    if (searchText.trim() === '') {
+      setFilteredDatasets(data?.datasets ?? [])
+    } else {
+      setFilteredDatasets((prev) => prev.filter((dataset) => dataset.name.toLowerCase().includes(searchText.toLowerCase())))
+    }
+  }, [searchText]) 
+  
   let datasetList
-
   if (loading) {
     datasetList = (
       <Segment placeholder textAlign="center">
@@ -90,7 +102,7 @@ export default function DatasetsList({ project, isPublicProject }) {
         </Dimmer>
       </Segment>
     );
-  } else if (datasets.length === 0) {
+  } else if (filteredDatasets.length === 0) {
     datasetList = (
       <AddDatasetModal projectID={projectID} refetch={refetch} />
     ) 
@@ -99,8 +111,8 @@ export default function DatasetsList({ project, isPublicProject }) {
       <Container>
         <List selection size="large" key="dataset">
           <AddDatasetModal projectID={projectID} refetch={refetch} />
-          <br/>
-          {datasets.map((dataset) => (
+          <Divider horizontal />
+          {filteredDatasets.map((dataset) => (
             <DatasetListItem key={dataset.datasetID} isPublicProject={isPublicProject} {...{ dataset }} />
           ))}
         </List>
