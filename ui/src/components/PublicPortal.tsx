@@ -83,9 +83,9 @@ function Layout({ }) {
 
       </Sticky>
       <Divider horizontal />
-      <div style={{ padding: '1em' }}>
-        <Outlet />
-      </div>
+      {/* <div style={{ padding: '1em' }}> */}
+        {/* <Outlet /> */}
+      {/* </div> */}
     </>
   )
 }
@@ -108,7 +108,8 @@ export default function PublicPortal() {
         } /> */}
         <Route key='/public' path='public/*' element={
           <>
-            <Segment attached='top'>
+            <div style={{ margin: '2em' }}>
+            <Segment basic attached='top'>
               <Step.Group fluid>
                 {routes.map(
                   ({ path, description, icon, disabled }) => (
@@ -121,6 +122,7 @@ export default function PublicPortal() {
             <Segment attached='bottom'>
               <Outlet />
             </Segment>
+            </div>
           </>
         }>
           <Route key='index' index element={

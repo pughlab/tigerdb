@@ -39,18 +39,7 @@ function RunsListItem({ run, refetch }) {
     submittedOn,
     status,
   } = run;
-  const dateCreator = (date) => {
-    const newDate = new Date(date).toLocaleString("en-US", {
-      weekday: "long", // "Sunday"
-      year: "numeric", // "2024"
-      month: "short", // "Oct"
-      day: "numeric", // "2"
-      hour: "numeric", // "4"
-      minute: "numeric", // "41"
-      hour12: true, // 12-hour format with AM/PM
-    });
-    return newDate;
-  };
+  const creationDate = new Date(createdOn).toDateString()
   const seenTagnames = new Set()
   let tags: any[] = []
 
@@ -97,7 +86,7 @@ function RunsListItem({ run, refetch }) {
       </Card.Content>
       <Card.Content>
         <Card.Header as={Header}>
-          {`${name}`}
+          {`${name}`} <Label content={<Icon style={{ margin: 0 }} name='calendar alternate outline' />} detail={creationDate} />
         </Card.Header>
         <List.Description content={description} />
         <List.Description>
@@ -114,7 +103,7 @@ function RunsListItem({ run, refetch }) {
               .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
             }
           </Label.Group>
-          <Divider />
+          { processedDatasets.length > 0 && <Divider horizontal content="Uploads" />}
           <Label.Group>
             {
               processedDatasets.length > 0
@@ -129,11 +118,18 @@ function RunsListItem({ run, refetch }) {
                 : null
             }
           </Label.Group>
-          <Divider hidden />
         </List.Description>
       </Card.Content>
     </Card>
   );
+}
+
+function uploadIncludesTag(upload, tagList) {
+  return upload.minioUpload.dataset.tags?.some((tag) => tagList.includes(tag.name)) ?? false
+}
+
+function uploadIncludesCategory(upload, categoryList) {
+  return upload.minioUpload.dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
 }
 
 export default function RunsList() {
@@ -156,14 +152,6 @@ export default function RunsList() {
 
   const location = useLocation();
   const runs = data?.getRuns ?? [];
-
-  function uploadIncludesTag(upload, tagList) {
-    return upload.minioUpload.dataset.tags?.some((tag) => tagList.includes(tag.name)) ?? false
-  }
-
-  function uploadIncludesCategory(upload, categoryList) {
-    return upload.minioUpload.dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
-  }
 
   function doSearch() {
     let tempRuns = activeFilter === "all" 
@@ -322,13 +310,14 @@ export default function RunsList() {
               )
             }
           </Form.Group>
-          <Form.Field
+          <Form.Dropdown
             control={Select}
             multiple
             options={Array.from(new Set(tagNames?.tagNames)).map((tag) => ({key: tag, value: tag, text: tag})) ?? []}
             placeholder='Select tags...'
             label="Filter by dataset tag(s)"
             onChange={(_e, { value }) => setSelectedTags(value)}
+            search
           />
         </Form>
         <Step.Group fluid widths={5}>

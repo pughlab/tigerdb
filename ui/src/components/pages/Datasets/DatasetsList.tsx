@@ -111,6 +111,7 @@ export default function DatasetsList({ project, isPublicProject }) {
       <Container>
         <List selection size="large" key="dataset">
           <AddDatasetModal projectID={projectID} refetch={refetch} />
+          <Divider horizontal />
           {filteredDatasets.map((dataset) => (
             <DatasetListItem key={dataset.datasetID} isPublicProject={isPublicProject} {...{ dataset }} />
           ))}
