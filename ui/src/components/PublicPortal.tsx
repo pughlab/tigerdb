@@ -117,7 +117,12 @@ export default function PublicPortal() {
                   )
                 )}
               </Step.Group>
-              
+            </Segment>
+            <Segment attached>
+              <Message color='teal'>
+                <Icon name='lock open' />
+                This website is free and open to all users. Upload and analysis of sensitive human TCR data requires a login. 
+              </Message>
             </Segment>
             <Segment attached='bottom'>
               <Outlet />
