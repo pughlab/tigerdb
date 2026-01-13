@@ -106,7 +106,7 @@ export default function PublicPortal() {
             <Segment attached>
               <Message color='teal'>
                 <Icon name='lock open' />
-                This website is free and open to all users. Upload and analysis of sensitive human TCR data requires a login. 
+                This website is free and open to all users. Upload and analysis of private/unpublished human TCR data requires a login. Need <a style={{ textDecoration: 'underline' }} target='_blank' href='https://pughlab.github.io/tigerdb/'>Help</a>?
               </Message>
             </Segment>
             <Segment attached='bottom'>
