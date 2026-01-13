@@ -3,8 +3,10 @@ import * as React from "react";
 import { Button, Form, Input, Modal, TextArea, Icon, Divider, Checkbox, Segment, Card } from "semantic-ui-react";
 import useIsCurator from '../../../hooks/useIsCurator'
 import { useKeycloak } from '@react-keycloak/web';
+import { useNavigate } from "react-router-dom";
 
 export default function AddProjectModal({refetch}) {
+  const navigate = useNavigate();
   const { keycloak } = useKeycloak();
   const isAuthenticated = !!keycloak?.authenticated;
 
@@ -29,7 +31,14 @@ export default function AddProjectModal({refetch}) {
         isPublic
         isReference
       }
-    }`, {onCompleted: () => { refetch() }}
+    }`, {onCompleted: (data) => { 
+      refetch() 
+      setOpen(!open)
+      setDescription('')
+      setName('')
+      const projectID = data.createProject.projectID;
+      navigate(`/home/data/${projectID}`);
+    }}
   )
 
   const { isCurator } = useIsCurator()
@@ -123,9 +132,9 @@ export default function AddProjectModal({refetch}) {
       <Modal.Actions>
         <Button fluid color='facebook' content='CREATE PROJECT' loading={loading} onClick={async () => {
           await createProject({variables: {name, description, isReference} })
-          setOpen(!open)
-          setDescription('')
-          setName('')
+          // setOpen(!open)
+          // setDescription('')
+          // setName('')
         }}/>
       </Modal.Actions>
     </Modal>

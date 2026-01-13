@@ -3,8 +3,10 @@ import React from "react";
 import { Button, Form, Input, Modal, TextArea, Icon, Divider, Tab, Segment, Card } from "semantic-ui-react";
 import useProjectsQuery from '../../../hooks/useProjectsQuery'
 import ProjectCardList from "./ProjectCardList";
+import { useNavigate } from "react-router-dom";
 
 export default function AddRunModal({refetch}) {
+  const navigate = useNavigate();
   const [name, setName]= React.useState('')
   const [description, setDescription]= React.useState('')
   const [selectedQueryUploads, setSelectedQueryUploads] = React.useState([]);
@@ -24,13 +26,15 @@ export default function AddRunModal({refetch}) {
         createdOn
         status
       }
-    }`, {onCompleted: () => { 
+    }`, {onCompleted: (data) => { 
       refetch() 
       setOpen(!open)
       setDescription('')
       setName('')
       setSelectedQueryUploads([]);
       setSelectedReferenceUploads([]);
+      const runID = data.createRunWithMinioBucket.runID;
+      navigate(`/home/analysis/${runID}`);
     }
   })
 
