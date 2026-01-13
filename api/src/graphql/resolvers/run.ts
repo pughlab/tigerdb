@@ -20,7 +20,7 @@ export const resolvers = {
             filters = {
             OR: [
                 { createdBy: user[0] },
-                { isPublic: true },
+                // { isPublic: true },
                 // { sharedWith_IN: [user[0]] }
               ]
             }
@@ -105,7 +105,7 @@ export const resolvers = {
           // hardcoded default user email to get sample user.
           // Must move this email to env file after feature is finished.
           user = await UserModel.find({
-            where: { email: 'sample@tigerdb.ca' }
+            where: { email: 'public@tigerdb.ca' }
           });
         }
         if (!user) {
