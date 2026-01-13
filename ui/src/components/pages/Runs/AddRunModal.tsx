@@ -1,6 +1,6 @@
 import { gql, useMutation } from "@apollo/client";
 import React from "react";
-import { Button, Form, Input, Modal, TextArea, Icon, Divider, Tab, Segment, Card } from "semantic-ui-react";
+import { Button, Form, Input, Modal, TextArea, Icon, Divider, Tab, Segment, Card, Container } from "semantic-ui-react";
 import useProjectsQuery from '../../../hooks/useProjectsQuery'
 import ProjectCardList from "./ProjectCardList";
 import { useNavigate } from "react-router-dom";
@@ -106,7 +106,7 @@ export default function AddRunModal({refetch}) {
             </Button>
           </Card.Header>
           <Card.Content>
-            <div
+            <Container
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
               style={{
@@ -128,7 +128,7 @@ export default function AddRunModal({refetch}) {
                 textAlign: "center",
                 color: "black"
               }}>Add new run</p>
-            </div>
+            </Container>
           </Card.Content>
         </Card>
       }

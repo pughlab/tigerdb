@@ -1,9 +1,7 @@
 import * as React from 'react'
-import { Sticky, Menu, Header, Divider, Image, Segment, Step, Container, Icon, Message } from 'semantic-ui-react'
-import useKeycloakMeMutation from '../hooks/useKeycloakMeMutation'
-import { Routes, Route, Outlet, useNavigate, useLocation, matchPath, Link, Navigate } from 'react-router-dom'
+import { Sticky, Menu, Header, Divider, Image, Segment, Step, Icon, Message } from 'semantic-ui-react'
+import { Routes, Route, Outlet, Link, Navigate } from 'react-router-dom'
 
-import SegmentPlaceholder from './common/SegmentPlaceholder'
 import NotFoundRedirect from './NotFoundRedirect'
 
 import { Logo } from './logos'
@@ -13,23 +11,11 @@ import useRouter from '../hooks/useRouter'
 import Stats from './pages/Stats'
 import PublicLoginModal from './authentication/PublicLoginModal'
 import Projects from './pages/Projects'
-import Datasets from './pages/Datasets'
-import Explore from './pages/Explore'
-import DataExports from './pages/DataExports'
-import Metadata from './pages/Metadata'
-import AdminUsers from './pages/Admin/AdminUsers'
-import Annotations from './pages/Annotations'
 
-import PortalNavBarIntro, { HOME_MENU_ELEMENT_ID, DATA_MENU_ELEMENT_ID } from './intros/PortalNavBarIntro'
-import { useKeycloak } from '@react-keycloak/web'
-import AdminData from './pages/Admin/AdminData'
-import RenderOnApproved from './authentication/RenderOnApproved'
-import RenderOnAcceptedTOS from './authentication/RenderOnAcceptedTOS'
-import { keycloakRefreshToken } from '../common'
-import { useState } from 'react'
-import { EnhancedBarChart } from './visualizations/bar/EnhancedBarChart';
+import PortalNavBarIntro, { DATA_MENU_ELEMENT_ID } from './intros/PortalNavBarIntro'
 
 import tigerdb from './logos/tigerdb.png'
+import Runs from './pages/Runs'
 
 function Layout({ }) {
   const { navigate, location, isActivePath } = useRouter()
@@ -96,7 +82,7 @@ export default function PublicPortal() {
   let routes = [
     // { path: 'search', icon: 'certificate', description: 'global CDR3 search', disabled: false, element: <Annotations />},
     { path: 'data', icon: 'database', description: 'login to upload TCR data', disabled: false, element: <Projects /> },
-    { path: 'analysis', icon: 'react', description: 'login to run GLIPH2 analysis', disabled: true}
+    { path: 'analysis', icon: 'react', description: 'run GLIPH2 analysis', disabled: false, element: <Runs /> }
   ]
 
   return (
@@ -107,8 +93,7 @@ export default function PublicPortal() {
           <About />
         } /> */}
         <Route key='/public' path='public/*' element={
-          <>
-            <div style={{ margin: '2em' }}>
+          <div style={{ margin: '2em' }}>
             <Segment basic attached='top'>
               <Step.Group fluid>
                 {routes.map(
@@ -121,14 +106,13 @@ export default function PublicPortal() {
             <Segment attached>
               <Message color='teal'>
                 <Icon name='lock open' />
-                This website is free and open to all users. Upload and analysis of sensitive human TCR data requires a login. 
+                This website is free and open to all users. Upload and analysis of private/unpublished human TCR data requires a login. Need <a style={{ textDecoration: 'underline' }} target='_blank' href='https://pughlab.github.io/tigerdb/'>Help</a>?
               </Message>
             </Segment>
             <Segment attached='bottom'>
               <Outlet />
             </Segment>
-            </div>
-          </>
+          </div>
         }>
           <Route key='index' index element={
             <Navigate to="data" replace />
