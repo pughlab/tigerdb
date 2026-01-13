@@ -62,6 +62,18 @@ export const resolvers = {
               }
             }
           }
+          referenceDatasetsAggregate{
+            count
+          }
+          referenceDatasets {
+            dataset {
+              tags {
+                tagID
+                name
+                category
+              }
+            }
+          }
           runParameters {
             outPrefix
             localMinpValue
@@ -149,12 +161,11 @@ export const resolvers = {
               where: { node: { objectName: objectName } }
             }))
           },
-          // TODO: Uncomment this to enable reference datasets
-          // referenceDatasets: {
-          //   connect: referenceDatasets.map((objectName: string) => ({
-          //     where: { node: { objectName: objectName } }
-          //   }))
-          // },
+          referenceDatasets: {
+            connect: referenceDatasets.map((objectName: string) => ({
+              where: { node: { objectName: objectName } }
+            }))
+          },
 
           // should we connect to project?
           // project: {
