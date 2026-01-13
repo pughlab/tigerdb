@@ -5,14 +5,24 @@ import DatasetNameList from "./DatasetNameList";
 import ProcessedUploadsList from "./ProcessedUploadsList";
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
 
+function datasetIncludesTag(dataset, tagList) {
+  return dataset.tags?.some((tag) => tagList.includes(tag.name))
+}
+
+function datasetIncludesCategory(dataset, categoryList) {
+  return dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
+}
+
 function ProjectCard({
   project,
   updateSelectedUploads,
+  selectedProjectIDs,
+  toggleProjectID,
   selectedAll
 }) {
   const color = project.isPublic ? "black" : "facebook";
   // const creationDate = new Date(project.createdOn).toDateString();
-  const [selected, setSelected] = useState(false);
+  const selected = selectedProjectIDs.includes(project.projectID);
   const [selectedDatasets, setSelectedDatasets] = React.useState([]);
   const [availableUploads, setAvailableUploads] = React.useState([]);
   const allUploads: any[] = []
@@ -56,10 +66,6 @@ function ProjectCard({
   }, [selectedDatasets])
 
   React.useEffect(() => {
-    setSelected(selectedAll)
-  }, [selectedAll])
-
-  React.useEffect(() => {
     if (selected) {
       updateSelectedUploads((prev) => [...prev, ...allUploads])
     } else {
@@ -91,7 +97,7 @@ function ProjectCard({
       link
       color={color}
       onClick={() => {
-        setSelected(!selected);
+        toggleProjectID(project.projectID)
       }}
     >
       <Popup
@@ -156,7 +162,7 @@ function ProjectCard({
               projectSelected={selected}
             />
             <Divider horizontal content="Select processed uploads" />
-            <ProcessedUploadsList uploads={!project.isReference ? availableUploads : allUploads} updateSelectedUploads={updateSelectedUploads} projectSelected={selected} />
+            <ProcessedUploadsList uploads={project.isReference ? allUploads : availableUploads} updateSelectedUploads={updateSelectedUploads} projectSelected={selected} />
           </React.Fragment>
         )}
       </Card.Content>
@@ -167,6 +173,8 @@ function ProjectCard({
 export default function ProjectCardList({
   projects,
   updateSelectedUploads,
+  selectedProjectIDs,
+  toggleProjectID,
   canSelectAll
 }) {
   const [usingPublicProjects, setUsingPublicProjects] = React.useState(true);
@@ -184,14 +192,6 @@ export default function ProjectCardList({
       tagCategories
     }  
   `)
-
-  function datasetIncludesTag(dataset, tagList) {
-    return dataset.tags.some((tag) => tagList.includes(tag.name))
-  }
-
-  function datasetIncludesCategory(dataset, categoryList) {
-    return dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
-  }
 
   function doFilter() {
     let tempProjects = usingPublicProjects ? [...projects] : projects?.filter((p) => !p.isPublic)
@@ -266,6 +266,8 @@ export default function ProjectCardList({
             key={project.projectID}
             project={project}
             updateSelectedUploads={updateSelectedUploads}
+            selectedProjectIDs={selectedProjectIDs}
+            toggleProjectID={toggleProjectID}
             selectedAll={selectedAll}
           />
         ))}

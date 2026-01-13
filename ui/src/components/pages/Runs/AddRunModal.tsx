@@ -9,6 +9,7 @@ export default function AddRunModal({refetch}) {
   const [description, setDescription]= React.useState('')
   const [selectedQueryUploads, setSelectedQueryUploads] = React.useState([]);
   const [selectedReferenceUploads, setSelectedReferenceUploads] = React.useState([]);
+  const [selectedProjectIDs, setSelectedProjectIDs] = React.useState([])
   const [open, setOpen] = React.useState(false);
   const [hovered, setHovered] = React.useState(false);
 
@@ -33,6 +34,14 @@ export default function AddRunModal({refetch}) {
     }
   })
 
+  function toggleProjectID(projectID) {
+    if (selectedProjectIDs.includes(projectID)) {
+      setSelectedProjectIDs(prev => prev.filter(id => id !== projectID))
+    } else {
+      setSelectedProjectIDs(prev => [...prev, projectID])
+    }
+  }
+
   const projects = projectsData?.getProjects
   const queryProjects: any[] = []
   const referenceProjects: any[] = []
@@ -51,7 +60,7 @@ export default function AddRunModal({refetch}) {
           <Form>
             <Segment color='violet'>
               <Divider horizontal content="Select projects" />
-              <ProjectCardList projects={queryProjects} updateSelectedUploads={setSelectedQueryUploads} canSelectAll={false} />
+              <ProjectCardList projects={queryProjects} selectedProjectIDs={selectedProjectIDs} updateSelectedUploads={setSelectedQueryUploads} toggleProjectID={toggleProjectID} canSelectAll={false} />
             </Segment>
           </Form>
         </Tab.Pane>
@@ -64,7 +73,7 @@ export default function AddRunModal({refetch}) {
           <Form>
             <Segment color='violet'>
               <Divider horizontal content='SELECT REFERENCE PROJECTS'/>
-              <ProjectCardList projects={referenceProjects} updateSelectedUploads={setSelectedReferenceUploads} canSelectAll={true} />
+              <ProjectCardList projects={referenceProjects} selectedProjectIDs={selectedProjectIDs} updateSelectedUploads={setSelectedReferenceUploads} toggleProjectID={toggleProjectID} canSelectAll={true} />
             </Segment>
           </Form>
         </Tab.Pane>
