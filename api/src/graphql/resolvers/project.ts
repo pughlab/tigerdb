@@ -249,6 +249,36 @@ export const resolvers = {
         throw new ApolloError("makeProjectPublic", error as string);
       } 
     },
+    makeProjectPrivate: async (parent, { projectID }, { ogm, kauth }) => {
+      try {
+        const { sub: keycloakUserID } = kauth.accessToken.content
+        const UserModel = ogm.model('KeycloakUser')
+        const user = await UserModel.find({
+          where: {keycloakUserID: keycloakUserID}
+        })
+        if (!user) {
+          throw new Error('User not found')
+        }
+        const ProjectModel = ogm.model('Project')
+
+        const project = await ProjectModel.find({
+          where: { projectID: projectID }
+        })
+        if (project?.length === 0) {
+          throw new Error('Project not found')
+        }
+
+        const result = await ProjectModel.update({
+          where: { projectID: projectID },
+          update: { isPublic: false }
+        })
+        
+        return result.projects[0]
+      } catch (error) {
+        console.log("makeProjectPrivate", error);
+        throw new ApolloError("makeProjectPrivate", error as string);
+      } 
+    },
     addDatasetsToProject: async (
       parent,
       { projectID, datasets },
