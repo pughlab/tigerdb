@@ -31,11 +31,11 @@ function ProcessedUpload({ upload, updateSelectedUploads, projectSelected }) {
 export default function ProcessedUploadsList({ uploads, updateSelectedUploads, projectSelected }) {
   const uploadIDs = new Set();
   const distinctUploads = uploads.filter((upload) => {
-    if (!uploadIDs.has(upload.objectName)) {
-      uploadIDs.add(upload.objectName);
-      return true;
+    if (uploadIDs.has(upload.objectName)) {
+      return false;
     }
-    return false;
+    uploadIDs.add(upload.objectName);
+    return true;
   });
   return (
     <Label.Group>

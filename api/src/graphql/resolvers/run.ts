@@ -5,24 +5,31 @@ export const resolvers = {
   Query: {
     getRuns: async (obj, args, { ogm, kauth }) => {
       try {
-        const { sub: keycloakUserID } = kauth.accessToken.content;
-        const UserModel = ogm.model("KeycloakUser");
-        const user = await UserModel.find({
-          where: { keycloakUserID: keycloakUserID },
-        });
-        if (!user) {
-          throw new Error("User not found");
+        const isAuthenticated = !!kauth?.accessToken?.content?.sub;
+        let filters: any = {};
+
+        if (isAuthenticated) {
+          const { sub: keycloakUserID } = kauth.accessToken.content;
+          const UserModel = ogm.model("KeycloakUser");
+          const user = await UserModel.find({
+            where: { keycloakUserID: keycloakUserID },
+          });
+          if (user.length === 0 || !user) {
+            filters = { isPublic: true };
+          } else {
+            filters = {
+            OR: [
+                { createdBy: user[0] },
+                // { isPublic: true },
+                // { sharedWith_IN: [user[0]] }
+              ]
+            }
+          }
+        } else {
+          filters = { isPublic: true };
         }
 
-        const filters = {
-          OR: [
-            { createdBy: user[0] },
-            // { isPublic: true },
-            //{ sharedWith_IN: [user[0]] }
-          ]
-        }
-
-        // Optionally add projectID to the filters if provided
+        // Optionally add runID to the filters if provided
         if (args.runID) {
           filters.runID = args.runID;
         }
@@ -97,11 +104,22 @@ export const resolvers = {
       { ogm, kauth, minioClient }
     ) => {
       try {
-        const { sub: keycloakUserID } = kauth.accessToken.content;
+        const isAuthenticated = !!kauth?.accessToken?.content?.sub;
         const UserModel = ogm.model("KeycloakUser");
-        const user = await UserModel.find({
-          where: { keycloakUserID: keycloakUserID }
-        });
+        let user
+
+        if (isAuthenticated) {
+          const { sub: keycloakUserID } = kauth.accessToken.content;
+          user = await UserModel.find({
+            where: { keycloakUserID: keycloakUserID }
+          });
+        } else {
+          // hardcoded default user email to get sample user.
+          // Must move this email to env file after feature is finished.
+          user = await UserModel.find({
+            where: { email: 'public@tigerdb.ca' }
+          });
+        }
         if (!user) {
           throw new Error("User not found");
         }
@@ -127,6 +145,7 @@ export const resolvers = {
               where: { node: { keycloakUserID: user[0].keycloakUserID } }
             }
           },
+          isPublic: !isAuthenticated,
           // datasets: {
           //   connect: datasetIDs.map((datasetID: string) => ({
           //     where: { node: { datasetID: datasetID }}
