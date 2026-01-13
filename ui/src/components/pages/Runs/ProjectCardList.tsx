@@ -22,9 +22,9 @@ function ProjectCard({
 }) {
   const color = project.isPublic ? "black" : "facebook";
   // const creationDate = new Date(project.createdOn).toDateString();
-  const selected = selectedProjectIDs.includes(project.projectID);
-  const [selectedDatasets, setSelectedDatasets] = React.useState([]);
-  const [availableUploads, setAvailableUploads] = React.useState([]);
+  const selected = selectedAll || selectedProjectIDs.includes(project.projectID);
+  const [selectedDatasets, setSelectedDatasets] = useState([]);
+  const [availableUploads, setAvailableUploads] = useState([]);
   const allUploads: any[] = []
   let allTags: any[] = []
   const seenTagnames = new Set()
@@ -185,7 +185,6 @@ export default function ProjectCardList({
 }) {
   const [usingPublicProjects, setUsingPublicProjects] = React.useState(true);
   const [projectsList, setProjectsList] = React.useState(projects);
-  const [selectedAll, setSelectedAll] = React.useState(false)
   const [selectedCategories, setSelectedCategories] = React.useState([])
   const [selectedTags, setSelectedTags] = React.useState([]);
   const { data: tagNames } = useQuery(gql`
@@ -198,6 +197,18 @@ export default function ProjectCardList({
       tagCategories
     }  
   `)
+  const selectedAll = projectsList?.length > 0 && projectsList.every((p) => selectedProjectIDs.includes(p.projectID));
+
+  function handleSelectAll() {
+    projectsList.forEach((project) => {
+      const isSelected = selectedProjectIDs.includes(project.projectID);
+      if (selectedAll) {
+        if (isSelected) toggleProjectID(project.projectID);
+      } else {
+        if (!isSelected) toggleProjectID(project.projectID);
+      }
+    });
+  }
 
   function doFilter() {
     let tempProjects = usingPublicProjects ? [...projects] : projects?.filter((p) => !p.isPublic)
@@ -262,7 +273,7 @@ export default function ProjectCardList({
       <Divider hidden />
       { canSelectAll && (
         <>
-          <Button fluid onClick={() => setSelectedAll(!selectedAll)}>{selectedAll ? 'Deselect' : 'Select'} all</Button>
+          <Button fluid onClick={handleSelectAll}>{selectedAll ? 'Deselect' : 'Select'} all</Button>
           <Divider hidden />
         </>
       )}
