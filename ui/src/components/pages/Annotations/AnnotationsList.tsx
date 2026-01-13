@@ -64,7 +64,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             <Label
               basic={!dropdownFilters["trbv"].includes(trbv)}
               content="TRBV"
-              detail={`${trbv}`}
+              detail={`${trbv ? trbv : 'NA'}`}
               color={
                 dropdownFilters["trbv"].includes(trbv) ? "blue" : "grey"
               }
@@ -74,7 +74,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             <Label
               basic={!dropdownFilters["trbj"].includes(trbj)}
               content="TRBJ"
-              detail={`${trbj}`}
+              detail={`${trbj ? trbj : 'NA'}`}
               color={
                 dropdownFilters["trbj"].includes(trbj) ? "blue" : "grey"
               }
@@ -84,7 +84,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             <Label
               basic={!dropdownFilters["trav"].includes(trav)}
               content="TRAV"
-              detail={`${trav}`}
+              detail={`${trav ? trav : 'NA'}`}
               color={
                 dropdownFilters["trav"].includes(trav) ? "blue" : "grey"
               }
@@ -94,7 +94,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             <Label
               basic={!dropdownFilters["traj"].includes(traj)}
               content="TRAJ"
-              detail={`${traj}`}
+              detail={`${traj ? traj : 'NA'}`}
               color={
                 dropdownFilters["traj"].includes(traj) ? "blue" : "grey"
               }
@@ -106,7 +106,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             <Label
               basic={!dropdownFilters["mhc"].includes(mhc)}
               content="MHC"
-              detail={`${mhc}`}
+              detail={`${mhc ? mhc : 'NA'}`}
               color={
                 dropdownFilters["mhc"].includes(mhc) ? "blue" : "grey"
               }
@@ -116,7 +116,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             <Label
               basic={!dropdownFilters["mhcClass"].includes(mhcClass)}
               content="MHC Class"
-              detail={`${mhcClass}`}
+              detail={`${mhcClass ? mhcClass : 'NA'}`}
               color={
                 dropdownFilters["mhcClass"].includes(mhcClass) ? "blue" : "grey"
               }
@@ -128,7 +128,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             <Label
               basic={!dropdownFilters["epitopeAAseq"].includes(epitopeAAseq)}
               content="Epitope Amino Acid Sequence"
-              detail={`${epitopeAAseq}`}
+              detail={`${epitopeAAseq ? epitopeAAseq : 'NA'}`}
               color={
                 dropdownFilters["epitopeAAseq"].includes(epitopeAAseq) ? "blue" : "grey"
               }
@@ -138,7 +138,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             <Label
               basic={!dropdownFilters["epitopeGene"].includes(epitopeGene)}
               content="Epitope Gene"
-              detail={`${epitopeGene}`}
+              detail={`${epitopeGene ? epitopeGene : 'NA'}`}
               color={
                 dropdownFilters["epitopeGene"].includes(epitopeGene) ? "blue" : "grey"
               }
@@ -148,7 +148,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             <Label
               basic={!dropdownFilters["epitopeSpecies"].includes(epitopeSpecies)}
               content="Epitope Species"
-              detail={`${epitopeSpecies}`}
+              detail={`${epitopeSpecies ? epitopeSpecies : 'NA'}`}
               color={
                 dropdownFilters["epitopeSpecies"].includes(
                   epitopeSpecies
@@ -162,7 +162,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             <Label
               basic={!dropdownFilters["mutation"].includes(mutation)}
               content="Mutation"
-              detail={`${mutation}`}
+              detail={`${mutation ? mutation : 'NA'}`}
               color={
                 dropdownFilters["mutation"].includes(mutation) ? "blue" : "grey"
               }
@@ -172,7 +172,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             <Label
               basic={!dropdownFilters["recognizesWTEpitope"].includes(recognizesWTEpitope)}
               content="Recognizes Wild Type Epitope"
-              detail={`${recognizesWTEpitope}`}
+              detail={`${recognizesWTEpitope ? recognizesWTEpitope : 'NA'}`}
               color={
                 dropdownFilters["recognizesWTEpitope"].includes(recognizesWTEpitope) ? "blue" : "grey"
               }
@@ -194,7 +194,7 @@ function AnnotationListItemLabels({ dropdownFilters, values }) {
             <Label
               basic={!dropdownFilters["uniProt"].includes(uniProt)}
               content="UniProt"
-              detail={`${uniProt}`}
+              detail={`${uniProt ? uniProt : 'NA'}`}
               color={
                 dropdownFilters["uniProt"].includes(uniProt) ? "blue" : "grey"
               }
