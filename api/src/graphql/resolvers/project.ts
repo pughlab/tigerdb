@@ -7,14 +7,7 @@ export const resolvers = {
         const isAuthenticated = !!kauth?.accessToken?.content?.sub;
         let filters: any;
 
-        if (!isAuthenticated) {
-          // Unauthenticated: only public projects
-          filters = {
-            OR: [
-              { isPublic: true }
-            ]
-          };
-        } else {
+        if (isAuthenticated) {
           const { sub: keycloakUserID } = kauth.accessToken.content
           const UserModel = ogm.model('KeycloakUser')
           const user = await UserModel.find({
@@ -24,15 +17,22 @@ export const resolvers = {
           if (!user || user.length === 0) {
             // Fallback to public only if user record missing
             filters = { isPublic: true };
+          } else {
+            filters = {
+              OR: [
+                { createdBy: user[0] },
+                { isPublic: true },
+                { sharedWith: user[0] }
+              ]
+            };
+          }
         } else {
+          // Unauthenticated: only public projects
           filters = {
             OR: [
-              { createdBy: user[0] },
-              { isPublic: true },
-              { sharedWith: user[0] }
+              { isPublic: true }
             ]
           };
-        }
       }
         if (args?.projectID) {
           filters.projectID = args.projectID;
@@ -67,6 +67,16 @@ export const resolvers = {
             minioUpload {
               objectName
               filename
+              processedDataset {
+                objectName
+                filename
+                minioUpload {
+                  dataset {
+                    datasetID
+                    name
+                  }
+                }
+              }
             }
           }
           createdBy {
