@@ -31,7 +31,20 @@ export default function ProjectDetails() {
 			}
 		}
 	`, { variables: { projectID }, onCompleted() {
-		setCanMakePublic(false)
+		// setCanMakePublic(false)
+		refetch()
+	}, })
+
+	const [makeProjectPrivate] = useMutation(gql`
+		mutation MakeProjectPrivate($projectID: ID!) {
+			makeProjectPrivate(projectID: $projectID) {
+				projectID
+				name
+				isPublic
+			}
+		}
+	`, { variables: { projectID }, onCompleted() {
+		// setCanMakePublic(false)
 		refetch()
 	}, })
 	const isOwner = ownerData?.isProjectOwner ?? false
@@ -86,23 +99,26 @@ export default function ProjectDetails() {
 					</List>
 					<Message content={description} />
 					<Divider horizontal />
-					{ canMakePublic && !isPublic ? 
+					{ canMakePublic ? (
+						isPublic ?
 						<Button 
 							fluid
 							color='facebook' 
-							
-							//  loading={curatedDatasetLoading}
-							//  disabled={success || !adminQueryData.isAdmin || curatedDatasetLoading || minioUpload.processedDataset === null || minioUpload.processedDataset === undefined}
-							icon='globe'
-							content='MAKE PROJECT PUBLIC'
-							onClick={() => makeProjectPublic()}
+							icon='lock'
+							content='MAKE PROJECT PRIVATE'
+							onClick={() => makeProjectPrivate()}
 						/> :
 						<Button 
 							fluid
+							color='black' 
+							icon='globe'
+							content='MAKE PROJECT PUBLIC'
+							onClick={() => makeProjectPublic()}
+						/>
+						) :
+						<Button 
+							fluid
 							color='facebook' 
-							
-							//  loading={curatedDatasetLoading}
-							//  disabled={success || !adminQueryData.isAdmin || curatedDatasetLoading || minioUpload.processedDataset === null || minioUpload.processedDataset === undefined}
 							icon='users'
 							content='SHARE'
 							disabled
