@@ -15,6 +15,20 @@ export default function useProjectsQuery() {
 						name
 						category
 					}
+					minioUpload {
+						objectName
+						filename
+						processedDataset {
+							objectName
+							filename
+							minioUpload {
+								dataset {
+									datasetID
+									name
+								}
+							}
+						}
+					}
 				}
 				createdBy {
 					keycloakUserID

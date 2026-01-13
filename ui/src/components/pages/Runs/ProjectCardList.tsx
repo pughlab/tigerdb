@@ -4,6 +4,7 @@ import { Card, Popup, Button, Icon, Header, Label, Divider, Checkbox, Select, Fo
 import DatasetNameList from "./DatasetNameList";
 import ProcessedUploadsList from "./ProcessedUploadsList";
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
+import { useKeycloak } from "@react-keycloak/web";
 
 function ProjectCard({
   project,
@@ -17,42 +18,17 @@ function ProjectCard({
   const [availableUploads, setAvailableUploads] = React.useState([]);
   const allUploads: any[] = []
   const allTags = new Set()
-  const { data } = useQuery(
-    gql`
-      query Datasets($projectID: ID!) {
-        datasets(where: { project: { projectID: $projectID } }) {
-          datasetID
-          name
-          project {
-            projectID
-            name
-          }
-          tags {
-            tagID
-            name
-            category
-          }
-          minioUpload {
-            objectName
-            filename
-            processedDataset {
-              objectName
-              filename
-            }
-          }
-        }
-      }
-    `,
-    {
-      variables: { projectID: project.projectID },
-      fetchPolicy: "network-only",
-    }
-  );
 
   React.useEffect(() => {
-    if (selectedDatasets.length === 0) {
-      setAvailableUploads([])
-    }
+    const newUploads: any[] = []
+    selectedDatasets.forEach((dataset: any) => {
+      dataset.minioUpload?.forEach((upload: any) => {
+        if (upload.processedDataset) {
+          newUploads.push(upload.processedDataset)
+        }
+      })
+    })
+    setAvailableUploads(newUploads)
   }, [selectedDatasets])
 
   React.useEffect(() => {
@@ -67,11 +43,7 @@ function ProjectCard({
     }
   }, [selected])
 
-  if (!data) {
-    return <></>;
-  }
-
-  const datasets = data?.datasets;
+  const datasets = project.datasets;
   datasets.forEach((dataset) => {
     dataset.tags?.forEach((tag) => {
       allTags.add(tag)
@@ -156,12 +128,20 @@ function ProjectCard({
               projectSelected={selected}
             />
             <Divider horizontal content="Select processed uploads" />
-            <ProcessedUploadsList uploads={!project.isReference ? availableUploads : allUploads} updateSelectedUploads={updateSelectedUploads} projectSelected={selected} />
+            <ProcessedUploadsList uploads={project.isReference ? allUploads : availableUploads} updateSelectedUploads={updateSelectedUploads} projectSelected={selected} />
           </React.Fragment>
         )}
       </Card.Content>
     </Card>
   );
+}
+
+function datasetIncludesTag(dataset, tagList) {
+  return dataset.tags.some((tag) => tagList.includes(tag.name))
+}
+
+function datasetIncludesCategory(dataset, categoryList) {
+  return dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
 }
 
 export default function ProjectCardList({
@@ -184,14 +164,8 @@ export default function ProjectCardList({
       tagCategories
     }  
   `)
-
-  function datasetIncludesTag(dataset, tagList) {
-    return dataset.tags.some((tag) => tagList.includes(tag.name))
-  }
-
-  function datasetIncludesCategory(dataset, categoryList) {
-    return dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
-  }
+  const { keycloak } = useKeycloak();
+  const isAuthenticated = !!keycloak?.authenticated;
 
   function doFilter() {
     let tempProjects = usingPublicProjects ? [...projects] : projects?.filter((p) => !p.isPublic)
@@ -226,6 +200,7 @@ export default function ProjectCardList({
       <Checkbox
         label="Include public projects"
         checked={usingPublicProjects}
+        disabled={!isAuthenticated}
         onChange={() => setUsingPublicProjects(!usingPublicProjects)}
       />
       <Divider hidden />
