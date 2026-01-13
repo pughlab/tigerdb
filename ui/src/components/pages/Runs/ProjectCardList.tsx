@@ -6,14 +6,24 @@ import ProcessedUploadsList from "./ProcessedUploadsList";
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
 import { useKeycloak } from "@react-keycloak/web";
 
+function datasetIncludesTag(dataset, tagList) {
+  return dataset.tags?.some((tag) => tagList.includes(tag.name))
+}
+
+function datasetIncludesCategory(dataset, categoryList) {
+  return dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
+}
+
 function ProjectCard({
   project,
   updateSelectedUploads,
+  selectedProjectIDs,
+  toggleProjectID,
   selectedAll
 }) {
   const color = project.isPublic ? "black" : "facebook";
   // const creationDate = new Date(project.createdOn).toDateString();
-  const [selected, setSelected] = useState(false);
+  const selected = selectedProjectIDs.includes(project.projectID);
   const [selectedDatasets, setSelectedDatasets] = React.useState([]);
   const [availableUploads, setAvailableUploads] = React.useState([]);
   const allUploads: any[] = []
@@ -32,10 +42,6 @@ function ProjectCard({
   }, [selectedDatasets])
 
   React.useEffect(() => {
-    setSelected(selectedAll)
-  }, [selectedAll])
-
-  React.useEffect(() => {
     if (selected) {
       updateSelectedUploads((prev) => [...prev, ...allUploads])
     } else {
@@ -45,9 +51,14 @@ function ProjectCard({
 
   const datasets = project.datasets;
   datasets.forEach((dataset) => {
-    dataset.tags?.forEach((tag) => {
-      allTags.add(tag)
+    const uniqueTags = dataset.tags?.filter((tag) => {
+      if (seenTagnames.has(tag.name)) {
+        return false
+      }
+      seenTagnames.add(tag.name)
+      return true
     })
+    allTags = [...allTags, ...uniqueTags]
     dataset.minioUpload?.forEach((upload) => {
       if (project.isReference) {
         allUploads.push(upload)
@@ -63,7 +74,7 @@ function ProjectCard({
       link
       color={color}
       onClick={() => {
-        setSelected(!selected);
+        toggleProjectID(project.projectID)
       }}
     >
       <Popup
@@ -110,15 +121,15 @@ function ProjectCard({
           <React.Fragment key="reference-data">
             <Divider horizontal content="Datasets" />
             { datasets.length > 0 ? datasets.map((dataset) => <Label key={`reference-dataset-${dataset.datasetID}`}>{dataset.name}</Label>) : "No datasets available." }
-            { allTags.size > 0 && <Divider horizontal content="Dataset tags" /> }
-            { allTags.size > 0 && Array.from(allTags).map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />) }
+            { allTags.length > 0 && <Divider horizontal content="Dataset tags" /> }
+            { allTags.length > 0 && allTags.map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />) }
             { datasets.length > 0 && <Divider horizontal content="Reference uploads" /> }
             { datasets.length > 0 && datasets.map((dataset) => dataset.minioUpload.map((upload) => <Label key={`reference-upload-${upload.objectName}`}>{upload.filename}</Label>)) }
           </React.Fragment>
         ) : (
           <React.Fragment key="query-data">
-            { allTags.size > 0 && <Divider horizontal content="Tags" /> }
-            { allTags.size > 0 && Array.from(allTags).map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />) }
+            { allTags.length > 0 && <Divider horizontal content="Tags" /> }
+            { allTags.length > 0 && allTags.map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />) }
             <Divider horizontal content="Select datasets" />
             <DatasetNameList
               datasets={datasets}
@@ -147,6 +158,8 @@ function datasetIncludesCategory(dataset, categoryList) {
 export default function ProjectCardList({
   projects,
   updateSelectedUploads,
+  selectedProjectIDs,
+  toggleProjectID,
   canSelectAll
 }) {
   const [usingPublicProjects, setUsingPublicProjects] = React.useState(true);
@@ -241,6 +254,8 @@ export default function ProjectCardList({
             key={project.projectID}
             project={project}
             updateSelectedUploads={updateSelectedUploads}
+            selectedProjectIDs={selectedProjectIDs}
+            toggleProjectID={toggleProjectID}
             selectedAll={selectedAll}
           />
         ))}

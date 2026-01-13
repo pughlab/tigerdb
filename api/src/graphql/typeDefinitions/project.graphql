@@ -60,6 +60,9 @@ type Mutation {
   ): Project!,
   makeProjectPublic(
     projectID: ID!
+  ): Project!,
+  makeProjectPrivate(
+    projectID: ID!
   ): Project!
 }
 # turned off for public but not sure..

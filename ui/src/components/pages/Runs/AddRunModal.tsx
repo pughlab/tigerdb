@@ -3,12 +3,15 @@ import React from "react";
 import { Button, Form, Input, Modal, TextArea, Icon, Divider, Tab, Segment, Card, Container } from "semantic-ui-react";
 import useProjectsQuery from '../../../hooks/useProjectsQuery'
 import ProjectCardList from "./ProjectCardList";
+import { useNavigate } from "react-router-dom";
 
 export default function AddRunModal({refetch}) {
+  const navigate = useNavigate();
   const [name, setName]= React.useState('')
   const [description, setDescription]= React.useState('')
   const [selectedQueryUploads, setSelectedQueryUploads] = React.useState([]);
   const [selectedReferenceUploads, setSelectedReferenceUploads] = React.useState([]);
+  const [selectedProjectIDs, setSelectedProjectIDs] = React.useState([])
   const [open, setOpen] = React.useState(false);
   const [hovered, setHovered] = React.useState(false);
 
@@ -23,15 +26,25 @@ export default function AddRunModal({refetch}) {
         createdOn
         status
       }
-    }`, {onCompleted: () => { 
+    }`, {onCompleted: (data) => { 
       refetch() 
       setOpen(!open)
       setDescription('')
       setName('')
       setSelectedQueryUploads([]);
       setSelectedReferenceUploads([]);
+      const runID = data.createRunWithMinioBucket.runID;
+      navigate(`/home/analysis/${runID}`);
     }
   })
+
+  function toggleProjectID(projectID) {
+    if (selectedProjectIDs.includes(projectID)) {
+      setSelectedProjectIDs(prev => prev.filter(id => id !== projectID))
+    } else {
+      setSelectedProjectIDs(prev => [...prev, projectID])
+    }
+  }
 
   const projects = projectsData?.getProjects
   const queryProjects: any[] = []
@@ -51,7 +64,7 @@ export default function AddRunModal({refetch}) {
           <Form>
             <Segment color='violet'>
               <Divider horizontal content="Select projects" />
-              <ProjectCardList projects={queryProjects} updateSelectedUploads={setSelectedQueryUploads} canSelectAll={false} />
+              <ProjectCardList projects={queryProjects} selectedProjectIDs={selectedProjectIDs} updateSelectedUploads={setSelectedQueryUploads} toggleProjectID={toggleProjectID} canSelectAll={false} />
             </Segment>
           </Form>
         </Tab.Pane>
@@ -64,7 +77,7 @@ export default function AddRunModal({refetch}) {
           <Form>
             <Segment color='violet'>
               <Divider horizontal content='SELECT REFERENCE PROJECTS'/>
-              <ProjectCardList projects={referenceProjects} updateSelectedUploads={setSelectedReferenceUploads} canSelectAll={true} />
+              <ProjectCardList projects={referenceProjects} selectedProjectIDs={selectedProjectIDs} updateSelectedUploads={setSelectedReferenceUploads} toggleProjectID={toggleProjectID} canSelectAll={true} />
             </Segment>
           </Form>
         </Tab.Pane>
