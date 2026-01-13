@@ -24,7 +24,6 @@ import useRouter from "../../../hooks/useRouter";
 import useRunsQuery from "../../../hooks/useRunsQuery";
 
 import AddRunModal from "./AddRunModal";
-import SegmentPlaceholder from "../../common/SegmentPlaceholder";
 import { DeleteRunModal } from "./DeleteRunModal";
 import { gql, useQuery } from "@apollo/client";
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
@@ -40,25 +39,19 @@ function RunsListItem({ run, refetch }) {
     submittedOn,
     status,
   } = run;
-  // const dateCreator = (date) => {
-  //   const newDate = new Date(date).toLocaleString("en-US", {
-  //     weekday: "long", // "Sunday"
-  //     year: "numeric", // "2024"
-  //     month: "short", // "Oct"
-  //     day: "numeric", // "2"
-  //     hour: "numeric", // "4"
-  //     minute: "numeric", // "41"
-  //     hour12: true, // 12-hour format with AM/PM
-  //   });
-  //   return newDate;
-  // };
   const creationDate = new Date(createdOn).toDateString()
-  const tags = new Set()
+  const seenTagnames = new Set()
+  let tags: any[] = []
 
   processedDatasets?.forEach((processedUpload) => {
-    processedUpload.minioUpload?.dataset?.tags?.forEach((tag) => {
-      tags.add(tag)
-    })
+    const uniqueTags = processedUpload.minioUpload?.dataset?.tags?.filter((tag) => {
+      if (seenTagnames.has(tag.name)) {
+        return false
+      }
+      seenTagnames.add(tag.name)
+      return true
+    }) || []
+    tags = [...tags, ...uniqueTags]
   })
 
   let colorStatus: SemanticCOLORS = 'black';
@@ -97,7 +90,20 @@ function RunsListItem({ run, refetch }) {
         </Card.Header>
         <List.Description content={description} />
         <List.Description>
-          <Divider horizontal content="Data" />
+          { tags.length > 0 && <Divider horizontal content="Dataset tags" />}
+          <Label.Group>
+            {
+              [...tags]
+              .sort((tag1, tag2) => {
+                if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
+                  return 0
+                }
+                return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
+              })
+              .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
+            }
+          </Label.Group>
+          { processedDatasets.length > 0 && <Divider horizontal content="Uploads" />}
           <Label.Group>
             {
               processedDatasets.length > 0
@@ -112,24 +118,18 @@ function RunsListItem({ run, refetch }) {
                 : null
             }
           </Label.Group>
-          { tags.size > 0 && <Divider horizontal content="Tags" />}
-          <Label.Group>
-            {
-              [...tags]
-              .sort((tag1, tag2) => {
-                if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
-                  return 0
-                }
-                return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
-              })
-              .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
-            }
-          </Label.Group>
-          <Divider hidden />
         </List.Description>
       </Card.Content>
     </Card>
   );
+}
+
+function uploadIncludesTag(upload, tagList) {
+  return upload.minioUpload.dataset.tags?.some((tag) => tagList.includes(tag.name)) ?? false
+}
+
+function uploadIncludesCategory(upload, categoryList) {
+  return upload.minioUpload.dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
 }
 
 export default function RunsList() {
@@ -152,14 +152,6 @@ export default function RunsList() {
 
   const location = useLocation();
   const runs = data?.getRuns ?? [];
-
-  function uploadIncludesTag(upload, tagList) {
-    return upload.minioUpload.dataset.tags?.some((tag) => tagList.includes(tag.name)) ?? false
-  }
-
-  function uploadIncludesCategory(upload, categoryList) {
-    return upload.minioUpload.dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
-  }
 
   function doSearch() {
     let tempRuns = activeFilter === "all" 
@@ -184,10 +176,10 @@ export default function RunsList() {
   }
 
   function toggleCategory(category) {
-    if (!selectedCategories.includes(category)) {
-      setSelectedCategories((prev) => [...prev, category])
-    } else {
+    if (selectedCategories.includes(category)) {
       setSelectedCategories((prev) => prev.filter((cat) => cat !== category))
+    } else {
+      setSelectedCategories((prev) => [...prev, category])
     }
   }
 
