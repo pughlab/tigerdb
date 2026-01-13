@@ -78,7 +78,7 @@ function RunsListItem({ run, refetch }) {
     >
       <Card.Content floated="right" as={Segment} basic>
         <div>
-          <Button floated="left" size='tiny' color={colorStatus} content={run.status.charAt(0).toUpperCase() + run.status.slice(1)} />
+          <Button inverted floated="left" size='tiny' color={colorStatus} content={run.status.charAt(0).toUpperCase() + run.status.slice(1)} />
           <DeleteRunModal run={run} refetch={refetch}/>   
         </div>
       </Card.Content>
