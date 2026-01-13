@@ -6,14 +6,6 @@ import ProcessedUploadsList from "./ProcessedUploadsList";
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
 import { useKeycloak } from "@react-keycloak/web";
 
-function datasetIncludesTag(dataset, tagList) {
-  return dataset.tags?.some((tag) => tagList.includes(tag.name))
-}
-
-function datasetIncludesCategory(dataset, categoryList) {
-  return dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
-}
-
 function ProjectCard({
   project,
   updateSelectedUploads,
@@ -27,7 +19,9 @@ function ProjectCard({
   const [selectedDatasets, setSelectedDatasets] = React.useState([]);
   const [availableUploads, setAvailableUploads] = React.useState([]);
   const allUploads: any[] = []
-  const allTags = new Set()
+  // const allTags = new Set()
+  let allTags: any[] = []
+  const seenTagnames = new Set()
 
   React.useEffect(() => {
     const newUploads: any[] = []
