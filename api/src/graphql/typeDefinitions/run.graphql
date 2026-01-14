@@ -55,6 +55,7 @@ type Run {
     getRunData: String
     failedRunLogs: String
     # hasResults: Boolean @default(value: false)
+    presignedURL: String @customResolver
 }
 
 

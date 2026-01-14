@@ -1,4 +1,4 @@
-import { makeBucket } from '../../minio/minio';
+import { makeBucket, makePresignedURL, listBucketObjects } from '../../minio/minio';
 import { ApolloError } from "apollo-server";
 
 export const resolvers = {
@@ -517,6 +517,39 @@ export const resolvers = {
         console.log("Error fetching completedOn", error);
       }
       return null;
+    },
+    
+    presignedURL: async (
+      { runID, status },
+      { },
+      { minioClient }
+    ) => {
+      console.log('Status:', status);
+
+      // if (status !== 'completed') {
+      //   return null
+      // }
+      try {
+        const bucketName = `run-${runID}`
+        const bucketItemNames = (await listBucketObjects(minioClient, bucketName)).map(({ name }) => name)
+        // if name includes 'cluster.txt' then return that name
+        const objectName = bucketItemNames.find(name => name.includes('cluster.csv'))
+
+        if (!objectName) {
+          throw new Error(`No results found in bucket "${bucketName}"`)
+        }
+
+        // const presignedURL = await minioClient.presignedUrl('GET', bucketName, objectName, 24 * 60 * 60, { "response-content-disposition": `attachment; filename=${objectName}` })
+        const presignedURL = makePresignedURL(minioClient, bucketName, objectName)
+        // console.log(presignedURL)
+        return presignedURL
+
+        
+      } catch (error) {
+        console.log(error)
+        console.log('run.presignedurl error')
+        // throw new ApolloError('run.presignedurl', error)
+      }
     }
   },
 };

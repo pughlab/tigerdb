@@ -8,7 +8,7 @@ const MINIO_ROOT_PASSWORD = process.env.MINIO_ROOT_PASSWORD || 'DEFAULT_MINIO_RO
 const MINIO_IP = process.env.MINIO_IP || 'DEFAULT_MINIO_IP'
 const MINIO_API_PORT = Number(process.env.MINIO_API_PORT) || 'DEFAULT_MINIO_PORT'
 const MINIO_EXTERNAL_PORT = process.env.MINIO_EXTERNAL_PORT || 'DEFAULT_MINIO_EXTERNAL_PORT'
-
+const MINIO_HOST = process.env.MINIO_HOST || 'DEFAULT_MINIO_HOST'
 console.log('MINIO_IP', MINIO_IP)
 console.log('MINIO_API_PORT', MINIO_API_PORT)
 
@@ -85,7 +85,19 @@ export async function putObjectBucket (minioClient: Client, file: any, bucketNam
 export async function makePresignedURL (minioClient: Client, bucketName: string, objectName: string) {
   try {
     const presignedUrl = await minioClient.presignedUrl('GET', bucketName, objectName, 24*60*60)
-    return presignedUrl
+    if (process.env.GRAPHENE_DEV === 'True') {
+      console.log('presignedUrl', presignedUrl)
+      return presignedUrl
+    } else {
+      let urlTemplate = new URL(presignedUrl)
+      urlTemplate.hostname = MINIO_HOST
+      urlTemplate.pathname = "/minio"+urlTemplate.pathname
+      urlTemplate.port = "443"
+      urlTemplate.protocol = "https:"
+      const hostNameUrl = urlTemplate.href
+      // console.log('hostNameUrl', hostNameUrl)
+      return hostNameUrl
+    }
   } catch (error) {
     console.error(error)
     throw new Error('minio.presignedURL: ' +error)

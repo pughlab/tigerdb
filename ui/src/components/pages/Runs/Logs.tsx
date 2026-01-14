@@ -62,12 +62,13 @@ export default function Logs() {
         <Header>
           Logs
           <Header.Subheader>
-            <Checkbox
+            Showing container logs for RUN ID: {runID}
+            {/* <Checkbox
               label="Show full verbose logs"
               // onClick={() => setShowVerbose(!showVerbose)}
               // toggle
               checked
-            />
+            /> */}
           </Header.Subheader>
         </Header>
       </Divider>

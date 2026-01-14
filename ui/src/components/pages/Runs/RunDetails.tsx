@@ -21,82 +21,126 @@ import { useParams } from "react-router-dom";
 import tigerdbLogo from "../../logos/tigerdb.png";
 import Logs from "./Logs";
 import SegmentPlaceholder from "../../common/SegmentPlaceholder";
+import DisplayTableFromPresignedURL from "../../common/table/DisplayTableFromPresignedURL";
 
 import useSubmitRunMutation from "../../../hooks/useSubmitRunMutation";
 import useRunDetailsQuery from "../../../hooks/useRunDetailsQuery";
 import useUpdateRunParametersMutation from "../../../hooks/useUpdateRunParametersMutation";
 import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
 
-function RunActionsButton({ status, loading, refetch }) {
-  if (!status) {
-    return null;
+function RunActionsButton({
+  status,
+  loading,
+  refetch,
+  presignedURL,
+  runID,
+}: {
+  status: string;
+  loading: boolean;
+  refetch: () => void;
+  presignedURL?: string;
+  runID: string;
+}) {
+  if (!status) return null;
+
+  // submitted: keep as refetch (or wire cancel later if you add a cancel mutation)
+  if (status === "submitted") {
+    return (
+      <Button
+        content="CANCEL"
+        color="red"
+        icon="cancel"
+        disabled
+        onClick={() => refetch()}
+        loading={loading}
+      />
+    );
   }
 
-  const buttonArgs = {
-    content: "",
-    icon: "",
-    color: "",
-  };
-
-  switch (status) {
-    case "submitted":
-      buttonArgs.color = "red";
-      buttonArgs.content = "CANCEL";
-      buttonArgs.icon = "cancel";
-      break;
-    case "completed":
-      buttonArgs.color = "violet";
-      buttonArgs.content = "DOWNLOAD";
-      buttonArgs.icon = "download";
-      break;
-    case "failed":
-      buttonArgs.color = "red";
-      buttonArgs.content = "FAILED RUN LOGS";
-      buttonArgs.icon = "cloud download";
+  // completed: make it a real download link
+  if (status === "completed") {
+    return (
+      <Button
+        as="a"
+        href={presignedURL}
+        download={`TIGERdb_${runID}_cluster.csv`}
+        content="DOWNLOAD"
+        color="violet"
+        icon="download"
+        loading={loading}
+        disabled={!presignedURL}
+      />
+    );
   }
 
-  return (
-    <Button
-      content={buttonArgs.content}
-      color={buttonArgs.color}
-      icon={buttonArgs.icon}
-      onClick={() => refetch()}
-      loading={loading}
-    />
-  );
+  if (status === "failed") {
+    return (
+      <Button
+        content="FAILED RUN LOGS"
+        color="red"
+        icon="cloud download"
+        onClick={() => refetch()}
+        loading={loading}
+        disabled={!presignedURL}
+      />
+    );
+  }
+
+  return null;
 }
 
-function RunStatus({ status }: { status: string }) {
-  let component = null;
+function RunResults({
+  status,
+  presignedURL,
+}: {
+  status: string;
+  presignedURL?: string;
+}) {
+  if (!status?.trim()) return null;
 
-  if (status.trim() !== "" && status === "completed") {
-    component = (
-      <Segment placeholder>
-        <Image size="medium" src={tigerdbLogo} centered />
-        <Message color="green">
-          <Header as="h3" icon>
-            <Icon name="check circle" color="green" />
-            RUN COMPLETED
-          </Header>
-          <Message.Content>
-            <p>Results are ready for download.</p>
-          </Message.Content>
-        </Message>
-      </Segment>
-    );
-  } else if (status === "submitted") {
-    component = (
+  if (status === "submitted") {
+    return (
       <Segment placeholder>
         <Image size="large" src={tigerdbLogo} centered />
         <Dimmer active inverted>
-          {/* <Loader size='large'>Running GLIPH2...</Loader> */}
           <Logs />
         </Dimmer>
       </Segment>
     );
   }
 
-  return component;
+  if (status === "completed") {
+    return (
+      <Segment placeholder>
+        <Segment.Group>
+          <Segment>
+            <Header textAlign="center">
+              Viewing GLIPH2 clusters from{" "}
+              <span style={{ color: "#6434C9" }}>
+                TIGERdb_cluster.csv
+              </span>
+            </Header>
+          </Segment>
+
+          {/* Preview table from the run output */}
+          {presignedURL ? (
+            <DisplayTableFromPresignedURL presignedURL={presignedURL} />
+          ) : (
+            <Message warning content="No presignedURL available for results preview." />
+          )}
+        </Segment.Group>
+
+        <Message color="green">
+          <Header as="h3" icon>
+            <Icon name="check circle" color="green" />
+            RUN COMPLETED - READY TO DOWNLOAD
+          </Header>
+        </Message>
+      </Segment>
+    );
+  }
+
+  return null;
 }
 
 function DataSources({ processedDatasets, referenceDatasets }) {
@@ -257,6 +301,7 @@ export default function RunDetails() {
     processedDatasets,
     referenceDatasets,
     status,
+    presignedURL 
   } = run;
 
   const createdOnDate = new Date(createdOn).toLocaleString("en-US", {
@@ -286,7 +331,7 @@ export default function RunDetails() {
             }}
             loading={runDetailsLoading}
           />
-          <Button
+          {/* <Button
             disabled
             content="SHARE"
             icon="users"
@@ -295,12 +340,14 @@ export default function RunDetails() {
               refetch();
             }}
             loading={runDetailsLoading}
-          />
-          <RunActionsButton
-            status={status}
-            refetch={refetch}
-            loading={runDetailsLoading}
-          />
+          /> */}
+        <RunActionsButton
+          status={status}
+          refetch={refetch}
+          loading={runDetailsLoading}
+          presignedURL={presignedURL}
+          runID={runID!}
+        />
         </ButtonGroup>
         <Message color={"grey"}>
           <Divider horizontal content="Run Details" />
@@ -326,7 +373,7 @@ export default function RunDetails() {
             />
           </List.Description>
         </Message>
-        <RunStatus status={status} />
+        <RunResults status={status} presignedURL={presignedURL} />
         <Message color="grey">
           <Header as={"h4"} icon>
             <Icon name="paper plane" />
@@ -591,7 +638,7 @@ export default function RunDetails() {
             onClick={() => {
               submitRun({ variables: { runID: runID } }).then(() => refetch());
             }}
-            content={status === "pending" ? "SUBMIT RUN" : "RUN SUBMITTED"}
+            content={status === "pending" ? "SUBMIT RUN" : status === 'completed' ? 'RUN COMPLETED' : status === 'failed' ? 'RUN FAILED' : "RUN SUBMITTED"}
           />
         </Message>
       </Grid.Column>
