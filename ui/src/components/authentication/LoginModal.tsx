@@ -42,7 +42,7 @@ export default function LoginModal ({}) {
           header
           // color='blue'
           icon='user'
-          content={email}
+          content={name.split(' ')[0] || 'User'}
           onClick={() => {keycloakRefreshToken(keycloak, R.identity); setOpen(!open)}}
         />
       }

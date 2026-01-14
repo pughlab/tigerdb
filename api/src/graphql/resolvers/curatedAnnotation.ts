@@ -98,7 +98,7 @@ export const resolvers = {
 
         const createAnnotationVariables = await session.run(`
           CALL apoc.periodic.iterate(
-            'CALL apoc.load.csv($presignedURL, {sep: "TAB"}) YIELD list',
+            'CALL apoc.load.csv($presignedURL, {sep: "\t", header: true}) YIELD list',
             'MATCH (b:CuratedAnnotation {curatedAnnotationID: $curatedAnnotationID}) 
             CREATE (a:AnnotationVariable {annotationVariableID: apoc.create.uuid(), ${inputFields.map(field => `${field.name}: list[${field.index}]`).join(', ')} }), 
             (b)-[:HAS_ANNOTATION_VARIABLE]->(a) 
