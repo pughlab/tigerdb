@@ -47,7 +47,8 @@ export default function useRunDetailsQuery({ runID }: { runID: string }) {
 				kmerMinDepth
 				localMinOVE
 				allAAInterchangeable
-          }
+          	}
+			presignedURL
 		}
 	}
 	`, {
