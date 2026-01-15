@@ -125,11 +125,11 @@ function RunsListItem({ run, refetch }) {
 }
 
 function uploadIncludesTag(upload, tagList) {
-  return upload.minioUpload.dataset.tags?.some((tag) => tagList.includes(tag.name)) ?? false
+  return tagList?.every((tagName) => upload.minioUpload?.dataset?.tags?.some((tag) => tag.name === tagName)) ?? false
 }
 
 function uploadIncludesCategory(upload, categoryList) {
-  return upload.minioUpload.dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
+  return categoryList?.every((categoryName) => upload.minioUpload?.dataset?.tags?.some((tag) => tag.category === categoryName)) ?? false
 }
 
 export default function RunsList() {

@@ -6,11 +6,11 @@ import ProcessedUploadsList from "./ProcessedUploadsList";
 import { DatasetReadonlyTag, tagColors } from "../Datasets/DatasetTag";
 
 function datasetIncludesTag(dataset, tagList) {
-  return dataset.tags?.some((tag) => tagList.includes(tag.name))
+  return tagList?.every((tagName) => dataset.tags?.some((tag) => tag.name === tagName)) ?? false
 }
 
 function datasetIncludesCategory(dataset, categoryList) {
-  return dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
+  return categoryList?.every((categoryName) => dataset.tags?.some((tag) => tag.category === categoryName)) ?? false
 }
 
 function ProjectCard({
