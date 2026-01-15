@@ -118,6 +118,14 @@ function ProjectDetailsCard({ project }) {
   )
 }
 
+function datasetIncludesTag(dataset, tagList) {
+  return tagList?.every((tagName) => dataset.tags?.some((tag) => tag.name === tagName)) ?? false
+}
+
+function datasetIncludesCategory(dataset, categoryList) {
+  return categoryList?.every((categoryName) => dataset.tags?.some((tag) => tag.category === categoryName)) ?? false
+}
+
 export default function ProjectsList() {
   const { data, loading, refetch } = useProjectsQuery();
   const location = useLocation();
@@ -140,14 +148,6 @@ export default function ProjectsList() {
   `)
 
   const projects = data?.getProjects ?? [];
-
-  function datasetIncludesTag(dataset, tagList) {
-    return dataset.tags?.some((tag) => tagList?.includes(tag.name)) ?? false
-  }
-
-  function datasetIncludesCategory(dataset, categoryList) {
-    return dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
-  }
 
   function doSearch() {
     let tempProjects = []
