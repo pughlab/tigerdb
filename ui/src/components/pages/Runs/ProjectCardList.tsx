@@ -142,11 +142,11 @@ function ProjectCard({
 }
 
 function datasetIncludesTag(dataset, tagList) {
-  return dataset.tags.some((tag) => tagList.includes(tag.name))
+  return tagList?.every((tagName) => dataset.tags?.some((tag) => tag.name === tagName)) ?? false
 }
 
 function datasetIncludesCategory(dataset, categoryList) {
-  return dataset.tags?.some((tag) => categoryList?.includes(tag.category)) ?? false
+  return categoryList?.every((categoryName) => dataset.tags?.some((tag) => tag.category === categoryName)) ?? false
 }
 
 export default function ProjectCardList({
@@ -175,10 +175,10 @@ export default function ProjectCardList({
   function handleSelectAll() {
     projectsList.forEach((project) => {
       const isSelected = selectedProjectIDs.includes(project.projectID);
-      if (selectedAll) {
-        if (isSelected) toggleProjectID(project.projectID);
-      } else {
-        if (!isSelected) toggleProjectID(project.projectID);
+      if (selectedAll && isSelected) {
+        toggleProjectID(project.projectID);
+      } else if (!isSelected) {
+        toggleProjectID(project.projectID);
       }
     });
   }
