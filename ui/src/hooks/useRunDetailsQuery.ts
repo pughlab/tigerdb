@@ -1,5 +1,5 @@
-import { gql, useMutation, useQuery } from '@apollo/client'
-import { useEffect, useReducer, useState } from 'react'
+import { gql, useQuery } from '@apollo/client'
+import { useEffect, useState } from 'react'
 
 export default function useRunDetailsQuery({ runID }: { runID: string }) {
 	const [run, setRun] = useState()
@@ -26,6 +26,18 @@ export default function useRunDetailsQuery({ runID }: { runID: string }) {
 				bucketName
 				filename
 			}
+			referenceDatasetsAggregate{
+				count
+			}
+			referenceDatasets {
+				dataset {
+					tags {
+						tagID
+						name
+						category
+					}
+				}
+			}
 			runParameters {
 				outPrefix
 				localMinpValue
@@ -35,7 +47,8 @@ export default function useRunDetailsQuery({ runID }: { runID: string }) {
 				kmerMinDepth
 				localMinOVE
 				allAAInterchangeable
-          }
+          	}
+			presignedURL
 		}
 	}
 	`, {

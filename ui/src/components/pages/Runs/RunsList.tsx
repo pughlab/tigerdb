@@ -33,10 +33,8 @@ function RunsListItem({ run, refetch }) {
     runID,
     name,
     description,
-    createdBy,
     processedDatasets,
     createdOn,
-    submittedOn,
     status,
   } = run;
   const creationDate = new Date(createdOn).toDateString()
@@ -80,7 +78,7 @@ function RunsListItem({ run, refetch }) {
     >
       <Card.Content floated="right" as={Segment} basic>
         <div>
-          <Button floated="left" size='tiny' color={colorStatus} content={run.status.charAt(0).toUpperCase() + run.status.slice(1)} />
+          <Button inverted floated="left" size='tiny' color={colorStatus} content={run.status.charAt(0).toUpperCase() + run.status.slice(1)} />
           <DeleteRunModal run={run} refetch={refetch}/>   
         </div>
       </Card.Content>
@@ -90,20 +88,7 @@ function RunsListItem({ run, refetch }) {
         </Card.Header>
         <List.Description content={description} />
         <List.Description>
-          { tags.length > 0 && <Divider horizontal content="Dataset tags" />}
-          <Label.Group>
-            {
-              [...tags]
-              .sort((tag1, tag2) => {
-                if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
-                  return 0
-                }
-                return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
-              })
-              .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
-            }
-          </Label.Group>
-          { processedDatasets.length > 0 && <Divider horizontal content="Uploads" />}
+          { processedDatasets.length > 0 && <Divider horizontal content="Data" />}
           <Label.Group>
             {
               processedDatasets.length > 0
@@ -116,6 +101,22 @@ function RunsListItem({ run, refetch }) {
                     />
                   ))
                 : null
+            }
+          </Label.Group>
+          <Header sub size="huge" style={{textAlign: 'center', margin: '10px 0'}}>
+            {`${run.referenceDatasetsAggregate.count} ${run.referenceDatasetsAggregate.count === 1 ? "reference" : "references"}`}
+          </Header>
+          { tags.length > 0 && <Divider horizontal content="Tags" />}
+          <Label.Group>
+            {
+              [...tags]
+              .sort((tag1, tag2) => {
+                if (tag1.name.toLowerCase() === tag2.name.toLowerCase()) {
+                  return 0
+                }
+                return tag1.name.toLowerCase() > tag2.name.toLowerCase() ? 1 : -1
+              })
+              .map((tag) => <DatasetReadonlyTag key={tag.tagID} tag={tag} />)
             }
           </Label.Group>
         </List.Description>

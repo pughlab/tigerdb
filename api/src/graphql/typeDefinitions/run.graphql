@@ -44,16 +44,18 @@ type Run {
     # minioUploads: [MinioUpload!]! @relationship(type: "HAS_RUN", direction: IN)
     processedDatasets: [ProcessedDataset!]! @relationship(type: "HAS_RUN", direction: IN)
     # TODO: Uncomment next line to enable reference datasets
-    # referenceDatasets: [MinioUpload!]! @relationship(type: "HAS_RUN", direction: IN)
+    referenceDatasets: [MinioUpload!]! @relationship(type: "HAS_RUN", direction: IN)
     createdOn: DateTime! @timestamp(operations: [CREATE])
     submittedOn: String
     completedOn: DateTime
     status: RunStatus! @default(value: pending)   
     createdBy: KeycloakUser! @relationship(type: "CREATED_BY", direction: OUT)
+    isPublic: Boolean
     # logs: String
     getRunData: String
     failedRunLogs: String
     # hasResults: Boolean @default(value: false)
+    presignedURL: String @customResolver
 }
 
 

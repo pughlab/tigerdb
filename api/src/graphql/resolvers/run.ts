@@ -1,28 +1,35 @@
-import { makeBucket } from '../../minio/minio';
+import { makeBucket, makePresignedURL, listBucketObjects } from '../../minio/minio';
 import { ApolloError } from "apollo-server";
 
 export const resolvers = {
   Query: {
     getRuns: async (obj, args, { ogm, kauth }) => {
       try {
-        const { sub: keycloakUserID } = kauth.accessToken.content;
-        const UserModel = ogm.model("KeycloakUser");
-        const user = await UserModel.find({
-          where: { keycloakUserID: keycloakUserID },
-        });
-        if (!user) {
-          throw new Error("User not found");
+        const isAuthenticated = !!kauth?.accessToken?.content?.sub;
+        let filters: any = {};
+
+        if (isAuthenticated) {
+          const { sub: keycloakUserID } = kauth.accessToken.content;
+          const UserModel = ogm.model("KeycloakUser");
+          const user = await UserModel.find({
+            where: { keycloakUserID: keycloakUserID },
+          });
+          if (user.length === 0 || !user) {
+            filters = { isPublic: true };
+          } else {
+            filters = {
+            OR: [
+                { createdBy: user[0] },
+                // { isPublic: true },
+                // { sharedWith_IN: [user[0]] }
+              ]
+            }
+          }
+        } else {
+          filters = { isPublic: true };
         }
 
-        const filters = {
-          OR: [
-            { createdBy: user[0] },
-            // { isPublic: true },
-            //{ sharedWith_IN: [user[0]] }
-          ]
-        }
-
-        // Optionally add projectID to the filters if provided
+        // Optionally add runID to the filters if provided
         if (args.runID) {
           filters.runID = args.runID;
         }
@@ -52,6 +59,18 @@ export const resolvers = {
                   name
                   category
                 }
+              }
+            }
+          }
+          referenceDatasetsAggregate{
+            count
+          }
+          referenceDatasets {
+            dataset {
+              tags {
+                tagID
+                name
+                category
               }
             }
           }
@@ -85,11 +104,22 @@ export const resolvers = {
       { ogm, kauth, minioClient }
     ) => {
       try {
-        const { sub: keycloakUserID } = kauth.accessToken.content;
+        const isAuthenticated = !!kauth?.accessToken?.content?.sub;
         const UserModel = ogm.model("KeycloakUser");
-        const user = await UserModel.find({
-          where: { keycloakUserID: keycloakUserID }
-        });
+        let user
+
+        if (isAuthenticated) {
+          const { sub: keycloakUserID } = kauth.accessToken.content;
+          user = await UserModel.find({
+            where: { keycloakUserID: keycloakUserID }
+          });
+        } else {
+          // hardcoded default user email to get sample user.
+          // Must move this email to env file after feature is finished.
+          user = await UserModel.find({
+            where: { email: 'public@tigerdb.ca' }
+          });
+        }
         if (!user) {
           throw new Error("User not found");
         }
@@ -115,6 +145,7 @@ export const resolvers = {
               where: { node: { keycloakUserID: user[0].keycloakUserID } }
             }
           },
+          isPublic: !isAuthenticated,
           // datasets: {
           //   connect: datasetIDs.map((datasetID: string) => ({
           //     where: { node: { datasetID: datasetID }}
@@ -130,12 +161,11 @@ export const resolvers = {
               where: { node: { objectName: objectName } }
             }))
           },
-          // TODO: Uncomment this to enable reference datasets
-          // referenceDatasets: {
-          //   connect: referenceDatasets.map((objectName: string) => ({
-          //     where: { node: { objectName: objectName } }
-          //   }))
-          // },
+          referenceDatasets: {
+            connect: referenceDatasets.map((objectName: string) => ({
+              where: { node: { objectName: objectName } }
+            }))
+          },
 
           // should we connect to project?
           // project: {
@@ -487,6 +517,39 @@ export const resolvers = {
         console.log("Error fetching completedOn", error);
       }
       return null;
+    },
+    
+    presignedURL: async (
+      { runID, status },
+      { },
+      { minioClient }
+    ) => {
+      console.log('Status:', status);
+
+      // if (status !== 'completed') {
+      //   return null
+      // }
+      try {
+        const bucketName = `run-${runID}`
+        const bucketItemNames = (await listBucketObjects(minioClient, bucketName)).map(({ name }) => name)
+        // if name includes 'cluster.txt' then return that name
+        const objectName = bucketItemNames.find(name => name.includes('cluster.csv'))
+
+        if (!objectName) {
+          throw new Error(`No results found in bucket "${bucketName}"`)
+        }
+
+        // const presignedURL = await minioClient.presignedUrl('GET', bucketName, objectName, 24 * 60 * 60, { "response-content-disposition": `attachment; filename=${objectName}` })
+        const presignedURL = makePresignedURL(minioClient, bucketName, objectName)
+        // console.log(presignedURL)
+        return presignedURL
+
+        
+      } catch (error) {
+        console.log(error)
+        console.log('run.presignedurl error')
+        // throw new ApolloError('run.presignedurl', error)
+      }
     }
   },
 };

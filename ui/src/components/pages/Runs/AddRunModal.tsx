@@ -1,12 +1,13 @@
 import { gql, useMutation } from "@apollo/client";
 import React from "react";
-import { Button, Form, Input, Modal, TextArea, Icon, Divider, Tab, Segment, Card } from "semantic-ui-react";
+import { Button, Form, Input, Modal, TextArea, Icon, Divider, Tab, Segment, Card, Container } from "semantic-ui-react";
 import useProjectsQuery from '../../../hooks/useProjectsQuery'
 import ProjectCardList from "./ProjectCardList";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function AddRunModal({refetch}) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [name, setName]= React.useState('')
   const [description, setDescription]= React.useState('')
   const [selectedQueryUploads, setSelectedQueryUploads] = React.useState([]);
@@ -34,7 +35,8 @@ export default function AddRunModal({refetch}) {
       setSelectedQueryUploads([]);
       setSelectedReferenceUploads([]);
       const runID = data.createRunWithMinioBucket.runID;
-      navigate(`/home/analysis/${runID}`);
+      // navigate(`/home/analysis/${runID}`);
+      navigate(`${location.pathname.replace(/\/$/, '')}/${runID}`);
     }
   })
 
@@ -56,6 +58,8 @@ export default function AddRunModal({refetch}) {
       queryProjects.push(project)
     }
   })
+  const selectedQueryProjectsCounter = queryProjects.filter(p => selectedProjectIDs.includes(p.projectID)).length;
+  const selectedReferenceProjectsCounter = referenceProjects.filter(p => selectedProjectIDs.includes(p.projectID)).length;
   const panes = [
     {
       menuItem: 'Query',
@@ -63,7 +67,7 @@ export default function AddRunModal({refetch}) {
         <Tab.Pane key="Query">
           <Form>
             <Segment color='violet'>
-              <Divider horizontal content="Select projects" />
+              <Divider horizontal content={`Select projects (${selectedQueryProjectsCounter} selected)`} />
               <ProjectCardList projects={queryProjects} selectedProjectIDs={selectedProjectIDs} updateSelectedUploads={setSelectedQueryUploads} toggleProjectID={toggleProjectID} canSelectAll={false} />
             </Segment>
           </Form>
@@ -76,7 +80,7 @@ export default function AddRunModal({refetch}) {
         <Tab.Pane key="Reference">
           <Form>
             <Segment color='violet'>
-              <Divider horizontal content='SELECT REFERENCE PROJECTS'/>
+              <Divider horizontal content={`Select reference projects (${selectedReferenceProjectsCounter} selected)`}/>
               <ProjectCardList projects={referenceProjects} selectedProjectIDs={selectedProjectIDs} updateSelectedUploads={setSelectedReferenceUploads} toggleProjectID={toggleProjectID} canSelectAll={true} />
             </Segment>
           </Form>
@@ -106,7 +110,7 @@ export default function AddRunModal({refetch}) {
             </Button>
           </Card.Header>
           <Card.Content>
-            <div
+            <Container
               onMouseEnter={() => setHovered(true)}
               onMouseLeave={() => setHovered(false)}
               style={{
@@ -128,7 +132,7 @@ export default function AddRunModal({refetch}) {
                 textAlign: "center",
                 color: "black"
               }}>Add new run</p>
-            </div>
+            </Container>
           </Card.Content>
         </Card>
       }
