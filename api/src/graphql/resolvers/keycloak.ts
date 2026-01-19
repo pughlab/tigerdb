@@ -24,6 +24,24 @@ export const resolvers = {
         : false
       )
     },
+    getUsersExceptMe: async (_parent, _params, { ogm, kauth }) => {
+      const keycloakUserID = kauth?.accessToken?.content?.sub ?? undefined
+      if (!keycloakUserID) {
+        throw new ApolloError("getUsersExceptMe: User not authenticated");
+      }
+      try {
+        const UserModel = ogm.model('KeycloakUser')
+        const users = await UserModel.find({
+          where: {
+            keycloakUserID_NOT: keycloakUserID
+          }
+        })
+        return users
+      } catch (error) {
+        console.log("getUsersExceptMe", error);
+        throw new ApolloError("getUsersExceptMe", error as string);
+      }
+    },
   },
   Mutation: {
     // TODO: use ogm models instead of session

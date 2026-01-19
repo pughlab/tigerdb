@@ -14,6 +14,7 @@ input KeycloakUserInput {
 type Query {
   isAdmin: Boolean @hasRole(role: "admin")
   isCurator: Boolean @hasRole(role: "curator")
+  getUsersExceptMe: [KeycloakUser]
 }
 
 type Mutation {
