@@ -84,6 +84,11 @@ export const resolvers = {
             name
             email
           }
+          sharedWith {
+            keycloakUserID
+            name
+            email
+          }
         }`
         ProjectModel.selectionSet = selectionSet
         const projects = await ProjectModel.find({
