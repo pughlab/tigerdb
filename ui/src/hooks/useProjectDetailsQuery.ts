@@ -7,7 +7,11 @@ export default function useProjectDetailsQuery({ projectID }: { projectID: strin
 				projectID
 				name
 				description
-				# sharedWith
+				sharedWith {
+					keycloakUserID
+					name
+					email
+				}
 				createdOn
 				createdBy {
 					keycloakUserID

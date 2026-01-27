@@ -24,23 +24,17 @@ export const resolvers = {
         : false
       )
     },
-    getUsersExceptMe: async (_parent, _params, { ogm, kauth }) => {
-      const keycloakUserID = kauth?.accessToken?.content?.sub ?? undefined
-      if (!keycloakUserID) {
-        throw new ApolloError("getUsersExceptMe: User not authenticated");
-      }
+    userExists: async (_parent, { email }, { ogm }) => {
       try {
         const UserModel = ogm.model('KeycloakUser')
         const users = await UserModel.find({
-          where: {
-            keycloakUserID_NOT: keycloakUserID
-          }
+          where: { email: email }
         })
-        return users
+        return users.length > 0
       } catch (error) {
-        console.log("getUsersExceptMe", error);
-        throw new ApolloError("getUsersExceptMe", error as string);
-      }
+        console.log("userExists", error);
+        throw new ApolloError("userExists", error as string);
+      } 
     },
   },
   Mutation: {
