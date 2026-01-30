@@ -223,28 +223,42 @@ export const resolvers = {
     },
     deleteRun: async (parent, { runID }, { ogm, kauth, driver }) => {
       try  {
-        const { sub: keycloakUserID } = kauth.accessToken.content
-        const UserModel = ogm.model('KeycloakUser')
-        const user = await UserModel.find({
-          where: {keycloakUserID: keycloakUserID}
-        })
-        if (!user) {
-          throw new Error('User not found')
+        const isAuthenticated = !!kauth?.accessToken?.content?.sub;
+        if (isAuthenticated) {
+          const { sub: keycloakUserID } = kauth.accessToken.content
+          const UserModel = ogm.model('KeycloakUser')
+          const user = await UserModel.find({
+            where: {keycloakUserID: keycloakUserID}
+          })
+          if (!user) {
+            throw new Error('User not found')
+          }
+          const RunModel = ogm.model("Run");
+          const run = await RunModel.find({ where: { runID: runID, createdBy: user[0] }})
+          if (!run) {
+            throw new Error('Run not found')
+          }
+          const session = driver.session()
+          await session.run(`MATCH (x:Run)-[r]-(n)
+            WHERE
+              NOT type(r) = 'CREATED_BY'
+              AND NOT 'ProcessedDataset' in labels(n)
+              AND x.runID = '${run[0].runID}'
+            DETACH DELETE x, n`
+          )
+          return JSON.stringify(run[0])
+        } else {
+          const session = driver.session()
+          await session.run(`MATCH (u:KeycloakUser)<-[]-(x:Run)-[r]-(n)
+            WHERE
+              u.email = "public@tigerdb.ca"
+              AND x.runID = '${runID}'
+              AND NOT type(r) = 'CREATED_BY'
+              AND NOT 'ProcessedDataset' in labels(n)
+            DETACH DELETE x, n`
+          )
+          return JSON.stringify({})
         }
-        const RunModel = ogm.model("Run");
-        const run = await RunModel.find({ where: { runID: runID, createdBy: user[0] }})
-        if (!run) {
-          throw new Error('Run not found')
-        }
-        const session = driver.session()
-        await session.run(`MATCH (x:Run)-[r]-(n)
-          WHERE
-            NOT type(r) = 'CREATED_BY'
-            AND NOT 'ProcessedDataset' in labels(n)
-            AND x.runID = '${run[0].runID}'
-          DETACH DELETE x, n`
-        )
-        return JSON.stringify(run[0])
       } catch (error) {
         throw new ApolloError("deleteRun", error as string);
       }
