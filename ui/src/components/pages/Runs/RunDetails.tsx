@@ -170,7 +170,7 @@ function DataSources({ processedDatasets, referenceDatasets }) {
               size="huge"
               style={{ textAlign: "center", marginBottom: "10px" }}
             >
-              Query
+              Orphan TCRs {processedDatasets.length > 0 ? `(${processedDatasets.length})` : ""}
             </Header>
             {
               // (datasets.length > 0) ? datasets.map(dataset => <Label color='blue' key={dataset.datasetID} content={dataset.name} />) : null
@@ -204,8 +204,9 @@ function DataSources({ processedDatasets, referenceDatasets }) {
               size="huge"
               style={{ textAlign: "center", marginBottom: "10px" }}
             >
-              {referenceDatasets.length}{" "}
-              {referenceDatasets.length === 1 ? "Reference" : "References"}
+              {/* {referenceDatasets.length}{" "} */}
+              {/* {referenceDatasets.length === 1 ? "Reference" : "References"} */}
+              Deorphanized TCRs { referenceDatasets.length > 0 ? `(${referenceDatasets.length})` : ""}
             </Header>
             {[...tags]
               .sort((tag1, tag2) => {

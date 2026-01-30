@@ -17,6 +17,7 @@ import {
 	SemanticCOLORS,
   Button,
   Select,
+  Popup,
 } from "semantic-ui-react";
 import { useLocation } from "react-router-dom";
 
@@ -89,23 +90,46 @@ function RunsListItem({ run, refetch }) {
         <List.Description content={description} />
         <List.Description>
           { processedDatasets.length > 0 && <Divider horizontal content="Data" />}
-          <Label.Group>
-            {
-              processedDatasets.length > 0
-                ? processedDatasets.map((processedDataset) => (
+          <div style={{ textAlign: 'center', margin: '10px 0' }}>
+            <Popup
+              position="top center"
+              wide
+              trigger={
+                <Label basic>
+                  <Icon name="unlinkify" />
+                  {processedDatasets.length}
+                  <Label.Detail>
+                    {processedDatasets.length === 1
+                      ? "Orphan Dataset"
+                      : "Orphan Datasets"}
+                  </Label.Detail>
+                </Label> 
+              }
+            >
+              <Popup.Header>Processed Datasets</Popup.Header>
+              <Popup.Content>
+                <Label.Group>
+                  {processedDatasets.map((processedDataset) => (
                     <Label
                       basic
                       color="green"
                       key={processedDataset.objectName}
                       content={processedDataset.filename}
                     />
-                  ))
-                : null
-            }
-          </Label.Group>
-          <Header sub size="huge" style={{textAlign: 'center', margin: '10px 0'}}>
-            {`${run.referenceDatasetsAggregate.count} ${run.referenceDatasetsAggregate.count === 1 ? "reference" : "references"}`}
-          </Header>
+                  ))}
+                </Label.Group>
+              </Popup.Content>
+            </Popup>
+            <Label basic color="black">
+              <Icon name="linkify" />
+              {run.referenceDatasetsAggregate.count}
+              <Label.Detail>
+                {run.referenceDatasetsAggregate.count === 1
+                  ? "Deorphanized Dataset"
+                  : "Deorphanized Datasets"}
+              </Label.Detail>
+            </Label>
+          </div>
           { tags.length > 0 && <Divider horizontal content="Tags" />}
           <Label.Group>
             {

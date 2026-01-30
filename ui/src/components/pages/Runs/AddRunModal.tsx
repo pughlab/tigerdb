@@ -62,12 +62,20 @@ export default function AddRunModal({refetch}) {
   const selectedReferenceProjectsCounter = referenceProjects.filter(p => selectedProjectIDs.includes(p.projectID)).length;
   const panes = [
     {
-      menuItem: 'Query',
+      menuItem: {
+        key: 'orphan-tcrs',
+
+        content: 
+        <>
+          <Icon name="unlinkify" />
+          Orphan TCRs {selectedQueryProjectsCounter ? `(${selectedQueryProjectsCounter})` : null}
+        </>,
+      },
       render: () => ( 
-        <Tab.Pane key="Query">
+        <Tab.Pane key="Orphan TCRs">
           <Form>
             <Segment color='violet'>
-              <Divider horizontal content={`Select projects (${selectedQueryProjectsCounter} selected)`} />
+              <Divider horizontal content={`Select orphan TCRs (${selectedQueryProjectsCounter} selected)`} />
               <ProjectCardList projects={queryProjects} selectedProjectIDs={selectedProjectIDs} updateSelectedUploads={setSelectedQueryUploads} toggleProjectID={toggleProjectID} canSelectAll={false} />
             </Segment>
           </Form>
@@ -75,12 +83,19 @@ export default function AddRunModal({refetch}) {
       )
     },
     {
-      menuItem: 'Reference',
+      menuItem: {
+        key: 'deorphanized-tcrs',
+        content: 
+        <>
+          <Icon name="linkify" />
+          Deorphanized TCRs {selectedReferenceProjectsCounter ? `(${selectedReferenceProjectsCounter})` : null}
+        </>,
+      },
       render: () => ( 
-        <Tab.Pane key="Reference">
+        <Tab.Pane key="Deorphanized TCRs">
           <Form>
             <Segment color='violet'>
-              <Divider horizontal content={`Select reference projects (${selectedReferenceProjectsCounter} selected)`}/>
+              <Divider horizontal content={`Select deorphanized TCRs (${selectedReferenceProjectsCounter} selected)`}/>
               <ProjectCardList projects={referenceProjects} selectedProjectIDs={selectedProjectIDs} updateSelectedUploads={setSelectedReferenceUploads} toggleProjectID={toggleProjectID} canSelectAll={true} />
             </Segment>
           </Form>

@@ -51,7 +51,6 @@ type Mutation {
     projectID: ID!
     name: String
     description: String
-    sharedWith: [KeycloakUserInput]
     isPublic: Boolean
   ): Project!,
   addDatasetsToProject(
@@ -63,7 +62,15 @@ type Mutation {
   ): Project!,
   makeProjectPrivate(
     projectID: ID!
-  ): Project!
+  ): Project!,
+  shareWithUsers(
+    projectID: ID!
+    emails: [Email!]!
+  ): Project!,
+  stopSharingWithUser(
+    projectID: ID!
+    email: Email!
+  ): KeycloakUser!,
 }
 # turned off for public but not sure..
 # extend type Project @auth(

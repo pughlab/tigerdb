@@ -24,6 +24,18 @@ export const resolvers = {
         : false
       )
     },
+    userExists: async (_parent, { email }, { ogm }) => {
+      try {
+        const UserModel = ogm.model('KeycloakUser')
+        const users = await UserModel.find({
+          where: { email: email }
+        })
+        return users.length > 0
+      } catch (error) {
+        console.log("userExists", error);
+        throw new ApolloError("userExists", error as string);
+      } 
+    },
   },
   Mutation: {
     // TODO: use ogm models instead of session
