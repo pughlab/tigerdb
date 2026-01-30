@@ -51,13 +51,24 @@ function ProjectDetailsCard({ project }) {
         size='large' wide='very' position="top center"
         trigger={
           <Button attached='top' size='large' color={isReference ? 'black' : undefined}>
-            <Icon name='folder open' size='large' />
+            <Icon name={isReference ? 'linkify' : 'unlinkify'} size='large' />
           </Button>
         }
       >
+        {/* <Message size='mini'>
+          <Message.Content>
+            <Divider horizontal content={isReference ? 'Deorphanized TCR Project Details' : 'Orphan TCR Project Details'} />
+            {description}
+          </Message.Content>
+        </Message> */}
         <Message size='mini'>
           <Message.Content>
-            <Divider horizontal content='Details' />
+            <Divider horizontal>
+               <Header as='h5'>
+                 <Icon name={isReference ? 'linkify' : 'unlinkify'} />
+                 {isReference ? 'Deorphanized TCR Project' : 'Orphan TCR Project'}
+               </Header>
+            </Divider>
             {description}
           </Message.Content>
         </Message>

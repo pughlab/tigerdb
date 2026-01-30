@@ -319,7 +319,7 @@ function AnnotationListItem({
             <Label
               attached="top right"
               color={reference ? "black" : "white"}
-              content={reference ? "Annotated" : "Unlabelled"}
+              content={reference ? "Deorphanized TCR" : "Orphan TCR"}
             />
             <AnnotationListItemLabels 
               dropdownFilters={dropdownFilters}
