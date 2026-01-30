@@ -80,7 +80,7 @@ function SharedUserLabel({
 		},
 	})
 	return (
-		<Label size="medium">
+		<Label color='grey' size="medium">
 			{name} ({email})
 			{canDelete && <StopSharingConfirmation userName={name} stopSharing={stopSharing}/>}
 		</Label>
@@ -168,7 +168,7 @@ export default function ProjectDetails() {
 
 	let publicAndSharing = <></>
 
-	if (isPublic) {
+	if (isPublic && canMakePublic) {
 		publicAndSharing = (
 			<Button 
 				fluid
@@ -183,7 +183,7 @@ export default function ProjectDetails() {
 			<Button.Group fluid widths='2'>
 				<Button
 					color='black' 
-					icon='globe'
+					icon='lock open'
 					content='MAKE PROJECT PUBLIC'
 					onClick={() => makeProjectPublic()}
 				/>
@@ -202,14 +202,25 @@ export default function ProjectDetails() {
 					<List size='large'>
 						<List.Item icon='calendar' content={`${createdOnDate}`} />
 						<List.Item icon='user' content={`${createdBy.name}`} />
-						{!isPublic && <List.Item icon="users" content={sharedUsers.map(user => <SharedUserLabel
-								key={user.email}
-								user={user}
-								canDelete={isOwner || isAdmin}
-								updateUsers={setSharedUsers}
-								projectID={projectID}
-							/>)}
-						/>}
+						{/* only render when there are shared users */}
+                        {!isPublic && sharedUsers.length > 0 && (
+                            <List.Item>
+                                <List.Icon name='users' style={{ paddingTop: '0.5em' }} />
+                                <List.Content style={{paddingLeft: '0px'}}>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', paddingTop: '0.2em' }}>
+                                        {sharedUsers.map(user => (
+                                            <SharedUserLabel
+                                                key={user.email}
+                                                user={user}
+                                                canDelete={isOwner || isAdmin}
+                                                updateUsers={setSharedUsers}
+                                                projectID={projectID}
+                                            />
+                                        ))}
+                                    </div>
+                                </List.Content>
+                            </List.Item>
+                        )}
 						{isPublic ? <List.Item icon='lock open' content='Public' /> : <List.Item icon='lock' content='Private' />}
 					</List>
 					<Message content={description} />
