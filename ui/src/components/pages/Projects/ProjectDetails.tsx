@@ -227,7 +227,7 @@ export default function ProjectDetails() {
 					<Divider horizontal />
 					{ publicAndSharing }
 				</Message>
-				<DatasetsList project={project} isPublicProject={isPublic} />
+				<DatasetsList project={project} isPublicProject={isPublic} isOwner={isOwner} />
 			</Grid.Column>
 		</Grid>
 	)

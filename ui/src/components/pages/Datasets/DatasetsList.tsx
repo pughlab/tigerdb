@@ -15,7 +15,7 @@ import useIsAdmin from '../../../hooks/useIsAdmin';
 import useIsCurator from '../../../hooks/useIsCurator';
 
 
-function DatasetListItem({ dataset, isPublicProject }) {
+function DatasetListItem({ dataset, isPublicProject, isOwner }) {
   const { datasetID, name, tags: datasetTags, project } = dataset;
   const [isMinioBucketOpen, setIsMinioBucketOpen] = useState(false); // State to control MinioBucket visibility
   const [tags, setTags] = useState(datasetTags.reduce((acc, tag) => [...acc, { tagID: tag.tagID, name: tag.name, category: tag.category }], []));
@@ -60,13 +60,13 @@ function DatasetListItem({ dataset, isPublicProject }) {
           {/* <List.Description content={`${description}`} /> */}
         </List.Content>
       </List.Item>
-      {isMinioBucketOpen && <MinioBucket datasetID={`${datasetID}`} isReference={project.isReference} isPublic={project.isPublic} />} {/* Conditionally render MinioBucket */}
+      {isMinioBucketOpen && <MinioBucket datasetID={`${datasetID}`} isReference={project.isReference} isPublic={project.isPublic} isOwner={isOwner} />} {/* Conditionally render MinioBucket */}
       <Divider horizontal hidden />
     </>
   );
 }
 
-export default function DatasetsList({ project, isPublicProject }) {
+export default function DatasetsList({ project, isPublicProject, isOwner }) {
 
   const { projectID } = project
 
@@ -113,7 +113,7 @@ export default function DatasetsList({ project, isPublicProject }) {
           <AddDatasetModal projectID={projectID} refetch={refetch} />
           <Divider horizontal />
           {filteredDatasets.map((dataset) => (
-            <DatasetListItem key={dataset.datasetID} isPublicProject={isPublicProject} {...{ dataset }} />
+            <DatasetListItem key={dataset.datasetID} isPublicProject={isPublicProject} isOwner={isOwner} {...{ dataset }} />
           ))}
         </List>
       </Container>

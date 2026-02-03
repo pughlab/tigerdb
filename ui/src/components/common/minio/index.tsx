@@ -179,61 +179,75 @@ function DeleteButton({ upload, doDelete, disabled }) {
 
 function CurateAnnotationsButton({ upload, loading, disabled, success, datasetID, curateAnnotation }) {
   return (
-    <Button
-      circular
-      //  color={success || !adminQueryData.isAdmin ? 'grey' : 'teal'}
-      color="facebook"
-      floated="right"
-      key={"curate." + upload?.objectName}
-      onClick={() => {
-        curateAnnotation({
-          variables: {
-            datasetID,
-            bucketName: upload?.bucketName,
-            objectName: upload?.objectName,
-          },
-        });
-      }}
-      loading={loading}
-      disabled={disabled}
-      icon="certificate"
-    >
-      {/* <Icon name='certificate' /> */}
-      {success ? "ANNOTATED" : null}
-    </Button>
+    <Popup
+      inverted
+      position="top center"
+      content="Annotate"
+      trigger={
+        <Button
+          circular
+          //  color={success || !adminQueryData.isAdmin ? 'grey' : 'teal'}
+          color="facebook"
+          floated="right"
+          key={"curate." + upload?.objectName}
+          onClick={() => {
+            curateAnnotation({
+              variables: {
+                datasetID,
+                bucketName: upload?.bucketName,
+                objectName: upload?.objectName,
+              },
+            });
+          }}
+          loading={loading}
+          disabled={disabled}
+          icon="certificate"
+        >
+          {/* <Icon name='certificate' /> */}
+          {success ? "ANNOTATED" : null}
+        </Button>
+      }
+    />
   )
 }
 
 function CurateDatasetButton({ processedDataset, datasetID, loading, disabled, success, curate }) {
   return (
-    <Button
-      circular
-      //  color={success || !adminQueryData.isAdmin ? 'grey' : 'teal'}
-      color="teal"
-      floated="right"
-      key={
-        "curate." + processedDataset?.objectName
+    <Popup
+      inverted
+      position="top center"
+      content="Curate"
+      trigger={
+        <Button
+          circular
+          //  color={success || !adminQueryData.isAdmin ? 'grey' : 'teal'}
+          color="teal"
+          floated="right"
+          key={
+            "curate." + processedDataset?.objectName
+          }
+          onClick={() => {
+            curate({
+              variables: {
+                datasetID,
+                bucketName:
+                  processedDataset?.bucketName,
+                objectName:
+                  processedDataset?.objectName,
+                selectedDelimiter:
+                  processedDataset?.selectedDelimiter,
+              },
+            });
+          }}
+          loading={loading}
+          disabled={disabled}
+          icon="certificate"
+        >
+          {/* <Icon name='certificate' /> */}
+          {success ? "CURATED" : null}
+        </Button>
       }
-      onClick={() => {
-        curate({
-          variables: {
-            datasetID,
-            bucketName:
-              processedDataset?.bucketName,
-            objectName:
-              processedDataset?.objectName,
-            selectedDelimiter:
-              processedDataset?.selectedDelimiter,
-          },
-        });
-      }}
-      loading={loading}
-      disabled={disabled}
-      icon="certificate"
-    >
-      {/* <Icon name='certificate' /> */}
-      {success ? "CURATED" : null}
-    </Button>
+    />
   )
 }
 
@@ -299,11 +313,13 @@ export default function MinioBucket({
   datasetID,
   isReference,
   isPublic,
-}: {
+  isOwner,
+}: Readonly<{
   datasetID: String;
   isReference?: Boolean;
   isPublic?: Boolean;
-}) {
+  isOwner?: Boolean;
+}>) {
   const bucketName = `dataset-${datasetID}`;
   const { data, loading, refetch } = useQuery(
     gql`
@@ -392,14 +408,14 @@ export default function MinioBucket({
                 <div key={"div." + minioUpload.objectName}>
                   <List.Item key={"list." + minioUpload.objectName}>
                     <DownloadButton upload={minioUpload} />
-                    {(isCurator || isAdmin) && <DeleteButton upload={minioUpload} doDelete={minioDelete} disabled={isPublic} />}
+                    {(isOwner || isCurator || isAdmin) && <DeleteButton upload={minioUpload} doDelete={minioDelete} disabled={isPublic} />}
                     {(isCurator || isAdmin) && <CurateAnnotationsButton 
                       upload={minioUpload}
                       datasetID={datasetID}
                       loading={curatedAnnotationLoading}
                       disabled={
                         annotationSuccess ||
-                        loading ||
+                        curatedAnnotationLoading ||
                         isPublic ||
                         minioUpload === null ||
                         minioUpload === undefined
