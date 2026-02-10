@@ -25,6 +25,7 @@ type MinioUpload {
   objectName: ID! @id
   filename: String!
   presignedURL: String @customResolver
+  tag: String
 
   dataset: Dataset @relationship(type: "HAS_FILE", direction: IN)
   processedDataset: ProcessedDataset @relationship(type: "HAS_PROCESSED_FILE", direction: OUT)
@@ -108,7 +109,7 @@ type ProcessedDataset {
 
 type Mutation {
   # Example usage (should be generalized)
-  minioUploadFile(bucketName: String!, file: Upload!, datasetID: ID!): MinioUpload!
+  minioUploadFile(bucketName: String!, file: Upload!, datasetID: ID!, tag: String): MinioUpload!
   minioDelete(bucketName: String!, objectName: String!): Boolean
   uploadProcessedHeaders(
     bucketName: String!,

@@ -178,7 +178,7 @@ export const resolvers = {
   Query: {
   },
   Mutation: {
-    minioUploadFile: async (obj, { bucketName, file, datasetID }, { driver }) => {
+    minioUploadFile: async (obj, { bucketName, file, datasetID, tag }, { driver }) => {
       try {
         const { filename, mimetype, encoding, createReadStream } = await file
         const objectName = uuidv4()
@@ -207,10 +207,10 @@ export const resolvers = {
         const createMinioUpload = await session.run(
           `
           MATCH (d:Dataset {datasetID: "${datasetID}"})
-          MERGE (d)-[:HAS_FILE]->(a:MinioUpload {bucketName: $bucketName, objectName: "${newObjectName}", filename: $filenameExt})
+          MERGE (d)-[:HAS_FILE]->(a:MinioUpload {bucketName: $bucketName, objectName: "${newObjectName}", filename: $filenameExt, tag: $tag})
           RETURN a
           `,
-          { bucketName, filenameExt }
+          { bucketName, filenameExt, tag: tag || null }
         )
         // console.log(createMinioUpload.records[0].get(0).properties)
         const minioUpload = createMinioUpload.records[0].get(0)
@@ -533,7 +533,7 @@ export const resolvers = {
       try {
         // TODO: response-content-disposition to enable clickable downloads? still doesn't work...
         // const presignedURL = await minioClient.presignedUrl('GET', bucketName, objectName, 24 * 60 * 60, { "response-content-disposition": `attachment; filename=${objectName}` })
-        const presignedURL = makePresignedURL(minioClient, bucketName, objectName)
+        const presignedURL = await makePresignedURL(minioClient, bucketName, objectName)
         // console.log(presignedURL)
         return presignedURL
       } catch (error) {

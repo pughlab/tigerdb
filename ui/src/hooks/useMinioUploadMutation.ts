@@ -38,15 +38,18 @@ export default function useMinioUploadMutation(postFn: any) {
             $bucketName: String!
             $file: Upload!
             $datasetID: ID!
+            $tag: String
         ) {
             minioUploadFile(
                 bucketName: $bucketName
                 file: $file
                 datasetID: $datasetID
+                tag: $tag
             ) {
                 bucketName
                 objectName
                 filename
+                tag
             }
         }
     `, {

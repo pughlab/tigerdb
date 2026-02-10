@@ -33,52 +33,36 @@ const headerOptions = [
   // { key: 'reference', text: 'Reference', value: 'reference' }
 ];
 
-function MinioUploadModal({ datasetID, refetch }: { datasetID: String; refetch: () => any; }) {
-  const bucketName = `dataset-${datasetID}`;
-  // const {allowedStudies, allowedSites} = getPermissionRoles()
-
+function UploadArea({ datasetID, bucketName, label, refetch, tag }: Readonly<{ datasetID: string, bucketName: string, label: string, refetch: () => any, tag: string }>) {
   const {
-    state: uploadState,
-    dispatch: uploadDispatch,
     mutation: uploadMutation,
     loading: uploadLoading,
-    error: uploadError,
   } = useMinioUploadMutation(refetch);
+  
   const onDrop = useCallback((files: FileWithPath[]) => {
     uploadMutation({
       variables: {
         datasetID: datasetID,
         bucketName: bucketName,
         file: files[0],
+        tag: tag,
       },
     });
-  }, []);
+  }, [datasetID, bucketName, uploadMutation, tag]);
+
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  
   return (
-    <Modal
-      closeIcon
-      closeOnDimmerClick={false}
-      trigger={
-        <Button fluid size="medium" color="blue" animated="vertical">
-          <Button.Content visible>
-            <Icon name="cloud upload" />
-          </Button.Content>
-          <Button.Content hidden content="Upload TCR data" />
-        </Button>
-      }
-    >
-      <Modal.Content>
         <div {...getRootProps()}>
           <SegmentPlaceholder
-            text="Upload a TCR data file"
+            text={label}
             icon="cloud upload"
             loading={uploadLoading}
+            compact
           >
-            {/* <input {...getInputProps()} /> */}
             <Button fluid size="medium" color="blue">
               <Button.Content>
-                Browse
-                <input {...getInputProps()} />
+                Browse <input {...getInputProps()} />
               </Button.Content>
             </Button>
             {isDragActive ? (
@@ -88,14 +72,40 @@ function MinioUploadModal({ datasetID, refetch }: { datasetID: String; refetch: 
                 text="Drop the files here!"
               />
             ) : (
-              <SegmentPlaceholder
-                basic
-                icon="hand pointer outline"
-                text={`Drag 'n' drop a file in here!`}
-              />
+                <div style={{ textAlign: "center", marginTop: "10px", color: "grey" }}>
+                    Drag 'n' drop a file here
+                </div>
             )}
           </SegmentPlaceholder>
         </div>
+  )
+}
+
+function MinioUploadModal({ datasetID, refetch }: Readonly<{ datasetID: string; refetch: () => any; }>) {
+  const bucketName = `dataset-${datasetID}`;
+
+  return (
+    <Modal
+      closeIcon
+      closeOnDimmerClick={false}
+      trigger={
+        <Button fluid size="medium" color="blue" animated="vertical">
+          <Button.Content visible>
+            <Icon name="cloud upload" />
+          </Button.Content>
+          <Button.Content hidden content="Upload Data" />
+        </Button>
+      }
+    >
+      <Modal.Content scrolling>
+        <Header as="h3" color="blue" dividing>TCR Data</Header>
+        <UploadArea datasetID={datasetID} bucketName={bucketName} label="Upload TCR data" refetch={refetch} tag="TCR" />
+        
+        <Header as="h3" color="teal" dividing style={{ marginTop: '20px' }}>Accompanying Data</Header>
+        <UploadArea datasetID={datasetID} bucketName={bucketName} label="Upload Accompanying Data" refetch={refetch} tag="Accompanying" />
+        
+        <Header as="h3" color="orange" dividing style={{ marginTop: '20px' }}>Other Data</Header>
+        <UploadArea datasetID={datasetID} bucketName={bucketName} label="Upload Other Data" refetch={refetch} tag="Other" />
       </Modal.Content>
     </Modal>
   );
@@ -168,7 +178,7 @@ function DeleteButton({ upload, doDelete, disabled }) {
           key={"delete." + upload.objectName}
           onClick={() => {
             doDelete({
-              variables: { objectName: upload.objectName },
+              variables: { objectName: upload.objectName, bucketName: upload.bucketName },
             });
           }}
         />
@@ -299,20 +309,21 @@ export default function MinioBucket({
   datasetID,
   isReference,
   isPublic,
-}: {
-  datasetID: String;
-  isReference?: Boolean;
-  isPublic?: Boolean;
-}) {
+}: Readonly<{
+  datasetID: string;
+  isReference?: boolean;
+  isPublic?: boolean;
+}>) {
   const bucketName = `dataset-${datasetID}`;
+
   const { data, loading, refetch } = useQuery(
     gql`
-      query MinioUploads($bucketName: ID!) {
-        minioUploads(where: { bucketName: $bucketName }) {
+      fragment MinioUploadFields on MinioUpload {
           bucketName
           objectName
           filename
           presignedURL
+          tag
           processedDataset {
             bucketName
             objectName
@@ -324,9 +335,16 @@ export default function MinioBucket({
             # }
             # presignedURL
           }
-          # rawdataFileRawDataset {
-          #     datasetID
-          # }
+      }
+      query MinioUploadsMulti($bucketName: ID!) {
+        tcrUploads: minioUploads(where: { bucketName: $bucketName, tag: "TCR" }) {
+          ...MinioUploadFields
+        }
+        accompanyingUploads: minioUploads(where: { bucketName: $bucketName, tag: "Accompanying" }) {
+          ...MinioUploadFields
+        }
+        otherUploads: minioUploads(where: { bucketName: $bucketName, tag: "Other" }) {
+          ...MinioUploadFields
         }
       }
     `,
@@ -340,7 +358,6 @@ export default function MinioBucket({
       }
     `,
     {
-      variables: { bucketName, objectName: null },
       fetchPolicy: "network-only",
       onCompleted: () => {
         refetch();
@@ -366,10 +383,78 @@ export default function MinioBucket({
   const { isAdmin } = useIsAdmin();
   const { isCurator } = useIsCurator();
 
-  if (!data?.minioUploads) {
+  // Helper for rendering a list
+  const renderUploadList = (uploads: MinioUpload[], title: string, color: string = "blue") => {
+     if (!uploads || uploads.length === 0) {
+         return (
+             <>
+                <Divider horizontal>
+                    <Header as="h4" color="grey" style={{ textTransform: "uppercase", fontSize: "0.9em" }}>
+                        {title}
+                    </Header>
+                </Divider>
+                <SegmentPlaceholder text={`No uploads yet`} />
+             </>
+         );
+     }
+     
+     return (
+        <div style={{ marginBottom: "20px" }}>
+            <Divider horizontal>
+                <Header as="h4" color={color as any}>
+                    {title}
+                </Header>
+            </Divider>
+            <List celled divided>
+            {uploads.map((minioUpload) => {
+                return (
+                    <div key={"div." + minioUpload.objectName}>
+                    <List.Item key={"list." + minioUpload.objectName}>
+                        <DownloadButton upload={minioUpload} />
+                        {(isCurator || isAdmin) && <DeleteButton upload={minioUpload} doDelete={minioDelete} disabled={isPublic} />}
+                        {(isCurator || isAdmin) && <CurateAnnotationsButton 
+                        upload={minioUpload}
+                        datasetID={datasetID}
+                        loading={curatedAnnotationLoading}
+                        disabled={
+                            annotationSuccess ||
+                            curatedAnnotationLoading ||
+                            isPublic ||
+                            minioUpload === null ||
+                            minioUpload === undefined
+                        }
+                        success={annotationSuccess}
+                        curateAnnotation={createCuratedAnnotationFromDataset}
+                        /> }
+                        {(isCurator || isAdmin) && <CurateDatasetButton 
+                        processedDataset={minioUpload.processedDataset}
+                        datasetID={datasetID}
+                        loading={curatedDatasetLoading}
+                        disabled={
+                            success ||
+                            curatedDatasetLoading ||
+                            isPublic ||
+                            minioUpload.processedDataset === null ||
+                            minioUpload.processedDataset === undefined
+                        }
+                        success={success}
+                        curate={createCuratedDatasetFromDataset}
+                        />}
+                        {!isReference && <TableModal upload={minioUpload} refetch={refetch} isPublic={isPublic} />}
+                        <Divider />
+                    </List.Item>
+                    </div>
+                );
+            })}
+            </List>
+        </div>
+     );
+  };
+
+  if (!data) {
     return null;
   }
-  const { minioUploads }: { minioUploads: MinioUpload[] } = data;
+  const { tcrUploads, accompanyingUploads, otherUploads } = data;
 
   return (
     <Segment>
@@ -381,54 +466,11 @@ export default function MinioBucket({
           <Divider />
         </>
       )}
-      {minioUploads.length === 0 ? (
-        <SegmentPlaceholder text={"No uploads yet"} />
-      ) : (
-        <List celled divided>
-          {minioUploads.map((minioUpload) => {
-              // const isRawdataFile = !!minioUpload.rawdataFileRawDataset
+      
+      {renderUploadList(tcrUploads, "TCR Data", "blue")}
+      {renderUploadList(accompanyingUploads, "Accompanying Data", "teal")}
+      {renderUploadList(otherUploads, "Other Data", "orange")}
 
-              return (
-                <div key={"div." + minioUpload.objectName}>
-                  <List.Item key={"list." + minioUpload.objectName}>
-                    <DownloadButton upload={minioUpload} />
-                    {(isCurator || isAdmin) && <DeleteButton upload={minioUpload} doDelete={minioDelete} disabled={isPublic} />}
-                    {(isCurator || isAdmin) && <CurateAnnotationsButton 
-                      upload={minioUpload}
-                      datasetID={datasetID}
-                      loading={curatedAnnotationLoading}
-                      disabled={
-                        annotationSuccess ||
-                        loading ||
-                        isPublic ||
-                        minioUpload === null ||
-                        minioUpload === undefined
-                      }
-                      success={annotationSuccess}
-                      curateAnnotation={createCuratedAnnotationFromDataset}
-                    /> }
-                    {(isCurator || isAdmin) && <CurateDatasetButton 
-                      processedDataset={minioUpload.processedDataset}
-                      datasetID={datasetID}
-                      loading={curatedDatasetLoading}
-                      disabled={
-                        success ||
-                        curatedDatasetLoading ||
-                        isPublic ||
-                        minioUpload.processedDataset === null ||
-                        minioUpload.processedDataset === undefined
-                      }
-                      success={success}
-                      curate={createCuratedDatasetFromDataset}
-                    />}
-                    {!isReference && <TableModal upload={minioUpload} refetch={refetch} isPublic={isPublic} />}
-                    <Divider />
-                  </List.Item>
-                </div>
-              );
-            })}
-        </List>
-      )}
     </Segment>
   );
 }
