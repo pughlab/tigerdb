@@ -1,0 +1,55 @@
+type GliphTCR {
+    id: ID! @id
+    cdr3b: String!
+    v_gene: String
+    j_gene: String
+    sample: String
+    source: String
+    patterns: [GliphPattern!]! @relationship(type: "HAS_PATTERN", direction: OUT)
+}
+
+type GliphPattern {
+    id: ID! @id
+    pattern: String
+    score: Float
+    size: Int
+    tcrs: [GliphTCR!]! @relationship(type: "HAS_PATTERN", direction: IN)
+    run: Run! @relationship(type: "HAS_RESULT", direction: IN)
+}
+
+extend type Run {
+    gliphPatterns: [GliphPattern!]! @relationship(type: "HAS_RESULT", direction: OUT)
+}
+
+type GliphNode {
+    id: ID!
+    group: String!
+    sample: String
+    cdr3b: String
+    v_gene: String
+    j_gene: String
+    pattern: String
+    score: Float
+    size: Int
+}
+
+type GliphLink {
+    source: ID!
+    target: ID!
+}
+
+type GliphGraph {
+    nodes: [GliphNode!]!
+    links: [GliphLink!]!
+}
+
+type Query {
+    gliphGraph(runID: ID!): GliphGraph
+}
+
+type Mutation {
+    importGliphResults(
+        runID: ID!
+        presignedURL: String!
+    ): String
+}
