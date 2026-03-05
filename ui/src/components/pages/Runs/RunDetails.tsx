@@ -16,16 +16,19 @@ import {
   ButtonGroup,
   Image,
   Dimmer,
+  ButtonOr,
 } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
 import tigerdbLogo from "../../logos/tigerdb.png";
 import Logs from "./Logs";
 import SegmentPlaceholder from "../../common/SegmentPlaceholder";
 import DisplayTableFromPresignedURL from "../../common/table/DisplayTableFromPresignedURL";
+import GliphGraph3D from "./GliphGraph3D";
 
 import useSubmitRunMutation from "../../../hooks/useSubmitRunMutation";
 import useRunDetailsQuery from "../../../hooks/useRunDetailsQuery";
 import useUpdateRunParametersMutation from "../../../hooks/useUpdateRunParametersMutation";
+import useImportGliphMutation from "../../../hooks/useImportGliphMutation";
 import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
 
 function RunActionsButton({
@@ -34,12 +37,16 @@ function RunActionsButton({
   refetch,
   presignedURL,
   runID,
+  importGliph,
+  importLoading,
 }: {
   status: string;
   loading: boolean;
   refetch: () => void;
   presignedURL?: string;
   runID: string;
+  importGliph?: any;
+  importLoading?: boolean;
 }) {
   if (!status) return null;
 
@@ -60,16 +67,18 @@ function RunActionsButton({
   // completed: make it a real download link
   if (status === "completed") {
     return (
-      <Button
-        as="a"
-        href={presignedURL}
-        download={`TIGERdb_${runID}_cluster.csv`}
-        content="DOWNLOAD"
-        color="violet"
-        icon="download"
-        loading={loading}
-        disabled={!presignedURL}
-      />
+      <>
+        <Button
+          as="a"
+          href={presignedURL}
+          download={`TIGERdb_${runID}_cluster.csv`}
+          content="DOWNLOAD"
+          color="violet"
+          icon="download"
+          loading={loading}
+          disabled={!presignedURL}
+        />
+      </>
     );
   }
 
@@ -92,10 +101,18 @@ function RunActionsButton({
 function RunResults({
   status,
   presignedURL,
+  runID,
+  importGliph,
+  importLoading,
 }: {
   status: string;
   presignedURL?: string;
+  runID: string;
+  importGliph: any;
+  importLoading: boolean;
 }) {
+  const [viewMode, setViewMode] = React.useState('table'); // 'table' or 'graph'
+
   if (!status?.trim()) return null;
 
   if (status === "submitted") {
@@ -114,17 +131,51 @@ function RunResults({
       <Segment placeholder>
         <Segment.Group>
           <Segment>
-            <Header textAlign="center">
-              Viewing GLIPH2 clusters from{" "}
-              <span style={{ color: "#6434C9" }}>
-                TIGERdb_cluster.csv
-              </span>
-            </Header>
+            <Grid columns={3}>
+              <Grid.Column width={4} />
+              <Grid.Column width={8} textAlign="center">
+                <Header as="h3">
+                  Viewing GLIPH2 clusters from{" "}
+                  <span style={{ color: "#6434C9" }}>
+                    TIGERdb_cluster.csv
+                  </span>
+                </Header>
+              </Grid.Column>
+              <Grid.Column width={4} textAlign="right">
+                <Button.Group  size='small' attached='top' >
+                  <Button 
+                    active={viewMode === 'table'} 
+                    onClick={() => setViewMode('table')}
+                    icon="table"
+                    content="Table"
+                    // active color = violet
+                    color={viewMode === 'table' ? 'violet' : undefined}
+                  />
+                  <ButtonOr />
+                  <Button 
+                    active={viewMode === 'graph'} 
+                    onClick={() => setViewMode('graph')}
+                    icon="connectdevelop"
+                    content="Graph"
+                    color={viewMode === 'graph' ? 'teal' : undefined}
+                  />
+                </Button.Group>
+              </Grid.Column>
+            </Grid>
           </Segment>
 
           {/* Preview table from the run output */}
           {presignedURL ? (
-            <DisplayTableFromPresignedURL presignedURL={presignedURL} />
+            viewMode === 'table' ? (
+              <DisplayTableFromPresignedURL presignedURL={presignedURL} />
+            ) : (
+              <GliphGraph3D 
+                runID={runID} 
+                presignedURL={presignedURL}
+                importGliph={importGliph}
+                importLoading={importLoading}
+              />
+            )
           ) : (
             <Message warning content="No presignedURL available for results preview." />
           )}
@@ -278,6 +329,7 @@ export default function RunDetails() {
     refetch,
   } = useRunDetailsQuery({ runID });
   const [submitRun] = useSubmitRunMutation();
+  const { importGliph, loading: importLoading, error: importError } = useImportGliphMutation();
 
   if (runDetailsLoading) {
     return (
@@ -348,6 +400,8 @@ export default function RunDetails() {
           loading={runDetailsLoading}
           presignedURL={presignedURL}
           runID={runID!}
+          importGliph={importGliph}
+          importLoading={importLoading}
         />
         </ButtonGroup>
         <Message color={"grey"}>
@@ -374,7 +428,13 @@ export default function RunDetails() {
             />
           </List.Description>
         </Message>
-        <RunResults status={status} presignedURL={presignedURL} />
+        <RunResults 
+          status={status} 
+          presignedURL={presignedURL} 
+          runID={runID || ''} 
+          importGliph={importGliph}
+          importLoading={importLoading}
+        />
         <Message color="grey">
           <Header as={"h4"} icon>
             <Icon name="paper plane" />
