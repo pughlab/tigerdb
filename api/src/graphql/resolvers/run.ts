@@ -65,6 +65,9 @@ export const resolvers = {
           referenceDatasetsAggregate{
             count
           }
+          gliphPatternsAggregate {
+            count
+          }
           referenceDatasets {
             dataset {
               tags {

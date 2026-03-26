@@ -50,6 +50,7 @@ type Run {
     completedOn: DateTime
     status: RunStatus! @default(value: pending)   
     createdBy: KeycloakUser! @relationship(type: "CREATED_BY", direction: OUT)
+    gliphPatterns: [GliphPattern!]! @relationship(type: "HAS_RESULT", direction: OUT)
     isPublic: Boolean
     # logs: String
     getRunData: String

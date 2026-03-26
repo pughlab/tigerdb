@@ -25,12 +25,14 @@ type GliphNode {
     id: ID!
     group: String!
     sample: String
-    cdr3b: String
-    v_gene: String
-    j_gene: String
+    value: String
     pattern: String
+    source: String
     score: Float
     size: Int
+    color: String
+    v_gene: String
+    j_gene: String
 }
 
 type GliphLink {

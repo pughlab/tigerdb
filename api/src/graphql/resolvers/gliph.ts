@@ -1,11 +1,35 @@
 import { ApolloError } from 'apollo-server'
-import { int } from 'neo4j-driver'
 
 const toNumber = (num) => {
-  if (num && num.toNumber) {
+  if (num?.toNumber) {
     return num.toNumber()
   }
   return num
+}
+
+const colors = {
+  pattern: '#ffffff',
+  tcr: {
+    default: '#1f77b4',
+    'human': '#ff0000',
+    'chlamydiatrachomatis': '#32a852',
+    'enterobacteriaceaebacterium': '#265c34',
+    'm.tuberculosis': '#199139',
+    's-pneumoniae': '#06c739',
+    'salmonellatyphimurium': '#033611',
+    'cef': '#FFF9C4',
+    'cmv': '#FFF176',
+    'ebv': '#FFEB3B',
+    'influenza': '#FDD835',
+    'denv': '#FBC02D',
+    'hbv': '#FDD835',
+    'hcv': '#FFD600',
+    'hpv': '#FBC02D',
+    'hsv': '#FFC107',
+    'htlv1': '#FFB300',
+    'mcpyv': '#EAB308',
+    'yfv': '#CA8A04'
+  }
 }
 
 export const resolvers = {
@@ -13,63 +37,132 @@ export const resolvers = {
     gliphGraph: async (_parent, { runID }, { driver }) => {
       const session = driver.session()
       try {
-        const query = `
-          MATCH (r:Run {runID: $runID})-[:HAS_RESULT]->(p:GliphPattern)
-          OPTIONAL MATCH (t:GliphTCR)-[:HAS_PATTERN]->(p)
-          RETURN p { .*, group: 'pattern' } as pattern, collect(t { .*, group: 'tcr' }) as tcrs
-        `
-        const result = await session.run(query, { runID })
-        
-        const nodesMap = new Map()
-        const links: any[] = []
+        const graphName = `run-${runID}-graph`
+        const exists = await session.run(
+          "CALL gds.graph.exists($graphName) YIELD exists RETURN exists",
+          { graphName }
+        )
+        const graphExists = exists.records[0].get('exists')
 
-        result.records.forEach(record => {
-          const pattern = record.get('pattern')
-          const patternId = pattern.id
-          
-          if (!nodesMap.has(patternId)) {
-            nodesMap.set(patternId, {
-              id: patternId,
-              group: 'pattern',
-              pattern: pattern.pattern,
-              score: toNumber(pattern.score),
-              size: toNumber(pattern.size)
-            })
-          }
+        if (!graphExists) {
+          console.log(`Creating graph projection ${graphName} for Run ${runID}`)
+          await session.run(
+            `match (:Run { runID: $runID })-[:HAS_RESULT]->(target:GliphPattern)
+            optional match (target)<-[r:HAS_PATTERN]-(source:GliphTCR)
+            with gds.graph.project(
+              $graphName,
+              source,
+              target,
+              {
+                sourceNodeProperties: {
+                  nodeID: id(source)
+                },
+                targetNodeProperties: {
+                  nodeID: id(target)
+                },
+                sourceNodeLabels: labels(source),
+                targetNodeLabels: labels(target)
+              }) as graph
+              return graph
+            `, { runID, graphName }
+          )
+        }
+        const result = await session.run(
+          `CALL gds.graph.nodeProperties.stream($graphName, 'nodeID')
+          YIELD nodeId
+          MATCH (n) WHERE id(n) = nodeId
+          WITH collect({
+            id: nodeId, // maybe we can use n.id instead
+            value: CASE WHEN labels(n)[0] = 'GliphTCR' THEN n.cdr3b ELSE n.pattern END,
+            group: CASE WHEN labels(n)[0] = 'GliphTCR' THEN 'tcr' ELSE 'pattern' END,
+            size: CASE WHEN labels(n)[0] = 'GliphPattern' THEN n.size ELSE 0 END,
+            score: CASE WHEN labels(n)[0] = 'GliphPattern' THEN n.score ELSE null END,
+            source: CASE WHEN labels(n)[0] = 'GliphTCR' THEN n.source ELSE null END,
+            v_gene: CASE WHEN labels(n)[0] = 'GliphTCR' THEN n.v_gene ELSE null END,
+            j_gene: CASE WHEN labels(n)[0] = 'GliphTCR' THEN n.j_gene ELSE null END
+            // add more properties as needed
+          }) AS nodes
+          CALL gds.graph.relationships.stream($graphName)
+          YIELD sourceNodeId, targetNodeId, relationshipType
+          WITH nodes, collect({
+            source: sourceNodeId, 
+            target: targetNodeId, 
+            type: "HAS_PATTERN"
+          }) AS links
+          RETURN {nodes: nodes, links: links} AS graphData
+          `, { graphName }
+        )
 
-          const tcrs = record.get('tcrs')
-          if (tcrs && Array.isArray(tcrs)) {
-            tcrs.forEach(tcr => {
-              if (!tcr) return; // Should not happen with collect unless empty
-              const tcrId = tcr.id
-              
-              if (!nodesMap.has(tcrId)) {
-                nodesMap.set(tcrId, {
-                   id: tcrId,
-                   group: 'tcr',
-                   sample: tcr.sample,
-                   cdr3b: tcr.cdr3b,
-                   v_gene: tcr.v_gene,
-                   j_gene: tcr.j_gene
-                })
-              }
-              // Link pattern <-> tcr
-              links.push({ source: patternId, target: tcrId })
-            })
-          }
-        })
-
-        // Unique links. Since we iterate (pattern, collect(tcr)), each link (pattern, tcr) is unique unless tcr connects to same pattern multiple times (impossible in this model usually)
-        // But a TCR can connect to multiple patterns.
-        // We will process each pattern result. If T1 connects to P1 and P2, we get two rows: (P1, [T1...]), (P2, [T1...]).
-        // We add T1 to nodesMap twice (second time ignored).
-        // We add link P1-T1. We add link P2-T1.
-        // So links array should be unique by definition of query iteration.
+        const { nodes, links } = result.records[0].get('graphData')
+        const coloredNodes = nodes.map(node => ({
+          ...node,
+          color: node.group === 'pattern' ? colors.pattern : colors.tcr[node.source?.toLowerCase()] || colors.tcr.default,
+        }))
 
         return {
-          nodes: Array.from(nodesMap.values()),
-          links: links
+          nodes: coloredNodes,
+          links
         }
+        // const query = `
+        //   MATCH (r:Run {runID: $runID})-[:HAS_RESULT]->(p:GliphPattern)
+        //   OPTIONAL MATCH (t:GliphTCR)-[:HAS_PATTERN]->(p)
+        //   RETURN p { .*, group: 'pattern' } as pattern, collect(t { .*, group: 'tcr' }) as tcrs
+        // `
+        // const result = await session.run(query, { runID })
+        
+        // const nodesMap = new Map()
+        // const links: any[] = []
+
+        // result.records.forEach(record => {
+        //   console.log("Processing record:", record.toObject())
+        //   const pattern = record.get('pattern')
+        //   const patternId = pattern.id
+          
+        //   if (!nodesMap.has(patternId)) {
+        //     nodesMap.set(patternId, {
+        //       id: patternId,
+        //       group: 'pattern',
+        //       pattern: pattern.pattern,
+        //       score: toNumber(pattern.score),
+        //       size: toNumber(pattern.size),
+        //       color: colors.pattern
+        //     })
+        //   }
+
+        //   const tcrs = record.get('tcrs')
+        //   if (tcrs && Array.isArray(tcrs)) {
+        //     tcrs.forEach(tcr => {
+        //       if (!tcr) return; // Should not happen with collect unless empty
+        //       const tcrId = tcr.id
+              
+        //       if (!nodesMap.has(tcrId)) {
+        //         nodesMap.set(tcrId, {
+        //           id: tcrId,
+        //           group: 'tcr',
+        //           sample: tcr.sample,
+        //           cdr3b: tcr.cdr3b,
+        //           v_gene: tcr.v_gene,
+        //           j_gene: tcr.j_gene,
+        //           color: colors.tcr
+        //         })
+        //       }
+        //       // Link pattern <-> tcr
+        //       links.push({ source: patternId, target: tcrId })
+        //     })
+        //   }
+        // })
+
+        // // Unique links. Since we iterate (pattern, collect(tcr)), each link (pattern, tcr) is unique unless tcr connects to same pattern multiple times (impossible in this model usually)
+        // // But a TCR can connect to multiple patterns.
+        // // We will process each pattern result. If T1 connects to P1 and P2, we get two rows: (P1, [T1...]), (P2, [T1...]).
+        // // We add T1 to nodesMap twice (second time ignored).
+        // // We add link P1-T1. We add link P2-T1.
+        // // So links array should be unique by definition of query iteration.
+
+        // return {
+        //   nodes: Array.from(nodesMap.values()),
+        //   links: links
+        // }
       } catch (error) {
         console.error("gliphGraph error:", error)
         throw new ApolloError('Failed to fetch GLIPH graph', 'FETCH_FAILED')
