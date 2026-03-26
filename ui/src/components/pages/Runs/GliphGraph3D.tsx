@@ -226,7 +226,8 @@ export default function GliphGraph3D({
               : `TCR: ${node.value} (${node.v_gene}, ${node.j_gene})`
         }}
         nodeAutoColorBy="group"
-        warmupTicks={100}
+        // warmupTicks={100}
+        warmupTicks={undefined}
         linkDirectionalParticles={0} // Dots moving along links
         nodeOpacity={0.8}
         linkOpacity={0.5}
