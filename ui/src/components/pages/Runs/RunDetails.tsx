@@ -39,7 +39,7 @@ function RunActionsButton({
   runID,
   importGliph,
   importLoading,
-}: {
+}: Readonly<{
   status: string;
   loading: boolean;
   refetch: () => void;
@@ -47,7 +47,7 @@ function RunActionsButton({
   runID: string;
   importGliph?: any;
   importLoading?: boolean;
-}) {
+}>) {
   if (!status) return null;
 
   // submitted: keep as refetch (or wire cancel later if you add a cancel mutation)
@@ -67,18 +67,16 @@ function RunActionsButton({
   // completed: make it a real download link
   if (status === "completed") {
     return (
-      <>
-        <Button
-          as="a"
-          href={presignedURL}
-          download={`TIGERdb_${runID}_cluster.csv`}
-          content="DOWNLOAD"
-          color="violet"
-          icon="download"
-          loading={loading}
-          disabled={!presignedURL}
-        />
-      </>
+      <Button
+        as="a"
+        href={presignedURL}
+        download={`TIGERdb_${runID}_cluster.csv`}
+        content="DOWNLOAD"
+        color="violet"
+        icon="download"
+        loading={loading}
+        disabled={!presignedURL}
+      />
     );
   }
 
@@ -102,15 +100,17 @@ function RunResults({
   status,
   presignedURL,
   runID,
+  hasGliphResults,
   importGliph,
   importLoading,
-}: {
+}: Readonly<{
   status: string;
   presignedURL?: string;
   runID: string;
+  hasGliphResults: boolean;
   importGliph: any;
   importLoading: boolean;
-}) {
+}>) {
   const [viewMode, setViewMode] = React.useState('table'); // 'table' or 'graph'
 
   if (!status?.trim()) return null;
@@ -171,6 +171,7 @@ function RunResults({
             ) : (
               <GliphGraph3D 
                 runID={runID} 
+                hasGliphResults={hasGliphResults}
                 presignedURL={presignedURL}
                 importGliph={importGliph}
                 importLoading={importLoading}
@@ -432,6 +433,7 @@ export default function RunDetails() {
           status={status} 
           presignedURL={presignedURL} 
           runID={runID || ''} 
+          hasGliphResults={run?.gliphPatternsAggregate?.count > 0}
           importGliph={importGliph}
           importLoading={importLoading}
         />

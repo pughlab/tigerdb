@@ -6,13 +6,14 @@ export const GET_GLIPH_GRAPH = gql`
       nodes {
         id
         group
-        pattern
         score
         size
         sample
-        cdr3b
+        value
         v_gene
         j_gene
+        color
+        source
       }
       links {
         source
