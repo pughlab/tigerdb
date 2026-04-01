@@ -34,7 +34,7 @@ const colors = {
 
 export const resolvers = {
   Query: {
-    gliphGraph: async (_parent, { runID }, { driver }) => {
+    gliphGraph: async (_parent, { runID, patternLength = 5, numberOfConnections = 10 }, { driver }) => {
       const session = driver.session()
       try {
         const graphName = `run-${runID}-graph`
@@ -48,6 +48,11 @@ export const resolvers = {
           console.log(`Creating graph projection ${graphName} for Run ${runID}`)
           await session.run(
             `match (:Run { runID: $runID })-[:HAS_RESULT]->(target:GliphPattern)
+            WHERE size(target.pattern) >= $patternLength
+            AND size((target)-[:HAS_PATTERN]-()) >= $numberOfConnections
+            WITH target, size((target)-[:HAS_PATTERN]-()) AS totalConnections
+            ORDER BY totalConnections DESC
+            // LIMIT $maximum // hard limit to avoid getting too many nodes
             optional match (target)<-[r:HAS_PATTERN]-(source:GliphTCR)
             with gds.graph.project(
               $graphName,
@@ -64,7 +69,7 @@ export const resolvers = {
                 targetNodeLabels: labels(target)
               }) as graph
               return graph
-            `, { runID, graphName }
+            `, { runID, graphName, patternLength, numberOfConnections }
           )
         }
         const result = await session.run(
