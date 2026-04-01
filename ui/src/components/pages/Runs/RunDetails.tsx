@@ -23,7 +23,7 @@ import tigerdbLogo from "../../logos/tigerdb.png";
 import Logs from "./Logs";
 import SegmentPlaceholder from "../../common/SegmentPlaceholder";
 import DisplayTableFromPresignedURL from "../../common/table/DisplayTableFromPresignedURL";
-import GliphGraph3D from "./GliphGraph3D";
+import GliphGraph from "./graph/GliphGraph";
 
 import useSubmitRunMutation from "../../../hooks/useSubmitRunMutation";
 import useRunDetailsQuery from "../../../hooks/useRunDetailsQuery";
@@ -169,7 +169,7 @@ function RunResults({
             viewMode === 'table' ? (
               <DisplayTableFromPresignedURL presignedURL={presignedURL} />
             ) : (
-              <GliphGraph3D 
+              <GliphGraph 
                 runID={runID} 
                 hasGliphResults={hasGliphResults}
                 presignedURL={presignedURL}
