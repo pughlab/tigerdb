@@ -46,7 +46,7 @@ type GliphGraph {
 }
 
 type Query {
-    gliphGraph(runID: ID!, patternLength: Int = 5, numberOfConnections: Int = 10): GliphGraph
+    gliphGraph(runID: ID!, patternLength: Int = 5, numberOfConnections: Int = 10, patternContains: String = ""): GliphGraph
 }
 
 type Mutation {

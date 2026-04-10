@@ -34,44 +34,45 @@ const colors = {
 
 export const resolvers = {
   Query: {
-    gliphGraph: async (_parent, { runID, patternLength = 5, numberOfConnections = 10 }, { driver }) => {
+    gliphGraph: async (_parent, { runID, patternLength = 5, numberOfConnections = 10, patternContains = '' }, { driver }) => {
       const session = driver.session()
       try {
         const graphName = `run-${runID}-graph`
-        const exists = await session.run(
-          "CALL gds.graph.exists($graphName) YIELD exists RETURN exists",
+        await session.run(
+          `CALL gds.graph.exists($graphName) YIELD exists
+          WITH exists WHERE exists
+          CALL gds.graph.drop($graphName) YIELD graphName
+          RETURN graphName`,
           { graphName }
         )
-        const graphExists = exists.records[0].get('exists')
 
-        if (!graphExists) {
-          console.log(`Creating graph projection ${graphName} for Run ${runID}`)
-          await session.run(
-            `match (:Run { runID: $runID })-[:HAS_RESULT]->(target:GliphPattern)
-            WHERE size(target.pattern) >= $patternLength
-            AND size((target)-[:HAS_PATTERN]-()) >= $numberOfConnections
-            WITH target, size((target)-[:HAS_PATTERN]-()) AS totalConnections
-            ORDER BY totalConnections DESC
-            // LIMIT $maximum // hard limit to avoid getting too many nodes
-            optional match (target)<-[r:HAS_PATTERN]-(source:GliphTCR)
-            with gds.graph.project(
-              $graphName,
-              source,
-              target,
-              {
-                sourceNodeProperties: {
-                  nodeID: id(source)
-                },
-                targetNodeProperties: {
-                  nodeID: id(target)
-                },
-                sourceNodeLabels: labels(source),
-                targetNodeLabels: labels(target)
-              }) as graph
-              return graph
-            `, { runID, graphName, patternLength, numberOfConnections }
-          )
-        }
+        console.log(`Creating graph projection ${graphName} for Run ${runID}`)
+        await session.run(
+          `match (:Run { runID: $runID })-[:HAS_RESULT]->(target:GliphPattern)
+          WHERE size(target.pattern) >= $patternLength
+          AND size((target)-[:HAS_PATTERN]-()) >= $numberOfConnections
+          ${patternContains.length > 0 &&patternContains.length <= patternLength ? 'AND toLower(target.pattern) CONTAINS toLower($patternContains)' : ''}
+          WITH target, size((target)-[:HAS_PATTERN]-()) AS totalConnections
+          ORDER BY totalConnections DESC
+          // LIMIT $maximum // hard limit to avoid getting too many nodes
+          optional match (target)<-[r:HAS_PATTERN]-(source:GliphTCR)
+          with gds.graph.project(
+            $graphName,
+            source,
+            target,
+            {
+              sourceNodeProperties: {
+                nodeID: id(source)
+              },
+              targetNodeProperties: {
+                nodeID: id(target)
+              },
+              sourceNodeLabels: labels(source),
+              targetNodeLabels: labels(target)
+            }) as graph
+            return graph
+          `, { runID, graphName, patternLength, numberOfConnections, patternContains }
+        )
         const result = await session.run(
           `CALL gds.graph.nodeProperties.stream($graphName, 'nodeID')
           YIELD nodeId
@@ -108,66 +109,6 @@ export const resolvers = {
           nodes: coloredNodes,
           links
         }
-        // const query = `
-        //   MATCH (r:Run {runID: $runID})-[:HAS_RESULT]->(p:GliphPattern)
-        //   OPTIONAL MATCH (t:GliphTCR)-[:HAS_PATTERN]->(p)
-        //   RETURN p { .*, group: 'pattern' } as pattern, collect(t { .*, group: 'tcr' }) as tcrs
-        // `
-        // const result = await session.run(query, { runID })
-        
-        // const nodesMap = new Map()
-        // const links: any[] = []
-
-        // result.records.forEach(record => {
-        //   console.log("Processing record:", record.toObject())
-        //   const pattern = record.get('pattern')
-        //   const patternId = pattern.id
-          
-        //   if (!nodesMap.has(patternId)) {
-        //     nodesMap.set(patternId, {
-        //       id: patternId,
-        //       group: 'pattern',
-        //       pattern: pattern.pattern,
-        //       score: toNumber(pattern.score),
-        //       size: toNumber(pattern.size),
-        //       color: colors.pattern
-        //     })
-        //   }
-
-        //   const tcrs = record.get('tcrs')
-        //   if (tcrs && Array.isArray(tcrs)) {
-        //     tcrs.forEach(tcr => {
-        //       if (!tcr) return; // Should not happen with collect unless empty
-        //       const tcrId = tcr.id
-              
-        //       if (!nodesMap.has(tcrId)) {
-        //         nodesMap.set(tcrId, {
-        //           id: tcrId,
-        //           group: 'tcr',
-        //           sample: tcr.sample,
-        //           cdr3b: tcr.cdr3b,
-        //           v_gene: tcr.v_gene,
-        //           j_gene: tcr.j_gene,
-        //           color: colors.tcr
-        //         })
-        //       }
-        //       // Link pattern <-> tcr
-        //       links.push({ source: patternId, target: tcrId })
-        //     })
-        //   }
-        // })
-
-        // // Unique links. Since we iterate (pattern, collect(tcr)), each link (pattern, tcr) is unique unless tcr connects to same pattern multiple times (impossible in this model usually)
-        // // But a TCR can connect to multiple patterns.
-        // // We will process each pattern result. If T1 connects to P1 and P2, we get two rows: (P1, [T1...]), (P2, [T1...]).
-        // // We add T1 to nodesMap twice (second time ignored).
-        // // We add link P1-T1. We add link P2-T1.
-        // // So links array should be unique by definition of query iteration.
-
-        // return {
-        //   nodes: Array.from(nodesMap.values()),
-        //   links: links
-        // }
       } catch (error) {
         console.error("gliphGraph error:", error)
         throw new ApolloError('Failed to fetch GLIPH graph', 'FETCH_FAILED')
