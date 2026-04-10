@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Header } from "semantic-ui-react"
-import { findByNumberOfConnections, findByPatternLength, findClusters } from './utils'
+import { findByNumberOfConnections, findByPatternContains, findByPatternLength, findClusters } from './utils'
 
 const DEFAULT_CLUSTER_SIZE = 5
 const DEFAULT_PATTERN_LENGTH = 5
@@ -10,6 +10,7 @@ export default function FilterControls({ data, hiddenSources, updateGraphData }:
   const [minClusterSize, setMinClusterSize] = useState(DEFAULT_CLUSTER_SIZE)
   const [patternLength, setPatternLength] = useState(DEFAULT_PATTERN_LENGTH)
   const [numberOfConnections, setNumberOfConnections] = useState(DEFAULT_NUMBER_OF_CONNECTIONS)
+  const [patternContains, setPatternContains] = useState('')
 
   useEffect(() => {
     let filteredNodes = data.nodes.filter(n => !hiddenSources.has(n.source || null))
@@ -30,8 +31,13 @@ export default function FilterControls({ data, hiddenSources, updateGraphData }:
       dataWithPatterns.links,
       numberOfConnections
     )
-    updateGraphData(dataWithConnections)
-  }, [minClusterSize, patternLength, numberOfConnections, data, hiddenSources])
+    const dataWithPatternContains = findByPatternContains(
+      dataWithConnections.nodes,
+      dataWithConnections.links,
+      patternContains
+    )
+    updateGraphData(dataWithPatternContains)
+  }, [minClusterSize, patternLength, numberOfConnections, patternContains, data, hiddenSources])
 
   return (
     <div style={{ position: 'absolute', top: 10, right: 10, zIndex: 1, backgroundColor: 'rgba(255,255,255,0.8)', padding: '10px', borderRadius: '6px' }}>
@@ -54,6 +60,15 @@ export default function FilterControls({ data, hiddenSources, updateGraphData }:
           onChange={e => setPatternLength(Number(e.target.value))}
           style={{ marginLeft: '10px', width: '60px' }}
           min={1}
+        />
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <span>Pattern contains:</span>
+        <input
+          type='text'
+          value={patternContains}
+          onChange={e => setPatternContains(e.target.value)}
+          style={{ marginLeft: '10px', width: '120px' }}
         />
       </div>
       <div style={{ display: 'flex', alignItems: 'center' }}>

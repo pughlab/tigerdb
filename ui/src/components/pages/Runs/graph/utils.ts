@@ -97,3 +97,29 @@ export function findByNumberOfConnections(nodes: any[], links: any[], numberOfCo
 
   return { nodes: filteredNodes, links: filteredLinks }
 }
+
+export function findByPatternContains(nodes: any[], links: any[], patternContains: string) {
+  if (patternContains.length === 0) {
+    return { nodes, links }
+  }
+
+  const matchingPatternNodes = nodes.filter(
+    n => n.group === 'pattern' && n.value.toLowerCase().includes(patternContains.toLowerCase())
+  )
+
+  const matchingPatternIds = new Set(matchingPatternNodes.map(n => n.id))
+
+  const filteredLinks = links.filter(
+    l => matchingPatternIds.has(l.source) || matchingPatternIds.has(l.target)
+  )
+
+  const connectedNodeIds = new Set<string>()
+  filteredLinks.forEach(l => {
+    connectedNodeIds.add(l.source)
+    connectedNodeIds.add(l.target)
+  })
+
+  const filteredNodes = nodes.filter(n => connectedNodeIds.has(n.id))
+
+  return { nodes: filteredNodes, links: filteredLinks }
+}
