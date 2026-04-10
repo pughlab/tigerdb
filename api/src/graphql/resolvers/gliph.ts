@@ -241,6 +241,31 @@ export const resolvers = {
 
         const result = await session.run(query, { presignedURL, runID });
         
+        console.log(`Creating RELATED_TO edges between patterns for Run ${runID}`);
+        
+        // 1. Shared TCRs (Weight: 2n)
+        const edgeQueryTCR = `
+          MATCH (r:Run {runID: $runID})-[:HAS_RESULT]->(p1:GliphPattern)<-[:HAS_PATTERN]-(t:GliphTCR)-[:HAS_PATTERN]->(p2:GliphPattern)<-[:HAS_RESULT]-(r)
+          WHERE id(p1) < id(p2)
+          WITH p1, p2, count(t) AS n
+          MERGE (p1)-[rel:RELATED_TO]-(p2)
+          SET rel.weight = 2 * n
+        `;
+        await session.run(edgeQueryTCR, { runID });
+
+        // // 2. Shared Motif (Substring, minimum length 4. Weight: 1 if no shared TCRs)
+        // const edgeQueryMotif = `
+        //   MATCH (r:Run {runID: $runID})-[:HAS_RESULT]->(p1:GliphPattern)
+        //   MATCH (r:Run {runID: $runID})-[:HAS_RESULT]->(p2:GliphPattern)
+        //   WHERE id(p1) < id(p2)
+        //     AND p1.pattern IS NOT NULL AND p2.pattern IS NOT NULL
+        //     AND size(p1.pattern) >= 4 AND size(p2.pattern) >= 4
+        //     AND (p1.pattern CONTAINS p2.pattern OR p2.pattern CONTAINS p1.pattern)
+        //   MERGE (p1)-[rel:RELATED_TO]-(p2)
+        //   ON CREATE SET rel.weight = 1
+        // `;
+        // await session.run(edgeQueryMotif, { runID });
+
         // Check result summary if needed
         const summary = result.records[0].get(0);
         console.log("Import summary:", summary);
