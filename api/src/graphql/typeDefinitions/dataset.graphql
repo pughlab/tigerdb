@@ -30,7 +30,15 @@ type Mutation {
         # filename: String
         tags: [String]
     ): Dataset!,
-
+    deleteDataset(
+        datasetID: ID!
+    ): Boolean! @cypher(
+        statement: """
+        MATCH (d:Dataset {datasetID: $datasetID})
+        DETACH DELETE d
+        RETURN true
+        """
+    ),
     # undetermined if we will allow updating datasets:
     # updateDataset(
     #     datasetID: ID!
