@@ -13,9 +13,10 @@ import MinioBucket from "../../common/minio";
 import { useLocation } from "react-router-dom";
 import useIsAdmin from '../../../hooks/useIsAdmin';
 import useIsCurator from '../../../hooks/useIsCurator';
+import DeleteDatasetModal from './DeleteDatasetModal';
 
 
-function DatasetListItem({ dataset, isPublicProject, isOwner }) {
+function DatasetListItem({ dataset, isPublicProject, isOwner, refetch }) {
   const { datasetID, name, tags: datasetTags, project } = dataset;
   const [isMinioBucketOpen, setIsMinioBucketOpen] = useState(false); // State to control MinioBucket visibility
   const [tags, setTags] = useState(datasetTags.reduce((acc, tag) => [...acc, { tagID: tag.tagID, name: tag.name, category: tag.category }], []));
@@ -32,12 +33,12 @@ function DatasetListItem({ dataset, isPublicProject, isOwner }) {
         onClick={() => setIsMinioBucketOpen(!isMinioBucketOpen)}
       >
         <List.Content floated="right" basic>
+          <DeleteDatasetModal datasetID={datasetID} datasetName={name} refetch={refetch} />
           <Icon
             size="large"
             name={isMinioBucketOpen ? "chevron up" : "chevron down"}
           />
         </List.Content>
-        <List.Content floated="right" basic></List.Content>
         <List.Content>
           <List.Header as={Header}>
             {`${name}`}
@@ -113,7 +114,7 @@ export default function DatasetsList({ project, isPublicProject, isOwner }) {
           <AddDatasetModal projectID={projectID} refetch={refetch} />
           <Divider horizontal />
           {filteredDatasets.map((dataset) => (
-            <DatasetListItem key={dataset.datasetID} isPublicProject={isPublicProject} isOwner={isOwner} {...{ dataset }} />
+            <DatasetListItem key={dataset.datasetID} isPublicProject={isPublicProject} isOwner={isOwner} refetch={refetch} {...{ dataset }} />
           ))}
         </List>
       </Container>
