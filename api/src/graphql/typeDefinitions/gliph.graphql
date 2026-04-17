@@ -24,20 +24,16 @@ extend type Run {
 type GliphNode {
     id: ID!
     group: String!
-    sample: String
     value: String
-    pattern: String
-    source: String
-    score: Float
+    label: String
     size: Int
     color: String
-    v_gene: String
-    j_gene: String
 }
 
 type GliphLink {
     source: ID!
     target: ID!
+    weight: Int
 }
 
 type GliphGraph {
@@ -47,6 +43,7 @@ type GliphGraph {
 
 type Query {
     gliphGraph(runID: ID!, patternLength: Int = 5, numberOfConnections: Int = 10, patternContains: String = ""): GliphGraph
+    patternTCRs(runID: ID!, patternID: ID!): GliphGraph
 }
 
 type Mutation {

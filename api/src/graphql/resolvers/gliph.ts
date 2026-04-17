@@ -32,90 +32,201 @@ const colors = {
   }
 }
 
+async function dropGraph(session, graphName) {
+  await session.run(
+    `CALL gds.graph.exists($graphName) YIELD exists
+    WITH exists WHERE exists
+    CALL gds.graph.drop($graphName) YIELD graphName
+    RETURN graphName`,
+    { graphName }
+  )
+}
+
+async function projectGraph(graphName: string, runID: any, session: any, patternContains: string, patternLength: number, numberOfConnections: number) {
+  console.log(`Creating graph projection ${graphName} for Run ${runID}`)
+  await session.run(
+    `MATCH (run:Run { runID: $runID })-[:HAS_RESULT]->(source:GliphPattern)
+    MATCH (source)-[r:RELATED_TO]-(target:GliphPattern)
+    WHERE size(source.pattern) >= $patternLength AND size(target.pattern) >= $patternLength
+    ${patternContains.length > 0 ? 'AND (source.pattern CONTAINS $patternContains OR target.pattern CONTAINS $patternContains)' : ''}
+    OPTIONAL MATCH (source)-[:HAS_PATTERN]-(tcr:GliphTCR)
+    WHERE size((source)-[]-(tcr)) >= $numberOfConnections AND size((target)-[]-(tcr)) >= $numberOfConnections
+    // extra filtering clauses for TCRs go here
+    WITH gds.graph.project(
+      $graphName,
+      source,
+      target,
+      {
+        sourceNodeLabels: labels(source),
+        targetNodeLabels: labels(target),
+        relationshipType: type(r),
+        relationshipProperties: {
+          weight: r.weight
+        }
+      },
+      { undirectedRelationshipTypes: ['*'] }
+    ) AS g
+    RETURN g.graphName, g.nodeCount AS nodes, g.relationshipCount AS edges`,
+    { runID, graphName, patternLength, numberOfConnections, patternContains }
+  )
+}
+
+async function getRelatedPatterns(session, graphName, patternID = '', limit = 0) {
+  const result = await session.run(
+    `CALL gds.leiden.stream(
+      $graphName,
+      {
+        relationshipWeightProperty: 'weight'
+      }
+    )
+    YIELD nodeId, communityId
+    WITH gds.util.asNode(nodeId) AS pattern, communityId
+    MATCH (pattern)-[r:RELATED_TO]-(p2)
+    ${patternID ? 'WHERE pattern.id = $patternID' : ''}
+    RETURN 
+      id(pattern) AS sourceID, 
+      id(p2) AS targetID, 
+      toInteger(r.weight) AS weight,
+      communityId,
+      pattern.id AS sourceType, 
+      p2.id AS targetType,
+      pattern.size AS sourceSize,
+      p2.size AS targetSize,
+      pattern.pattern AS sourcePattern,
+      p2.pattern AS targetPattern,
+      pattern.score AS sourceScore,
+      p2.score AS targetScore
+      // add more properties for both source and target as needed
+    ${limit > 0 ? 'LIMIT toInteger($limit)' : ''}
+    `, { graphName, patternID, limit }
+  )
+  const nodes = new Map()
+  const links: { source: number, target: number, weight: number }[] = []
+  result.records.forEach(record => {
+    const sourceID = record.get('sourceID').toNumber()
+    const targetID = record.get('targetID').toNumber()
+    const weight = record.get('weight')
+    const communityId = record.get('communityId').toNumber()
+    const sourceType = record.get('sourceType')
+    const targetType = record.get('targetType')
+    const sourcePattern = record.get('sourcePattern')
+    const targetPattern = record.get('targetPattern')
+    const sourceScore = record.get('sourceScore')
+    const targetScore = record.get('targetScore')
+    const sourceSize = record.get('sourceSize')?.toNumber() ?? 1
+    const targetSize = record.get('targetSize')?.toNumber() ?? 1
+
+    if (!nodes.has(sourceID)) {
+      nodes.set(sourceID, {
+        id: sourceID,
+        type: 'pattern',
+        value: sourceType,
+        group: communityId,
+        label: `Pattern: ${sourcePattern} (Score: ${sourceScore}, Size: ${sourceSize})`,
+        size: sourceSize
+      })
+    }
+    if (!nodes.has(targetID)) {
+      nodes.set(targetID, {
+        id: targetID,
+        type: 'pattern',
+        value: targetType,
+        group: communityId,
+        label: `Pattern: ${targetPattern} (Score: ${targetScore}, Size: ${targetSize})`,
+        size: targetSize
+      })
+    }
+    links.push({
+      source: sourceID,
+      target: targetID,
+      weight
+    })
+  })
+
+  return {
+    nodes: Array.from(nodes.values()),
+    links
+  }
+}
+
+async function getTCRs(session: any, patternID: any) {
+  const nodes = new Map()
+  const links: { source: number; target: number} [] = []
+  const result = await session.run(
+    `MATCH (p:GliphPattern {id: $patternID})-[:HAS_PATTERN]-(t:GliphTCR) return p, t`,
+    { patternID }
+  )
+
+  console.log(`Fetched ${result.records.length} TCRs for pattern ${patternID}`)
+  result.records.forEach(record => {
+    const pattern = record.get('p')
+    const tcr = record.get('t')
+
+    if (!nodes.has(tcr.identity.toNumber())) {
+      nodes.set(tcr.identity.toNumber(), {
+        id: tcr.identity.toNumber(),
+        value: tcr.properties.cdr3b,
+        label: `TCR: ${tcr.properties.cdr3b} (${tcr.properties.v_gene}, ${tcr.properties.j_gene}), Source: ${tcr.properties.source}`,
+        group: 0,
+        color: colors.tcr[tcr.properties.source?.toLowerCase()] || colors.tcr.default,
+        size: 1,
+        type: 'tcr'
+      })
+    }
+    links.push({
+      source: pattern.identity.toNumber(),
+      target: tcr.identity.toNumber()
+    })
+  })
+  console.log(`Fetched ${nodes.size} TCR nodes and ${links.length} edges for pattern ${patternID}`)
+  return {
+    nodes: Array.from(nodes.values()),
+    links
+  }
+}
+
 export const resolvers = {
   Query: {
-    gliphGraph: async (_parent, { runID, patternLength = 5, numberOfConnections = 10, patternContains = '' }, { driver }) => {
+    gliphGraph: async (_parent, { runID, patternLength = 5, numberOfConnections = 4, patternContains = '' }, { driver }) => {
       const session = driver.session()
       try {
         const graphName = `run-${runID}-graph`
-        await session.run(
-          `CALL gds.graph.exists($graphName) YIELD exists
-          WITH exists WHERE exists
-          CALL gds.graph.drop($graphName) YIELD graphName
-          RETURN graphName`,
-          { graphName }
-        )
-
-        console.log(`Creating graph projection ${graphName} for Run ${runID}`)
-        await session.run(
-          `match (:Run { runID: $runID })-[:HAS_RESULT]->(target:GliphPattern)
-          WHERE size(target.pattern) >= $patternLength
-          AND size((target)-[:HAS_PATTERN]-()) >= $numberOfConnections
-          ${patternContains.length > 0 &&patternContains.length <= patternLength ? 'AND toLower(target.pattern) CONTAINS toLower($patternContains)' : ''}
-          WITH target, size((target)-[:HAS_PATTERN]-()) AS totalConnections
-          ORDER BY totalConnections DESC
-          // LIMIT $maximum // hard limit to avoid getting too many nodes
-          optional match (target)<-[r:HAS_PATTERN]-(source:GliphTCR)
-          with gds.graph.project(
-            $graphName,
-            source,
-            target,
-            {
-              sourceNodeProperties: {
-                nodeID: id(source)
-              },
-              targetNodeProperties: {
-                nodeID: id(target)
-              },
-              sourceNodeLabels: labels(source),
-              targetNodeLabels: labels(target)
-            }) as graph
-            return graph
-          `, { runID, graphName, patternLength, numberOfConnections, patternContains }
-        )
-        const result = await session.run(
-          `CALL gds.graph.nodeProperties.stream($graphName, 'nodeID')
-          YIELD nodeId
-          MATCH (n) WHERE id(n) = nodeId
-          WITH collect({
-            id: nodeId, // maybe we can use n.id instead
-            value: CASE WHEN labels(n)[0] = 'GliphTCR' THEN n.cdr3b ELSE n.pattern END,
-            group: CASE WHEN labels(n)[0] = 'GliphTCR' THEN 'tcr' ELSE 'pattern' END,
-            size: CASE WHEN labels(n)[0] = 'GliphPattern' THEN n.size ELSE 0 END,
-            score: CASE WHEN labels(n)[0] = 'GliphPattern' THEN n.score ELSE null END,
-            source: CASE WHEN labels(n)[0] = 'GliphTCR' THEN n.source ELSE null END,
-            v_gene: CASE WHEN labels(n)[0] = 'GliphTCR' THEN n.v_gene ELSE null END,
-            j_gene: CASE WHEN labels(n)[0] = 'GliphTCR' THEN n.j_gene ELSE null END
-            // add more properties as needed
-          }) AS nodes
-          CALL gds.graph.relationships.stream($graphName)
-          YIELD sourceNodeId, targetNodeId, relationshipType
-          WITH nodes, collect({
-            source: sourceNodeId, 
-            target: targetNodeId, 
-            type: "HAS_PATTERN"
-          }) AS links
-          RETURN {nodes: nodes, links: links} AS graphData
-          `, { graphName }
-        )
-
-        const { nodes, links } = result.records[0].get('graphData')
-        const coloredNodes = nodes.map(node => ({
-          ...node,
-          color: node.group === 'pattern' ? colors.pattern : colors.tcr[node.source?.toLowerCase()] || colors.tcr.default,
-        }))
-
-        return {
-          nodes: coloredNodes,
-          links
-        }
+        await dropGraph(session, graphName)
+        await projectGraph(graphName, runID, session, patternContains, patternLength, numberOfConnections)
+        return await getRelatedPatterns(session, graphName, '', 1000)
       } catch (error) {
         console.error("gliphGraph error:", error)
         throw new ApolloError('Failed to fetch GLIPH graph', 'FETCH_FAILED')
       } finally {
         session.close()
       }
-    }
+    },
+    patternTCRs: async (_parent, { patternID, runID }, { driver }) => {
+      const session = driver.session()
+      try {
+        const graphName = `run-${runID}-graph`
+        const patternData = await getRelatedPatterns(session, graphName, patternID)
+        // const patternData = { nodes: [], links: [] }
+        const tcrData = await getTCRs(session, patternID)
+
+        // Combine pattern and TCR data, ensuring no duplicates
+        const nodesMap = new Map()
+        patternData.nodes.forEach(node => nodesMap.set(node.id, node))
+        tcrData.nodes.forEach(node => nodesMap.set(node.id, node))
+        //console.log(`Pattern 0 is ${JSON.stringify(patternData.nodes[0])}, TCR 0 is ${JSON.stringify(tcrData.nodes[0])}`)
+        const combinedNodes = Array.from(nodesMap.values())
+        const combinedLinks = [...(patternData?.links || []), ...tcrData.links]
+        return {
+          nodes: combinedNodes,
+          links: combinedLinks
+        }
+      } catch (error) {
+        console.error("patternTCRs error:", error)
+        throw new ApolloError('Failed to fetch TCRs for pattern', 'FETCH_FAILED')
+      } finally {
+        session.close()
+      }
+    },
   },
   Mutation: {
     importGliphResults: async (_parent, { runID, presignedURL }, { driver }) => {
