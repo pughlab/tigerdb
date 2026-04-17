@@ -52,7 +52,8 @@ export function findClusters(nodes: any[], links: any[], minClusterSize: number)
 
 export function findByPatternLength(nodes: any[], links: any[], patternLength: number) {
   const matchingPatternNodes = nodes.filter(
-    n => n.group === 'pattern' && n.value.length >= patternLength
+    // n => n.group === 'pattern' && n.value.length >= patternLength
+    n => n.value.length >= patternLength
   )
 
   const matchingPatternIds = new Set(matchingPatternNodes.map(n => n.id))

@@ -3,6 +3,7 @@ import ForceGraph3D from 'react-force-graph-3d'
 import ForceGraph2D from 'react-force-graph-2d'
 import { Segment, Loader, Dimmer, Header, Message, Icon, Button, ButtonGroup } from 'semantic-ui-react'
 import useGliphGraphQuery from '../../../../hooks/useGliphGraphQuery'
+import usePatternTCRQuery from '../../../../hooks/usePatternTCRQuery'
 import Legend from './Legend'
 import FilterControls from './FilterControls'
 
@@ -21,12 +22,16 @@ function GraphMode({ mode, updateMode }: Readonly<{ mode: '2D' | '3D'; updateMod
     <div style={{ position: 'absolute', bottom: 10, left: 10, color: 'white', zIndex: 1, display: 'flex', alignItems: 'center' }}>
       <Header as='h4' inverted style={{ marginRight: '10px', marginTop: '10px' }}>View graph in</Header>
       <ButtonGroup>
-      <Button attached='top' color={mode === '3D' ? 'teal' : 'grey'} size='medium' icon='eye' content='3D' onClick={() => updateMode('3D')} />
-      <Button.Or />
-      <Button attached='top' color={mode === '2D' ? 'teal' : 'grey'} size='medium' icon='eye' content='2D' onClick={() => updateMode('2D')} />
+        <Button attached='top' color={mode === '3D' ? 'teal' : 'grey'} size='medium' icon='eye' content='3D' onClick={() => updateMode('3D')} />
+        <Button.Or />
+        <Button attached='top' color={mode === '2D' ? 'teal' : 'grey'} size='medium' icon='eye' content='2D' onClick={() => updateMode('2D')} />
       </ButtonGroup>
     </div>
   )
+}
+
+function getLinkId(l: any) {
+  return `${l.source?.id ?? l.source}-${l.target?.id ?? l.target}`;
 }
 
 export default function GliphGraph({ 
@@ -46,6 +51,7 @@ export default function GliphGraph({
 
   const fgRef = useRef<any>()
   const { data, loading, error, refetch } = useGliphGraphQuery({ runID })
+  const { getPatternTCRs } = usePatternTCRQuery()
   
   const [graphData, setGraphData] = useState<{ nodes: any[], links: any[] }>({ nodes: [], links: [] })
   const [hasData, setHasData] = useState(hasGliphResults)
@@ -62,6 +68,57 @@ export default function GliphGraph({
       }
       return newSet
     })
+  }
+
+  const removePatternLinksAndNodes = (prev: any, newLinkKeys: Set<string>, patternID: string) => {
+    const remainingLinks = prev.links.filter((pl: any) => !newLinkKeys.has(getLinkId(pl)));
+    const connectedNodeIds = new Set();
+    
+    remainingLinks.forEach((l: any) => {
+      connectedNodeIds.add(l.source?.id ?? l.source);
+      connectedNodeIds.add(l.target?.id ?? l.target);
+    });
+
+    const baseNodeIds = new Set(data?.nodes?.map((n: any) => n.id) || []);
+    return {
+      nodes: prev.nodes.filter((n: any) => n.id === patternID || baseNodeIds.has(n.id) || connectedNodeIds.has(n.id)),
+      links: remainingLinks
+    };
+  };
+
+  const addPatternLinksAndNodes = (prev: any, newNodes: any[], newLinks: any[]) => {
+    const linkMap = new Map();
+    const nodeMap = new Map();
+    
+    prev.nodes.forEach((n: any) => nodeMap.set(n.id, n));
+    newNodes.forEach((n: any) => {
+      if (!nodeMap.has(n.id)) nodeMap.set(n.id, { ...n });
+    });
+
+    [...prev.links, ...newLinks].forEach((l: any) => {
+      const key = getLinkId(l);
+      if (!linkMap.has(key)) linkMap.set(key, { ...l });
+    });
+
+    return {
+      nodes: Array.from(nodeMap.values()),
+      links: Array.from(linkMap.values())
+    };
+  };
+
+  const toggleTCRsForPattern = async (patternID: string) => {
+    const result = await getPatternTCRs({ variables: { runID, patternID } });
+    const { nodes: newNodes = [], links: newLinks = [] } = result.data?.patternTCRs || {};
+
+    setGraphData(prev => {
+      const newLinkKeys = new Set(newLinks.map(getLinkId));
+      const prevLinkKeys = new Set(prev.links.map(getLinkId));
+      const hasAllLinks = newLinks.length > 0 && newLinks.every((l: any) => prevLinkKeys.has(getLinkId(l)));
+
+      return hasAllLinks 
+        ? removePatternLinksAndNodes(prev, newLinkKeys, patternID)
+        : addPatternLinksAndNodes(prev, newNodes, newLinks);
+    });
   }
 
   useEffect(() => {
@@ -113,46 +170,46 @@ export default function GliphGraph({
       <h2 style={{ position: 'absolute', top: 10, left: 10, color: 'white', zIndex: 1 }}>GLIPH Graph</h2>
       <GraphMode mode={mode} updateMode={setMode} />
       <FilterControls data={data} hiddenSources={hiddenSources} updateGraphData={setGraphData} />
-      <Legend nodes={data.nodes} hiddenSources={hiddenSources} toggleSource={toggleSource} />
+      {/*<Legend nodes={graphData.nodes} hiddenSources={hiddenSources} toggleSource={toggleSource} />*/}
       {mode === '3D' ? (<ForceGraph3D
         ref={fgRef}
         graphData={graphData}
-        nodeLabel={(node: any) => {
-            return node.group === 'pattern' 
-              ? `Pattern: ${node.value} (Score: ${formatNumber(node.score)}, Size: ${node.size})`
-              : `TCR: ${node.value} (${node.v_gene}, ${node.j_gene}), Source: ${node.source}`
-        }}
+        // nodeLabel={(node: any) => {
+        //     return node.group === 'pattern' 
+        //       ? `Pattern: ${node.value} (Score: ${formatNumber(node.score)}, Size: ${node.size})`
+        //       : `TCR: ${node.value} (${node.v_gene}, ${node.j_gene}), Source: ${node.source}`
+        // }}
+        nodeLabel={node => node.label}
         nodeAutoColorBy="group"
         // warmupTicks={100}
         linkDirectionalParticles={0} // Dots moving along links
         nodeOpacity={0.8}
         linkOpacity={0.5}
         nodeRelSize={5}
-        nodeVal={node => node.group === 'pattern' ? (node.size || 5) : 1}
+        // nodeVal={node => node.group === 'pattern' ? (node.size || 5) : 1}
+        //nodeVal={node => node.value}
         cooldownTicks={50}
         forceEngine='d3'
         linkWidth={1}
         width={globalThis.innerWidth}
         height={globalThis.innerHeight * 0.6}
+        onNodeClick={node => toggleTCRsForPattern(node.value)}
       />) : (<ForceGraph2D
         ref={fgRef}
         graphData={graphData}
         backgroundColor={'#000011'}
         linkColor={() => '#cccccc'}
-        nodeLabel={(node: any) => {
-            return node.group === 'pattern' 
-              ? `Pattern: ${node.value} (Score: ${formatNumber(node.score)}, Size: ${node.size})`
-              : `TCR: ${node.value} (${node.v_gene}, ${node.j_gene}), Source: ${node.source}`
-        }}
+        nodeLabel={node => node.label}
         nodeAutoColorBy="group"
         // warmupTicks={100}
         linkDirectionalParticles={0} // Dots moving along links
         nodeRelSize={5}
-        nodeVal={node => node.group === 'pattern' ? (node.size || 5) : 1}
+        //nodeVal={node => node.value}
         cooldownTicks={50}
         linkWidth={1}
         width={globalThis.innerWidth}
         height={globalThis.innerHeight * 0.6}
+        onNodeClick={node => toggleTCRsForPattern(node.value)}
       />)}
     </div>
   )

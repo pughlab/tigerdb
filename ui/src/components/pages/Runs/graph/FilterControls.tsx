@@ -4,7 +4,7 @@ import { findByNumberOfConnections, findByPatternContains, findByPatternLength, 
 
 const DEFAULT_CLUSTER_SIZE = 5
 const DEFAULT_PATTERN_LENGTH = 5
-const DEFAULT_NUMBER_OF_CONNECTIONS = 10
+const DEFAULT_NUMBER_OF_CONNECTIONS = 4
 
 export default function FilterControls({ data, hiddenSources, updateGraphData }: Readonly<{ data: { nodes: any[], links: any[] }, hiddenSources: Set<string | null>, updateGraphData: (data: { nodes: any[], links: any[] }) => void }>) {
   const [minClusterSize, setMinClusterSize] = useState(DEFAULT_CLUSTER_SIZE)
