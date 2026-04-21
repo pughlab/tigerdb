@@ -122,7 +122,7 @@ async function getRelatedPatterns(session, graphName, patternID = '', limit = 0)
         type: 'pattern',
         value: sourceType,
         group: communityId,
-        label: `Pattern: ${sourcePattern} (Score: ${sourceScore}, Size: ${sourceSize})`,
+        label: `Pattern: ${sourcePattern} (Score: ${sourceScore}, Size: ${sourceSize}, Community: ${communityId})`,
         size: sourceSize
       })
     }
@@ -132,7 +132,7 @@ async function getRelatedPatterns(session, graphName, patternID = '', limit = 0)
         type: 'pattern',
         value: targetType,
         group: communityId,
-        label: `Pattern: ${targetPattern} (Score: ${targetScore}, Size: ${targetSize})`,
+        label: `Pattern: ${targetPattern} (Score: ${targetScore}, Size: ${targetSize}, Community: ${communityId})`,
         size: targetSize
       })
     }
