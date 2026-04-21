@@ -6,14 +6,14 @@ const DEFAULT_CLUSTER_SIZE = 5
 const DEFAULT_PATTERN_LENGTH = 5
 const DEFAULT_NUMBER_OF_CONNECTIONS = 4
 
-export default function FilterControls({ data, hiddenSources, updateGraphData }: Readonly<{ data: { nodes: any[], links: any[] }, hiddenSources: Set<string | null>, updateGraphData: (data: { nodes: any[], links: any[] }) => void }>) {
+export default function FilterControls({ data, hiddenGroups, updateGraphData }: Readonly<{ data: { nodes: any[], links: any[] }, hiddenGroups: Set<string | null>, updateGraphData: (data: { nodes: any[], links: any[] }) => void }>) {
   const [minClusterSize, setMinClusterSize] = useState(DEFAULT_CLUSTER_SIZE)
   const [patternLength, setPatternLength] = useState(DEFAULT_PATTERN_LENGTH)
   const [numberOfConnections, setNumberOfConnections] = useState(DEFAULT_NUMBER_OF_CONNECTIONS)
   const [patternContains, setPatternContains] = useState('')
 
   useEffect(() => {
-    let filteredNodes = data.nodes.filter(n => !hiddenSources.has(n.source || null))
+    let filteredNodes = data.nodes.filter(n => !hiddenGroups.has(n.group || null))
     const validNodeIds = new Set(filteredNodes.map(n => n.id))
     let filteredLinks = data.links.filter(l => {
       const sourceId = typeof l.source === 'object' ? l.source.id : l.source
@@ -37,7 +37,7 @@ export default function FilterControls({ data, hiddenSources, updateGraphData }:
       patternContains
     )
     updateGraphData(dataWithPatternContains)
-  }, [minClusterSize, patternLength, numberOfConnections, patternContains, data, hiddenSources])
+  }, [minClusterSize, patternLength, numberOfConnections, patternContains, data, hiddenGroups])
 
   return (
     <div style={{ position: 'absolute', top: 10, right: 10, zIndex: 1, backgroundColor: 'rgba(255,255,255,0.8)', padding: '10px', borderRadius: '6px' }}>

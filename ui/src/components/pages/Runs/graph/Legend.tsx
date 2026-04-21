@@ -1,53 +1,29 @@
 import React from 'react'
 import { Header } from "semantic-ui-react"
 
-export default function Legend({ nodes, hiddenSources, toggleSource }: Readonly<{ nodes: any[], hiddenSources: Set<string | null>, toggleSource: (source: string | null) => void }>) {
-  const colors: { [key: string]: string } = {
-    'Pattern': '#ffffff',
-    default: '#1f77b4',
-    'Human': '#ff0000',
-    'S-pneumoniae': '#06c739',
-    'ChlamydiaTrachomatis': '#32a852',
-    'M.tuberculosis': '#199139',
-    'EnterobacteriaceaeBacterium': '#265c34',
-    'SalmonellaTyphimurium': '#033611',
-    'CEF': '#FFF9C4',
-    'CMV': '#FFF176',
-    'EBV': '#FFEB3B',
-    'Influenza': '#FDD835',
-    'DENV': '#FBC02D',
-    'HBV': '#FDD835',
-    'HCV': '#FFD600',
-    'HPV': '#FBC02D',
-    'HSV': '#FFC107',
-    'HTLV1': '#FFB300',
-    'MCPyV': '#EAB308',
-    'YFV': '#CA8A04'
-  }
-  const predefinedOrder = Object.keys(colors)
-  const sources = Array
-    .from(new Set(nodes.map(n => n.source)
-      .filter(Boolean)))
-    .sort((a, b) => predefinedOrder.indexOf(a) - predefinedOrder.indexOf(b))
+export default function Legend({ nodes, colorScale, hiddenGroups, toggleGroup }: Readonly<{ nodes: any[], colorScale: any, hiddenGroups: Set<string | null>, toggleGroup: (group: string) => void }>) {
+  const groups = Array
+    .from(new Set(nodes.filter(n => n.group !== "0").map(n => n.group)))
+    .sort((a, b) => a - b)
   return (
     <div style={{ position: 'absolute', top: 50, left: 10, zIndex: 1, backgroundColor: 'rgba(255,255,255,0.8)', padding: '10px', borderRadius: '6px' }}>
       <Header as='h4'>Legend</Header>
-      {[null, ...sources].map((source) => {
-        const color = source ? (colors[source] || colors['default']) : colors['Pattern']
+      {[...groups].map((group) => {
+        const color = colorScale(group) || "#ffffff"
         return (
           <div
-            key={source ?? 'pattern'}
+            key={group}
             style={{
               display: 'flex',
               alignItems: 'center',
               marginBottom: '5px',
               cursor: 'pointer',
-              opacity: hiddenSources.has(source) ? 0.3 : 1
+              opacity: hiddenGroups.has(group) ? 0.3 : 1
             }}
-            onClick={() => toggleSource(source)}
+            onClick={() => toggleGroup(group)}
           >
             <div style={{ width: '20px', height: '20px', backgroundColor: color, marginRight: '10px', borderRadius: '50%' }}></div>
-            <span>{source ?? 'Pattern'}</span>
+            <span>Community {group}</span>
           </div>
         )
       })}

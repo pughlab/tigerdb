@@ -10,6 +10,7 @@ export default function usePatternTCRQuery() {
           value
           color
           label
+          group
         }
         links {
           source
