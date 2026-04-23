@@ -1,10 +1,13 @@
 import { ApolloError } from 'apollo-server'
+import neo4j from "neo4j-driver";
 
-const toNumber = (num) => {
-  if (num?.toNumber) {
-    return num.toNumber()
-  }
-  return num
+type PatternParameters = {
+  patternID: string;
+  limit: number;
+  theta: number;
+  gamma: number;
+  minCommunitySize: number,
+  maxLevels: number
 }
 
 const colors = {
@@ -71,12 +74,32 @@ async function projectGraph(graphName: string, runID: any, session: any, pattern
   )
 }
 
-async function getRelatedPatterns(session, graphName, patternID = '', limit = 0) {
+async function getRelatedPatterns(session, graphName, parameters= {
+  patternID: '',
+  limit: 0,
+  theta: 0.01,
+  gamma: 0.2,
+  minCommunitySize: 0,
+  maxLevels: 20
+} as PatternParameters) {
+  const defaultParameters = {
+    patternID: '',
+    limit: 0,
+    theta: 0.01,
+    gamma: 0.2,
+    minCommunitySize: 0,
+    maxLevels: 20
+  }
+  const { patternID, limit, theta, gamma, minCommunitySize, maxLevels } = {...defaultParameters, ...parameters }
   const result = await session.run(
     `CALL gds.leiden.stream(
       $graphName,
       {
-        relationshipWeightProperty: 'weight'
+        relationshipWeightProperty: 'weight',
+        theta: $theta,
+        gamma: $gamma,
+        ${minCommunitySize > 0 ? 'minCommunitySize: $minCommunitySize,' : ''}
+        maxLevels: $maxLevels
       }
     )
     YIELD nodeId, communityId
@@ -98,7 +121,7 @@ async function getRelatedPatterns(session, graphName, patternID = '', limit = 0)
       p2.score AS targetScore
       // add more properties for both source and target as needed
     ${limit > 0 ? 'LIMIT toInteger($limit)' : ''}
-    `, { graphName, patternID, limit }
+    `, { graphName, patternID, limit, theta, gamma, minCommunitySize: neo4j.int(minCommunitySize), maxLevels: neo4j.int(maxLevels) }
   )
   const nodes = new Map()
   const links: { source: number, target: number, weight: number }[] = []
@@ -193,7 +216,7 @@ export const resolvers = {
         const graphName = `run-${runID}-graph`
         await dropGraph(session, graphName)
         await projectGraph(graphName, runID, session, patternContains, patternLength, numberOfConnections)
-        return await getRelatedPatterns(session, graphName, '', 1000)
+        return await getRelatedPatterns(session, graphName, { limit: 0 } as PatternParameters)
       } catch (error) {
         console.error("gliphGraph error:", error)
         throw new ApolloError('Failed to fetch GLIPH graph', 'FETCH_FAILED')
@@ -205,8 +228,7 @@ export const resolvers = {
       const session = driver.session()
       try {
         const graphName = `run-${runID}-graph`
-        const patternData = await getRelatedPatterns(session, graphName, patternID)
-        // const patternData = { nodes: [], links: [] }
+        const patternData = await getRelatedPatterns(session, graphName, { patternID } as PatternParameters)
         const tcrData = await getTCRs(session, patternID)
 
         // Combine pattern and TCR data, ensuring no duplicates
@@ -304,19 +326,6 @@ export const resolvers = {
           SET rel.weight = 2 * n
         `;
         await session.run(edgeQueryTCR, { runID });
-
-        // // 2. Shared Motif (Substring, minimum length 4. Weight: 1 if no shared TCRs)
-        // const edgeQueryMotif = `
-        //   MATCH (r:Run {runID: $runID})-[:HAS_RESULT]->(p1:GliphPattern)
-        //   MATCH (r:Run {runID: $runID})-[:HAS_RESULT]->(p2:GliphPattern)
-        //   WHERE id(p1) < id(p2)
-        //     AND p1.pattern IS NOT NULL AND p2.pattern IS NOT NULL
-        //     AND size(p1.pattern) >= 4 AND size(p2.pattern) >= 4
-        //     AND (p1.pattern CONTAINS p2.pattern OR p2.pattern CONTAINS p1.pattern)
-        //   MERGE (p1)-[rel:RELATED_TO]-(p2)
-        //   ON CREATE SET rel.weight = 1
-        // `;
-        // await session.run(edgeQueryMotif, { runID });
 
         // Check result summary if needed
         const summary = result.records[0].get(0);
