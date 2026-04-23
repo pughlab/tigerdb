@@ -6,18 +6,15 @@ export const GET_GLIPH_GRAPH = gql`
       nodes {
         id
         group
-        score
         size
-        sample
+        label
         value
-        v_gene
-        j_gene
         color
-        source
       }
       links {
         source
         target
+        weight
       }
     }
   }
