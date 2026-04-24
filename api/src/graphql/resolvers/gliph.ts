@@ -288,20 +288,13 @@ export const resolvers = {
                 t.sample = sample,
                 t.source = split(sample, ":")[0]
 
-             // Create/Merge Pattern Node
-             MERGE (p:GliphPattern {id: clusterId})
-             ON CREATE SET
-                p.pattern = patternSeq,
-                p.score = toFloat(score),
-                p.size = toInteger(size)
-
-             // Link Run to Pattern
-             WITH t, p
+             WITH t, clusterId
              MATCH (r:Run {runID: $runID})
-             MERGE (r)-[:HAS_RESULT]->(p)
+             MERGE (r)-[:HAS_RESULT]->(t)
              
-             // Link TCR to Pattern
-             MERGE (t)-[:HAS_PATTERN]->(p)
+             // Temporarily link to a cluster node to build TCR-TCR relationships afterwards
+             MERGE (c:TempCluster {id: clusterId})
+             MERGE (t)-[:TEMP_IN_CLUSTER]->(c)
             ',
             { 
               batchSize: 5000, 
@@ -315,17 +308,19 @@ export const resolvers = {
 
         const result = await session.run(query, { presignedURL, runID });
         
-        console.log(`Creating RELATED_TO edges between patterns for Run ${runID}`);
+        console.log(`Creating RELATED_TO edges between TCRs for Run ${runID}`);
         
-        // 1. Shared TCRs (Weight: 2n)
+        // Group TCRs by cluster, link them, then clean up temp nodes
         const edgeQueryTCR = `
-          MATCH (r:Run {runID: $runID})-[:HAS_RESULT]->(p1:GliphPattern)<-[:HAS_PATTERN]-(t:GliphTCR)-[:HAS_PATTERN]->(p2:GliphPattern)<-[:HAS_RESULT]-(r)
-          WHERE id(p1) < id(p2)
-          WITH p1, p2, count(t) AS n
-          MERGE (p1)-[rel:RELATED_TO]-(p2)
-          SET rel.weight = 2 * n
+          MATCH (t1:GliphTCR)-[:TEMP_IN_CLUSTER]->(c:TempCluster)<-[:TEMP_IN_CLUSTER]-(t2:GliphTCR)
+          WHERE id(t1) < id(t2)
+          CALL apoc.create.relationship(t1, c.id, {}, t2) YIELD rel
+          RETURN count(rel)
         `;
         await session.run(edgeQueryTCR, { runID });
+
+        const cleanupQuery = `MATCH (c:TempCluster) DETACH DELETE c`;
+        await session.run(cleanupQuery);
 
         // Check result summary if needed
         const summary = result.records[0].get(0);
