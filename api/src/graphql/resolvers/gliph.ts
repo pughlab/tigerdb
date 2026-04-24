@@ -314,7 +314,9 @@ export const resolvers = {
         const edgeQueryTCR = `
           MATCH (t1:GliphTCR)-[:TEMP_IN_CLUSTER]->(c:TempCluster)<-[:TEMP_IN_CLUSTER]-(t2:GliphTCR)
           WHERE id(t1) < id(t2)
-          CALL apoc.create.relationship(t1, c.id, {}, t2) YIELD rel
+          WITH t1, t2, collect(DISTINCT c.id) AS clusterIDs
+          MERGE (t1)-[rel:RELATED_TO]-(t2)
+          SET rel.clusterIDs = clusterIDs
           RETURN count(rel)
         `;
         await session.run(edgeQueryTCR, { runID });
