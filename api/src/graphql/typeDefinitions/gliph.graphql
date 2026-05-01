@@ -5,20 +5,11 @@ type GliphTCR {
     j_gene: String
     sample: String
     source: String
-    patterns: [GliphPattern!]! @relationship(type: "HAS_PATTERN", direction: OUT)
-}
-
-type GliphPattern {
-    id: ID! @id
-    pattern: String
-    score: Float
-    size: Int
-    tcrs: [GliphTCR!]! @relationship(type: "HAS_PATTERN", direction: IN)
     run: Run! @relationship(type: "HAS_RESULT", direction: IN)
 }
 
 extend type Run {
-    gliphPatterns: [GliphPattern!]! @relationship(type: "HAS_RESULT", direction: OUT)
+    gliphTCRs: [GliphTCR!]! @relationship(type: "HAS_RESULT", direction: OUT)
 }
 
 type GliphNode {
@@ -28,6 +19,7 @@ type GliphNode {
     label: String
     size: Int
     color: String
+    source: String
 }
 
 type GliphLink {
@@ -41,9 +33,15 @@ type GliphGraph {
     links: [GliphLink!]!
 }
 
+input GliphGraphInput {
+    runID: ID!
+    minCommunitySize: Int,
+    cdr3bContains: String,
+    minDegree: Int,
+}
+
 type Query {
-    gliphGraph(runID: ID!, patternLength: Int = 5, numberOfConnections: Int = 10, patternContains: String = ""): GliphGraph
-    patternTCRs(runID: ID!, patternID: ID!): GliphGraph
+    gliphGraph(input: GliphGraphInput!): GliphGraph
 }
 
 type Mutation {

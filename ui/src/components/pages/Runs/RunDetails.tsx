@@ -433,7 +433,7 @@ export default function RunDetails() {
           status={status} 
           presignedURL={presignedURL} 
           runID={runID || ''} 
-          hasGliphResults={run?.gliphPatternsAggregate?.count > 0}
+          hasGliphResults={run?.gliphTCRsAggregate?.count > 0}
           importGliph={importGliph}
           importLoading={importLoading}
         />

@@ -3,7 +3,6 @@ import ForceGraph3D from 'react-force-graph-3d'
 import ForceGraph2D from 'react-force-graph-2d'
 import { Segment, Loader, Dimmer, Header, Message, Icon, Button, ButtonGroup } from 'semantic-ui-react'
 import useGliphGraphQuery from '../../../../hooks/useGliphGraphQuery'
-import usePatternTCRQuery from '../../../../hooks/usePatternTCRQuery'
 import Legend from './Legend'
 import FilterControls from './FilterControls'
 import { scaleOrdinal } from 'd3-scale'
@@ -24,8 +23,17 @@ function GraphMode({ mode, updateMode }: Readonly<{ mode: '2D' | '3D'; updateMod
   )
 }
 
-function getLinkId(l: any) {
-  return `${l.source?.id ?? l.source}-${l.target?.id ?? l.target}`;
+function ColorSettings({ colorMode, updateColorMode }) {
+  return (
+    <div style={{ position: 'absolute', top: 40, left: 10, color: 'white', zIndex: 1, display: 'flex', alignItems: 'center' }}>
+      <Header as='h4' inverted style={{ marginRight: '10px', marginTop: '10px' }}>Color by</Header>
+      <ButtonGroup size={"small"}>
+        <Button attached='top' color={colorMode === 'source' ? 'teal' : 'grey'} size='medium' content='Source' onClick={() => updateColorMode('source')} />
+        <Button.Or />
+        <Button attached='top' color={colorMode === 'community' ? 'teal' : 'grey'} size='medium' content='Community' onClick={() => updateColorMode('community')} />
+      </ButtonGroup>
+    </div>
+  )
 }
 
 export default function GliphGraph({ 
@@ -44,13 +52,12 @@ export default function GliphGraph({
   
 
   const fgRef = useRef<any>()
-  const { data, loading, error, refetch } = useGliphGraphQuery({ runID })
-  const { getPatternTCRs } = usePatternTCRQuery()
-  
+  const { data, loading, error, refetch } = useGliphGraphQuery({ input: { runID } })
   const [graphData, setGraphData] = useState<{ nodes: any[], links: any[] }>({ nodes: [], links: [] })
   const [hasData, setHasData] = useState(hasGliphResults)
   const [hiddenGroups, setHiddenGroups] = useState<Set<string | null>>(new Set())
   const [mode, setMode] = useState<'2D' | '3D'>('3D')
+  const [colorMode, setColorMode] = useState<'source' | 'community'>('source')
 
   const toggleGroup = (group: string | null) => {
     setHiddenGroups(prev => {
@@ -64,56 +71,25 @@ export default function GliphGraph({
     })
   }
 
-  const removePatternLinksAndNodes = (prev: any, newLinkKeys: Set<string>, patternID: string) => {
-    const remainingLinks = prev.links.filter((pl: any) => !newLinkKeys.has(getLinkId(pl)));
-    const connectedNodeIds = new Set();
-    
-    remainingLinks.forEach((l: any) => {
-      connectedNodeIds.add(l.source?.id ?? l.source);
-      connectedNodeIds.add(l.target?.id ?? l.target);
+  useEffect(() => {
+    if (data?.nodes && data?.links) {
+      setGraphData({
+        nodes: data.nodes.map((n: any) => ({ ...n })),
+        links: data.links.map((l: any) => ({ ...l })),
+      })
+    }
+  }, [data]);
+
+  useEffect(() => {
+    const { nodes, links } = data || { nodes: [], links: [] };
+    const filteredNodes = nodes.filter((n: any) => !hiddenGroups.has(n.group));
+    const filteredNodeIDs = new Set(filteredNodes.map((n: any) => n.id));
+    const filteredLinks = links.filter((l: any) => filteredNodeIDs.has(l.source) && filteredNodeIDs.has(l.target));
+    setGraphData({
+      nodes: filteredNodes.map((n: any) => ({ ...n })),
+      links: filteredLinks.map((l: any) => ({ ...l }))
     });
-
-    const baseNodeIds = new Set(data?.nodes?.map((n: any) => n.id) || []);
-    return {
-      nodes: prev.nodes.filter((n: any) => n.id === patternID || baseNodeIds.has(n.id) || connectedNodeIds.has(n.id)),
-      links: remainingLinks
-    };
-  };
-
-  const addPatternLinksAndNodes = (prev: any, newNodes: any[], newLinks: any[]) => {
-    const linkMap = new Map();
-    const nodeMap = new Map();
-    
-    prev.nodes.forEach((n: any) => nodeMap.set(n.id, n));
-    newNodes.forEach((n: any) => {
-      if (!nodeMap.has(n.id)) nodeMap.set(n.id, { ...n });
-    });
-
-    [...prev.links, ...newLinks].forEach((l: any) => {
-      const key = getLinkId(l);
-      if (!linkMap.has(key)) linkMap.set(key, { ...l });
-    });
-
-    return {
-      nodes: Array.from(nodeMap.values()),
-      links: Array.from(linkMap.values())
-    };
-  };
-
-  const toggleTCRsForPattern = async (patternID: string) => {
-    const result = await getPatternTCRs({ variables: { runID, patternID } });
-    const { nodes: newNodes = [], links: newLinks = [] } = result.data?.patternTCRs || {};
-
-    setGraphData(prev => {
-      const newLinkKeys = new Set(newLinks.map(getLinkId));
-      const prevLinkKeys = new Set(prev.links.map(getLinkId));
-      const hasAllLinks = newLinks.length > 0 && newLinks.every((l: any) => prevLinkKeys.has(getLinkId(l)));
-
-      return hasAllLinks 
-        ? removePatternLinksAndNodes(prev, newLinkKeys, patternID)
-        : addPatternLinksAndNodes(prev, newNodes, newLinks);
-    });
-  }
+  }, [hiddenGroups]);
 
   useEffect(() => {
     // Zoom to fit on load
@@ -122,8 +98,27 @@ export default function GliphGraph({
     }
   }, [graphData])
 
+  useEffect(() => {
+    // When switching to 3D, nodes that were simulated in 2D might have flattened perfectly to a 2D plane (z = undefined or z = 0).
+    // D3's 3D force physics won't push them into the Z axis if they are all starting perfectly flat on z=0.
+    // So we apply a tiny Z perturbation to allow expanding spherically in 3D.
+    if (mode === '3D') {
+      let needsReheat = false;
+      graphData.nodes.forEach(n => {
+        if (!n.z) {
+          n.z = (Math.random() - 0.5) * 20;
+          needsReheat = true;
+        }
+      });
+      if (needsReheat && fgRef.current) {
+        fgRef.current.d3ReheatSimulation();
+      }
+    }
+  }, [mode, graphData.nodes]);
+
   const totalNodes = useMemo(() => {
-    const nodes = new Map([...data?.nodes || [], ...graphData.nodes].map((n: any) => [n.id, n]))
+    const baseNodes = data?.nodes || [];
+    const nodes = new Map([...baseNodes, ...graphData.nodes].map((n: any) => [String(n.id), n]))
     return Array.from(nodes.values())
   }, [data, graphData])
 
@@ -168,49 +163,40 @@ export default function GliphGraph({
     <div style={{ border: '1px solid #ddd', borderRadius: '6px', overflow: 'hidden', position: 'relative' }}>
       <h2 style={{ position: 'absolute', top: 10, left: 10, color: 'white', zIndex: 1 }}>GLIPH Graph</h2>
       <GraphMode mode={mode} updateMode={setMode} />
-      <FilterControls data={data} hiddenGroups={hiddenGroups} updateGraphData={setGraphData} />
-      <Legend nodes={totalNodes} colorScale={colorScale} hiddenGroups={hiddenGroups} toggleGroup={toggleGroup} />
+      <ColorSettings colorMode={colorMode} updateColorMode={setColorMode} />
+      {/*<FilterControls refetchGraph={(filters) => refetch({*/}
+      {/*  input: {*/}
+      {/*    runID,*/}
+      {/*    ...filters*/}
+      {/*  }*/}
+      {/*})} />*/}
+      <Legend mode={colorMode} nodes={totalNodes} colorScale={colorScale} hiddenGroups={hiddenGroups} toggleGroup={toggleGroup} />
       {mode === '3D' ? (<ForceGraph3D
         ref={fgRef}
         graphData={graphData}
-        // nodeLabel={(node: any) => {
-        //     return node.group === 'pattern' 
-        //       ? `Pattern: ${node.value} (Score: ${formatNumber(node.score)}, Size: ${node.size})`
-        //       : `TCR: ${node.value} (${node.v_gene}, ${node.j_gene}), Source: ${node.source}`
-        // }}
-        nodeLabel={node => node.label}
-        nodeColor={node => node.color ?? (colorScale(node.group) || "#ffffff")}
-        //nodeAutoColorBy="group"
-        // warmupTicks={100}
-        linkDirectionalParticles={0} // Dots moving along links
+        nodeLabel={(node: any) => `ID: ${node.id}<br />CDR3b: ${node.label}<br />Community: ${node.group}<br />Source: ${node.source}`}
+        nodeColor={(node: any) => colorMode === 'source' ? node.color : (colorScale(node.group) || "#ffffff")}
+        linkDirectionalParticles={0}
         nodeOpacity={0.8}
         linkOpacity={0.5}
         nodeRelSize={5}
-        // nodeVal={node => node.group === 'pattern' ? (node.size || 5) : 1}
-        //nodeVal={node => node.value}
         cooldownTicks={50}
-        forceEngine='d3'
         linkWidth={1}
         width={globalThis.innerWidth}
         height={globalThis.innerHeight * 0.6}
-        onNodeClick={node => toggleTCRsForPattern(node.value)}
       />) : (<ForceGraph2D
         ref={fgRef}
         graphData={graphData}
         backgroundColor={'#000011'}
         linkColor={() => '#cccccc'}
-        nodeLabel={node => node.label}
-        nodeColor={node => node.color ?? (colorScale(node.group) || "#ffffff")}
-        //nodeAutoColorBy="group"
-        // warmupTicks={100}
-        linkDirectionalParticles={0} // Dots moving along links
+        nodeLabel={(node: any) => `ID: ${node.id}<br />CDR3b: ${node.label}<br />Community: ${node.group}<br />Source: ${node.source}`}
+        nodeColor={(node: any) => colorMode === 'source' ? node.color : (colorScale(node.group) || "#ffffff")}
+        linkDirectionalParticles={0}
         nodeRelSize={5}
-        //nodeVal={node => node.value}
         cooldownTicks={50}
         linkWidth={1}
         width={globalThis.innerWidth}
         height={globalThis.innerHeight * 0.6}
-        onNodeClick={node => toggleTCRsForPattern(node.value)}
       />)}
     </div>
   )

@@ -29,7 +29,7 @@ export default function useRunDetailsQuery({ runID }: { runID: string }) {
 			referenceDatasetsAggregate{
 				count
 			}
-			gliphPatternsAggregate {
+			gliphTCRsAggregate {
 				count
 			}
 			referenceDatasets {

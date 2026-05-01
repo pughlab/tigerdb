@@ -1,12 +1,14 @@
 import { ApolloError } from 'apollo-server'
 import neo4j from "neo4j-driver";
 
-type PatternParameters = {
-  patternID: string;
+const MINIMUM_DEGREE = 3
+
+type TCRParameters = {
   limit: number;
   theta: number;
   gamma: number;
   minCommunitySize: number,
+  cdr3bContains: string,
   maxLevels: number
 }
 
@@ -45,206 +47,138 @@ async function dropGraph(session, graphName) {
   )
 }
 
-async function projectGraph(graphName: string, runID: any, session: any, patternContains: string, patternLength: number, numberOfConnections: number) {
+async function projectGraph(session: any, runID: any, graphName: string, minDegree: number) {
   console.log(`Creating graph projection ${graphName} for Run ${runID}`)
   await session.run(
-    `MATCH (run:Run { runID: $runID })-[:HAS_RESULT]->(source:GliphPattern)
-    MATCH (source)-[r:RELATED_TO]-(target:GliphPattern)
-    WHERE size(source.pattern) >= $patternLength AND size(target.pattern) >= $patternLength
-    ${patternContains.length > 0 ? 'AND (source.pattern CONTAINS $patternContains OR target.pattern CONTAINS $patternContains)' : ''}
-    OPTIONAL MATCH (source)-[:HAS_PATTERN]-(tcr:GliphTCR)
-    WHERE size((source)-[]-(tcr)) >= $numberOfConnections AND size((target)-[]-(tcr)) >= $numberOfConnections
-    // extra filtering clauses for TCRs go here
-    WITH gds.graph.project(
-      $graphName,
-      source,
-      target,
-      {
-        sourceNodeLabels: labels(source),
-        targetNodeLabels: labels(target),
-        relationshipType: type(r),
-        relationshipProperties: {
-          weight: r.weight
-        }
-      },
-      { undirectedRelationshipTypes: ['*'] }
-    ) AS g
-    RETURN g.graphName, g.nodeCount AS nodes, g.relationshipCount AS edges`,
-    { runID, graphName, patternLength, numberOfConnections, patternContains }
+    `MATCH (run:Run { runID: $runID })-[:HAS_RESULT]-(t1:GliphTCR),
+      (t1)-[:RELATED_TO]-(t2:GliphTCR),
+      (t1)-[:RELATED_TO]-(t3:GliphTCR),
+      (t1)-[:RELATED_TO]-(t4:GliphTCR),
+      (t2)-[:RELATED_TO]-(t3),
+      (t2)-[:RELATED_TO]-(t4),
+      (t3)-[:RELATED_TO]-(t4)
+      WHERE id(t1) < id(t2) AND id(t2) < id(t3) AND id(t3) < id(t4)
+      UNWIND [t1, t2, t3, t4] AS tcrNode
+      WITH DISTINCT tcrNode AS tcr
+      // WHERE size((tcr)-[:RELATED_TO]-()) >= $minDegree
+      WITH collect(tcr) AS cliqueNodes
+      UNWIND cliqueNodes AS source
+      MATCH (source)-[rel:RELATED_TO]-(target:GliphTCR)
+      WHERE target IN cliqueNodes AND id(source) < id(target)
+      WITH gds.graph.project(
+          $graphName,
+          source,
+          target,
+          {
+              sourceNodeLabels: labels(source),
+              targetNodeLabels: labels(target),
+              relationshipType: type(rel)
+          },
+          { undirectedRelationshipTypes: ['*'] }
+      ) AS g
+      RETURN g.graphName, g.nodeCount AS nodes, g.relationshipCount AS edges`,
+    { runID, graphName }
   )
 }
 
-async function getRelatedPatterns(session, graphName, parameters= {
-  patternID: '',
-  limit: 0,
-  theta: 0.01,
-  gamma: 0.2,
-  minCommunitySize: 0,
-  maxLevels: 20
-} as PatternParameters) {
+async function getGraph(session, graphName, parameters: TCRParameters) {
   const defaultParameters = {
-    patternID: '',
     limit: 0,
     theta: 0.01,
-    gamma: 0.2,
+    gamma: 1000,
     minCommunitySize: 0,
+    cdr3bContains: '',
     maxLevels: 20
   }
-  const { patternID, limit, theta, gamma, minCommunitySize, maxLevels } = {...defaultParameters, ...parameters }
+  const cleanParameters = Object.fromEntries(Object.entries(parameters).filter(([_, v]) => v !== undefined))
+  const { limit, theta, gamma, minCommunitySize, maxLevels, cdr3bContains } = {...defaultParameters, ...cleanParameters }
   const result = await session.run(
     `CALL gds.leiden.stream(
-      $graphName,
-      {
-        relationshipWeightProperty: 'weight',
-        theta: $theta,
-        gamma: $gamma,
-        ${minCommunitySize > 0 ? 'minCommunitySize: $minCommunitySize,' : ''}
-        maxLevels: $maxLevels
+          $graphName, {
+                theta: $theta,
+                gamma: $gamma,
+                ${minCommunitySize > 0 ? `minCommunitySize: $minCommunitySize,` : ''}
+                maxLevels: $maxLevels
+          }
+      )
+      YIELD nodeId, communityId
+      WITH gds.util.asNode(nodeId) AS tcr, communityId
+      WITH DISTINCT(tcr.cdr3b) as sourceCDR, communityId
+      MATCH (source:GliphTCR {cdr3b:sourceCDR})-[:RELATED_TO]-(target)
+      ${cdr3bContains?.length > 0 
+        ? `WHERE toLower(source.cdr3b) CONTAINS "${cdr3bContains.toLowerCase()}" OR toLower(target.cdr3b) CONTAINS "${cdr3bContains.toLowerCase()}"` 
+        : ''
       }
-    )
-    YIELD nodeId, communityId
-    WITH gds.util.asNode(nodeId) AS pattern, communityId
-    MATCH (pattern)-[r:RELATED_TO]-(p2)
-    ${patternID ? 'WHERE pattern.id = $patternID' : ''}
-    RETURN 
-      id(pattern) AS sourceID, 
-      id(p2) AS targetID, 
-      toInteger(r.weight) AS weight,
-      communityId,
-      pattern.id AS sourceType, 
-      p2.id AS targetType,
-      pattern.size AS sourceSize,
-      p2.size AS targetSize,
-      pattern.pattern AS sourcePattern,
-      p2.pattern AS targetPattern,
-      pattern.score AS sourceScore,
-      p2.score AS targetScore
-      // add more properties for both source and target as needed
-    ${limit > 0 ? 'LIMIT toInteger($limit)' : ''}
-    `, { graphName, patternID, limit, theta, gamma, minCommunitySize: neo4j.int(minCommunitySize), maxLevels: neo4j.int(maxLevels) }
+      RETURN source, target, communityId`,
+      { graphName, limit, theta, gamma, maxLevels: neo4j.int(maxLevels), minCommunitySize: neo4j.int(minCommunitySize) }
   )
   const nodes = new Map()
-  const links: { source: number, target: number, weight: number }[] = []
+  const links: { source: number, target: number }[] = []
   result.records.forEach(record => {
-    const sourceID = record.get('sourceID').toNumber()
-    const targetID = record.get('targetID').toNumber()
-    const weight = record.get('weight')
+    const source = record.get('source')
+    const target = record.get('target')
     const communityId = record.get('communityId').toNumber()
-    const sourceType = record.get('sourceType')
-    const targetType = record.get('targetType')
-    const sourcePattern = record.get('sourcePattern')
-    const targetPattern = record.get('targetPattern')
-    const sourceScore = record.get('sourceScore')
-    const targetScore = record.get('targetScore')
-    const sourceSize = record.get('sourceSize')?.toNumber() ?? 1
-    const targetSize = record.get('targetSize')?.toNumber() ?? 1
 
-    if (!nodes.has(sourceID)) {
-      nodes.set(sourceID, {
-        id: sourceID,
-        type: 'pattern',
-        value: sourceType,
+    if (!nodes.has(source.properties.id)) {
+      nodes.set(source.properties.id, {
+        id: source.properties.id,
         group: communityId,
-        label: `Pattern: ${sourcePattern} (Score: ${sourceScore}, Size: ${sourceSize}, Community: ${communityId})`,
-        size: sourceSize
+        label: source.properties.cdr3b,
+        source: source.properties.source,
+        color: colors.tcr[source.properties.source?.toLowerCase()] ?? colors.tcr.default
       })
     }
-    if (!nodes.has(targetID)) {
-      nodes.set(targetID, {
-        id: targetID,
-        type: 'pattern',
-        value: targetType,
+    if (!nodes.has(target.properties.id)) {
+      nodes.set(target.properties.id, {
+        id: target.properties.id,
         group: communityId,
-        label: `Pattern: ${targetPattern} (Score: ${targetScore}, Size: ${targetSize}, Community: ${communityId})`,
-        size: targetSize
+        label: target.properties.cdr3b,
+        source: target.properties.source,
+        color: colors.tcr[target.properties.source?.toLowerCase()] ?? colors.tcr.default
       })
     }
     links.push({
-      source: sourceID,
-      target: targetID,
-      weight
+      source: source.properties.id,
+      target: target.properties.id,
     })
   })
 
-  return {
-    nodes: Array.from(nodes.values()),
-    links
-  }
-}
+  const nodesArray = Array.from(nodes.values())
+  const linksArray = links
 
-async function getTCRs(session: any, patternID: any) {
-  const nodes = new Map()
-  const links: { source: number; target: number} [] = []
-  const result = await session.run(
-    `MATCH (p:GliphPattern {id: $patternID})-[:HAS_PATTERN]-(t:GliphTCR) return p, t`,
-    { patternID }
+  const degreeMap = new Map()
+  linksArray.forEach(link => {
+    degreeMap.set(link.source, (degreeMap.get(link.source) || 0) + 1)
+    degreeMap.set(link.target, (degreeMap.get(link.target) || 0) + 1)
+  })
+
+  const filteredNodes = nodesArray.filter(node => degreeMap.get(node.id) >= MINIMUM_DEGREE)
+  const validNodeIds = new Set(filteredNodes.map(n => n.id))
+
+  const filteredLinks = linksArray.filter(link =>
+    validNodeIds.has(link.source) && validNodeIds.has(link.target)
   )
 
-  console.log(`Fetched ${result.records.length} TCRs for pattern ${patternID}`)
-  result.records.forEach(record => {
-    const pattern = record.get('p')
-    const tcr = record.get('t')
-
-    if (!nodes.has(tcr.identity.toNumber())) {
-      nodes.set(tcr.identity.toNumber(), {
-        id: tcr.identity.toNumber(),
-        value: tcr.properties.cdr3b,
-        label: `TCR: ${tcr.properties.cdr3b} (${tcr.properties.v_gene}, ${tcr.properties.j_gene}), Source: ${tcr.properties.source}`,
-        group: 0,
-        color: colors.tcr[tcr.properties.source?.toLowerCase()] || colors.tcr.default,
-        size: 1,
-        type: 'tcr'
-      })
-    }
-    links.push({
-      source: pattern.identity.toNumber(),
-      target: tcr.identity.toNumber()
-    })
-  })
-  console.log(`Fetched ${nodes.size} TCR nodes and ${links.length} edges for pattern ${patternID}`)
   return {
-    nodes: Array.from(nodes.values()),
-    links
+    nodes: filteredNodes,
+    links: filteredLinks,
   }
 }
 
 export const resolvers = {
   Query: {
-    gliphGraph: async (_parent, { runID, patternLength = 5, numberOfConnections = 4, patternContains = '' }, { driver }) => {
+    gliphGraph: async (_parent, { input }, { driver }) => {
       const session = driver.session()
+      const { runID, minCommunitySize, cdr3bContains, minDegree } = input
       try {
         const graphName = `run-${runID}-graph`
         await dropGraph(session, graphName)
-        await projectGraph(graphName, runID, session, patternContains, patternLength, numberOfConnections)
-        return await getRelatedPatterns(session, graphName, { limit: 0 } as PatternParameters)
+        // await projectGraph(session, runID, graphName, minDegree)
+        await projectGraph(session, runID, graphName, MINIMUM_DEGREE)
+        return await getGraph(session, graphName, { minCommunitySize, cdr3bContains } as TCRParameters)
       } catch (error) {
         console.error("gliphGraph error:", error)
         throw new ApolloError('Failed to fetch GLIPH graph', 'FETCH_FAILED')
-      } finally {
-        session.close()
-      }
-    },
-    patternTCRs: async (_parent, { patternID, runID }, { driver }) => {
-      const session = driver.session()
-      try {
-        const graphName = `run-${runID}-graph`
-        const patternData = await getRelatedPatterns(session, graphName, { patternID } as PatternParameters)
-        const tcrData = await getTCRs(session, patternID)
-
-        // Combine pattern and TCR data, ensuring no duplicates
-        const nodesMap = new Map()
-        patternData.nodes.forEach(node => nodesMap.set(node.id, node))
-        tcrData.nodes.forEach(node => nodesMap.set(node.id, node))
-        //console.log(`Pattern 0 is ${JSON.stringify(patternData.nodes[0])}, TCR 0 is ${JSON.stringify(tcrData.nodes[0])}`)
-        const combinedNodes = Array.from(nodesMap.values())
-        const combinedLinks = [...(patternData?.links || []), ...tcrData.links]
-        return {
-          nodes: combinedNodes,
-          links: combinedLinks
-        }
-      } catch (error) {
-        console.error("patternTCRs error:", error)
-        throw new ApolloError('Failed to fetch TCRs for pattern', 'FETCH_FAILED')
       } finally {
         session.close()
       }

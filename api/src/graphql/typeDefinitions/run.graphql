@@ -43,14 +43,13 @@ type Run {
     # project: Project! @relationship(type: "HAS_RUN", direction: IN)
     # minioUploads: [MinioUpload!]! @relationship(type: "HAS_RUN", direction: IN)
     processedDatasets: [ProcessedDataset!]! @relationship(type: "HAS_RUN", direction: IN)
-    # TODO: Uncomment next line to enable reference datasets
     referenceDatasets: [MinioUpload!]! @relationship(type: "HAS_RUN", direction: IN)
     createdOn: DateTime! @timestamp(operations: [CREATE])
     submittedOn: String
     completedOn: DateTime
     status: RunStatus! @default(value: pending)   
     createdBy: KeycloakUser! @relationship(type: "CREATED_BY", direction: OUT)
-    gliphPatterns: [GliphPattern!]! @relationship(type: "HAS_RESULT", direction: OUT)
+    gliphTCRs: [GliphTCR!]! @relationship(type: "HAS_RESULT", direction: OUT)
     isPublic: Boolean
     # logs: String
     getRunData: String

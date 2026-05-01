@@ -1,8 +1,14 @@
 import { gql, useQuery } from '@apollo/client'
 
+type GliphGraphInput = {
+  runID: string,
+  minCommunitySize?: number,
+  cdr3bContains?: string
+}
+
 export const GET_GLIPH_GRAPH = gql`
-  query GetGliphGraph($runID: ID!) {
-    gliphGraph(runID: $runID) {
+  query GetGliphGraph($input: GliphGraphInput!) {
+    gliphGraph(input: $input) {
       nodes {
         id
         group
@@ -10,6 +16,7 @@ export const GET_GLIPH_GRAPH = gql`
         label
         value
         color
+        source
       }
       links {
         source
@@ -20,9 +27,10 @@ export const GET_GLIPH_GRAPH = gql`
   }
 `
 
-export default function useGliphGraphQuery({ runID }: { runID: string }) {
+export default function useGliphGraphQuery({ input }: {input: GliphGraphInput}) {
+  const { runID } = input
   const { data, loading, error, refetch } = useQuery(GET_GLIPH_GRAPH, {
-    variables: { runID },
+    variables: { input },
     skip: !runID
   })
 
