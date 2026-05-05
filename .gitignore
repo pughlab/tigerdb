@@ -15,6 +15,7 @@ api/src/funnel/inputs
 neo4j
 nginx/certs
 minio/data
+minio/data-old
 
 .vscode
 
@@ -25,3 +26,5 @@ minio/data
 
 wes/workflows
 wes/logs
+
+.nextflow*
