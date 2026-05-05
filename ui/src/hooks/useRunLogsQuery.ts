@@ -29,9 +29,9 @@ export default function useRunLogsQuery({ runID }: { runID: string }) {
 
   useEffect(() => {
 	if (!!data?.getRuns && data.getRuns.length > 0) {
-		const { logs: logsFromPolling } = data.getRuns[0].getRunData
-		console.log(data.getRuns[0].getRunData)
-		setLogs(data.getRuns[0].getRunData)
+        const runData = data.getRuns[0].getRunData;
+		console.log(runData);
+		setLogs(runData);
 	}
 }, [data])
 
