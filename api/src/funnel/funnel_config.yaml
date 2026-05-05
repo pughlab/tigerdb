@@ -1,0 +1,26 @@
+Worker:
+  WorkDir: "/Users/suluxan/Documents/pughlab/tigerdb/funnel-work"
+
+GenericS3:
+  - Disabled: false
+    Endpoint: "http://minio:9000"
+    Key: "minioadmin"
+    Secret: "minioadmin"
+
+LocalStorage:
+  # Whitelist of local directory paths which Funnel is allowed to access.
+  AllowedDirs:
+    - ./
+    - /opt/funnel/funnel
+    - /opt/funnel/service
+
+# AmazonS3:
+#   Disabled: true
+#   # The maximum number of times that a request will be retried for failures.
+#   MaxRetries: 10
+#   # AWS Access key ID
+#   Key: ""
+#   # AWS Secret Access Key
+#   Secret: ""
+
+Database: boltdb
