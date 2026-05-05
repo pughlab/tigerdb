@@ -138,9 +138,9 @@ export const createApolloServer = async () => {
       }
     },
     schema: schema,
-    dataSources: () => ({
-        wesAPI: new WesAPI(),
-    }),
+    // dataSources: () => ({
+    //     wesAPI: new WesAPI(),
+    // }),
     introspection: true,
     playground: true,
     uploads: false,
