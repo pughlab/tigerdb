@@ -1,6 +1,6 @@
 import { gql, useMutation, MutationResult } from "@apollo/client";
 import { useReducer, useCallback, useState } from "react"
-import {grapheneClient} from '../grapheneClient'
+// import {grapheneClient} from '../grapheneClient'
 
 
 export default function useSubmitRunMutation(): [
@@ -24,7 +24,7 @@ export default function useSubmitRunMutation(): [
             }
         }
     `, {
-        client: grapheneClient,
+        // client: grapheneClient,
         fetchPolicy: 'network-only',
         onCompleted: ({run}) => {
             if (!!run) {

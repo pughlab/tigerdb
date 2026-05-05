@@ -101,6 +101,117 @@ export const resolvers = {
     }
   },
   Mutation: {
+    submitRun: async (parent, { runID }, { ogm, minioClient }) => {
+      try {
+        const RunModel = ogm.model("Run");
+        const runs = await RunModel.find({
+          where: { runID },
+          selectionSet: `{
+            runID
+            wesID
+            status
+            runParameters {
+              outPrefix
+              localMinpValue
+              pDepth
+              globalConvergenceCutoff
+              simulationDepth
+              kmerMinDepth
+              localMinOVE
+              allAAInterchangeable
+            }
+            processedDatasets {
+              bucketName
+              objectName
+            }
+          }`
+        });
+
+        if (runs.length === 0) {
+          throw new Error("Run not found");
+        }
+
+        const run = runs[0];
+        
+        // 1. Generate parameters content
+        const params = run.runParameters || {};
+        const outPrefix = params.outPrefix || 'TIGERdb';
+        const lines = [
+          "#this line will be ignored",
+          `out_prefix=${outPrefix}`,
+          `cdr3_file=${outPrefix}_GLIPH_INPUT.txt`,
+          params.hlaFile ? `hla_file=${params.hlaFile}` : `#hla_file=hla_file.txt`,
+          `refer_file=ref_CD48_v2.0.txt`,
+          `v_usage_freq_file=ref_V_CD48_v2.0.txt`,
+          `cdr3_length_freq_file=ref_L_CD48_v2.0.txt`,
+          `local_min_pvalue=${params.localMinpValue || '0.001'}`,
+          `p_depth=${params.pDepth || '1000'}`,
+          `global_convergence_cutoff=${params.globalConvergenceCutoff || '1'}`,
+          `simulation_depth=${params.simulationDepth || '1000'}`,
+          `kmer_min_depth=${params.kmerMinDepth || '3'}`,
+          `local_min_OVE=${params.localMinOVE || '10'}`,
+          `algorithm=GLIPH2`,
+          `all_aa_interchangeable=${params.allAAInterchangeable || '1'}`
+        ];
+        const paramContent = lines.join('\n');
+
+        // 2. Prepare mock dataset mappings (minio pipeline expects these)
+        const datasetsTsvLines = ['datasetID\tobjectName'];
+        const inputPaths = [];
+        (run.processedDatasets || []).forEach(ds => {
+          datasetsTsvLines.push(`.\t${ds.objectName}`);
+          inputPaths.push(`s3://${ds.bucketName}/${ds.objectName}`);
+        });
+
+        // 3. (Optional) In a real scenario we'd stream paramContent to MinIO here
+        // but Nextflow can also take arguments directly or we can write local files.
+        const bucket = `run-${runID}`;
+        await minioClient.putObject(bucket, 'parameter_file.txt', Buffer.from(paramContent));
+        await minioClient.putObject(bucket, 'datasets.tsv', Buffer.from(datasetsTsvLines.join('\n')));
+
+        inputPaths.push(`s3://${bucket}/parameter_file.txt`);
+        inputPaths.push(`s3://${bucket}/datasets.tsv`);
+
+        const nextflowPaths = inputPaths.join(',');
+
+        // 4. Trigger Nextflow Pipeline mapping to Funnel inside the Node API via child_process
+        const { spawn } = require('child_process');
+        
+        // Run nextflow asynchronously
+        const nextflowProcess = spawn('nextflow', [
+          '-log', `.nextflow-${runID}.log`,
+          'run', 
+          '/usr/src/service/tcr-db/nextflow/main.nf',
+          '-w', `s3://${bucket}/work`,
+          '--outPrefix', outPrefix,
+          '--destinationPath', `s3://${bucket}/results`,
+          '--minioInputPath', nextflowPaths
+        ], {
+           env: { ...process.env }, // Nextflow relies on env vars (e.g. AWS access keys mapped for minio)
+           detached: true,
+           stdio: 'ignore'
+        });
+        
+        nextflowProcess.unref();
+
+        // 5. Update database state
+        const updateResult = await RunModel.update({
+          where: { runID },
+          update: { 
+            status: "submitted", 
+            submittedOn: new Date().toISOString(),
+            wesID: `nextflow-${runID}` // Tag it for UI reference
+          },
+        });
+
+        return { run: updateResult.runs[0] };
+        
+      } catch (error) {
+        console.error("Error submitting run:", error);
+        throw new ApolloError('Failed to submit run', error);
+      }
+    },
+
     createRunWithMinioBucket: async (
       parent,
       { name, description, processedDatasets, referenceDatasets },
@@ -429,13 +540,28 @@ export const resolvers = {
     // },
     getRunData: async ({ wesID }, variables, context, info) => {
       try {
-        console.log('datasources')
-        console.log(context.dataSources)
+        if (wesID && wesID.startsWith('nextflow-')) {
+          const runID = wesID.replace('nextflow-', '');
+          const fs = require('fs');
+          const path = require('path');
+          
+          let logs = '';
+          const logPath = path.join('/usr/src/service/api', `.nextflow-${runID}.log`);
+          if (fs.existsSync(logPath)) {
+            logs += fs.readFileSync(logPath, 'utf8');
+          } else {
+            logs = "Nextflow logs not yet available.";
+          }
+          
+          return logs;
+        }
+
+        // Fallback for older WES runs
         const { run_log } = await context.dataSources.wesAPI.getRunData(wesID);
         return run_log.stderr;
       } catch (error) {
         console.log(error);
-        return null;
+        return "Error fetching logs";
       }
     },
 
@@ -475,6 +601,31 @@ export const resolvers = {
       if (!wesID || ['completed', 'failed'].includes(status)) return status;
 
       try {
+        if (wesID.startsWith('nextflow-')) {
+          // If we are tracking via Nextflow locally in the api container,
+          // check if Nextflow log says SUCCESS or ERROR. Nextflow exits immediately
+          // but we can query Funnel if Nextflow isn't running but we didn't update status,
+          // OR the best way is Nextflow log parsing for now since Nextflow delegates tasks.
+          // Ideally if it reached 'completed' or 'failed' it would be saved, 
+          // but if it's 'submitted' let's check log.
+          const runID = wesID.replace('nextflow-', '');
+          const fs = require('fs');
+          const path = require('path');
+          const logPath = path.join('/usr/src/service/api', `.nextflow-${runID}.log`);
+          
+          if (fs.existsSync(logPath)) {
+            const logs = fs.readFileSync(logPath, 'utf8');
+            if (logs.includes('Pipeline completed successfully')) {
+              return 'completed';
+            } else if (logs.includes('nextflow.exception') || logs.includes('ERROR')) {
+              return 'failed';
+            } else {
+              return 'submitted';
+            }
+          }
+          return status;
+        }
+
         // Get the status from the WES API
         const { state }: { state: 'COMPLETE' | 'EXECUTOR_ERROR' | 'RUNNING' } = await context.dataSources.wesAPI.getStatus(wesID);
 
@@ -515,6 +666,32 @@ export const resolvers = {
       if (completedOn || !wesID) return completedOn;
 
       try {
+        if (wesID.startsWith('nextflow-')) {
+          const fs = require('fs');
+          const path = require('path');
+          const logPath = path.join('/usr/src/service/api', `.nextflow-${runID}.log`);
+          if (fs.existsSync(logPath)) {
+            const logs = fs.readFileSync(logPath, 'utf8');
+            const isFailed = logs.includes('nextflow.exception') || logs.includes('ERROR');
+            const isCompleted = logs.includes('Pipeline completed successfully');
+
+            if (isFailed) {
+              try {
+                await Minio.client.putObject(`run-${runID}`, `failedRunLog-${runID}.txt`, Buffer.from(logs));
+              } catch (e) {
+                console.log("Error uploading failed run log to Minio:", e);
+              }
+            }
+
+            if (isFailed || isCompleted) {
+              const stats = fs.statSync(logPath);
+              // If the process is done, the file modified time is roughly completedOn
+              return stats.mtime;
+            }
+          }
+          return null;
+        }
+
         const response = await dataSources.wesAPI.getRunData(wesID);
 
         if (response.state === 'EXECUTOR_ERROR') {

@@ -126,6 +126,14 @@ type Mutation {
       runID: ID!
     ): String!
 
+    submitRun(
+      runID: ID!
+    ): SubmitRunResponse
+
+}
+
+type SubmitRunResponse {
+    run: Run
 }
 
 extend type Run @auth(
