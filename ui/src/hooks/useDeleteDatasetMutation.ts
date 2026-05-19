@@ -8,7 +8,7 @@ const DELETE_DATASET = gql`
   }
 `;
 
-export default function useDeleteDatasetMutation(refetch) {
+export default function useDeleteDatasetMutation(refetch?: () => void) {
   const [mutate, { data, loading, error }] = useMutation(DELETE_DATASET, {
     onCompleted: () => {
       if (refetch) refetch()
