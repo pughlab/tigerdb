@@ -54,9 +54,10 @@ export const resolvers = {
           { name: 'mutation', index: 10 },
           { name: 'recognizesWTEpitope', index: 11 },
           { name: 'epitopeSpecies', index: 12 },
-          { name: 'reference', index: 13 },
-          { name: 'uniProt', index: 14 },
-          { name: 'notes', index: 15 },
+          { name: 'antigenClass', index: 13 },
+          { name: 'reference', index: 14 },
+          { name: 'uniProt', index: 15 },
+          { name: 'notes', index: 16 },
         ]
         
         // cdr3b: String
@@ -70,6 +71,7 @@ export const resolvers = {
         // epitopeGene: String
         // epitopeAAseq: String
         // epitopeSpecies: String
+        // antigenClass: String
         // mutation: String
         // reference: String
         // uniProt: String
@@ -105,8 +107,26 @@ export const resolvers = {
             RETURN a',
             { batchSize: 10000, iterateList: true, parallel: true, params: { curatedAnnotationID: $curatedAnnotationID, presignedURL: $presignedURL, inputFields: $inputFields } }
             )
-          `, {curatedAnnotationID, presignedURL, inputFields}, 
+          `, {curatedAnnotationID, presignedURL, inputFields}
         )
+
+        // Generate tags for the dataset from the uploaded annotations
+        await session.run(`
+          MATCH (b:CuratedAnnotation {curatedAnnotationID: $curatedAnnotationID})-[:HAS_ANNOTATION_VARIABLE]->(a:AnnotationVariable)
+          WHERE a.epitopeSpecies IS NOT NULL AND a.antigenClass IS NOT NULL
+          WITH a, toLower(a.epitopeSpecies) AS rawSpecies, toLower(a.antigenClass) AS rawClass
+          WITH a,
+            CASE WHEN rawSpecies = 'human' THEN rawSpecies ELSE rawClass END AS tCategory,
+            CASE WHEN rawSpecies = 'human' THEN rawClass ELSE rawSpecies END AS tName
+          WHERE tName <> '' AND tName IS NOT NULL
+          MATCH (d:Dataset {datasetID: $datasetID})
+          MERGE (t:Tag {name: tName})
+          ON CREATE SET t.tagID = apoc.create.uuid(), t.category = tCategory
+          ON MATCH SET t.category = tCategory
+          MERGE (d)-[:HAS_TAG]->(t)
+          MERGE (a)-[:HAS_TAG]->(t)
+        `, { curatedAnnotationID, datasetID })
+
 
 
         // const createCuratedDatasetFromRawDataset = await session.run(
