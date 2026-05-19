@@ -408,7 +408,7 @@ export default function MinioBucket({
                 <div key={"div." + minioUpload.objectName}>
                   <List.Item key={"list." + minioUpload.objectName}>
                     <DownloadButton upload={minioUpload} />
-                    {(isOwner || isCurator || isAdmin) && <DeleteButton upload={minioUpload} doDelete={minioDelete} disabled={isPublic} />}
+                    {(isOwner || isCurator || isAdmin) && <DeleteButton upload={minioUpload} doDelete={minioDelete} disabled={false} />} {/* disabled={isPublic} />} */}
                     {(isCurator || isAdmin) && <CurateAnnotationsButton 
                       upload={minioUpload}
                       datasetID={datasetID}
