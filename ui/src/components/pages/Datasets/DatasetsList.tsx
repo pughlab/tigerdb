@@ -48,7 +48,7 @@ function DatasetListItem({ dataset, isPublicProject, isOwner, refetch }) {
               trigger={
                 <Button
                   color="red"
-                  circular
+                  // circular
                   icon="trash"
                   loading={isDeleting}
                   onClick={(e) => {
