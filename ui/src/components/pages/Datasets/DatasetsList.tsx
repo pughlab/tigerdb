@@ -1,7 +1,7 @@
 import { gql, useMutation, useQuery } from '@apollo/client'
 import { useCallback, useEffect, useState } from 'react'
 import * as React from 'react'
-import { Loader, Dimmer, Form, Header, Label, Input, Segment, Icon, Message, List, Divider, Modal, Container, Dropdown } from 'semantic-ui-react'
+import { Loader, Dimmer, Form, Header, Label, Input, Segment, Icon, Message, List, Divider, Modal, Container, Dropdown, Button, Popup } from 'semantic-ui-react'
 // import useRouter from '../../../hooks/useRouter'
 import useDatasetsQuery from "../../../hooks/useDatasetsQuery";
 import { tagColors, DatasetTag } from "./DatasetTag";
@@ -9,18 +9,20 @@ import { tagColors, DatasetTag } from "./DatasetTag";
 import AddDatasetModal from "./AddDatasetModal";
 import AddTagModal from "./AddTagModal";
 import MinioBucket from "../../common/minio";
+import useDeleteDatasetMutation from "../../../hooks/useDeleteDatasetMutation";
 
 import { useLocation } from "react-router-dom";
 import useIsAdmin from '../../../hooks/useIsAdmin';
 import useIsCurator from '../../../hooks/useIsCurator';
 
 
-function DatasetListItem({ dataset, isPublicProject, isOwner }) {
+function DatasetListItem({ dataset, isPublicProject, isOwner, refetch }) {
   const { datasetID, name, tags: datasetTags, project } = dataset;
   const [isMinioBucketOpen, setIsMinioBucketOpen] = useState(false); // State to control MinioBucket visibility
   const [tags, setTags] = useState(datasetTags.reduce((acc, tag) => [...acc, { tagID: tag.tagID, name: tag.name, category: tag.category }], []));
   const { isAdmin } = useIsAdmin()
   const { isCurator } = useIsCurator()
+  const { deleteDataset, loading: isDeleting } = useDeleteDatasetMutation(refetch);
 
   // const navigate = useNavigate()
   // const { navigate } = useRouter()
@@ -37,7 +39,29 @@ function DatasetListItem({ dataset, isPublicProject, isOwner }) {
             name={isMinioBucketOpen ? "chevron up" : "chevron down"}
           />
         </List.Content>
-        <List.Content floated="right" basic></List.Content>
+        <List.Content floated="right" basic>
+          {(isAdmin || isCurator ) && (
+            <Popup
+              inverted
+              position="top center"
+              content="Delete Dataset"
+              trigger={
+                <Button
+                  color="red"
+                  circular
+                  icon="trash"
+                  loading={isDeleting}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (window.confirm("Are you sure you want to delete this dataset?")) {
+                      deleteDataset({ variables: { datasetID } });
+                    }
+                  }}
+                />
+              }
+            />
+          )}
+        </List.Content>
         <List.Content>
           <List.Header as={Header}>
             {`${name}`}
@@ -56,7 +80,7 @@ function DatasetListItem({ dataset, isPublicProject, isOwner }) {
             })
             .map((tag) => <DatasetTag key={tag.tagID} tag={tag} datasetID={datasetID} setTags={setTags} canDelete={!isPublicProject && (isAdmin || isCurator)} />)
           }
-          {!isPublicProject && (isAdmin || isCurator) && <AddTagModal datasetID={datasetID} setTags={setTags} categories={Object.keys(tagColors)} />}
+          {(isAdmin || isCurator) && <AddTagModal datasetID={datasetID} setTags={setTags} categories={Object.keys(tagColors)} />}
           {/* <List.Description content={`${description}`} /> */}
         </List.Content>
       </List.Item>
@@ -120,7 +144,7 @@ export default function DatasetsList({ project, isPublicProject, isOwner }) {
             </>
           )}
           {filteredDatasets.map((dataset) => (
-            <DatasetListItem key={dataset.datasetID} isPublicProject={isPublicProject} isOwner={isOwner} {...{ dataset }} />
+            <DatasetListItem key={dataset.datasetID} isPublicProject={isPublicProject} isOwner={isOwner} refetch={refetch} {...{ dataset }} />
           ))}
         </List>
       </Container>
