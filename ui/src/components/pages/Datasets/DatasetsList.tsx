@@ -70,6 +70,9 @@ export default function DatasetsList({ project, isPublicProject, isOwner }) {
 
   const { projectID } = project
 
+  const { isAdmin } = useIsAdmin();
+  const { isCurator } = useIsCurator();
+
   const { data, loading, refetch } = useDatasetsQuery({projectIDs: [projectID]});
 
   const location = useLocation();
@@ -104,14 +107,18 @@ export default function DatasetsList({ project, isPublicProject, isOwner }) {
     );
   } else if (filteredDatasets.length === 0) {
     datasetList = (
-      <AddDatasetModal projectID={projectID} refetch={refetch} />
+      (isAdmin || isCurator || isOwner) ? <AddDatasetModal projectID={projectID} refetch={refetch} /> : <Message info>No datasets found.</Message>
     ) 
   } else {
     datasetList = (
       <Container>
         <List selection size="large" key="dataset">
-          <AddDatasetModal projectID={projectID} refetch={refetch} />
-          <Divider horizontal />
+          {(isAdmin || isCurator || isOwner) && (
+            <>
+              <AddDatasetModal projectID={projectID} refetch={refetch} />
+              <Divider horizontal />
+            </>
+          )}
           {filteredDatasets.map((dataset) => (
             <DatasetListItem key={dataset.datasetID} isPublicProject={isPublicProject} isOwner={isOwner} {...{ dataset }} />
           ))}
