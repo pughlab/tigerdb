@@ -17,11 +17,12 @@ export const GET_GLIPH_GRAPH = gql`
         value
         color
         source
+        v_gene
       }
       links {
         source
         target
-        weight
+        group
       }
     }
   }

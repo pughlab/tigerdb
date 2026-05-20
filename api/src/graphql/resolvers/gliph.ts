@@ -1,15 +1,17 @@
 import { ApolloError } from 'apollo-server'
 import neo4j from "neo4j-driver";
 
-const MINIMUM_DEGREE = 3
+const MINIMUM_DEGREE = 4
+const MINIMUM_COMMUNITY_SIZE = 4
 
 type TCRParameters = {
   limit: number;
   theta: number;
   gamma: number;
-  minCommunitySize: number,
-  cdr3bContains: string,
-  maxLevels: number
+  minCommunitySize: number;
+  cdr3bContains: string;
+  maxLevels: number;
+  minDegree: number;
 }
 
 const colors = {
@@ -47,139 +49,124 @@ async function dropGraph(session, graphName) {
   )
 }
 
-async function projectGraph(session: any, runID: any, graphName: string, minDegree: number) {
-  console.log(`Creating graph projection ${graphName} for Run ${runID}`)
-  await session.run(
-    `MATCH (run:Run { runID: $runID })-[:HAS_RESULT]-(t1:GliphTCR),
-      (t1)-[:RELATED_TO]-(t2:GliphTCR),
-      (t1)-[:RELATED_TO]-(t3:GliphTCR),
-      (t1)-[:RELATED_TO]-(t4:GliphTCR),
-      (t2)-[:RELATED_TO]-(t3),
-      (t2)-[:RELATED_TO]-(t4),
-      (t3)-[:RELATED_TO]-(t4)
-      WHERE id(t1) < id(t2) AND id(t2) < id(t3) AND id(t3) < id(t4)
-      UNWIND [t1, t2, t3, t4] AS tcrNode
-      WITH DISTINCT tcrNode AS tcr
-      // WHERE size((tcr)-[:RELATED_TO]-()) >= $minDegree
-      WITH collect(tcr) AS cliqueNodes
-      UNWIND cliqueNodes AS source
-      MATCH (source)-[rel:RELATED_TO]-(target:GliphTCR)
-      WHERE target IN cliqueNodes AND id(source) < id(target)
-      WITH gds.graph.project(
-          $graphName,
-          source,
-          target,
-          {
-              sourceNodeLabels: labels(source),
-              targetNodeLabels: labels(target),
-              relationshipType: type(rel)
-          },
-          { undirectedRelationshipTypes: ['*'] }
-      ) AS g
-      RETURN g.graphName, g.nodeCount AS nodes, g.relationshipCount AS edges`,
-    { runID, graphName }
-  )
+async function setUpGraphData(session, runID) {
+  await session.run(`
+    MATCH (n:Run {runID: $runID})-[:HAS_RESULT]->(t:GliphTCR)
+    SET t:Projectable
+  `, { runID })
 }
 
-async function getGraph(session, graphName, parameters: TCRParameters) {
+async function projectGraph(session, graphName) {
+  await session.run(`
+    CALL gds.graph.project(
+      $graphName,
+      'Projectable',
+      { 
+          RELATED_TO: { orientation: 'UNDIRECTED' }
+      }
+    )
+  `, { graphName })
+}
+
+async function runAlgorithms(session, graphName, parameters = {}) {
   const defaultParameters = {
-    limit: 0,
     theta: 0.01,
-    gamma: 1000,
-    minCommunitySize: 0,
-    cdr3bContains: '',
+    gamma: 10,
     maxLevels: 20
   }
-  const cleanParameters = Object.fromEntries(Object.entries(parameters).filter(([_, v]) => v !== undefined))
-  const { limit, theta, gamma, minCommunitySize, maxLevels, cdr3bContains } = {...defaultParameters, ...cleanParameters }
-  const result = await session.run(
-    `CALL gds.leiden.stream(
-          $graphName, {
-                theta: $theta,
-                gamma: $gamma,
-                ${minCommunitySize > 0 ? `minCommunitySize: $minCommunitySize,` : ''}
-                maxLevels: $maxLevels
-          }
-      )
-      YIELD nodeId, communityId
-      WITH gds.util.asNode(nodeId) AS tcr, communityId
-      WITH DISTINCT(tcr.cdr3b) as sourceCDR, communityId
-      MATCH (source:GliphTCR {cdr3b:sourceCDR})-[:RELATED_TO]-(target)
-      ${cdr3bContains?.length > 0 
-        ? `WHERE toLower(source.cdr3b) CONTAINS "${cdr3bContains.toLowerCase()}" OR toLower(target.cdr3b) CONTAINS "${cdr3bContains.toLowerCase()}"` 
-        : ''
+  const cleanParameters = Object.fromEntries(
+    Object.entries(parameters).filter(([_, v]) => v !== undefined)
+  )
+  const {
+    theta,
+    gamma,
+    maxLevels,
+  } = {...defaultParameters, ...cleanParameters }
+  await session.run(`
+    CALL gds.leiden.mutate(
+      $graphName, {
+        theta: $theta,
+        gamma: $gamma,
+        maxLevels: $maxLevels,
+        mutateProperty: 'communityId'
       }
-      RETURN source, target, communityId`,
-      { graphName, limit, theta, gamma, maxLevels: neo4j.int(maxLevels), minCommunitySize: neo4j.int(minCommunitySize) }
-  )
-  const nodes = new Map()
-  const links: { source: number, target: number }[] = []
-  result.records.forEach(record => {
-    const source = record.get('source')
-    const target = record.get('target')
-    const communityId = record.get('communityId').toNumber()
+    )
+  `, { graphName, theta, gamma, maxLevels: neo4j.int(maxLevels) })
+  await session.run(`
+    CALL gds.kcore.mutate(
+      $graphName,
+      { mutateProperty: 'kcoreIndex' }
+    )
+  `, { graphName })
+}
 
-    if (!nodes.has(source.properties.id)) {
-      nodes.set(source.properties.id, {
-        id: source.properties.id,
-        group: communityId,
-        label: source.properties.cdr3b,
-        source: source.properties.source,
-        color: colors.tcr[source.properties.source?.toLowerCase()] ?? colors.tcr.default
-      })
-    }
-    if (!nodes.has(target.properties.id)) {
-      nodes.set(target.properties.id, {
-        id: target.properties.id,
-        group: communityId,
-        label: target.properties.cdr3b,
-        source: target.properties.source,
-        color: colors.tcr[target.properties.source?.toLowerCase()] ?? colors.tcr.default
-      })
-    }
-    links.push({
-      source: source.properties.id,
-      target: target.properties.id,
-    })
-  })
+async function getGraph(session, graphName) {
+  const results = await session.run(`
+    CALL gds.graph.nodeProperties.stream($graphName, ['communityId', 'kcoreIndex'])
+    YIELD nodeId, nodeProperty, propertyValue
+    WITH nodeId,
+    max(CASE WHEN nodeProperty = 'communityId' THEN propertyValue END) AS communityId,
+    max(CASE WHEN nodeProperty = 'kcoreIndex' THEN propertyValue END) AS kcoreValue
+    WHERE kcoreValue >= $kcoreValue
+    WITH communityId, collect({ nodeId: nodeId, kcore: kcoreValue }) AS members
+    UNWIND members AS member
+    MATCH (n) WHERE id(n) = member.nodeId
+    WITH collect(DISTINCT {
+      id: n.id,
+      source: n.source,
+      v_gene: n.v_gene,
+      label: n.cdr3b,
+      group: communityId,
+      kcore: member.kcore
+    }) AS nodesList
+    UNWIND nodesList AS sourceNode
+    MATCH (sourceNodeObj)-[r]->(targetNodeObj) 
+    WHERE sourceNodeObj.id = sourceNode.id AND targetNodeObj.id IN [node IN nodesList | node.id]
+    RETURN nodesList, 
+    collect(DISTINCT { source: sourceNodeObj.id, target: targetNodeObj.id, group: sourceNode.group }) AS linksList
+  `, { graphName, kcoreValue: neo4j.int(MINIMUM_COMMUNITY_SIZE - 1) })
+  return results.records
+}
 
-  const nodesArray = Array.from(nodes.values())
-  const linksArray = links
-
-  const degreeMap = new Map()
-  linksArray.forEach(link => {
-    degreeMap.set(link.source, (degreeMap.get(link.source) || 0) + 1)
-    degreeMap.set(link.target, (degreeMap.get(link.target) || 0) + 1)
-  })
-
-  const filteredNodes = nodesArray.filter(node => degreeMap.get(node.id) >= MINIMUM_DEGREE)
-  const validNodeIds = new Set(filteredNodes.map(n => n.id))
-
-  const filteredLinks = linksArray.filter(link =>
-    validNodeIds.has(link.source) && validNodeIds.has(link.target)
-  )
-
-  return {
-    nodes: filteredNodes,
-    links: filteredLinks,
-  }
+async function tearDownGraphData(session) {
+  await session.run(`
+    MATCH (n:Projectable)
+    REMOVE n:Projectable
+  `)
 }
 
 export const resolvers = {
   Query: {
     gliphGraph: async (_parent, { input }, { driver }) => {
       const session = driver.session()
-      const { runID, minCommunitySize, cdr3bContains, minDegree } = input
+      const { runID } = input
+      const graphName = `run-${runID}-graph`
       try {
-        const graphName = `run-${runID}-graph`
-        await dropGraph(session, graphName)
-        // await projectGraph(session, runID, graphName, minDegree)
-        await projectGraph(session, runID, graphName, MINIMUM_DEGREE)
-        return await getGraph(session, graphName, { minCommunitySize, cdr3bContains } as TCRParameters)
+        await setUpGraphData(session, runID)
+        await projectGraph(session, graphName)
+        await runAlgorithms(session, graphName)
+        const records = await getGraph(session, graphName)
+
+        const links = records[0].get('linksList').map(link => ({
+          ...link,
+          group: link.group.toInt()
+        }))
+        const nodes = records[0].get('nodesList').map(node => ({
+          ...node,
+          color: colors.tcr[node.source.toLowerCase()] ?? colors.tcr.default,
+          kcore: node.kcore.toInt(),
+          group: node.group.toInt(),
+        }))
+        return {
+          nodes,
+          links,
+        }
       } catch (error) {
         console.error("gliphGraph error:", error)
         throw new ApolloError('Failed to fetch GLIPH graph', 'FETCH_FAILED')
       } finally {
+        await dropGraph(session, graphName)
+        await tearDownGraphData(session)
         session.close()
       }
     },
