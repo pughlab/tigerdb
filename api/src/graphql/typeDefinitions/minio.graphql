@@ -44,11 +44,11 @@ input MinioUploadInput {
   filename: String!
 }
 
-extend type MinioUpload @auth(
-  rules: [{
-      isAuthenticated: true,
-    }]
-)
+# extend type MinioUpload @auth(
+#   rules: [{
+#       isAuthenticated: false,
+#     }]
+# )
 
 # interface HasPairedRawdatafile @relationshipProperties {
 #     validated: Boolean!
@@ -101,7 +101,7 @@ type ProcessedDataset {
   rows: Int!           # Number of rows processed
   createdAt: DateTime! # Timestamp
   # curatedDataset: CuratedDataset @relationship(type: "GENERATED_CURATED_DATASET", direction: OUT)
-  # presignedURL: String!
+  presignedURL: String @customResolver
   minioUpload: MinioUpload @relationship(type: "HAS_PROCESSED_FILE", direction: IN)
   selectedDelimiter: String!
 }
