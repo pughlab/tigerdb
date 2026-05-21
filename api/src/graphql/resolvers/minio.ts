@@ -188,7 +188,7 @@ export const resolvers = {
         const { filename, mimetype, encoding, createReadStream } = await file
         const objectName = uuidv4()
         
-        let filenameExt = filename
+        let filenameExt = filename.replace(/[^\w\-.]/g, '') // Strip spaces/brackets
         let stream = createReadStream()
 
 
@@ -205,7 +205,7 @@ export const resolvers = {
         // const compressedFileStream = createReadStream().pipe(zlib.createGzip());
 
         // Construct the new object name by combining the object ID and the original filename
-        const newObjectName = `${objectName}_${filename}`; // e.g., "123e4567-e89b-12d3-a456-426614174000_data.tsv"
+        const newObjectName = `${objectName}_${filenameExt}`; // e.g., "123e4567-e89b-12d3-a456-426614174000_data.tsv"
         await minioClient.putObject(bucketName, newObjectName, stream)
 
         const session = driver.session()
