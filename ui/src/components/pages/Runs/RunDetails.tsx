@@ -17,6 +17,7 @@ import {
   Image,
   Dimmer,
   ButtonOr,
+  Popup
 } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
 import tigerdbLogo from "../../logos/tigerdb.png";
@@ -228,6 +229,12 @@ function DataSources({ processedDatasets, referenceDatasets }) {
               // (datasets.length > 0) ? datasets.map(dataset => <Label color='blue' key={dataset.datasetID} content={dataset.name} />) : null
               processedDatasets.length > 0
                 ? processedDatasets.map((processedDataset) => (
+                  <Popup
+                    wide="very"
+                    // inverted
+                    // position="top center"
+                    content={<DisplayTableFromPresignedURL presignedURL={processedDataset.presignedURL} delimiter={"\t"} rowsToShow={5} header={false} color="green" />}
+                    trigger={
                     <Button
                       key={"button." + processedDataset.objectName}
                       as="div"
@@ -246,6 +253,7 @@ function DataSources({ processedDatasets, referenceDatasets }) {
                         icon="cloud download"
                       />
                     </Button>
+                    } />
                   ))
                 : null
             }

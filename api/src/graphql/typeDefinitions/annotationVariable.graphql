@@ -11,11 +11,13 @@ type AnnotationVariable {
     epitopeGene: String
     epitopeAAseq: String
     epitopeSpecies: String
+    antigenClass: String
     mutation: String
     recognizesWTEpitope: String
     reference: String
     uniProt: String
     notes: String
+    tags: [Tag!]! @relationship(type: "HAS_TAG", direction: OUT)
 
     # annotationVariableID: ID! @id
     # locus: String

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Segment, Table, Message, Header, Icon, Dimmer, Loader } from 'semantic-ui-react';
 
-const DisplayTableFromPresignedURL = ({ presignedURL, delimiter = ',', rowsToShow = 1000 }) => {
+const DisplayTableFromPresignedURL = ({ presignedURL, delimiter = ',', rowsToShow = 1000, header = true, color  = 'violet' }) => {
   const [fileContent, setFileContent] = useState([]);
   const [totalRows, setTotalRows] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -64,10 +64,10 @@ const DisplayTableFromPresignedURL = ({ presignedURL, delimiter = ',', rowsToSho
 
   return (
     <Segment placeholder>
-      <Segment basic color="violet">
+      <Segment basic color={color}>
         <div style={{ overflowX: 'auto', overflowY: 'scroll', maxHeight: '400px' }}>
           <Table celled>
-            <Table.Header>
+            <Table.Header style={{display: header ? 'table-header-group' : 'none'}}>
               <Table.Row>
                 {fileContent[0]?.map((header, columnIndex) => (
                   <Table.HeaderCell
