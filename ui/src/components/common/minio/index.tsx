@@ -424,12 +424,12 @@ export default function MinioBucket({
     <Segment>
       <Divider horizontal content="Uploads" />
 
-      {!isPublic && (
+      {isOwner || isCurator || isAdmin ? (
         <>
           <MinioUploadModal datasetID={datasetID} refetch={refetch} />
           <Divider />
         </>
-      )}
+      ) : null}
       {minioUploads.length === 0 ? (
         <SegmentPlaceholder text={"No uploads yet"} />
       ) : (
