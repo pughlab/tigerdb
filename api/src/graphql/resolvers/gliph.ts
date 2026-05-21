@@ -105,25 +105,19 @@ async function getGraph(session, graphName) {
     CALL gds.graph.nodeProperties.stream($graphName, ['communityId', 'kcoreIndex'])
     YIELD nodeId, nodeProperty, propertyValue
     WITH nodeId,
-    max(CASE WHEN nodeProperty = 'communityId' THEN propertyValue END) AS communityId,
-    max(CASE WHEN nodeProperty = 'kcoreIndex' THEN propertyValue END) AS kcoreValue
-    WHERE kcoreValue >= $kcoreValue
-    WITH communityId, collect({ nodeId: nodeId, kcore: kcoreValue }) AS members
-    UNWIND members AS member
-    MATCH (n) WHERE id(n) = member.nodeId
-    WITH collect(DISTINCT {
-      id: n.id,
-      source: n.source,
-      v_gene: n.v_gene,
-      label: n.cdr3b,
-      group: communityId,
-      kcore: member.kcore
-    }) AS nodesList
-    UNWIND nodesList AS sourceNode
-    MATCH (sourceNodeObj)-[r]->(targetNodeObj) 
-    WHERE sourceNodeObj.id = sourceNode.id AND targetNodeObj.id IN [node IN nodesList | node.id]
-    RETURN nodesList, 
-    collect(DISTINCT { source: sourceNodeObj.id, target: targetNodeObj.id, group: sourceNode.group }) AS linksList
+      max(CASE WHEN nodeProperty = 'communityId' THEN propertyValue END) AS communityId,
+      max(CASE WHEN nodeProperty = 'kcoreIndex' THEN propertyValue END) AS kcore
+    WHERE kcore >= $kcoreValue
+    MATCH (n) WHERE id(n) = nodeId
+    OPTIONAL MATCH (n)-[:RELATED_TO]-(target)
+    RETURN 
+      n.id AS id,
+      n.source AS source,
+      n.v_gene AS v_gene,
+      n.cdr3b AS label,
+      communityId AS group,
+      kcore,
+      collect(target.id) AS targetIds
   `, { graphName, kcoreValue: neo4j.int(MINIMUM_COMMUNITY_SIZE - 1) })
   return results.records
 }
@@ -147,20 +141,40 @@ export const resolvers = {
         await runAlgorithms(session, graphName)
         const records = await getGraph(session, graphName)
 
-        const links = records[0].get('linksList').map(link => ({
-          ...link,
-          group: link.group.toInt()
-        }))
-        const nodes = records[0].get('nodesList').map(node => ({
-          ...node,
-          color: colors.tcr[node.source.toLowerCase()] ?? colors.tcr.default,
-          kcore: node.kcore.toInt(),
-          group: node.group.toInt(),
-        }))
-        return {
-          nodes,
-          links,
-        }
+        const nodes: any[] = []
+        const links: any[] = []
+        const validNodeIds = new Set()
+        records.forEach(record => {
+          const id = record.get("id")
+          const source = record.get("source")
+          validNodeIds.add(id)
+
+          nodes.push({
+            id,
+            source,
+            v_gene: record.get("v_gene"),
+            group: record.get("group").toInt(),
+            kcore: record.get("kcore").toInt(),
+            label: record.get("label"),
+            color: colors.tcr[source?.toLowerCase()] || colors.tcr.default
+          })
+        })
+        records.forEach(record => {
+          const sourceId = record.get("id")
+          const group = record.get("group").toInt()
+          const targetIds = record.get("targetIds")
+
+          targetIds.forEach(id => {
+            if (id && validNodeIds.has(id) && sourceId < id) {
+              links.push({
+                source: sourceId,
+                target: id,
+                group
+              })
+            }
+          })
+        })
+        return { nodes, links }
       } catch (error) {
         console.error("gliphGraph error:", error)
         throw new ApolloError('Failed to fetch GLIPH graph', 'FETCH_FAILED')
