@@ -25,6 +25,7 @@ export default function useRunDetailsQuery({ runID }: { runID: string }) {
 				objectName
 				bucketName
 				filename
+				presignedURL
 			}
 			referenceDatasetsAggregate{
 				count
