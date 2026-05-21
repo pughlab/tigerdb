@@ -163,11 +163,16 @@ function createFileStream(processedData) {
     cdr3b: 'NA',
     trbj: 'NA',
     'subject:condition': 'TIGERDB:Default',
-    count: 'NA',
+    count: '1',
     trbv: 'NA'
   }
   const processedFile = processedData.map(row => {
-    const formattedRow = requiredKeys.map(key => row[key] || defaults[key]).join("\t")
+    // const formattedRow = requiredKeys.map(key => row[key] || defaults[key]).join("\t")
+    const formattedRow = requiredKeys.map(key => {
+      const val = row[key] || defaults[key];
+      // Strip carriage returns from the value
+      return typeof val === 'string' ? val.replace(/\r/g, '') : val;
+    }).join("\t")
     return formattedRow
   })
   const processedFileStream = Buffer.from(processedFile.join("\n"))
@@ -183,7 +188,7 @@ export const resolvers = {
         const { filename, mimetype, encoding, createReadStream } = await file
         const objectName = uuidv4()
         
-        let filenameExt = filename
+        let filenameExt = filename.replace(/[^\w\-.]/g, '') // Strip spaces/brackets
         let stream = createReadStream()
 
 
@@ -200,7 +205,7 @@ export const resolvers = {
         // const compressedFileStream = createReadStream().pipe(zlib.createGzip());
 
         // Construct the new object name by combining the object ID and the original filename
-        const newObjectName = `${objectName}_${filename}`; // e.g., "123e4567-e89b-12d3-a456-426614174000_data.tsv"
+        const newObjectName = `${objectName}_${filenameExt}`; // e.g., "123e4567-e89b-12d3-a456-426614174000_data.tsv"
         await minioClient.putObject(bucketName, newObjectName, stream)
 
         const session = driver.session()
@@ -250,6 +255,8 @@ export const resolvers = {
         if (!fileExtension) {
           throw new Error(`File "${filename}" lacks an extension.`);
         }
+        // Extract the filename without the extension, then append .tsv
+        const basename = path.basename(filename, fileExtension).replace(/[^\w\-.]/g, '');
 
         const rows = await getFileRows(minioClient, bucketName, objectName, includesHeader)
         const processedData = rows.map((row) => {
@@ -264,8 +271,10 @@ export const resolvers = {
         // Convert processed data into a stream format for uploading
         const processedFileStream = createFileStream(processedData);
 
-        // Construct the new object name by combining the object ID and the original filename
-        const newObjectName = `processed-${objectName}`; // e.g., "processed-123e4567-e89b-12d3-a456-426614174000_data.tsv"
+
+        // Remove the original extension from the objectName and replace with .tsv
+        const objectBasename = path.basename(objectName, fileExtension).replace(/[^\w\-.]/g, '');
+        const newObjectName = `processed-${objectBasename}.tsv`; // e.g., "processed-123e4567-e89b-12d3-a456-426614174000_data.tsv"
 
         // Upload the processed file using putObjectBucket
         await putObjectBucket(minioClient, processedFileStream, bucketName, newObjectName);
@@ -275,7 +284,7 @@ export const resolvers = {
           minioClient,
           bucketName,
           newObjectName,
-          newFileName: `processed-${filename}`,
+          newFileName: `processed-${basename}.tsv`,
           processedData,
           selectedDelimiter
         })
@@ -543,5 +552,23 @@ export const resolvers = {
       }
     }
 
+  },
+
+  ProcessedDataset: {
+    presignedURL: async (
+      { bucketName, objectName },
+      { },
+      { driver, ogm, minioClient }
+    ) => {
+      try {
+        const presignedURL = makePresignedURL(minioClient, bucketName, objectName);
+        return presignedURL;
+      } catch (error) {
+        console.log(error);
+        console.log('processedDataset.presignedurl error');
+        throw new ApolloError('processedDataset.presignedurl', error);
+      }
+    }
   }
+
 }
