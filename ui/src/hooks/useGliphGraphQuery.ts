@@ -23,6 +23,7 @@ export const GET_GLIPH_GRAPH = gql`
         source
         target
         group
+        color
       }
     }
   }

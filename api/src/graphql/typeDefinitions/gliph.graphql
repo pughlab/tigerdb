@@ -27,6 +27,7 @@ type GliphLink {
     source: ID!
     target: ID!
     group: String
+    color: String
 }
 
 type GliphGraph {

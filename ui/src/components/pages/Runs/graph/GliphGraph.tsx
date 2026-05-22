@@ -56,6 +56,7 @@ export default function GliphGraph({
   const [graphData, setGraphData] = useState<{ nodes: any[], links: any[] }>({ nodes: [], links: [] })
   const [hasData, setHasData] = useState(hasGliphResults)
   const [hiddenGroups, setHiddenGroups] = useState<Set<string | null>>(new Set())
+  const [hiddenNodes, setHiddenNodes] = useState<Set<any>>(new Set())
   const [mode, setMode] = useState<'2D' | '3D'>('3D')
   const [colorMode, setColorMode] = useState<'source' | 'community'>('community')
 
@@ -86,6 +87,17 @@ export default function GliphGraph({
       links: filteredLinks.map((l: any) => ({ ...l }))
     });
   }, [hiddenGroups]);
+
+  useEffect(() => {
+    const { nodes, links } = data || { nodes: [], links: [] };
+    const filteredNodes = nodes.filter((n: any) => !hiddenNodes.has(n));
+    const filteredNodeIDs: Set<string> = new Set(filteredNodes.map((n: any) => n.id));
+    const filteredLinks = links.filter((l: any) => filteredNodeIDs.has(l.source) && filteredNodeIDs.has(l.target));
+    setGraphData({
+      nodes: filteredNodes.map((n: any) => ({ ...n })),
+      links: filteredLinks.map((l: any) => ({ ...l }))
+    });
+  }, [hiddenNodes]);
 
   useEffect(() => {
     // Zoom to fit on load
@@ -204,6 +216,7 @@ export default function GliphGraph({
       <FilterControls
         communities={communities}
         groupOperations={groupOperations}
+        updateHiddenNodes={setHiddenNodes}
         refetchGraph={(filters) => refetch({
           input: {
             runID,
@@ -219,7 +232,7 @@ export default function GliphGraph({
         linkLabel={(link: any) => `Community: ${link.group}`}
         nodeColor={(node: any) => colorMode === 'source' ? node.color : (colorScale(node.group) || "#ffffff")}
         linkDirectionalParticles={0}
-        linkColor={(link) => colorMode === 'source' ? "#ffffff" : colorScale(link.group)}
+        linkColor={(link) => colorMode === 'source' ? link.color || "#ffffff" : colorScale(link.group)}
         nodeOpacity={0.8}
         linkOpacity={0.5}
         nodeRelSize={5}
@@ -232,7 +245,8 @@ export default function GliphGraph({
         ref={fgRef}
         graphData={graphData}
         backgroundColor={'#000011'}
-        linkColor={(link) => colorMode === 'source' ? "#ffffff" : colorScale(link.group)}
+        linkLabel={(link: any) => `Community: ${link.group}`}
+        linkColor={(link) => colorMode === 'source' ? link.color || "#ffffff" : colorScale(link.group)}
         nodeLabel={(node: any) => `ID: ${node.id}<br />CDR3b: ${node.label}<br />TRBV: ${node.v_gene}<br/>Community: ${node.group}<br />Source: ${node.source}`}
         nodeColor={(node: any) => colorMode === 'source' ? node.color : (colorScale(node.group) || "#ffffff")}
         linkDirectionalParticles={0}

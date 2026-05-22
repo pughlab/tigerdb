@@ -161,6 +161,7 @@ export const resolvers = {
         })
         records.forEach(record => {
           const sourceId = record.get("id")
+          const tcrSource = record.get("source")
           const group = record.get("group").toInt()
           const targetIds = record.get("targetIds")
 
@@ -169,7 +170,8 @@ export const resolvers = {
               links.push({
                 source: sourceId,
                 target: id,
-                group
+                group,
+                color: colors.tcr[tcrSource?.toLowerCase()] || colors.tcr.default
               })
             }
           })
