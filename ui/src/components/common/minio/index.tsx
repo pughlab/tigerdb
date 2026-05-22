@@ -449,7 +449,7 @@ export default function MinioBucket({
                       disabled={
                         annotationSuccess ||
                         curatedAnnotationLoading ||
-                        isPublic ||
+                        // isPublic ||
                         minioUpload === null ||
                         minioUpload === undefined
                       }
