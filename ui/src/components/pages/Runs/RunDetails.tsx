@@ -31,6 +31,7 @@ import useRunDetailsQuery from "../../../hooks/useRunDetailsQuery";
 import useUpdateRunParametersMutation from "../../../hooks/useUpdateRunParametersMutation";
 import useImportGliphMutation from "../../../hooks/useImportGliphMutation";
 import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
+import TCRInfo from "./graph/TCRInfo";
 
 function RunActionsButton({
   status,
@@ -97,6 +98,47 @@ function RunActionsButton({
   return null;
 }
 
+function ResultVisualization({
+  runID,
+  presignedURL,
+  hasGliphResults,
+  importGliph,
+  importLoading,
+  viewMode,
+  updateSelectedNode,
+}: Readonly<{
+  runID: string;
+  presignedURL?: string;
+  hasGliphResults: boolean;
+  importGliph: any;
+  importLoading: boolean;
+  viewMode: 'table' | 'graph';
+  updateSelectedNode: React.Dispatch<React.SetStateAction<any>>;
+}>) {
+  if (!presignedURL) {
+    return (
+      <Message warning content="No presignedURL available for results preview." />
+    )
+  }
+
+  if (viewMode === 'table') {
+    return (
+      <DisplayTableFromPresignedURL presignedURL={presignedURL} />
+    )
+  }
+
+  return (
+    <GliphGraph
+      runID={runID}
+      hasGliphResults={hasGliphResults}
+      presignedURL={presignedURL}
+      importGliph={importGliph}
+      importLoading={importLoading}
+      updateSelectedNode={updateSelectedNode}
+    />
+  )
+}
+
 function RunResults({
   status,
   presignedURL,
@@ -112,7 +154,8 @@ function RunResults({
   importGliph: any;
   importLoading: boolean;
 }>) {
-  const [viewMode, setViewMode] = React.useState('table'); // 'table' or 'graph'
+  const [viewMode, setViewMode] = React.useState<'table' | 'graph'>('table');
+  const [selectedNode, setSelectedNode] = React.useState<any>(null);
 
   if (!status?.trim()) return null;
 
@@ -164,25 +207,17 @@ function RunResults({
               </Grid.Column>
             </Grid>
           </Segment>
-
-          {/* Preview table from the run output */}
-          {presignedURL ? (
-            viewMode === 'table' ? (
-              <DisplayTableFromPresignedURL presignedURL={presignedURL} />
-            ) : (
-              <GliphGraph 
-                runID={runID} 
-                hasGliphResults={hasGliphResults}
-                presignedURL={presignedURL}
-                importGliph={importGliph}
-                importLoading={importLoading}
-              />
-            )
-          ) : (
-            <Message warning content="No presignedURL available for results preview." />
-          )}
+          <ResultVisualization
+            runID={runID}
+            presignedURL={presignedURL}
+            hasGliphResults={hasGliphResults}
+            importGliph={importGliph}
+            importLoading={importLoading}
+            viewMode={viewMode}
+            updateSelectedNode={setSelectedNode}
+          />
+          {selectedNode && (<TCRInfo node={selectedNode} />)}
         </Segment.Group>
-
         <Message color="green">
           <Header as="h3" icon>
             <Icon name="check circle" color="green" />
@@ -230,6 +265,7 @@ function DataSources({ processedDatasets, referenceDatasets }) {
               processedDatasets.length > 0
                 ? processedDatasets.map((processedDataset) => (
                   <Popup
+                    key={processedDataset.filename}
                     wide="very"
                     // inverted
                     // position="top center"
@@ -264,8 +300,6 @@ function DataSources({ processedDatasets, referenceDatasets }) {
               size="huge"
               style={{ textAlign: "center", marginBottom: "10px" }}
             >
-              {/* {referenceDatasets.length}{" "} */}
-              {/* {referenceDatasets.length === 1 ? "Reference" : "References"} */}
               Deorphanized TCRs { referenceDatasets.length > 0 ? `(${referenceDatasets.length})` : ""}
             </Header>
             {[...tags]
@@ -338,7 +372,7 @@ export default function RunDetails() {
     refetch,
   } = useRunDetailsQuery({ runID });
   const [submitRun] = useSubmitRunMutation();
-  const { importGliph, loading: importLoading, error: importError } = useImportGliphMutation();
+  const { importGliph, loading: importLoading } = useImportGliphMutation();
 
   if (runDetailsLoading) {
     return (
@@ -378,6 +412,21 @@ export default function RunDetails() {
 
   const colorStatus = getStatusColor(status);
   const iconStatus = getStatusIcon(status);
+  let submitButtonText: string
+
+  switch (status) {
+    case "pending":
+      submitButtonText = "SUBMIT RUN";
+      break;
+    case "failed":
+      submitButtonText = "RUN FAILED";
+      break;
+    case "completed":
+      submitButtonText = "RUN COMPLETED";
+      break;
+    default:
+      submitButtonText = "RUN SUBMITTED";
+  }
 
   return (
     <Grid>
@@ -393,16 +442,6 @@ export default function RunDetails() {
             }}
             loading={runDetailsLoading}
           />
-          {/* <Button
-            disabled
-            content="SHARE"
-            icon="users"
-            color="facebook"
-            onClick={() => {
-              refetch();
-            }}
-            loading={runDetailsLoading}
-          /> */}
         <RunActionsButton
           status={status}
           refetch={refetch}
@@ -419,10 +458,7 @@ export default function RunDetails() {
           <List size="large">
             <List.Item icon="calendar" content={`${createdOnDate}`} />
             <List.Item icon="user" content={`${createdBy.email}`} />
-            {/* <Message.Item content={`Public: ${isPublic}`} /> */}
-            {/* <Message.Item content={`Shared with: ${sharedWith}`} /> */}
             <List.Item icon="info circle" content={`runID: ${runID}`} />
-            {/* <List.Item icon='cog' content={wesID ? `wesID: ${wesID}` : "Job ID available after submission"} /> */}
             <List.Item style={{ color: colorStatus }}>
               <List.Icon name={iconStatus} loading={status === "submitted"} />
               <List.Content>{`${status.toUpperCase()}`}</List.Content>
@@ -463,54 +499,6 @@ export default function RunDetails() {
               />
               <Segment color="violet">
                 <Divider horizontal content="CDR3 INPUT" />
-
-                {/* <Form.Field
-            control={Dropdown}
-            label='Project'
-            placeholder='Select Project'
-            fluid
-            search
-            selection
-            // options={projectOptions}
-            // loading={projectsLoading}
-            // onChange={(_e, { value }) => {
-            //   setProjectID(value) 
-            //   setDatasetIDs([])
-            // }}
-            // value={projectID}
-          /> */}
-                {/* {projectsError && <Message error content="Error loading projects" />} */}
-                {/* <Form.Field
-            control={Dropdown}
-            label='CDR File'
-            placeholder='Select Datasets'
-            fluid
-            multiple
-            search
-            selection
-            // options={datasetOptions}
-            // loading={datasetsLoading}
-            // onChange={(_e, { value }) => setDatasetIDs(value)}
-            // value={datasetIDs}
-            // disabled={!projectID} // Disable until a project is selected
-          /> */}
-                {/* {datasetsError && <Message error content="Error loading datasets" />} */}
-                {/* <Form.Field
-            control={Dropdown}
-            label='Uploads'
-            placeholder='Select Uploaded Files'
-            fluid
-            multiple
-            search
-            selection
-            // options={minioUploadOptions}
-            // loading={minioUploadsLoading}
-            // onChange={(_e, { value }) => setMinioUploads(value)}
-            value={processedDatasets}
-            // disabled={!(datasetIDs.length > 0) || !projectID} // Disable until a dataset is selected
-          /> */}
-                {/* {minioUploadsError && <Message error content="Error loading uploads" />} */}
-
                 <Form.Field
                   control={Dropdown}
                   label="External Specificity File"
@@ -532,7 +520,6 @@ export default function RunDetails() {
               />
               <Segment color="violet">
                 <Divider horizontal content="Reference Files" />
-
                 <Form.Field
                   control={Dropdown}
                   label="Reference File"
@@ -575,7 +562,7 @@ export default function RunDetails() {
                     onChange={(e, { value }) =>
                       setParameters((prev) => ({
                         ...prev,
-                        localMinpValue: parseFloat(value),
+                        localMinpValue: Number.parseFloat(value),
                       }))
                     }
                     type="number"
@@ -589,7 +576,7 @@ export default function RunDetails() {
                     onChange={(e, { value }) =>
                       setParameters((prev) => ({
                         ...prev,
-                        pDepth: parseInt(value, 10),
+                        pDepth: Number.parseInt(value, 10),
                       }))
                     }
                     type="number"
@@ -603,7 +590,7 @@ export default function RunDetails() {
                     onChange={(e, { value }) =>
                       setParameters((prev) => ({
                         ...prev,
-                        globalConvergenceCutoff: parseInt(value, 10),
+                        globalConvergenceCutoff: Number.parseInt(value, 10),
                       }))
                     }
                     type="number"
@@ -617,7 +604,7 @@ export default function RunDetails() {
                     onChange={(e, { value }) =>
                       setParameters((prev) => ({
                         ...prev,
-                        simulationDepth: parseInt(value, 10),
+                        simulationDepth: Number.parseInt(value, 10),
                       }))
                     }
                     type="number"
@@ -657,7 +644,6 @@ export default function RunDetails() {
                     control={Dropdown}
                     search
                     label="Algorithm"
-                    // options: [gliph1 , gliph2
                     options={[
                       { key: "gliph1", text: "GLIPH1", value: "GLIPH1" },
                       { key: "gliph2", text: "GLIPH2", value: "GLIPH2" },
@@ -709,7 +695,7 @@ export default function RunDetails() {
             onClick={() => {
               submitRun({ variables: { runID: runID } }).then(() => refetch());
             }}
-            content={status === "pending" ? "SUBMIT RUN" : status === 'completed' ? 'RUN COMPLETED' : status === 'failed' ? 'RUN FAILED' : "RUN SUBMITTED"}
+            content={submitButtonText}
           />
         </Message>
       </Grid.Column>

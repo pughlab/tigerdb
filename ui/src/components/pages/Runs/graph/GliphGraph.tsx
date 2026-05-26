@@ -42,12 +42,14 @@ export default function GliphGraph({
   hasGliphResults,
   importGliph,
   importLoading,
+  updateSelectedNode
 }: Readonly<{ 
   runID: string;
   presignedURL: string;
   hasGliphResults: boolean;
   importGliph: any;
   importLoading: boolean;
+  updateSelectedNode: React.Dispatch<React.SetStateAction<any>>;
 }>) {
   
 
@@ -231,6 +233,7 @@ export default function GliphGraph({
         nodeLabel={(node: any) => `ID: ${node.id}<br />CDR3b: ${node.label}<br />TRBV: ${node.v_gene}<br />Community: ${node.group}<br />Source: ${node.source}`}
         linkLabel={(link: any) => `Community: ${link.group}`}
         nodeColor={(node: any) => colorMode === 'source' ? node.color : (colorScale(node.group) || "#ffffff")}
+        onNodeClick={(node:  any) => updateSelectedNode(node)}
         linkDirectionalParticles={0}
         linkColor={(link) => colorMode === 'source' ? link.color || "#ffffff" : colorScale(link.group)}
         nodeOpacity={0.8}
@@ -249,6 +252,7 @@ export default function GliphGraph({
         linkColor={(link) => colorMode === 'source' ? link.color || "#ffffff" : colorScale(link.group)}
         nodeLabel={(node: any) => `ID: ${node.id}<br />CDR3b: ${node.label}<br />TRBV: ${node.v_gene}<br/>Community: ${node.group}<br />Source: ${node.source}`}
         nodeColor={(node: any) => colorMode === 'source' ? node.color : (colorScale(node.group) || "#ffffff")}
+        onNodeClick={(node:  any) => updateSelectedNode(node)}
         linkDirectionalParticles={0}
         nodeRelSize={5}
         cooldownTicks={50}

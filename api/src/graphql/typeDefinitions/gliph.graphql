@@ -23,6 +23,29 @@ type GliphNode {
     source: String
 }
 
+type NodeDetails {
+    cdr3b: String!
+    v_gene: String
+    j_gene: String
+    source: String
+    projectID: String
+    projectName: String
+    datasetID: String
+    datasetName: String
+    variableID: String
+    trav: String
+    traj: String
+    mhc: String
+    mhcClass: String
+    epitopeGene: String
+    epitopeAAseq: String
+    epitopeSpecies: String
+    mutation: String
+    recognizesWTEpitope: String
+    uniProt: String
+    reference: String
+}
+
 type GliphLink {
     source: ID!
     target: ID!
@@ -44,6 +67,7 @@ input GliphGraphInput {
 
 type Query {
     gliphGraph(input: GliphGraphInput!): GliphGraph
+    nodeDetailsByCDR3b(cdr3b: String!): NodeDetails!
 }
 
 type Mutation {

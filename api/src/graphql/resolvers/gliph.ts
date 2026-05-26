@@ -39,6 +39,14 @@ const colors = {
   }
 }
 
+async function getNodeDetails(session, cdr3b: string) {
+  const results = await session.run(`
+    MATCH (p:Project)-->(d:Dataset)-->(:CuratedAnnotation)-->(v:AnnotationVariable {cdr3b: $cdr3b})
+    RETURN p, d, v
+  `, { cdr3b })
+  return results.records[0];
+}
+
 async function dropGraph(session, graphName) {
   await session.run(
     `CALL gds.graph.exists($graphName) YIELD exists
@@ -183,6 +191,61 @@ export const resolvers = {
       } finally {
         await dropGraph(session, graphName)
         await tearDownGraphData(session)
+        session.close()
+      }
+    },
+    nodeDetailsByCDR3b: async (_parent, { cdr3b }, { driver }) => {
+      const session = driver.session();
+      try {
+        const record = await getNodeDetails(session, cdr3b);
+        if (!record) {
+          return {
+            projectID: "",
+            projectName: "",
+            datasetID: "",
+            datasetName: "",
+            variableID: "",
+            cdr3b: cdr3b,
+            v_gene: "",
+            j_gene: "",
+            trav: "",
+            traj: "",
+            mhc: null,
+            mhcClass: null,
+            epitopeGene: null,
+            epitopeAAseq: null,
+            epitopeSpecies: null,
+            mutation: null,
+            recognizesWTEpitope: null,
+            uniProt: null,
+            reference: null
+          }
+        }
+        const project = record.get("p").properties;
+        const dataset = record.get("d").properties;
+        const variable = record.get("v").properties;
+        return {
+          projectID: project.projectID,
+          projectName: project.name,
+          datasetID: dataset.datasetID,
+          datasetName: dataset.name,
+          variableID: variable.annotationVariableID,
+          cdr3b: variable.cdr3b,
+          v_gene: variable.trbv,
+          j_gene: variable.trbj,
+          trav: variable.trav,
+          traj: variable.traj,
+          mhc: variable.mhc,
+          mhcClass: variable.mhcClass,
+          epitopeGene: variable.epitopeGene,
+          epitopeAAseq: variable.epitopeAAseq,
+          epitopeSpecies: variable.epitopeSpecies,
+          mutation: variable.mutation,
+          recognizesWTEpitope: variable.recognizesWTEpitope,
+          uniProt: variable.uniProt,
+          reference: variable.reference
+        }
+      } finally {
         session.close()
       }
     },
