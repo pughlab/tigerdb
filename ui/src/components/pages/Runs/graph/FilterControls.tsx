@@ -119,7 +119,7 @@ export default function FilterControls({ communities, groupOperations, updateHid
 
   return (
     <div style={{ position: 'absolute', top: 10, right: 10, zIndex: 1, backgroundColor: 'rgba(255,255,255,0.8)', padding: '10px', borderRadius: '6px' }}>
-      <Header as='h4'>Filter</Header>
+      <Header as='h4'>Filters</Header>
       <Button.Group size={'mini'} style={{ marginBottom: '10px' }}>
         <Button color={ filterMode === 'community' ? 'teal' : 'grey' } onClick={() => setFilterMode('community')} active={filterMode === 'community'}>Community</Button>
         <Button.Or />
