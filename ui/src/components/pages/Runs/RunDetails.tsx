@@ -222,6 +222,7 @@ function RunResults({
           <Header as="h3" icon>
             <Icon name="check circle" color="green" />
             RUN COMPLETED - READY TO DOWNLOAD
+            <Header.Subheader>Click on a node in the graph above to view its details and reference study.</Header.Subheader>
           </Header>
         </Message>
       </Segment>
