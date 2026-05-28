@@ -15,9 +15,9 @@ function GraphMode({ mode, updateMode }: Readonly<{ mode: '2D' | '3D'; updateMod
     <div style={{ position: 'absolute', bottom: 10, left: 10, color: 'white', zIndex: 1, display: 'flex', alignItems: 'center' }}>
       <Header as='h4' inverted style={{ marginRight: '10px', marginTop: '10px' }}>View graph in</Header>
       <ButtonGroup>
-        <Button attached='top' color={mode === '3D' ? 'teal' : 'grey'} size='medium' icon='eye' content='3D' onClick={() => updateMode('3D')} />
-        <Button.Or />
         <Button attached='top' color={mode === '2D' ? 'teal' : 'grey'} size='medium' icon='eye' content='2D' onClick={() => updateMode('2D')} />
+        <Button.Or />
+        <Button attached='top' color={mode === '3D' ? 'teal' : 'grey'} size='medium' icon='eye' content='3D' onClick={() => updateMode('3D')} />
       </ButtonGroup>
     </div>
   )
@@ -59,7 +59,7 @@ export default function GliphGraph({
   const [hasData, setHasData] = useState(hasGliphResults)
   const [hiddenGroups, setHiddenGroups] = useState<Set<string | null>>(new Set())
   const [hiddenNodes, setHiddenNodes] = useState<Set<any>>(new Set())
-  const [mode, setMode] = useState<'2D' | '3D'>('3D')
+  const [mode, setMode] = useState<'2D' | '3D'>('2D')
   const [colorMode, setColorMode] = useState<'source' | 'community'>('community')
 
   useEffect(() => {
