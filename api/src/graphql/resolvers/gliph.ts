@@ -342,9 +342,9 @@ export const resolvers = {
              MERGE (t)-[:TEMP_IN_CLUSTER]->(c)
             ',
             { 
-              batchSize: 5000, 
+              batchSize: 10000, 
               iterateList: true, 
-              parallel: true, 
+              parallel: false, 
               retries: 3, 
               params: { presignedURL: $presignedURL, runID: $runID } 
             }
