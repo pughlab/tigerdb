@@ -18,6 +18,17 @@ export const GET_GLIPH_GRAPH = gql`
         color
         source
         v_gene
+        hla_a
+        hla_b
+        hla_c
+        hla_dpa1
+        hla_dpb1
+        hla_dqa1
+        hla_dqb1
+        hla_drb1
+        hla_drb3
+        hla_drb4
+        hla_drb5
       }
       links {
         source

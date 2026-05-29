@@ -5,6 +5,17 @@ type GliphTCR {
     j_gene: String
     sample: String
     source: String
+    hla_a: String
+    hla_b: String
+    hla_c: String
+    hla_dpa1: String
+    hla_dpb1: String
+    hla_dqa1: String
+    hla_dqb1: String
+    hla_drb1: String
+    hla_drb3: String
+    hla_drb4: String
+    hla_drb5: String
     run: Run! @relationship(type: "HAS_RESULT", direction: IN)
 }
 
@@ -21,6 +32,17 @@ type GliphNode {
     size: Int
     color: String
     source: String
+    hla_a: String
+    hla_b: String
+    hla_c: String
+    hla_dpa1: String
+    hla_dpb1: String
+    hla_dqa1: String
+    hla_dqb1: String
+    hla_drb1: String
+    hla_drb3: String
+    hla_drb4: String
+    hla_drb5: String
 }
 
 type NodeDetails {

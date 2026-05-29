@@ -123,6 +123,17 @@ async function getGraph(session, graphName) {
       n.source AS source,
       n.v_gene AS v_gene,
       n.cdr3b AS label,
+      n.hla_a AS hla_a,
+      n.hla_b AS hla_b,
+      n.hla_c AS hla_c,
+      n.hla_dpa1 AS hla_dpa1,
+      n.hla_dpb1 AS hla_dpb1,
+      n.hla_dqa1 AS hla_dqa1,
+      n.hla_dqb1 AS hla_dqb1,
+      n.hla_drb1 AS hla_drb1,
+      n.hla_drb3 AS hla_drb3,
+      n.hla_drb4 AS hla_drb4,
+      n.hla_drb5 AS hla_drb5,
       communityId AS group,
       kcore,
       collect(target.id) AS targetIds
@@ -164,6 +175,17 @@ export const resolvers = {
             group: record.get("group").toInt(),
             kcore: record.get("kcore").toInt(),
             label: record.get("label"),
+            hla_a: record.get("hla_a"),
+            hla_b: record.get("hla_b"),
+            hla_c: record.get("hla_c"),
+            hla_dpa1: record.get("hla_dpa1"),
+            hla_dpb1: record.get("hla_dpb1"),
+            hla_dqa1: record.get("hla_dqa1"),
+            hla_dqb1: record.get("hla_dqb1"),
+            hla_drb1: record.get("hla_drb1"),
+            hla_drb3: record.get("hla_drb3"),
+            hla_drb4: record.get("hla_drb4"),
+            hla_drb5: record.get("hla_drb5"),
             color: colors.tcr[source?.toLowerCase()] || colors.tcr.default
           })
         })
@@ -275,7 +297,18 @@ export const resolvers = {
                   list[12] as cdr3,
                   list[13] as vGene,
                   list[14] as jGene,
-                  list[16] as sample
+                  list[16] as sample,
+                  CASE WHEN list[18] = "-" THEN null ELSE list[18] END as hlaA,
+                  CASE WHEN list[19] = "-" THEN null ELSE list[19] END as hlaB,
+                  CASE WHEN list[20] = "-" THEN null ELSE list[20] END as hlaC,
+                  CASE WHEN list[21] = "-" THEN null ELSE list[21] END as hlaDPA1,
+                  CASE WHEN list[22] = "-" THEN null ELSE list[22] END as hlaDPB1,
+                  CASE WHEN list[23] = "-" THEN null ELSE list[23] END as hlaDQA1,
+                  CASE WHEN list[24] = "-" THEN null ELSE list[24] END as hlaDQB1,
+                  CASE WHEN list[25] = "-" THEN null ELSE list[25] END as hlaDRB1,
+                  CASE WHEN list[26] = "-" THEN null ELSE list[26] END as hlaDRB3,
+                  CASE WHEN list[27] = "-" THEN null ELSE list[27] END as hlaDRB4,
+                  CASE WHEN list[28] = "-" THEN null ELSE list[28] END as hlaDRB5
 
              WHERE clusterId IS NOT NULL AND cdr3 IS NOT NULL AND sample IS NOT NULL
 
@@ -286,7 +319,19 @@ export const resolvers = {
                 t.v_gene = vGene,
                 t.j_gene = jGene,
                 t.sample = sample,
-                t.source = split(sample, ":")[0]
+                t.source = split(sample, ":")[0],
+                t.hla_a = hlaA,
+                t.hla_b = hlaB,
+                t.hla_c = hlaC,
+                t.hla_dpa1 = hlaDPA1,
+                t.hla_dpb1 = hlaDPB1,
+                t.hla_dqa1 = hlaDQA1,
+                t.hla_dqb1 = hlaDQB1,
+                t.hla_drb1 = hlaDRB1,
+                t.hla_drb3 = hlaDRB3,
+                t.hla_drb4 = hlaDRB4,
+                t.hla_drb5 = hlaDRB5
+                
 
              WITH t, clusterId
              MATCH (r:Run {runID: $runID})

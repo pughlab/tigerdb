@@ -68,6 +68,23 @@ export default function TCRInfo({ node }: Readonly<{ node: any }>) {
     }
   }
 
+  const hlaFields = [
+  { key: 'hla_a', title: 'HLA-A' },
+  { key: 'hla_b', title: 'HLA-B' },
+  { key: 'hla_c', title: 'HLA-C' },
+  { key: 'hla_dpa1', title: 'HLA-DPA1' },
+  { key: 'hla_dpb1', title: 'HLA-DPB1' },
+  { key: 'hla_dqa1', title: 'HLA-DQA1' },
+  { key: 'hla_dqb1', title: 'HLA-DQB1' },
+  { key: 'hla_drb1', title: 'HLA-DRB1' },
+  { key: 'hla_drb3', title: 'HLA-DRB3' },
+  { key: 'hla_drb4', title: 'HLA-DRB4' },
+  { key: 'hla_drb5', title: 'HLA-DRB5' }
+];
+
+  // Check if ANY of the HLA fields have a truthy value
+  const hasAnyHla = hlaFields.some(field => node[field.key]);
+
   return (
     <Popup
       inverted
@@ -126,6 +143,21 @@ export default function TCRInfo({ node }: Readonly<{ node: any }>) {
                 <Grid.Row>
                   <Label basic content="MHC Class" detail={`${data.mhcClass ? data.mhcClass : 'NA'}`} color="grey" />
                 </Grid.Row>
+                { hasAnyHla && (
+                  <Grid.Row>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '10px' }}>
+                      {hlaFields.map(field => (
+                        <Label 
+                          key={field.key} 
+                          basic 
+                          content={field.title} 
+                          detail={`${node[field.key] || 'NA'}`} 
+                          color="grey" 
+                        />
+                      ))}
+                    </div>
+                  </Grid.Row>
+                )}
               </Grid.Column>
               
               <Grid.Column>
