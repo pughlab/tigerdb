@@ -1,9 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
-import { useEffect, useState } from 'react'
 
 export default function useRunDetailsQuery({ runID }: { runID: string }) {
-	const [run, setRun] = useState()
-
 	const { data, loading, error, refetch } = useQuery(gql`
 	query RunDetails($runID: ID!) {
 		getRuns(runID: $runID) {
@@ -13,6 +10,12 @@ export default function useRunDetailsQuery({ runID }: { runID: string }) {
 			description
 			createdOn
 			createdBy {
+				keycloakUserID
+				email
+				name
+			}
+			isOwner
+			sharedWith {
 				keycloakUserID
 				email
 				name
@@ -59,10 +62,5 @@ export default function useRunDetailsQuery({ runID }: { runID: string }) {
 		variables: { runID },
 		fetchPolicy: 'network-only'
 	})
-	useEffect(() => {
-		if (!!data?.getRuns && data.getRuns.length > 0) {
-			setRun(data.getRuns[0])
-		}
-	}, [data])
-	return { run, loading, error, refetch }
+	return { run: data?.getRuns[0], loading, error, refetch }
 }

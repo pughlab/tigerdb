@@ -17,7 +17,7 @@ import {
   Image,
   Dimmer,
   ButtonOr,
-  Popup
+  Popup, Modal
 } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
 import tigerdbLogo from "../../logos/tigerdb.png";
@@ -32,6 +32,10 @@ import useUpdateRunParametersMutation from "../../../hooks/useUpdateRunParameter
 import useImportGliphMutation from "../../../hooks/useImportGliphMutation";
 import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
 import TCRInfo from "./graph/TCRInfo";
+import ShareRunModal from "./ShareRunModal";
+import {useEffect, useState} from "react";
+import {gql, useMutation} from "@apollo/client";
+import useIsAdmin from "../../../hooks/useIsAdmin";
 
 function RunActionsButton({
   status,
@@ -348,6 +352,82 @@ function getStatusIcon(status: string): string {
   }
 }
 
+function StopSharingConfirmation({ userName, stopSharing }) {
+	const [open, setOpen] = useState(false)
+	return (
+		<Modal
+			closeIcon
+			closeOnDimmerClick={false}
+			size="small"
+			trigger={
+				<Icon name="delete" onClick={() => setOpen(true)} />
+			}
+			open={open}
+			onClose={() => setOpen(false)}
+		>
+			<Modal.Content>
+				<Divider horizontal content='STOP SHARING'/>
+				<Modal.Description>
+					Are you sure? {userName} will no longer have access to this run.
+				</Modal.Description>
+			</Modal.Content>
+			<Modal.Actions>
+				<Button color='red' onClick={() => setOpen(false)}>
+					<Icon name='remove' /> No
+				</Button>
+				<Button color='green' onClick={() => {
+					stopSharing()
+					setOpen(false)
+				}}>
+					<Icon name='checkmark' /> Yes
+				</Button>
+			</Modal.Actions>
+		</Modal>
+	)
+}
+
+function SharedUserLabel({
+	runID,
+	user,
+	updateUsers,
+	canDelete = false
+}: Readonly<{
+	runID?: string,
+	user: { name: string; email: string },
+	updateUsers: React.Dispatch<React.SetStateAction<any[]>>,
+	canDelete?: boolean}>
+) {
+	const { name, email } = user
+	const [stopSharing] = useMutation(gql`
+      mutation StopSharingRun($runID: ID!, $email: Email!) {
+        stopSharingRunWithUser(runID: $runID, email: $email) {
+          runID
+          name
+          isPublic
+          sharedWith {
+            keycloakUserID
+            name
+            email
+          }
+        }
+      }
+    `, {
+		variables: {
+			email,
+			runID,
+		},
+		onCompleted: () => {
+			updateUsers(prev => prev.filter(u => u.email !== email))
+		},
+	})
+	return (
+		<Label color='grey' size="medium">
+			{name} ({email})
+			{canDelete && <StopSharingConfirmation userName={name} stopSharing={stopSharing}/>}
+		</Label>
+	)
+}
+
 export default function RunDetails() {
   const initialParameters = {
     outPrefix: "TIGERdb",
@@ -372,8 +452,16 @@ export default function RunDetails() {
     loading: runDetailsLoading,
     refetch,
   } = useRunDetailsQuery({ runID });
+  const { isAdmin } = useIsAdmin();
   const [submitRun] = useSubmitRunMutation();
   const { importGliph, loading: importLoading } = useImportGliphMutation();
+  const [sharedUsers, setSharedUsers] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (run?.sharedWith?.length > 0) {
+      setSharedUsers(run.sharedWith);
+    }
+  }, [run])
 
   if (runDetailsLoading) {
     return (
@@ -398,7 +486,9 @@ export default function RunDetails() {
     processedDatasets,
     referenceDatasets,
     status,
-    presignedURL 
+    presignedURL,
+    isPublic,
+    isOwner
   } = run;
 
   const createdOnDate = new Date(createdOn).toLocaleString("en-US", {
@@ -452,6 +542,7 @@ export default function RunDetails() {
           importGliph={importGliph}
           importLoading={importLoading}
         />
+        <ShareRunModal runID={runID} updateSharedUsers={setSharedUsers} />
         </ButtonGroup>
         <Message color={"grey"}>
           <Divider horizontal content="Run Details" />
@@ -460,6 +551,24 @@ export default function RunDetails() {
             <List.Item icon="calendar" content={`${createdOnDate}`} />
             <List.Item icon="user" content={`${createdBy.email}`} />
             <List.Item icon="info circle" content={`runID: ${runID}`} />
+            {!isPublic && sharedUsers?.length > 0 && (
+              <List.Item>
+                  <List.Icon name='users' style={{ paddingTop: '0.5em' }} />
+                  <List.Content style={{paddingLeft: '0px'}}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', paddingTop: '0.2em' }}>
+                      {sharedUsers.map(user => (
+                        <SharedUserLabel
+                          key={user.email}
+                          user={user}
+                          canDelete={isOwner || isAdmin}
+                          updateUsers={setSharedUsers}
+                          runID={runID}
+                        />
+                      ))}
+                    </div>
+                  </List.Content>
+                </List.Item>
+            )}
             <List.Item style={{ color: colorStatus }}>
               <List.Icon name={iconStatus} loading={status === "submitted"} />
               <List.Content>{`${status.toUpperCase()}`}</List.Content>

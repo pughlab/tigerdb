@@ -50,7 +50,9 @@ type Run {
     status: RunStatus! @default(value: pending)   
     createdBy: KeycloakUser! @relationship(type: "CREATED_BY", direction: OUT)
     gliphTCRs: [GliphTCR!]! @relationship(type: "HAS_RESULT", direction: OUT)
+    sharedWith: [KeycloakUser!]! @relationship(type: "SHARED_WITH", direction: OUT)
     isPublic: Boolean
+    isOwner: Boolean @customResolver
     # logs: String
     getRunData: String
     failedRunLogs: String
@@ -124,7 +126,14 @@ type Mutation {
     deleteRun(
       runID: ID!
     ): String!
-
+    shareRunWithUsers(
+      runID: ID!
+      emails: [Email!]!
+    ): Run!,
+    stopSharingRunWithUser(
+      runID: ID!
+      email: Email!
+    ): Run!,
 }
 
 extend type Run @auth(
