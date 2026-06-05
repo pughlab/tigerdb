@@ -298,17 +298,17 @@ export const resolvers = {
                   list[13] as vGene,
                   list[14] as jGene,
                   list[16] as sample,
-                  CASE WHEN list[18] = "-" THEN null ELSE list[18] END as hlaA,
-                  CASE WHEN list[19] = "-" THEN null ELSE list[19] END as hlaB,
-                  CASE WHEN list[20] = "-" THEN null ELSE list[20] END as hlaC,
-                  CASE WHEN list[21] = "-" THEN null ELSE list[21] END as hlaDPA1,
-                  CASE WHEN list[22] = "-" THEN null ELSE list[22] END as hlaDPB1,
-                  CASE WHEN list[23] = "-" THEN null ELSE list[23] END as hlaDQA1,
-                  CASE WHEN list[24] = "-" THEN null ELSE list[24] END as hlaDQB1,
-                  CASE WHEN list[25] = "-" THEN null ELSE list[25] END as hlaDRB1,
-                  CASE WHEN list[26] = "-" THEN null ELSE list[26] END as hlaDRB3,
-                  CASE WHEN list[27] = "-" THEN null ELSE list[27] END as hlaDRB4,
-                  CASE WHEN list[28] = "-" THEN null ELSE list[28] END as hlaDRB5
+                  list[18] as hlaA,
+                  list[19] as hlaB,
+                  list[20] as hlaC,
+                  list[21] as hlaDPA1,
+                  list[22] as hlaDPB1,
+                  list[23] as hlaDQA1,
+                  list[24] as hlaDQB1,
+                  list[25] as hlaDRB1,
+                  list[26] as hlaDRB3,
+                  list[27] as hlaDRB4,
+                  list[28] as hlaDRB5
 
              WHERE clusterId IS NOT NULL AND cdr3 IS NOT NULL AND sample IS NOT NULL
 
@@ -342,9 +342,9 @@ export const resolvers = {
              MERGE (t)-[:TEMP_IN_CLUSTER]->(c)
             ',
             { 
-              batchSize: 10000, 
+              batchSize: 5000, 
               iterateList: true, 
-              parallel: false, 
+              parallel: true, 
               retries: 3, 
               params: { presignedURL: $presignedURL, runID: $runID } 
             }
