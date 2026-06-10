@@ -250,23 +250,23 @@ export const resolvers = {
             throw new Error('Run not found')
           }
           const session = driver.session()
-          await session.run(`MATCH (x:Run)-[r]-(n)
-            WHERE
-              NOT type(r) = 'CREATED_BY'
-              AND NOT 'ProcessedDataset' in labels(n)
-              AND x.runID = '${run[0].runID}'
-            DETACH DELETE x, n`
+          await session.run(`
+              MATCH (n:Run { runID: ${run[0].runID} })-[]-(p:RunParameters)
+              OPTIONAL MATCH (n)-[:HAS_RESULT]-(t:GliphTCR)
+              WHERE apoc.node.degree(t) = 1
+              RETURN n, p, t
+            `
           )
           return JSON.stringify(run[0])
         } else {
           const session = driver.session()
-          await session.run(`MATCH (u:KeycloakUser)<-[]-(x:Run)-[r]-(n)
+          await session.run(`MATCH (u:KeycloakUser)<-[]-(x:Run)-[r]-(p:RunParameters)
             WHERE
               u.email = "public@tigerdb.ca"
-              AND x.runID = '${runID}'
-              AND NOT type(r) = 'CREATED_BY'
-              AND NOT 'ProcessedDataset' in labels(n)
-            DETACH DELETE x, n`
+              AND x.runID = ${runID}
+            OPTIONAL MATCH (x)-[:HAS_RESULT]-(t:GliphTCR)
+            WHERE apoc.node.degree(t) = 1
+            DETACH DELETE x, p, t`
           )
           return JSON.stringify({})
         }
