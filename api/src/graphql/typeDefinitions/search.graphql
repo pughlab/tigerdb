@@ -1,0 +1,60 @@
+input CDR3Filters {
+    trbv: [String]
+    trbj: [String]
+    trav: [String]
+    traj: [String]
+    mhc: [String]
+    mhcClass: [String]
+    epitopeGene: [String]
+    epitopeAAseq: [String]
+    epitopeSpecies: [String]
+    mutation: [String]
+    recognizesWTEpitope: [Boolean]
+    reference: [String]
+    uniProt: [String]
+
+}
+
+input CDR3SearchInput {
+    cdr3b: String
+    filters: CDR3Filters
+    limit: Int
+    differenceFactor: Decimal
+    tags: [String]
+    categories: [String]
+}
+
+type CDR3SearchResult {
+    projectID: String
+    projectName: String
+    datasetID: String
+    datasetName: String
+    variableID: ID
+    cdr3b: String
+    cdr3a: String
+    reference: String
+    trbv: String
+    trbj: String
+    trav: String
+    traj: String
+    mhc: String
+    mhcClass: String
+    epitopeGene: String
+    epitopeAAseq: String
+    epitopeSpecies: String
+    mutation: String
+    recognizesWTEpitope: String
+    uniProt: String
+    score: Decimal
+    tags: [Tag]
+}
+
+type CDR3SearchResultPage {
+  items: [CDR3SearchResult]!
+  totalCount: Int!
+}
+
+type Query {
+    findCDR3s(input: CDR3SearchInput!): [CDR3SearchResult]!
+    findCDR3sPaged(input: CDR3SearchInput!, skip: Int!, limit: Int!): CDR3SearchResultPage!
+}

@@ -37,16 +37,12 @@ export default function useMinioUploadMutation(postFn: any) {
         mutation minioUploadFile(
             $bucketName: String!
             $file: Upload!
-            $rawDatasetID: ID!
-            $allowedStudies: [String]
-            $allowedSites: [String]
+            $datasetID: ID!
         ) {
             minioUploadFile(
                 bucketName: $bucketName
                 file: $file
-                rawDatasetID: $rawDatasetID
-                allowedStudies: $allowedStudies
-                allowedSites: $allowedSites
+                datasetID: $datasetID
             ) {
                 bucketName
                 objectName
@@ -57,14 +53,14 @@ export default function useMinioUploadMutation(postFn: any) {
         onCompleted: (data) => {
             if (!!data) {
                 console.log(data)
-                dispatch({type: 'SET_MINIO_UPLOAD', minioUpload: data.minioUpload})
+                dispatch({type: 'SET_MINIO_UPLOAD', minioUpload: data.minioUploadFile})
             }
             postFn()
         }
     })
     
 
-    return {state, dispatch, mutation: minioUploadFile}
+    return {state, dispatch, mutation: minioUploadFile, loading, error}
     
 }
   

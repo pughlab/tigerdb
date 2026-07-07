@@ -1,4 +1,4 @@
-IMiC readme here (how to start, how each service works)
+TIGERdb readme here (how to start, how each service works)
 
 Requires Node 16 and Docker (should come with `docker compose` command)
 ```

@@ -1,0 +1,164 @@
+type AnnotationVariable {
+    annotationVariableID: ID! @id
+    cdr3b: String
+    cdr3a: String
+    trbv: String
+    trbj: String
+    trav: String
+    traj: String
+    mhc: String
+    mhcClass: String
+    epitopeGene: String
+    epitopeAAseq: String
+    epitopeSpecies: String
+    antigenClass: String
+    mutation: String
+    recognizesWTEpitope: String
+    reference: String
+    uniProt: String
+    notes: String
+    tags: [Tag!]! @relationship(type: "HAS_TAG", direction: OUT)
+
+    # annotationVariableID: ID! @id
+    # locus: String
+    # cdr3b: String
+    # trbv: String
+    # trbj: String
+    # mhc: String
+    # mhcClass: String
+    # epitope: String
+    # epitopeGene: String
+    # epitopeSpecies: String
+    # reference: String
+
+    # Define fields you want to search over here, transformation script must map to this shape
+
+    # currentDefinition: DataVariableDefinition! @relationship(type: "HAS_DEFINITION", direction: OUT, properties: "HasDefinition")
+    # currentDefinition: DataVariableDefinition! @relationship(type: "HAS_DEFINITION", direction: OUT)
+    # previousDefinitions: [DataVariableDefinition!]! @relationship(type: "HAS_DEFINITION", direction: OUT)
+
+    # fields: [DataVariableField!]! @relationship(type: "HAS_FIELD", direction: OUT)
+}
+
+# extend type AnnotationVariable @auth(
+#   rules: [{
+#       isAuthenticated: true,
+#     }]
+# )
+
+type Filter {
+    filterKey: String!
+    placeholder: String!
+    text: [String!]!
+}
+
+type Query {
+    curatedAnnotationFilters: [Filter!]!
+        @cypher(
+            statement: """
+            MATCH (n:AnnotationVariable)
+            WHERE n.trbv IS NOT NULL
+            RETURN {
+            filterKey: 'trbv',
+            placeholder: 'TRBV',
+            text: collect(DISTINCT n.trbv)
+            } AS filter
+            UNION
+            MATCH (n:AnnotationVariable)
+            WHERE n.trbj IS NOT NULL
+            RETURN {
+            filterKey: 'trbj',
+            placeholder: 'TRBJ',
+            text: collect(DISTINCT n.trbj)
+            } AS filter
+            UNION
+            MATCH (n:AnnotationVariable)
+            WHERE n.trav IS NOT NULL
+            RETURN {
+            filterKey: 'trav',
+            placeholder: 'TRAV',
+            text: collect(DISTINCT n.trav)
+            } AS filter
+            UNION
+            MATCH (n:AnnotationVariable)
+            WHERE n.traj IS NOT NULL
+            RETURN {
+            filterKey: 'traj',
+            placeholder: 'TRAJ',
+            text: collect(DISTINCT n.traj)
+            } AS filter
+            UNION
+            MATCH (n:AnnotationVariable)
+            WHERE n.mhc IS NOT NULL
+            RETURN {
+            filterKey: 'mhc',
+            placeholder: 'MHC',
+            text: collect(DISTINCT n.mhc)
+            } AS filter
+            UNION
+            MATCH (n:AnnotationVariable)
+            WHERE n.mhcClass IS NOT NULL
+            RETURN {
+            filterKey: 'mhcClass',
+            placeholder: 'MHC class',
+            text: collect(DISTINCT n.mhcClass)
+            } AS filter
+            UNION
+            MATCH (n:AnnotationVariable)
+            WHERE n.epitopeGene IS NOT NULL
+            RETURN {
+            filterKey: 'epitopeGene',
+            placeholder: 'Epitope gene/protein name',
+            text: collect(DISTINCT n.epitopeGene)
+            } AS filter
+            UNION
+            MATCH (n:AnnotationVariable)
+            WHERE n.epitopeAAseq IS NOT NULL
+            RETURN {
+            filterKey: 'epitopeAAseq',
+            placeholder: 'WT/Mutant epitope amino-acid sequence',
+            text: collect(DISTINCT n.epitopeAAseq)
+            } AS filter
+            UNION
+            MATCH (n:AnnotationVariable)
+            WHERE n.epitopeSpecies IS NOT NULL
+            RETURN {
+            filterKey: 'epitopeSpecies',
+            placeholder: 'Epitope species',
+            text: collect(DISTINCT n.epitopeSpecies)
+            } AS filter
+            UNION
+            MATCH (n:AnnotationVariable)
+            WHERE n.mutation IS NOT NULL
+            RETURN {
+            filterKey: 'mutation',
+            placeholder: 'Mutation',
+            text: collect(DISTINCT n.mutation)
+            } AS filter
+            UNION
+            MATCH (n:AnnotationVariable)
+            WHERE n.recognizesWTEpitope IS NOT NULL
+            RETURN {
+            filterKey: 'recognizesWTEpitope',
+            placeholder: 'Recognizes WT epitope',
+            text: collect(DISTINCT n.recognizesWTEpitope)
+            } AS filter
+            UNION
+            MATCH (n:AnnotationVariable)
+            WHERE n.reference IS NOT NULL
+            RETURN {
+            filterKey: 'reference',
+            placeholder: 'Reference',
+            text: collect(DISTINCT n.reference)
+            } AS filter
+            UNION
+            MATCH (n:AnnotationVariable)
+            WHERE n.uniProt IS NOT NULL
+            RETURN {
+            filterKey: 'uniProt',
+            placeholder: 'UniProt',
+            text: collect(DISTINCT n.uniProt)
+            } AS filter
+            """
+        )
+}

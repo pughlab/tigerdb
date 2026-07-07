@@ -1,0 +1,57 @@
+# type Subject {
+#     subjectID: ID! @id
+#     childID: ID!
+# }
+
+
+
+# type DataVariableDefinition {
+#     dataVariable: DataVariable! @relationship(type: "HAS_DEFINITION", direction: IN)
+#     dataVariableDefinitionID: ID! @id
+#     label: String!
+# }
+
+# type DataVariableSample {
+#     dataVariableSampleID: ID! @id
+#     # value: JSON
+#     currentValueState: DataVariableSampleState! @relationship(type: "HAS_DEFINITION", direction: IN)
+#     previousValueStates: [DataVariableSampleState!]! @relationship(type: "HAS_DEFINITION", direction: IN)
+# }
+
+# # For time versioning
+# type DataVariableSampleState {
+#     value: JSON
+# }
+
+type CuratedAnnotation {
+    curatedAnnotationID: ID! @id
+    # createdAt: DateTime! @timestamp(operations: [CREATE])
+    # updatedAt: DateTime! @timestamp(operations: [UPDATE])
+    annotationVariables: [AnnotationVariable!]! @relationship(type: "HAS_ANNOTATION_VARIABLE", direction: OUT)
+    dataset: Dataset! @relationship(type: "HAS_CURATED_ANNOTATION", direction: IN)
+    minioUpload: MinioUpload! @relationship(type: "GENERATED_CURATED_ANNOTATION", direction: IN)
+}
+
+type EpitopeSpeciesCount {
+    epitopeSpecies: String!
+    count: Int!
+}
+
+type Mutation {
+    createCuratedAnnotationFromDataset(
+        datasetID: ID!
+        bucketName: ID!
+        objectName: ID!
+    ): CuratedAnnotation! @hasRole(role: "admin")
+}
+
+type Query {
+    countEpitopes: [EpitopeSpeciesCount]!
+    # getCuratedAnnotations: [CuratedAnnotation]
+}
+
+# extend type CuratedAnnotation @auth(
+#   rules: [{
+#       isAuthenticated: true,
+#     }]
+# )

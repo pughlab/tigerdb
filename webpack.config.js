@@ -54,6 +54,11 @@ module.exports = {
         test: /\.(png|woff|woff2|eot|ttf|svg)$/,
         loader: 'url-loader?limit=100000'
       },
+      {
+        test: /\.mjs$/,
+        include: /node_modules/,
+        type: 'javascript/auto'
+      },
     ],
   },
   plugins: [
@@ -67,14 +72,20 @@ module.exports = {
     new HtmlWebpackPlugin({
       filename: './index.html',
       template: './ui/public/index.html',
+      favicon: './ui/public/favicon.ico', // Add the favicon
     }),
     new webpack.DefinePlugin({
       'process.env': JSON.stringify(dotenv.parsed)
     }),
   ].filter(Boolean),
   resolve: {
-    extensions: ['.js', '.ts', '.tsx'],
+    extensions: ['.js', '.ts', '.tsx', '.mjs'],
+    alias: {
+      // 'three/webgpu': 'three'
+      'three/webgpu': path.resolve(__dirname, 'node_modules/three')
+    }
   },
+  
   devServer: {
     port: 3001,
     host: '0.0.0.0',

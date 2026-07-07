@@ -1,0 +1,410 @@
+import { ApolloError } from 'apollo-server'
+
+const selectionSet = `{
+  projectID
+  name
+  createdOn
+  isPublic
+  isReference
+  description
+  datasets {
+    datasetID
+    name
+    tags {
+      tagID
+      name
+      category
+    }
+    minioUpload {
+      objectName
+      filename
+      processedDataset {
+        objectName
+        filename
+        minioUpload {
+          dataset {
+            datasetID
+            name
+          }
+        }
+      }
+    }
+  }
+  createdBy {
+    keycloakUserID
+    name
+    email
+  }
+  sharedWith {
+    keycloakUserID
+    name
+    email
+  }
+}`
+
+export const resolvers = {
+  Query: {
+    getProjects: async (obj, args, {ogm, kauth})=> {
+      try {
+        const isAuthenticated = !!kauth?.accessToken?.content?.sub;
+        let filters: any;
+
+        if (isAuthenticated) {
+          const { sub: keycloakUserID } = kauth.accessToken.content
+          const UserModel = ogm.model('KeycloakUser')
+          const user = await UserModel.find({
+            where: { keycloakUserID: keycloakUserID }
+          })
+          
+          if (!user || user.length === 0) {
+            // Fallback to public only if user record missing
+            filters = { isPublic: true };
+          } else {
+            filters = {
+              OR: [
+                { createdBy: user[0] },
+                { isPublic: true },
+                { sharedWith: user[0] }
+              ]
+            };
+          }
+        } else {
+          // Unauthenticated: only public projects
+          filters = {
+            OR: [
+              { isPublic: true }
+            ]
+          };
+      }
+        if (args?.projectID) {
+          filters.projectID = args.projectID;
+        }
+
+        if (args?.query !== '') {
+          filters.AND = [{
+            OR: [
+              { name_CONTAINS: args.query },
+              { description_CONTAINS: args.query },
+              { datasets: { tags: { name_CONTAINS: args.query }} }
+            ]
+          }]
+        }
+
+        const ProjectModel = ogm.model('Project')
+        ProjectModel.selectionSet = selectionSet
+        const projects = await ProjectModel.find({
+          where: filters,
+        })
+
+        console.log(`args: ${JSON.stringify(args)}`)
+        return projects
+      } catch (error) {
+        console.log('getProjects', error)
+        throw new ApolloError('getProjects', error as string)
+      }
+    },
+    countUnlabelledVariables: async (_obj, _args, { driver }) => {
+      const session = driver.session()
+      const unlabelledVarsList = await session.run(`
+        MATCH (p:Project)
+        OPTIONAL MATCH (p)-[:HAS_DATASET]->(d:Dataset)
+        OPTIONAL MATCH (d)-[:HAS_CURATED_DATASET]->(c:CuratedDataset)
+        OPTIONAL MATCH (c)-[:HAS_DATASET_VARIABLE]->(v:DatasetVariable)
+        RETURN p AS projects, count(v) AS varCount`
+      )
+      const projectData: any[] = []
+      console.log(unlabelledVarsList)
+      unlabelledVarsList.records.forEach((record) => {
+        projectData.push({
+          name: record.get('projects').properties['name'],
+          count: record.get('varCount')
+        })
+      })
+      console.log(projectData)
+      // const projectData = unlabelledVarsList.records.map((record) => {
+      //   console.log(record.get('projects'))
+      //   console.log(record.get('datasets'))
+      //   console.log(record.get('varCount'))
+      //   return {
+      //     projects: [
+      //       {
+      //         name: record.get('projects').properties['name'],
+      //         datasets: record.get('datasets').map(
+      //           (dataset) => ({ name: dataset.properties['name'], count: record.get('varCount') })
+      //         ),
+      //       },
+      //     ],
+      //   }
+      // })
+      return projectData
+    },
+    isProjectOwner: async (_obj, { projectID }, { driver, kauth }) => {
+      try {
+        const keycloakUserID = kauth.accessToken?.content?.sub ?? undefined
+        if (!keycloakUserID) {
+          throw new Error('User not logged in')
+        }
+        const session = driver.session()
+        const project = await session.run(
+          `MATCH (p:Project { projectID: $projectID })-[:CREATED_BY]->(u:KeycloakUser { keycloakUserID: $keycloakUserID }) RETURN p, u`,
+          { projectID, keycloakUserID }
+        )
+        return project.records.length > 0
+      } catch (error) {
+        console.log('isProjectOwner', error)
+        throw new ApolloError('isProjectOwner', error as string)
+      }
+    }
+  },
+  Mutation: {
+    createProject: async (
+      obj,
+      {name, description, isReference}, // missing data fill out here
+      { ogm, kauth }
+    ) => {
+      try {
+        const { sub: keycloakUserID } = kauth.accessToken.content
+        const UserModel = ogm.model('KeycloakUser')
+        const user = await UserModel.find({
+          where: {keycloakUserID: keycloakUserID}
+        })
+        if (!user) {
+          throw new Error('User not found')
+        }
+        const ProjectModel = ogm.model('Project')
+        const projectInput = {
+          name,
+          description,
+          isPublic: false,
+          isReference: isReference ?? false,
+          sharedWith: [],
+          // datasets: [],
+          // runs: [],
+          createdBy: { 
+            connect: {
+              where: { node: { keycloakUserID: user[0].keycloakUserID }}
+            }
+        }}
+        const {projects: [project]} = await ProjectModel.create({ 
+          input: [projectInput]
+        })
+        console.log('Created project is:')
+        console.log(project)
+        return project//.records[0].get(0).properties 
+      } catch (error) {
+        console.log('createProject', error)
+        throw new ApolloError('createProject', error as string)
+      }
+    },
+    updateProject: async (
+      parent,
+      {projectID, name, description, isPublic, datasets},
+      {ogm, kauth}
+    ) => {
+      try {
+        const { sub: keycloakUserID } = kauth.accessToken.content
+        const UserModel = ogm.model('KeycloakUser')
+        const user = await UserModel.find({
+          where: {keycloakUserID: keycloakUserID}
+        })
+        if (!user) {
+          throw new Error('User not found')
+        }
+
+        const ProjectModel = ogm.model('Project')
+
+        const projectInput = { name, description, isPublic }
+        const { project } = await ProjectModel.find({
+          where: { projectID: projectID }
+        })
+        if (!project) {
+          throw new Error('Project not found')
+        }
+        await project.update({
+          input: [{
+            projectInput,
+            connect: datasets.map((dataset: any) => ({
+              where: { node: { dataset }}
+            }))
+          }]
+        })
+
+        return project.records[0].get(0).properties
+      } catch (error) {
+        console.log('updateProject', error)
+        throw new ApolloError('updateProject', error as string)
+      }
+    },
+    makeProjectPublic: async (parent, { projectID }, { ogm, kauth }) => {
+      try {
+        const { sub: keycloakUserID } = kauth.accessToken.content
+        const UserModel = ogm.model('KeycloakUser')
+        const user = await UserModel.find({
+          where: {keycloakUserID: keycloakUserID}
+        })
+        if (!user) {
+          throw new Error('User not found')
+        }
+        const ProjectModel = ogm.model('Project')
+
+        const project = await ProjectModel.find({
+          where: { projectID: projectID }
+        })
+        if (project?.length === 0) {
+          throw new Error('Project not found')
+        }
+
+        const result = await ProjectModel.update({
+          where: { projectID: projectID },
+          update: { isPublic: true }
+        })
+        
+        return result.projects[0]
+      } catch (error) {
+        console.log("makeProjectPublic", error);
+        throw new ApolloError("makeProjectPublic", error as string);
+      } 
+    },
+    makeProjectPrivate: async (parent, { projectID }, { ogm, kauth }) => {
+      try {
+        const { sub: keycloakUserID } = kauth.accessToken.content
+        const UserModel = ogm.model('KeycloakUser')
+        const user = await UserModel.find({
+          where: {keycloakUserID: keycloakUserID}
+        })
+        if (!user) {
+          throw new Error('User not found')
+        }
+        const ProjectModel = ogm.model('Project')
+
+        const project = await ProjectModel.find({
+          where: { projectID: projectID }
+        })
+        if (project?.length === 0) {
+          throw new Error('Project not found')
+        }
+
+        const result = await ProjectModel.update({
+          where: { projectID: projectID },
+          update: { isPublic: false }
+        })
+        
+        return result.projects[0]
+      } catch (error) {
+        console.log("makeProjectPrivate", error);
+        throw new ApolloError("makeProjectPrivate", error as string);
+      } 
+    },
+    addDatasetsToProject: async (
+      parent,
+      { projectID, datasets },
+      { ogm }
+    ) => {
+      try {
+        const ProjectModel = ogm.model('Project')
+
+        const { project } = await ProjectModel.find({
+          where: { projectID: projectID }
+        })
+        if (!project) {
+          throw new Error('Project not found')
+        }
+        await project.update({
+          input: [{
+            connect: datasets.map((dataset: any) => ({
+              where: { node: { dataset }}
+            }))
+          }]
+        })
+      } catch (error) {
+        console.log("addDatasetsToProject", error);
+        throw new ApolloError("addDatasetsToProject", error as string);
+      }
+    },
+    shareWithUsers: async (parent, { projectID, emails }, { ogm, kauth }) => {
+      try {
+        const { sub: keycloakUserID } = kauth.accessToken.content
+        const UserModel = ogm.model('KeycloakUser')
+        const user = await UserModel.find({
+          where: {keycloakUserID: keycloakUserID}
+        })
+        if (!user) {
+          throw new Error('User not found')
+        }
+        const sharedWith = await UserModel.find({
+          where: { email_IN: emails }
+        })
+
+        const ProjectModel = ogm.model('Project')
+        ProjectModel.selectionSet = selectionSet
+
+        const project = await ProjectModel.find({
+          where: { projectID: projectID }
+        })
+        if (project?.length === 0) {
+          throw new Error('Project not found')
+        }
+
+        const { projects } = await ProjectModel.update({
+          where: { projectID: project[0].projectID },
+          update: {
+            sharedWith: {
+              connect: sharedWith.map(record => ({ 
+                where: { 
+                  node: { email: record.email } 
+                } 
+              }))
+            }
+          }
+        })
+        return projects[0]
+      } catch (error) {
+        console.log("shareWithUsers", error);
+        throw new ApolloError("shareWithUsers", error as string);
+      }
+    },
+    stopSharingWithUser: async (parent, { projectID, email }, { ogm, kauth }) => {
+      try {
+        const { sub: keycloakUserID } = kauth.accessToken.content
+        const UserModel = ogm.model('KeycloakUser')
+        const user = await UserModel.find({
+          where: {keycloakUserID: keycloakUserID}
+        })
+        if (!user) {
+          throw new Error('User not found')
+        }
+        const sharedWithUser = await UserModel.find({
+          where: { email: email }
+        })
+        if (sharedWithUser.length === 0) {
+          throw new Error('User not found')
+        }
+
+        const ProjectModel = ogm.model('Project')
+
+        const project = await ProjectModel.find({
+          where: { projectID: projectID }
+        })
+        if (project?.length === 0) {
+          throw new Error('Project not found')
+        }
+
+        await ProjectModel.update({
+          where: { projectID: project[0].projectID },
+          update: {
+            sharedWith: {
+              disconnect: {
+                where: { node: { email: email } }
+              }
+            }
+          }
+        })
+        return sharedWithUser[0]
+      } catch (error) {
+        console.log("stopSharingWithUser", error);
+        throw new ApolloError("stopSharingWithUser", error as string);
+      }
+    }
+  }
+
+}

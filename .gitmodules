@@ -2,6 +2,3 @@
 	path = api/src/neo4jgraphql
 	url = https://gitlab.com/CHILDdb/neo4jgraphql
 	branch = imic
-[submodule "imic_docs"]
-	path = imic_docs
-	url = https://github.com/mdpham/imic_docs.git

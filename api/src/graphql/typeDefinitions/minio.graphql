@@ -25,37 +25,38 @@ type MinioUpload {
   objectName: ID! @id
   filename: String!
   presignedURL: String @customResolver
-  allowedStudies: [String]
-  allowedSites: [String]
 
-  rawDataset: RawDataset @relationship(type: "HAS_FILE", direction: IN)
+  dataset: Dataset @relationship(type: "HAS_FILE", direction: IN)
+  processedDataset: ProcessedDataset @relationship(type: "HAS_PROCESSED_FILE", direction: OUT)
 
-  rawdataFileRawDataset: RawDataset @relationship(type: "HAS_RAWDATAFILE", properties: "HasRawdatafile", direction: IN)
-  codeBookRawDataset: RawDataset @relationship(type: "HAS_CODEBOOK", properties: "HasCodebook", direction: IN)
+  # rawdataFileDataset: Dataset @relationship(type: "HAS_RAWDATAFILE", properties: "HasRawdatafile", direction: IN)
+  # codeBookDataset: Dataset @relationship(type: "HAS_CODEBOOK", properties: "HasCodebook", direction: IN)
 
-  pairedCodebook: MinioUpload @relationship(type: "HAS_PAIRED_RAWDATAFILE", properties: "HasPairedRawdatafile", direction: OUT)
-  pairedRawdataFile: MinioUpload @relationship(type: "HAS_PAIRED_CODEBOOK", properties: "HasPairedCodebook", direction: OUT)
+  # pairedCodebook: MinioUpload @relationship(type: "HAS_PAIRED_RAWDATAFILE", properties: "HasPairedRawdatafile", direction: OUT)
+  # pairedRawdataFile: MinioUpload @relationship(type: "HAS_PAIRED_CODEBOOK", properties: "HasPairedCodebook", direction: OUT)
 
-  fromExportTask: Task @relationship(type: "FROM_FUNNEL_TASK", direction: IN)
+  # fromExportTask: Task @relationship(type: "FROM_FUNNEL_TASK", direction: IN)
 }
 
-extend type MinioUpload @auth(
-  rules: [{
-      isAuthenticated: true,
-      where: {AND: [
-        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
-        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
-        ]}
-    }]
-)
-
-interface HasPairedRawdatafile @relationshipProperties {
-    validated: Boolean!
+input MinioUploadInput {
+  bucketName: ID!
+  objectName: ID!
+  filename: String!
 }
 
-interface HasPairedCodebook @relationshipProperties {
-    validated: Boolean!
-}
+# extend type MinioUpload @auth(
+#   rules: [{
+#       isAuthenticated: false,
+#     }]
+# )
+
+# interface HasPairedRawdatafile @relationshipProperties {
+#     validated: Boolean!
+# }
+
+# interface HasPairedCodebook @relationshipProperties {
+#     validated: Boolean!
+# }
 
 type MinioBucket {
   bucketName: ID!
@@ -65,19 +66,59 @@ type MinioBucket {
 extend type MinioBucket @auth(
   rules: [{
       isAuthenticated: true,
-      where: {AND: [
-        {allowedStudies: "$jwt.resource_access.pibu-app.roles"},
-        {allowedSites: "$jwt.resource_access.pibu-app.roles"},
-        ]}
     }]
 )
 
+type Header {
+  name: String!
+  index: Int!
+  processedDataset: ProcessedDataset @relationship(type: "HAS_HEADER", direction: IN) 
+}
+
+input HeaderInput {
+  name: String!
+  index: Int!
+}
+
+# input ProcessedDatasetCreateInput {
+#   bucketName: ID!
+#   objectName: ID!
+#   filename: String!
+#   headers: [HeaderInput!]!  # Store processed headers
+#   rows: Int!                # Number of rows processed
+#   createdAt: DateTime!       # Timestamp
+#   # presignedURL: String!
+#   selectedDelimiter: String!
+#   includesHeader: Boolean!
+# }
+
+type ProcessedDataset {
+  bucketName: ID!
+  objectName: ID! 
+  filename: String!
+  # headers: [Header!]!  # Store processed headers
+  headers: [Header!]! @relationship(type: "HAS_HEADER", direction: OUT)
+  rows: Int!           # Number of rows processed
+  createdAt: DateTime! # Timestamp
+  # curatedDataset: CuratedDataset @relationship(type: "GENERATED_CURATED_DATASET", direction: OUT)
+  presignedURL: String @customResolver
+  minioUpload: MinioUpload @relationship(type: "HAS_PROCESSED_FILE", direction: IN)
+  selectedDelimiter: String!
+}
+
 type Mutation {
   # Example usage (should be generalized)
-  minioUploadFile(bucketName: String!, file: Upload!, rawDatasetID: ID!, allowedStudies: [String], allowedSites: [String]): MinioUpload!
+  minioUploadFile(bucketName: String!, file: Upload!, datasetID: ID!): MinioUpload!
   minioDelete(bucketName: String!, objectName: String!): Boolean
-
-  validateRawdatafile(rawDatasetID: ID!, objectName: ID!): FileValidation
-  validateCodebook(rawDatasetID: ID!, objectName: ID!): FileValidation
-  validateRawfileCodebookPair(rawDatasetIDRF: ID!, objectNameRF: ID!, rawDatasetIDCB: ID!, objectNameCB: ID!): FileValidation
+  uploadProcessedHeaders(
+    bucketName: String!,
+    objectName: String!,
+    filename: String!,
+    headers: [HeaderInput!]!,
+    selectedDelimiter: String!,
+    includesHeader: Boolean!,
+  ): MinioUpload
+  validateRawdatafile(datasetID: ID!, objectName: ID!): FileValidation
+  validateCodebook(datasetID: ID!, objectName: ID!): FileValidation
+  validateRawfileCodebookPair(DatasetIDRF: ID!, objectNameRF: ID!, DatasetIDCB: ID!, objectNameCB: ID!): FileValidation
 }

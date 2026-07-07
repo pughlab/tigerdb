@@ -1,0 +1,143 @@
+enum RunStatus {
+    pending
+    submitted
+    completed
+    failed
+}
+
+type RunParameters {
+  runID: ID! @id(autogenerate: false)
+  outPrefix: String
+  localMinpValue: Float
+  pDepth: Int
+  globalConvergenceCutoff: Int
+  simulationDepth: Int
+  kmerMinDepth: Int
+  localMinOVE: Int
+  # algorithm: String
+  allAAInterchangeable: Int
+  run: Run! @relationship(type: "HAS_PARAMETERS", direction: IN)
+}
+
+# input RunParametersCreateInput {
+#   runID: ID!
+#   outPrefix: String
+#   localMinpValue: Float
+#   pDepth: Int
+#   globalConvergenceCutoff: Int
+#   simulationDepth: Int
+#   kmerMinDepth: Int
+#   localMinOVE: Int
+#   allAAInterchangeable: Int
+# }
+
+
+
+type Run {
+    runID: ID! @id
+    wesID: ID
+    name: String!
+    description: String
+    runParameters: RunParameters @relationship(type: "HAS_PARAMETERS", direction: OUT)
+    # datasets: [Dataset!]! @relationship(type: "HAS_RUN", direction: IN)
+    # project: Project! @relationship(type: "HAS_RUN", direction: IN)
+    # minioUploads: [MinioUpload!]! @relationship(type: "HAS_RUN", direction: IN)
+    processedDatasets: [ProcessedDataset!]! @relationship(type: "HAS_RUN", direction: IN)
+    referenceDatasets: [MinioUpload!]! @relationship(type: "HAS_RUN", direction: IN)
+    createdOn: DateTime! @timestamp(operations: [CREATE])
+    submittedOn: String
+    completedOn: DateTime
+    status: RunStatus! @default(value: pending)   
+    createdBy: KeycloakUser! @relationship(type: "CREATED_BY", direction: OUT)
+    gliphTCRs: [GliphTCR!]! @relationship(type: "HAS_RESULT", direction: OUT)
+    sharedWith: [KeycloakUser!]! @relationship(type: "SHARED_WITH", direction: OUT)
+    isPublic: Boolean
+    isOwner: Boolean @customResolver
+    # logs: String
+    getRunData: String
+    failedRunLogs: String
+    # hasResults: Boolean @default(value: false)
+    presignedURL: String @customResolver
+}
+
+
+input RunInput {
+    runID: ID!
+    wesID: ID
+    name: String
+    description: String
+    # datasets: [DatasetInput]
+    # project: ProjectInput
+    minioUploads: [MinioUploadInput]
+    submittedOn: String
+    completedOn: DateTime
+    status: RunStatus
+    # logs: String
+    # getRunData: String
+    failedRunLogs: String
+    # hasResults: Boolean
+}
+
+type Query{
+  getRuns(runID: ID): [Run]
+}
+
+type Mutation {
+    createRunWithMinioBucket(
+        # project: ProjectInput!
+        # wesID: ID
+        name: String!
+        description: String
+        # datasets: [DatasetInput!]!
+        # datasetIDs: [ID!]!
+        # minioUploads: [MinioUploadInput!]!
+        processedDatasets: [ID!]!
+        referenceDatasets: [ID!]!
+    ): Run!,
+
+    # updateRun(
+    #     runID: ID!
+    #     datasets: [DatasetInput]!
+    #     wesID: ID
+    #     name: String
+    #     description: String
+    # ): Run!
+
+    # New mutation for updating parameters
+    updateRunParameters(
+      # runID: ID!
+      # selectedParameters: RunParametersCreateInput!
+      runID: ID!
+      outPrefix: String
+      localMinpValue: Float
+      pDepth: Int
+      globalConvergenceCutoff: Int
+      simulationDepth: Int
+      kmerMinDepth: Int
+      localMinOVE: Int
+      allAAInterchangeable: Int
+    ): Run!
+
+    # # WES / Docker mutations
+    # cancelRun(
+    #   runID: ID!
+    # ): String
+
+    deleteRun(
+      runID: ID!
+    ): String!
+    shareRunWithUsers(
+      runID: ID!
+      emails: [Email!]!
+    ): Run!,
+    stopSharingRunWithUser(
+      runID: ID!
+      email: Email!
+    ): Run!,
+}
+
+extend type Run @auth(
+  rules: [{
+      isAuthenticated: true,
+    }]
+)

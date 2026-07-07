@@ -19,7 +19,7 @@ const authLink = setContext((_, { headers }) => {
   }
 })
 
-const link = createUploadLink({uri:`https://${GRAPHQL_IP}/graphql`})
+const link = createUploadLink({uri:`https://${GRAPHQL_IP}:4001/graphql`})
 
 const apolloClient = new ApolloClient({
     link: authLink.concat(link),

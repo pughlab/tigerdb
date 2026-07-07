@@ -12,7 +12,7 @@ export default function useKeycloakMeMutation(): [any] {
                 keycloakUserID
                 name
                 email
-                roles
+                # roles
             }
         }
     `, {
