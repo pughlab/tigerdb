@@ -118,16 +118,16 @@ export const resolvers = {
               datasetName: d.name
           } AS data1
           WITH data1
-          MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
-          WHERE d.datasetID in data1.datasetID
-          WITH data1, collect({
-              tagID: t.tagID,
-              category: t.category,
-              name: t.name
-          }) AS tags
           MATCH (d:Dataset)-[]->(c:CuratedAnnotation)-[]->(v:AnnotationVariable)
           WHERE d.datasetID in data1.datasetID
           ${builtFilters}
+          ${(tags?.length > 0 || categories?.length > 0) ? `MATCH (v)-[:HAS_TAG]->(t:Tag) ${tagCondition}` : ''}
+          OPTIONAL MATCH (v)-[:HAS_TAG]->(allT:Tag)
+          WITH data1, d, v, [tag IN collect(allT) WHERE tag IS NOT NULL | {
+              tagID: tag.tagID,
+              category: tag.category,
+              name: tag.name
+          }] AS tags
           RETURN {
             projectID: data1.projectID,
             projectName: data1.projectName,
@@ -223,16 +223,16 @@ export const resolvers = {
               datasetName: d.name
           } AS data1
           WITH data1
-          MATCH (p:Project)-[]->(d:Dataset)-[]->(t:Tag)
-          WHERE d.datasetID in data1.datasetID
-          WITH data1, collect({
-              tagID: t.tagID,
-              category: t.category,
-              name: t.name
-          }) AS tags
           MATCH (d:Dataset)-[]->(c:CuratedAnnotation)-[]->(v:AnnotationVariable)
           WHERE d.datasetID in data1.datasetID
           ${builtFilters}
+          ${(tags?.length > 0 || categories?.length > 0) ? `MATCH (v)-[:HAS_TAG]->(t:Tag) ${tagCondition}` : ''}
+          OPTIONAL MATCH (v)-[:HAS_TAG]->(allT:Tag)
+          WITH data1, d, v, [tag IN collect(allT) WHERE tag IS NOT NULL | {
+              tagID: tag.tagID,
+              category: tag.category,
+              name: tag.name
+          }] AS tags
           RETURN {
             projectID: data1.projectID,
             projectName: data1.projectName,

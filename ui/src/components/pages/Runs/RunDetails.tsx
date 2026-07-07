@@ -16,17 +16,26 @@ import {
   ButtonGroup,
   Image,
   Dimmer,
+  ButtonOr,
+  Popup, Modal
 } from "semantic-ui-react";
 import { useParams } from "react-router-dom";
 import tigerdbLogo from "../../logos/tigerdb.png";
 import Logs from "./Logs";
 import SegmentPlaceholder from "../../common/SegmentPlaceholder";
 import DisplayTableFromPresignedURL from "../../common/table/DisplayTableFromPresignedURL";
+import GliphGraph from "./graph/GliphGraph";
 
 import useSubmitRunMutation from "../../../hooks/useSubmitRunMutation";
 import useRunDetailsQuery from "../../../hooks/useRunDetailsQuery";
 import useUpdateRunParametersMutation from "../../../hooks/useUpdateRunParametersMutation";
+import useImportGliphMutation from "../../../hooks/useImportGliphMutation";
 import { DatasetReadonlyTag } from "../Datasets/DatasetTag";
+import TCRInfo from "./graph/TCRInfo";
+import ShareRunModal from "./ShareRunModal";
+import {useEffect, useState} from "react";
+import {gql, useMutation} from "@apollo/client";
+import useIsAdmin from "../../../hooks/useIsAdmin";
 
 function RunActionsButton({
   status,
@@ -34,13 +43,17 @@ function RunActionsButton({
   refetch,
   presignedURL,
   runID,
-}: {
+  importGliph,
+  importLoading,
+}: Readonly<{
   status: string;
   loading: boolean;
   refetch: () => void;
   presignedURL?: string;
   runID: string;
-}) {
+  importGliph?: any;
+  importLoading?: boolean;
+}>) {
   if (!status) return null;
 
   // submitted: keep as refetch (or wire cancel later if you add a cancel mutation)
@@ -89,13 +102,65 @@ function RunActionsButton({
   return null;
 }
 
+function ResultVisualization({
+  runID,
+  presignedURL,
+  hasGliphResults,
+  importGliph,
+  importLoading,
+  viewMode,
+  updateSelectedNode,
+}: Readonly<{
+  runID: string;
+  presignedURL?: string;
+  hasGliphResults: boolean;
+  importGliph: any;
+  importLoading: boolean;
+  viewMode: 'table' | 'graph';
+  updateSelectedNode: React.Dispatch<React.SetStateAction<any>>;
+}>) {
+  if (!presignedURL) {
+    return (
+      <Message warning content="No presignedURL available for results preview." />
+    )
+  }
+
+  if (viewMode === 'table') {
+    return (
+      <DisplayTableFromPresignedURL presignedURL={presignedURL} />
+    )
+  }
+
+  return (
+    <GliphGraph
+      runID={runID}
+      hasGliphResults={hasGliphResults}
+      presignedURL={presignedURL}
+      importGliph={importGliph}
+      importLoading={importLoading}
+      updateSelectedNode={updateSelectedNode}
+    />
+  )
+}
+
 function RunResults({
   status,
   presignedURL,
-}: {
+  runID,
+  hasGliphResults,
+  importGliph,
+  importLoading,
+}: Readonly<{
   status: string;
   presignedURL?: string;
-}) {
+  runID: string;
+  hasGliphResults: boolean;
+  importGliph: any;
+  importLoading: boolean;
+}>) {
+  const [viewMode, setViewMode] = React.useState<'table' | 'graph'>('table');
+  const [selectedNode, setSelectedNode] = React.useState<any>(null);
+
   if (!status?.trim()) return null;
 
   if (status === "submitted") {
@@ -114,26 +179,54 @@ function RunResults({
       <Segment placeholder>
         <Segment.Group>
           <Segment>
-            <Header textAlign="center">
-              Viewing GLIPH2 clusters from{" "}
-              <span style={{ color: "#6434C9" }}>
-                TIGERdb_cluster.csv
-              </span>
-            </Header>
+            <Grid columns={3}>
+              <Grid.Column width={4} />
+              <Grid.Column width={8} textAlign="center">
+                <Header as="h3">
+                  Viewing GLIPH2 clusters from{" "}
+                  <span style={{ color: "#6434C9" }}>
+                    TIGERdb_cluster.csv
+                  </span>
+                </Header>
+              </Grid.Column>
+              <Grid.Column width={4} textAlign="right">
+                <Button.Group  size='small' attached='top' >
+                  <Button 
+                    active={viewMode === 'table'} 
+                    onClick={() => setViewMode('table')}
+                    icon="table"
+                    content="Table"
+                    // active color = violet
+                    color={viewMode === 'table' ? 'violet' : undefined}
+                  />
+                  <ButtonOr />
+                  <Button 
+                    active={viewMode === 'graph'} 
+                    onClick={() => setViewMode('graph')}
+                    icon="connectdevelop"
+                    content="Graph"
+                    color={viewMode === 'graph' ? 'teal' : undefined}
+                  />
+                </Button.Group>
+              </Grid.Column>
+            </Grid>
           </Segment>
-
-          {/* Preview table from the run output */}
-          {presignedURL ? (
-            <DisplayTableFromPresignedURL presignedURL={presignedURL} />
-          ) : (
-            <Message warning content="No presignedURL available for results preview." />
-          )}
+          <ResultVisualization
+            runID={runID}
+            presignedURL={presignedURL}
+            hasGliphResults={hasGliphResults}
+            importGliph={importGliph}
+            importLoading={importLoading}
+            viewMode={viewMode}
+            updateSelectedNode={setSelectedNode}
+          />
+          {selectedNode && (<TCRInfo node={selectedNode} />)}
         </Segment.Group>
-
         <Message color="green">
           <Header as="h3" icon>
             <Icon name="check circle" color="green" />
             RUN COMPLETED - READY TO DOWNLOAD
+            <Header.Subheader>Click on a node in the graph above to view its details and reference study.</Header.Subheader>
           </Header>
         </Message>
       </Segment>
@@ -176,6 +269,13 @@ function DataSources({ processedDatasets, referenceDatasets }) {
               // (datasets.length > 0) ? datasets.map(dataset => <Label color='blue' key={dataset.datasetID} content={dataset.name} />) : null
               processedDatasets.length > 0
                 ? processedDatasets.map((processedDataset) => (
+                  <Popup
+                    key={processedDataset.filename}
+                    wide="very"
+                    // inverted
+                    // position="top center"
+                    content={<DisplayTableFromPresignedURL presignedURL={processedDataset.presignedURL} delimiter={"\t"} rowsToShow={5} header={false} color="green" />}
+                    trigger={
                     <Button
                       key={"button." + processedDataset.objectName}
                       as="div"
@@ -194,6 +294,7 @@ function DataSources({ processedDatasets, referenceDatasets }) {
                         icon="cloud download"
                       />
                     </Button>
+                    } />
                   ))
                 : null
             }
@@ -204,8 +305,6 @@ function DataSources({ processedDatasets, referenceDatasets }) {
               size="huge"
               style={{ textAlign: "center", marginBottom: "10px" }}
             >
-              {/* {referenceDatasets.length}{" "} */}
-              {/* {referenceDatasets.length === 1 ? "Reference" : "References"} */}
               Deorphanized TCRs { referenceDatasets.length > 0 ? `(${referenceDatasets.length})` : ""}
             </Header>
             {[...tags]
@@ -253,6 +352,82 @@ function getStatusIcon(status: string): string {
   }
 }
 
+function StopSharingConfirmation({ userName, stopSharing }) {
+	const [open, setOpen] = useState(false)
+	return (
+		<Modal
+			closeIcon
+			closeOnDimmerClick={false}
+			size="small"
+			trigger={
+				<Icon name="delete" onClick={() => setOpen(true)} />
+			}
+			open={open}
+			onClose={() => setOpen(false)}
+		>
+			<Modal.Content>
+				<Divider horizontal content='STOP SHARING'/>
+				<Modal.Description>
+					Are you sure? {userName} will no longer have access to this run.
+				</Modal.Description>
+			</Modal.Content>
+			<Modal.Actions>
+				<Button color='red' onClick={() => setOpen(false)}>
+					<Icon name='remove' /> No
+				</Button>
+				<Button color='green' onClick={() => {
+					stopSharing()
+					setOpen(false)
+				}}>
+					<Icon name='checkmark' /> Yes
+				</Button>
+			</Modal.Actions>
+		</Modal>
+	)
+}
+
+function SharedUserLabel({
+	runID,
+	user,
+	updateUsers,
+	canDelete = false
+}: Readonly<{
+	runID?: string,
+	user: { name: string; email: string },
+	updateUsers: React.Dispatch<React.SetStateAction<any[]>>,
+	canDelete?: boolean}>
+) {
+	const { name, email } = user
+	const [stopSharing] = useMutation(gql`
+      mutation StopSharingRun($runID: ID!, $email: Email!) {
+        stopSharingRunWithUser(runID: $runID, email: $email) {
+          runID
+          name
+          isPublic
+          sharedWith {
+            keycloakUserID
+            name
+            email
+          }
+        }
+      }
+    `, {
+		variables: {
+			email,
+			runID,
+		},
+		onCompleted: () => {
+			updateUsers(prev => prev.filter(u => u.email !== email))
+		},
+	})
+	return (
+		<Label color='grey' size="medium">
+			{name} ({email})
+			{canDelete && <StopSharingConfirmation userName={name} stopSharing={stopSharing}/>}
+		</Label>
+	)
+}
+
 export default function RunDetails() {
   const initialParameters = {
     outPrefix: "TIGERdb",
@@ -277,7 +452,16 @@ export default function RunDetails() {
     loading: runDetailsLoading,
     refetch,
   } = useRunDetailsQuery({ runID });
+  const { isAdmin } = useIsAdmin();
   const [submitRun] = useSubmitRunMutation();
+  const { importGliph, loading: importLoading } = useImportGliphMutation();
+  const [sharedUsers, setSharedUsers] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (run?.sharedWith?.length > 0) {
+      setSharedUsers(run.sharedWith);
+    }
+  }, [run])
 
   if (runDetailsLoading) {
     return (
@@ -302,7 +486,9 @@ export default function RunDetails() {
     processedDatasets,
     referenceDatasets,
     status,
-    presignedURL 
+    presignedURL,
+    isPublic,
+    isOwner
   } = run;
 
   const createdOnDate = new Date(createdOn).toLocaleString("en-US", {
@@ -317,6 +503,21 @@ export default function RunDetails() {
 
   const colorStatus = getStatusColor(status);
   const iconStatus = getStatusIcon(status);
+  let submitButtonText: string
+
+  switch (status) {
+    case "pending":
+      submitButtonText = "SUBMIT RUN";
+      break;
+    case "failed":
+      submitButtonText = "RUN FAILED";
+      break;
+    case "completed":
+      submitButtonText = "RUN COMPLETED";
+      break;
+    default:
+      submitButtonText = "RUN SUBMITTED";
+  }
 
   return (
     <Grid>
@@ -332,23 +533,16 @@ export default function RunDetails() {
             }}
             loading={runDetailsLoading}
           />
-          {/* <Button
-            disabled
-            content="SHARE"
-            icon="users"
-            color="facebook"
-            onClick={() => {
-              refetch();
-            }}
-            loading={runDetailsLoading}
-          /> */}
         <RunActionsButton
           status={status}
           refetch={refetch}
           loading={runDetailsLoading}
           presignedURL={presignedURL}
           runID={runID!}
+          importGliph={importGliph}
+          importLoading={importLoading}
         />
+        <ShareRunModal runID={runID} updateSharedUsers={setSharedUsers} />
         </ButtonGroup>
         <Message color={"grey"}>
           <Divider horizontal content="Run Details" />
@@ -356,10 +550,25 @@ export default function RunDetails() {
           <List size="large">
             <List.Item icon="calendar" content={`${createdOnDate}`} />
             <List.Item icon="user" content={`${createdBy.email}`} />
-            {/* <Message.Item content={`Public: ${isPublic}`} /> */}
-            {/* <Message.Item content={`Shared with: ${sharedWith}`} /> */}
             <List.Item icon="info circle" content={`runID: ${runID}`} />
-            {/* <List.Item icon='cog' content={wesID ? `wesID: ${wesID}` : "Job ID available after submission"} /> */}
+            {!isPublic && sharedUsers?.length > 0 && (
+              <List.Item>
+                  <List.Icon name='users' style={{ paddingTop: '0.5em' }} />
+                  <List.Content style={{paddingLeft: '0px'}}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', paddingTop: '0.2em' }}>
+                      {sharedUsers.map(user => (
+                        <SharedUserLabel
+                          key={user.email}
+                          user={user}
+                          canDelete={isOwner || isAdmin}
+                          updateUsers={setSharedUsers}
+                          runID={runID}
+                        />
+                      ))}
+                    </div>
+                  </List.Content>
+                </List.Item>
+            )}
             <List.Item style={{ color: colorStatus }}>
               <List.Icon name={iconStatus} loading={status === "submitted"} />
               <List.Content>{`${status.toUpperCase()}`}</List.Content>
@@ -374,7 +583,14 @@ export default function RunDetails() {
             />
           </List.Description>
         </Message>
-        <RunResults status={status} presignedURL={presignedURL} />
+        <RunResults 
+          status={status} 
+          presignedURL={presignedURL} 
+          runID={runID || ''} 
+          hasGliphResults={run?.gliphTCRsAggregate?.count > 0}
+          importGliph={importGliph}
+          importLoading={importLoading}
+        />
         <Message color="grey">
           <Header as={"h4"} icon>
             <Icon name="paper plane" />
@@ -393,54 +609,6 @@ export default function RunDetails() {
               />
               <Segment color="violet">
                 <Divider horizontal content="CDR3 INPUT" />
-
-                {/* <Form.Field
-            control={Dropdown}
-            label='Project'
-            placeholder='Select Project'
-            fluid
-            search
-            selection
-            // options={projectOptions}
-            // loading={projectsLoading}
-            // onChange={(_e, { value }) => {
-            //   setProjectID(value) 
-            //   setDatasetIDs([])
-            // }}
-            // value={projectID}
-          /> */}
-                {/* {projectsError && <Message error content="Error loading projects" />} */}
-                {/* <Form.Field
-            control={Dropdown}
-            label='CDR File'
-            placeholder='Select Datasets'
-            fluid
-            multiple
-            search
-            selection
-            // options={datasetOptions}
-            // loading={datasetsLoading}
-            // onChange={(_e, { value }) => setDatasetIDs(value)}
-            // value={datasetIDs}
-            // disabled={!projectID} // Disable until a project is selected
-          /> */}
-                {/* {datasetsError && <Message error content="Error loading datasets" />} */}
-                {/* <Form.Field
-            control={Dropdown}
-            label='Uploads'
-            placeholder='Select Uploaded Files'
-            fluid
-            multiple
-            search
-            selection
-            // options={minioUploadOptions}
-            // loading={minioUploadsLoading}
-            // onChange={(_e, { value }) => setMinioUploads(value)}
-            value={processedDatasets}
-            // disabled={!(datasetIDs.length > 0) || !projectID} // Disable until a dataset is selected
-          /> */}
-                {/* {minioUploadsError && <Message error content="Error loading uploads" />} */}
-
                 <Form.Field
                   control={Dropdown}
                   label="External Specificity File"
@@ -462,7 +630,6 @@ export default function RunDetails() {
               />
               <Segment color="violet">
                 <Divider horizontal content="Reference Files" />
-
                 <Form.Field
                   control={Dropdown}
                   label="Reference File"
@@ -505,7 +672,7 @@ export default function RunDetails() {
                     onChange={(e, { value }) =>
                       setParameters((prev) => ({
                         ...prev,
-                        localMinpValue: parseFloat(value),
+                        localMinpValue: Number.parseFloat(value),
                       }))
                     }
                     type="number"
@@ -519,7 +686,7 @@ export default function RunDetails() {
                     onChange={(e, { value }) =>
                       setParameters((prev) => ({
                         ...prev,
-                        pDepth: parseInt(value, 10),
+                        pDepth: Number.parseInt(value, 10),
                       }))
                     }
                     type="number"
@@ -533,7 +700,7 @@ export default function RunDetails() {
                     onChange={(e, { value }) =>
                       setParameters((prev) => ({
                         ...prev,
-                        globalConvergenceCutoff: parseInt(value, 10),
+                        globalConvergenceCutoff: Number.parseInt(value, 10),
                       }))
                     }
                     type="number"
@@ -547,7 +714,7 @@ export default function RunDetails() {
                     onChange={(e, { value }) =>
                       setParameters((prev) => ({
                         ...prev,
-                        simulationDepth: parseInt(value, 10),
+                        simulationDepth: Number.parseInt(value, 10),
                       }))
                     }
                     type="number"
@@ -587,7 +754,6 @@ export default function RunDetails() {
                     control={Dropdown}
                     search
                     label="Algorithm"
-                    // options: [gliph1 , gliph2
                     options={[
                       { key: "gliph1", text: "GLIPH1", value: "GLIPH1" },
                       { key: "gliph2", text: "GLIPH2", value: "GLIPH2" },
@@ -639,7 +805,7 @@ export default function RunDetails() {
             onClick={() => {
               submitRun({ variables: { runID: runID } }).then(() => refetch());
             }}
-            content={status === "pending" ? "SUBMIT RUN" : status === 'completed' ? 'RUN COMPLETED' : status === 'failed' ? 'RUN FAILED' : "RUN SUBMITTED"}
+            content={submitButtonText}
           />
         </Message>
       </Grid.Column>

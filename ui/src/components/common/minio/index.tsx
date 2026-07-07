@@ -8,6 +8,7 @@ import useCreateCuratedAnnotationFromDatasetMutation from "../../../hooks/useCre
 import useCreateCuratedDatasetFromDatasetMutation from "../../../hooks/useCreateCuratedDatasetFromDatasetMutation";
 import useIsAdmin from "../../../hooks/useIsAdmin";
 import useIsCurator from "../../../hooks/useIsCurator";
+import DisplayTableFromPresignedURL from "../table/DisplayTableFromPresignedURL";
 
 import { MinioUpload } from "../../../types/types";
 import FileHeaderSelection from "../table";
@@ -70,7 +71,7 @@ function MinioUploadModal({ datasetID, refetch }: { datasetID: String; refetch: 
       <Modal.Content>
         <div {...getRootProps()}>
           <SegmentPlaceholder
-            text="Upload a TCR data file"
+            text={"Upload a TCR data file"}
             icon="cloud upload"
             loading={uploadLoading}
           >
@@ -81,7 +82,20 @@ function MinioUploadModal({ datasetID, refetch }: { datasetID: String; refetch: 
                 <input {...getInputProps()} />
               </Button.Content>
             </Button>
-            {isDragActive ? (
+
+            {uploadState.minioUpload ? (
+              <SegmentPlaceholder
+                basic
+                icon='check'
+                text="Upload completed!"
+              />
+              ) : uploadError ? (
+                <SegmentPlaceholder
+                  basic
+                  icon='times'
+                  text="Upload failed. Please try again."
+                />
+              ) : isDragActive ? (
               <SegmentPlaceholder
                 basic
                 icon="hand pointer"
@@ -105,6 +119,13 @@ function DownloadButton({ upload }) {
   const { objectName, filename, presignedURL, processedDataset: dataset } = upload
   return (
     <>
+    <Popup
+      wide="very"
+      inverted={dataset ? false : true}
+      // position="top center"
+      // add displaytablefrompresignedurl component to popup content 
+      content={dataset?.selectedDelimiter ? <DisplayTableFromPresignedURL presignedURL={presignedURL} delimiter={dataset.selectedDelimiter} rowsToShow={5} header={false} color="blue" /> : "No preview available. Please download the file to view its contents."}
+      trigger={
       <Button
         key={"button." + objectName}
         as="div"
@@ -124,7 +145,15 @@ function DownloadButton({ upload }) {
           icon="cloud download"
         />
       </Button>
+      } />
       {dataset ? (
+
+          <Popup
+            wide="very"
+            // inverted
+            // position="top center"
+            content={<DisplayTableFromPresignedURL presignedURL={dataset.presignedURL} delimiter={"\t"} rowsToShow={5} header={false} color="green" />}
+            trigger={
         <Button
           key={
             "button." + dataset.objectName
@@ -136,17 +165,21 @@ function DownloadButton({ upload }) {
             {dataset.filename}
           </Button>
 
-          <Label
-            as="a"
-            download={dataset.filename}
-            // href={minioUpload.processedDataset.presignedURL}
-            // compact
-            pointing="left"
-            color="green"
-            icon="cloud download"
-            disabled
-          />
+            <Label
+              as="a"
+              download={dataset.filename}
+              // href={minioUpload.processedDataset.presignedURL}
+              href={dataset.presignedURL}
+              // compact
+              pointing="left"
+              color="green"
+              icon="cloud download"
+              // disabled={!minioUpload.processedDataset.presignedURL}
+            />
+            
+
         </Button>
+            } />
       ) : null}
     </>
   )
@@ -338,7 +371,7 @@ export default function MinioBucket({
             # curatedDataset {
             #     curatedDatasetID
             # }
-            # presignedURL
+            presignedURL
           }
           # rawdataFileRawDataset {
           #     datasetID
@@ -391,12 +424,12 @@ export default function MinioBucket({
     <Segment>
       <Divider horizontal content="Uploads" />
 
-      {!isPublic && (
+      {isOwner || isCurator || isAdmin ? (
         <>
           <MinioUploadModal datasetID={datasetID} refetch={refetch} />
           <Divider />
         </>
-      )}
+      ) : null}
       {minioUploads.length === 0 ? (
         <SegmentPlaceholder text={"No uploads yet"} />
       ) : (
@@ -408,7 +441,7 @@ export default function MinioBucket({
                 <div key={"div." + minioUpload.objectName}>
                   <List.Item key={"list." + minioUpload.objectName}>
                     <DownloadButton upload={minioUpload} />
-                    {(isOwner || isCurator || isAdmin) && <DeleteButton upload={minioUpload} doDelete={minioDelete} disabled={isPublic} />}
+                    {(isOwner || isCurator || isAdmin) && <DeleteButton upload={minioUpload} doDelete={minioDelete} disabled={false} />} {/* disabled={isPublic} />} */}
                     {(isCurator || isAdmin) && <CurateAnnotationsButton 
                       upload={minioUpload}
                       datasetID={datasetID}
@@ -416,7 +449,7 @@ export default function MinioBucket({
                       disabled={
                         annotationSuccess ||
                         curatedAnnotationLoading ||
-                        isPublic ||
+                        // isPublic ||
                         minioUpload === null ||
                         minioUpload === undefined
                       }

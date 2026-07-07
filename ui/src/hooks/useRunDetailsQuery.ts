@@ -1,9 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
-import { useEffect, useState } from 'react'
 
 export default function useRunDetailsQuery({ runID }: { runID: string }) {
-	const [run, setRun] = useState()
-
 	const { data, loading, error, refetch } = useQuery(gql`
 	query RunDetails($runID: ID!) {
 		getRuns(runID: $runID) {
@@ -17,6 +14,12 @@ export default function useRunDetailsQuery({ runID }: { runID: string }) {
 				email
 				name
 			}
+			isOwner
+			sharedWith {
+				keycloakUserID
+				email
+				name
+			}
 			# datasets {
 			# 	datasetID
 			# 	name
@@ -25,8 +28,12 @@ export default function useRunDetailsQuery({ runID }: { runID: string }) {
 				objectName
 				bucketName
 				filename
+				presignedURL
 			}
 			referenceDatasetsAggregate{
+				count
+			}
+			gliphTCRsAggregate {
 				count
 			}
 			referenceDatasets {
@@ -55,10 +62,5 @@ export default function useRunDetailsQuery({ runID }: { runID: string }) {
 		variables: { runID },
 		fetchPolicy: 'network-only'
 	})
-	useEffect(() => {
-		if (!!data?.getRuns && data.getRuns.length > 0) {
-			setRun(data.getRuns[0])
-		}
-	}, [data])
-	return { run, loading, error, refetch }
+	return { run: data?.getRuns[0], loading, error, refetch }
 }

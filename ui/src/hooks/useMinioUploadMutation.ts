@@ -53,7 +53,7 @@ export default function useMinioUploadMutation(postFn: any) {
         onCompleted: (data) => {
             if (!!data) {
                 console.log(data)
-                dispatch({type: 'SET_MINIO_UPLOAD', minioUpload: data.minioUpload})
+                dispatch({type: 'SET_MINIO_UPLOAD', minioUpload: data.minioUploadFile})
             }
             postFn()
         }

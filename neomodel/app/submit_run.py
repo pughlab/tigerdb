@@ -275,6 +275,7 @@ class SubmitRun(graphene.Mutation):
                 path_to_gliph_cwl + "upload-inputPrep.cwl",
                 path_to_gliph_cwl + "extract-inputPrep.cwl",
                 path_to_gliph_cwl + "gliph.cwl",  
+                path_to_gliph_cwl + "clean-cluster.cwl",
                 path_to_gliph_cwl + "upload-gliph.cwl"]
             )
 

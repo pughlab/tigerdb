@@ -3,7 +3,8 @@ import { ApolloError } from "apollo-server";
 
 export const resolvers = {
   Query: {
-    getRuns: async (obj, args, { ogm, kauth }) => {
+    getRuns: async (obj, args, context) => {
+      const { ogm, kauth } = context;
       try {
         const isAuthenticated = !!kauth?.accessToken?.content?.sub;
         let filters: any = {};
@@ -20,8 +21,8 @@ export const resolvers = {
             filters = {
             OR: [
                 { createdBy: user[0] },
-                // { isPublic: true },
-                // { sharedWith_IN: [user[0]] }
+                { isPublic: true },
+                { sharedWith_SINGLE: user[0] }
               ]
             }
           }
@@ -45,6 +46,12 @@ export const resolvers = {
             email
             name
           }
+          isOwner
+          sharedWith {
+            keycloakUserID
+            name
+            email
+          }
           createdOn
           submittedOn
           status
@@ -63,6 +70,9 @@ export const resolvers = {
             }
           }
           referenceDatasetsAggregate{
+            count
+          }
+          gliphTCRsAggregate {
             count
           }
           referenceDatasets {
@@ -88,6 +98,7 @@ export const resolvers = {
         RunModel.selectionSet = selectionSet;
         const runs = await RunModel.find({
           where: filters,
+          context
         });
 
         return runs;
@@ -239,30 +250,67 @@ export const resolvers = {
             throw new Error('Run not found')
           }
           const session = driver.session()
-          await session.run(`MATCH (x:Run)-[r]-(n)
-            WHERE
-              NOT type(r) = 'CREATED_BY'
-              AND NOT 'ProcessedDataset' in labels(n)
-              AND x.runID = '${run[0].runID}'
-            DETACH DELETE x, n`
+          await session.run(`
+              MATCH (n:Run { runID: ${run[0].runID} })-[]-(p:RunParameters)
+              OPTIONAL MATCH (n)-[:HAS_RESULT]-(t:GliphTCR)
+              WHERE apoc.node.degree(t) = 1
+              RETURN n, p, t
+            `
           )
           return JSON.stringify(run[0])
         } else {
           const session = driver.session()
-          await session.run(`MATCH (u:KeycloakUser)<-[]-(x:Run)-[r]-(n)
+          await session.run(`MATCH (u:KeycloakUser)<-[]-(x:Run)-[r]-(p:RunParameters)
             WHERE
               u.email = "public@tigerdb.ca"
-              AND x.runID = '${runID}'
-              AND NOT type(r) = 'CREATED_BY'
-              AND NOT 'ProcessedDataset' in labels(n)
-            DETACH DELETE x, n`
+              AND x.runID = ${runID}
+            OPTIONAL MATCH (x)-[:HAS_RESULT]-(t:GliphTCR)
+            WHERE apoc.node.degree(t) = 1
+            DETACH DELETE x, p, t`
           )
           return JSON.stringify({})
         }
       } catch (error) {
         throw new ApolloError("deleteRun", error as string);
       }
-    }
+    },
+    shareRunWithUsers: async (_parent: unknown, { runID, emails }, { driver }) => {
+      const session = driver.session()
+      const query = `
+          MATCH (run:Run {runID: $runID})
+          UNWIND $emails AS email
+          MATCH (u:KeycloakUser {email: email})
+          MERGE (run)-[:SHARED_WITH]->(u)
+          RETURN run
+      `
+      try {
+        const results = await session.run(query, { runID, emails })
+        if (results.records.length === 0) {
+          throw new Error("Run not found or no users matched the provided emails");
+        }
+        return results.records[0].get("run").properties;
+      } finally {
+        session.close()
+      }
+    },
+    stopSharingRunWithUser: async (_parent: unknown, { runID, email }, { driver }) => {
+      const session = driver.session()
+      const query = `
+          MATCH (run:Run {runID: $runID})-[r:SHARED_WITH]->(u:KeycloakUser {email: $email})
+          DELETE r
+          RETURN run
+      `
+
+      try {
+        const result = await session.run(query, { runID, email })
+        if (result.records.length === 0) {
+          throw new Error("Run not found or no user matched the provided email");
+        }
+        return result.records[0].get("run").properties;
+      } finally {
+        session.close()
+      }
+    },
     // updateRun: async (
     //   parent,
     //   { runID, wesID, name, description, datasets },
@@ -532,7 +580,36 @@ export const resolvers = {
       }
       return null;
     },
-    
+    sharedWith: async (run, _args, context) => {
+      const { runID } = run
+      const { driver } = context;
+      const session = driver.session()
+      try {
+        const query = `
+          MATCH (run:Run {runID: $runID})-[:SHARED_WITH]->(u:KeycloakUser)
+          RETURN u
+        `
+        const results = await session.run(query, { runID })
+        if (results.length === 0) {
+          return []
+        }
+        const users: any[] = []
+        results.records.forEach((record) => {
+          users.push(record.get('u').properties);
+        })
+        return users;
+      } catch (error) {
+        console.log("Error fetching shared users", error);
+      } finally {
+        session.close()
+      }
+    },
+    isOwner: async (run, _args, context) => {
+      const { kauth } = context;
+      const userID = kauth?.accessToken?.content?.sub || "";
+      const { createdBy } = run;
+      return createdBy?.keycloakUserID === userID;
+    },
     presignedURL: async (
       { runID, status },
       { },

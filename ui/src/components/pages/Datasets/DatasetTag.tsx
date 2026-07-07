@@ -6,7 +6,8 @@ import { gql, useMutation } from "@apollo/client";
 // Since we are limited by the options available in Semantic UI React, colors must be picked from the following list:
 // [ 'red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black']
 export const tagColors: { [key: string]: SemanticCOLORS } = {
-  cancer: "red",
+  // cancer: "red",
+  human: "red",
   "non-cancer": "orange",
   viral: "yellow",
   bacterial: "green",

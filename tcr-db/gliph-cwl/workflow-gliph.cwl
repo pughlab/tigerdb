@@ -74,10 +74,16 @@ steps:
       # cdr3_file: inputPrep-gliph/gliph_input  # Pass the generated input file explicitly
     out: [HLA_output, cluster_output, cluster_txt_output, kmer_output, kmer_log_output, parameter_output, score_output]
 
+  clean-cluster:
+    run: clean-cluster.cwl
+    in:
+      cluster_csv: gliph/cluster_output
+    out: [cleaned_cluster_output]
+
   upload-gliph:
     run: upload-gliph.cwl
     in:
-      cluster_output: gliph/cluster_output
+      cluster_output: clean-cluster/cleaned_cluster_output
       HLA_output: gliph/HLA_output
       cluster_txt_output: gliph/cluster_txt_output
       kmer_output: gliph/kmer_output

@@ -1,0 +1,100 @@
+type GliphTCR {
+    id: ID! @id
+    cdr3b: String!
+    v_gene: String
+    j_gene: String
+    sample: String
+    source: String
+    hla_a: String
+    hla_b: String
+    hla_c: String
+    hla_dpa1: String
+    hla_dpb1: String
+    hla_dqa1: String
+    hla_dqb1: String
+    hla_drb1: String
+    hla_drb3: String
+    hla_drb4: String
+    hla_drb5: String
+    run: Run! @relationship(type: "HAS_RESULT", direction: IN)
+}
+
+extend type Run {
+    gliphTCRs: [GliphTCR!]! @relationship(type: "HAS_RESULT", direction: OUT)
+}
+
+type GliphNode {
+    id: ID!
+    group: String!
+    value: String
+    label: String
+    v_gene: String
+    size: Int
+    color: String
+    source: String
+    hla_a: String
+    hla_b: String
+    hla_c: String
+    hla_dpa1: String
+    hla_dpb1: String
+    hla_dqa1: String
+    hla_dqb1: String
+    hla_drb1: String
+    hla_drb3: String
+    hla_drb4: String
+    hla_drb5: String
+}
+
+type NodeDetails {
+    cdr3b: String!
+    v_gene: String
+    j_gene: String
+    source: String
+    projectID: String
+    projectName: String
+    datasetID: String
+    datasetName: String
+    variableID: String
+    trav: String
+    traj: String
+    mhc: String
+    mhcClass: String
+    epitopeGene: String
+    epitopeAAseq: String
+    epitopeSpecies: String
+    mutation: String
+    recognizesWTEpitope: String
+    uniProt: String
+    reference: String
+}
+
+type GliphLink {
+    source: ID!
+    target: ID!
+    group: String
+    color: String
+}
+
+type GliphGraph {
+    nodes: [GliphNode!]!
+    links: [GliphLink!]!
+}
+
+input GliphGraphInput {
+    runID: ID!
+    minCommunitySize: Int,
+    cdr3bContains: String,
+    minDegree: Int,
+}
+
+type Query {
+    gliphGraph(input: GliphGraphInput!): GliphGraph
+    nodeDetailsByCDR3b(cdr3b: String!): NodeDetails!
+}
+
+type Mutation {
+    importGliphResults(
+        runID: ID!
+        presignedURL: String!
+    ): String
+}
