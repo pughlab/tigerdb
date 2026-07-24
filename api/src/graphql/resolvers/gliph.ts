@@ -122,6 +122,7 @@ async function getGraph(session, graphName) {
       n.id AS id,
       n.source AS source,
       n.v_gene AS v_gene,
+      n.j_gene AS j_gene,
       n.cdr3b AS label,
       n.hla_a AS hla_a,
       n.hla_b AS hla_b,
@@ -134,6 +135,22 @@ async function getGraph(session, graphName) {
       n.hla_drb3 AS hla_drb3,
       n.hla_drb4 AS hla_drb4,
       n.hla_drb5 AS hla_drb5,
+      n.projectID AS projectID,
+      n.projectName AS projectName,
+      n.datasetID AS datasetID,
+      n.datasetName AS datasetName,
+      n.variableID AS variableID,
+      n.trav AS trav,
+      n.traj AS traj,
+      n.mhc AS mhc,
+      n.mhcClass AS mhcClass,
+      n.epitopeGene AS epitopeGene,
+      n.epitopeAAseq AS epitopeAAseq,
+      n.epitopeSpecies AS epitopeSpecies,
+      n.mutation AS mutation,
+      n.recognizesWTEpitope AS recognizesWTEpitope,
+      n.uniProt AS uniProt,
+      n.reference AS reference,
       communityId AS group,
       kcore,
       collect(target.id) AS targetIds
@@ -172,6 +189,7 @@ export const resolvers = {
             id,
             source,
             v_gene: record.get("v_gene"),
+            j_gene: record.get("j_gene"),
             group: record.get("group").toInt(),
             kcore: record.get("kcore").toInt(),
             label: record.get("label"),
@@ -186,6 +204,22 @@ export const resolvers = {
             hla_drb3: record.get("hla_drb3"),
             hla_drb4: record.get("hla_drb4"),
             hla_drb5: record.get("hla_drb5"),
+            projectID: record.get("projectID"),
+            projectName: record.get("projectName"),
+            datasetID: record.get("datasetID"),
+            datasetName: record.get("datasetName"),
+            variableID: record.get("variableID"),
+            trav: record.get("trav"),
+            traj: record.get("traj"),
+            mhc: record.get("mhc"),
+            mhcClass: record.get("mhcClass"),
+            epitopeGene: record.get("epitopeGene"),
+            epitopeAAseq: record.get("epitopeAAseq"),
+            epitopeSpecies: record.get("epitopeSpecies"),
+            mutation: record.get("mutation"),
+            recognizesWTEpitope: record.get("recognizesWTEpitope"),
+            uniProt: record.get("uniProt"),
+            reference: record.get("reference"),
             color: colors.tcr[source?.toLowerCase()] || colors.tcr.default
           })
         })
@@ -368,6 +402,40 @@ export const resolvers = {
 
         const cleanupQuery = `MATCH (c:TempCluster) DETACH DELETE c`;
         await session.run(cleanupQuery);
+
+        console.log(`Enriching TCRs with Project/Dataset details for Run ${runID}`);
+
+        const enrichmentQuery = `          
+          CALL apoc.periodic.iterate(
+            "MATCH (:Run {runID: $runID})-[:HAS_RESULT]->(t:GliphTCR)
+             WHERE t.cdr3b IS NOT NULL
+             RETURN DISTINCT t.cdr3b AS cdr3b",
+
+            "MATCH (p:Project)-->(d:Dataset)-->(:CuratedAnnotation)-->(v:AnnotationVariable {cdr3b: cdr3b})
+             WITH cdr3b, collect(p)[0] AS p, collect(d)[0] AS d, collect(v)[0] AS v
+             
+             MATCH (:Run {runID: $runID})-[:HAS_RESULT]->(t:GliphTCR {cdr3b: cdr3b})
+             SET t.projectID = p.projectID,
+                 t.projectName = p.name,
+                 t.datasetID = d.datasetID,
+                 t.datasetName = d.name,
+                 t.variableID = v.annotationVariableID,
+                 t.trav = v.trav,
+                 t.traj = v.traj,
+                 t.mhc = v.mhc,
+                 t.mhcClass = v.mhcClass,
+                 t.epitopeGene = v.epitopeGene,
+                 t.epitopeAAseq = v.epitopeAAseq,
+                 t.epitopeSpecies = v.epitopeSpecies,
+                 t.mutation = v.mutation,
+                 t.recognizesWTEpitope = v.recognizesWTEpitope,
+                 t.uniProt = v.uniProt,
+                 t.reference = v.reference",
+            { batchSize: 500, parallel: true, params: { runID: $runID } }
+          )
+        `;
+
+        await session.run(enrichmentQuery, { runID });
 
         // Check result summary if needed
         const summary = result.records[0].get(0);

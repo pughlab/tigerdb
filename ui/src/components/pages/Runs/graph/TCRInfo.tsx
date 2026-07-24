@@ -2,52 +2,33 @@ import React from 'react';
 import {
   Button,
   Card,
-  Dimmer,
   Divider,
   Grid,
   Header,
   Icon,
   Label,
   List,
-  Loader, Message,
   Popup,
-  Segment
 } from "semantic-ui-react";
 import useRouter from "../../../../hooks/useRouter";
-import useNodeDetailsQuery from "../../../../hooks/useNodeDetailsQuery";
 
 export default function TCRInfo({ node }: Readonly<{ node: any }>) {
-  const { data, loading, error } = useNodeDetailsQuery(node.label)
   const { navigate } = useRouter();
-
-  if (loading) {
-    return (
-      <Segment placeholder textAlign="center">
-        <Dimmer active inverted>
-          <Loader size="large">Loading...</Loader>
-        </Dimmer>
-      </Segment>
-    )
-  }
-
-  if (error) {
-    return <Message error>There was an error getting the node details</Message>;
-  }
 
   let referenceButton
 
-  if (data.reference) {
+  if (node.reference) {
     referenceButton = (
       <Button fluid color="black">
         <Icon name="book" style={{ color: "white" }} />
-        {data.reference}
+        {node.reference}
       </Button>
     )
-  } else if (data.datasetName) {
+  } else if (node.datasetName) {
     referenceButton = (
       <Button fluid color="blue">
         <Icon name="database" style={{ color: "white" }} />
-        {data.datasetName} - {data.projectName}
+        {node.datasetName} - {node.projectName}
       </Button>
     )
   } else {
@@ -89,13 +70,13 @@ export default function TCRInfo({ node }: Readonly<{ node: any }>) {
     <Popup
       inverted
       content={
-        data.reference
-        ? `Click here to go to publication (${data.reference})`
-        : `Click here to go to project (${data.projectName})`
+        node.reference
+        ? `Click here to go to publication (${node.reference})`
+        : `Click here to go to project (${node.projectName})`
       }
       position="top center"
       style={{ color: "white" }}
-      icon={data.reference ? "book" : "database"}
+      icon={node.reference ? "book" : "database"}
       trigger={
         <List.Item
           as={Card}
@@ -109,7 +90,7 @@ export default function TCRInfo({ node }: Readonly<{ node: any }>) {
             cursor: 'pointer',
             backgroundColor: "white",
           }}
-          onClick={() => {openDocument(data.reference, data.projectID)}
+          onClick={() => {openDocument(node.reference, node.projectID)}
         }>
           <Label attached={"top right"} style={{ backgroundColor: node.color || 'black', color: 'white' }}>{node.source}</Label>
           <Grid textAlign="center">
@@ -123,25 +104,25 @@ export default function TCRInfo({ node }: Readonly<{ node: any }>) {
             <Grid.Row columns={5} divided textAlign="center">
               <Grid.Column>
                 <Grid.Row>
-                  <Label basic content="TRBV" detail={`${node.v_gene ? node.v_gene : 'NA'}`} color="grey" />
+                  <Label basic content="TRBV" detail={`${node.v_gene ?? 'NA'}`} color="grey" />
                 </Grid.Row>
                 <Grid.Row>
-                  <Label basic content="TRBJ" detail={`${data.j_gene ? data.j_gene : 'NA'}`} color="grey" />
+                  <Label basic content="TRBJ" detail={`${node.j_gene ?? 'NA'}`} color="grey" />
                 </Grid.Row>
                 <Grid.Row>
-                  <Label basic content="TRAV" detail={`${data.trav ? data.trav : 'NA'}`} color="grey" />
+                  <Label basic content="TRAV" detail={`${node.trav ?? 'NA'}`} color="grey" />
                 </Grid.Row>
                 <Grid.Row>
-                  <Label basic content="TRAJ" detail={`${data.traj ? data.traj : 'NA'}`} color="grey" />
+                  <Label basic content="TRAJ" detail={`${node.traj ?? 'NA'}`} color="grey" />
                 </Grid.Row>
               </Grid.Column>
               
               <Grid.Column>
                 <Grid.Row>
-                  <Label basic content="MHC" detail={`${data.mhc ? data.mhc : 'NA'}`} color="grey" />
+                  <Label basic content="MHC" detail={`${node.mhc ?? 'NA'}`} color="grey" />
                 </Grid.Row>
                 <Grid.Row>
-                  <Label basic content="MHC Class" detail={`${data.mhcClass ? data.mhcClass : 'NA'}`} color="grey" />
+                  <Label basic content="MHC Class" detail={`${node.mhcClass ?? 'NA'}`} color="grey" />
                 </Grid.Row>
                 { hasAnyHla && (
                   <Grid.Row>
@@ -162,28 +143,28 @@ export default function TCRInfo({ node }: Readonly<{ node: any }>) {
               
               <Grid.Column>
                 <Grid.Row>
-                  <Label basic content="Epitope Amino Acid Sequence" detail={`${data.epitopeAAseq ? data.epitopeAAseq : 'NA'}`} color="grey" />
+                  <Label basic content="Epitope Amino Acid Sequence" detail={`${node.epitopeAAseq ?? 'NA'}`} color="grey" />
                 </Grid.Row>
                 <Grid.Row>
-                  <Label basic content="Epitope Gene" detail={`${data.epitopeGene ? data.epitopeGene : 'NA'}`} color="grey" />
+                  <Label basic content="Epitope Gene" detail={`${node.epitopeGene ?? 'NA'}`} color="grey" />
                 </Grid.Row>
                 <Grid.Row>
-                  <Label basic content="Epitope Species" detail={`${data.epitopeSpecies ? data.epitopeSpecies : 'NA'}`} color="grey" />
-                </Grid.Row>
-              </Grid.Column>
-              
-              <Grid.Column>
-                <Grid.Row>
-                  <Label basic content="Mutation" detail={`${data.mutation ? data.mutation : 'NA'}`} color="grey" />
-                </Grid.Row>
-                <Grid.Row>
-                  <Label basic content="Recognizes Wild Type Epitope" detail={`${data.recognizesWTEpitope ? data.recognizesWTEpitope : 'NA'}`} color="grey" />
+                  <Label basic content="Epitope Species" detail={`${node.epitopeSpecies ?? 'NA'}`} color="grey" />
                 </Grid.Row>
               </Grid.Column>
               
               <Grid.Column>
                 <Grid.Row>
-                  <Label basic content="UniProt" detail={`${data.uniProt ? data.uniProt : 'NA'}`} color="grey" />
+                  <Label basic content="Mutation" detail={`${node.mutation ?? 'NA'}`} color="grey" />
+                </Grid.Row>
+                <Grid.Row>
+                  <Label basic content="Recognizes Wild Type Epitope" detail={`${node.recognizesWTEpitope ?? 'NA'}`} color="grey" />
+                </Grid.Row>
+              </Grid.Column>
+              
+              <Grid.Column>
+                <Grid.Row>
+                  <Label basic content="UniProt" detail={`${node.uniProt ?? 'NA'}`} color="grey" />
                 </Grid.Row>
                 {/* <Grid.Row>
                   <Label basic content="Node ID" detail={`${node.id}`} color="grey" />

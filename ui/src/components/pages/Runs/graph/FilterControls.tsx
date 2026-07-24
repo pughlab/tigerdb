@@ -4,6 +4,16 @@ import {ApolloQueryResult} from "@apollo/client";
 import { useDebounce } from "use-debounce";
 
 const DEFAULT_COMMUNITY_SIZE = 4
+const IGNORED_KEYS: Set<string> = new Set(['__typename', 'color', 'projectID', 'datasetID', 'variableID', 'size', 'value'])
+
+function matchesSearchTerm(member: any, searchTerm: string): boolean {
+  const lower = searchTerm.toLowerCase();
+  const filteredMember = Object.keys(member).filter(key => !IGNORED_KEYS.has(key)).reduce((obj, key) => {
+    obj[key] = member[key];
+    return obj;
+  }, {} as any);
+  return Object.values(filteredMember).some(value => typeof value === 'string' && value.toLowerCase().includes(lower));
+}
 
 export default function FilterControls({ communities, groupOperations, updateHiddenNodes, refetchGraph }: Readonly<{
     communities: Map<string, any[]>,
@@ -19,14 +29,12 @@ export default function FilterControls({ communities, groupOperations, updateHid
     }> | undefined)) => Promise<ApolloQueryResult<any>>
 }>) {
   const [minCommunitySize, setMinCommunitySize] = useState<number | ''>(DEFAULT_COMMUNITY_SIZE)
-  const [cdr3bContains, setCdr3bContains] = useState('')
-  const [trbvContains, setTrbvContains] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
   const [filterMode, setFilterMode] = useState<'community' | 'node'>('community')
   const [debouncedCommunitySize] = useDebounce(minCommunitySize, 1000)
-  const [debouncedCdr3b] = useDebounce(cdr3bContains, 1000);
-  const [debouncedTRBV] = useDebounce(trbvContains, 1000);
+  const [debouncedSearchQuery] = useDebounce(searchQuery, 1000);
 
-  const { toggleGroup, hideAllGroups, showAllGroups } = groupOperations
+  const { toggleGroup, hideAllGroups } = groupOperations
 
   const communityIdsBySize = useMemo(() => {
     const size = Math.max(Number(debouncedCommunitySize) || 0, DEFAULT_COMMUNITY_SIZE);
@@ -35,76 +43,47 @@ export default function FilterControls({ communities, groupOperations, updateHid
       .map(([communityId]) => communityId)
   }, [debouncedCommunitySize])
 
-  const communityIdsByCDR3b = useMemo(() => {
-    const term = debouncedCdr3b.trim();
+  const communityIdsBySearchQuery = useMemo(() => {
+    const term = debouncedSearchQuery.trim();
     if (term) {
       const lower = term.toLowerCase();
       return Array.from(communities.entries())
-        .filter(([_communityId, members]) => members.some(member => member.label.toLowerCase().includes(lower)))
+        .filter(([_communityId, members]) =>
+          members.some(member => matchesSearchTerm(member, lower))
+        )
         .map(([communityId]) => communityId);
     }
-    return [] as string[];
-  }, [debouncedCdr3b])
-
-  const communityIdsByTRBV = useMemo(() => {
-    const term = debouncedTRBV.trim();
-    if (term) {
-      const lower = term.toLowerCase();
-      return Array.from(communities.entries())
-        .filter(([_communityId, members]) => members.some(member => member.v_gene.toLowerCase().includes(lower)))
-        .map(([communityId]) => communityId);
-    }
-    return [] as string[];
-  }, [debouncedTRBV])
+    return Array.from(communities.keys());
+  }, [debouncedSearchQuery, communities])
 
   const matchingCommunityIds = useMemo(() => {
-    const hasCdr = debouncedCdr3b.trim().length > 0;
-    const hasTrbv = debouncedTRBV.trim().length > 0;
+    const hasSearchQuery: boolean = debouncedSearchQuery.trim().length > 0;
 
     if (communityIdsBySize.length === 0) {
       return Array.from(communities.keys())
     }
 
-    if (!hasCdr && !hasTrbv) {
+    if (!hasSearchQuery) {
       return communityIdsBySize;
     }
-    if (hasCdr && !hasTrbv) {
-      return communityIdsByCDR3b.filter(id => communityIdsBySize.includes(id));
-    }
-    if (hasTrbv && !hasCdr) {
-      return communityIdsByTRBV.filter(id => communityIdsBySize.includes(id));
-    }
 
-    const trbvSet: Set<string> = new Set(communityIdsByTRBV)
-    return communityIdsByCDR3b.filter(id => trbvSet.has(id)).filter(id => communityIdsBySize.includes(id));
-  }, [debouncedCdr3b, debouncedTRBV, debouncedCommunitySize, communityIdsByTRBV, communityIdsByCDR3b, communityIdsBySize])
+    return communityIdsBySearchQuery
+  }, [debouncedSearchQuery, communityIdsBySearchQuery, communityIdsBySize])
 
-  const nodesByCDR3b: string[] = useMemo(() => {
-    const substring = debouncedCdr3b.trim()
+  const hiddenNodesBySearchQuery: string[] = useMemo(() => {
+    const substring = debouncedSearchQuery.trim().toLowerCase()
     if (substring.length > 0) {
       return Array.from(communities.values()).flat()
-        .filter(member => !member.label.toLowerCase().includes(substring.toLowerCase()))
+        .filter(member => !matchesSearchTerm(member, substring)
+      )
     }
     return [] as string[];
-  }, [debouncedCdr3b])
-
-  const nodesByTRBV: string[] = useMemo(() => {
-    const substring = debouncedTRBV.trim()
-    if (substring.length > 0) {
-      return Array.from(communities.values()).flat()
-        .filter(member => !member.v_gene.toLowerCase().includes(substring.toLowerCase()))
-    }
-    return [] as string[];
-  }, [debouncedTRBV])
+  }, [debouncedSearchQuery])
 
   useEffect(() => {
     if (filterMode === 'community') {
-      if (communityIdsBySize.length === 0) {
-        hideAllGroups();
-      } else if (matchingCommunityIds.length === 0) {
-        showAllGroups();
-      } else {
-        hideAllGroups();
+      hideAllGroups();
+      if (matchingCommunityIds.length > 0) {
         matchingCommunityIds.forEach(id => toggleGroup(id));
       }
     }
@@ -112,10 +91,9 @@ export default function FilterControls({ communities, groupOperations, updateHid
 
   useEffect(() => {
     if (filterMode === 'node') {
-      const hiddenNodes = [...nodesByCDR3b, ...nodesByTRBV];
-      updateHiddenNodes(new Set(hiddenNodes));
+      updateHiddenNodes(new Set(hiddenNodesBySearchQuery));
     }
-  }, [nodesByCDR3b, nodesByTRBV]);
+  }, [hiddenNodesBySearchQuery]);
 
   return (
     <div style={{ position: 'absolute', top: 10, right: 10, zIndex: 1, backgroundColor: 'rgba(255,255,255,0.8)', padding: '10px', borderRadius: '6px' }}>
@@ -139,21 +117,12 @@ export default function FilterControls({ communities, groupOperations, updateHid
         </div>
       )}
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span>CDR3b contains:</span>
+        <span>Search:</span>
         <input
           type='text'
-          value={cdr3bContains}
-          onChange={e => setCdr3bContains(e.target.value)}
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
           style={{ marginLeft: '10px', width: '120px' }}
-        />
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span>TRBV contains:</span>
-        <input
-          type="text"
-          value={trbvContains}
-          onChange={e => setTrbvContains(e.target.value)}
-          style={{ marginLeft: '10px', width: '130px' }}
         />
       </div>
       {/*<Button color={"teal"} content={"Update Graph"} onClick={() => refetchGraph({*/}
