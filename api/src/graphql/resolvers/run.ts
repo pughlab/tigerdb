@@ -254,7 +254,7 @@ export const resolvers = {
               MATCH (n:Run { runID: ${run[0].runID} })-[]-(p:RunParameters)
               OPTIONAL MATCH (n)-[:HAS_RESULT]-(t:GliphTCR)
               WHERE apoc.node.degree(t) = 1
-              RETURN n, p, t
+              DETACH DELETE n, p, t
             `
           )
           return JSON.stringify(run[0])
@@ -631,7 +631,7 @@ export const resolvers = {
         }
 
         // const presignedURL = await minioClient.presignedUrl('GET', bucketName, objectName, 24 * 60 * 60, { "response-content-disposition": `attachment; filename=${objectName}` })
-        const presignedURL = makePresignedURL(minioClient, bucketName, objectName)
+        const presignedURL = await makePresignedURL(minioClient, bucketName, objectName)
         // console.log(presignedURL)
         return presignedURL
 

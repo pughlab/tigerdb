@@ -204,22 +204,22 @@ export const resolvers = {
             hla_drb3: record.get("hla_drb3"),
             hla_drb4: record.get("hla_drb4"),
             hla_drb5: record.get("hla_drb5"),
-            projectID: record.get("projectID"),
-            projectName: record.get("projectName"),
-            datasetID: record.get("datasetID"),
-            datasetName: record.get("datasetName"),
-            variableID: record.get("variableID"),
-            trav: record.get("trav"),
-            traj: record.get("traj"),
-            mhc: record.get("mhc"),
-            mhcClass: record.get("mhcClass"),
-            epitopeGene: record.get("epitopeGene"),
-            epitopeAAseq: record.get("epitopeAAseq"),
-            epitopeSpecies: record.get("epitopeSpecies"),
-            mutation: record.get("mutation"),
-            recognizesWTEpitope: record.get("recognizesWTEpitope"),
-            uniProt: record.get("uniProt"),
-            reference: record.get("reference"),
+            // projectID: record.get("projectID"),
+            // projectName: record.get("projectName"),
+            // datasetID: record.get("datasetID"),
+            // datasetName: record.get("datasetName"),
+            // variableID: record.get("variableID"),
+            // trav: record.get("trav"),
+            // traj: record.get("traj"),
+            // mhc: record.get("mhc"),
+            // mhcClass: record.get("mhcClass"),
+            // epitopeGene: record.get("epitopeGene"),
+            // epitopeAAseq: record.get("epitopeAAseq"),
+            // epitopeSpecies: record.get("epitopeSpecies"),
+            // mutation: record.get("mutation"),
+            // recognizesWTEpitope: record.get("recognizesWTEpitope"),
+            // uniProt: record.get("uniProt"),
+            // reference: record.get("reference"),
             color: colors.tcr[source?.toLowerCase()] || colors.tcr.default
           })
         })
@@ -403,39 +403,39 @@ export const resolvers = {
         const cleanupQuery = `MATCH (c:TempCluster) DETACH DELETE c`;
         await session.run(cleanupQuery);
 
-        console.log(`Enriching TCRs with Project/Dataset details for Run ${runID}`);
-
-        const enrichmentQuery = `          
-          CALL apoc.periodic.iterate(
-            "MATCH (:Run {runID: $runID})-[:HAS_RESULT]->(t:GliphTCR)
-             WHERE t.cdr3b IS NOT NULL
-             RETURN DISTINCT t.cdr3b AS cdr3b",
-
-            "MATCH (p:Project)-->(d:Dataset)-->(:CuratedAnnotation)-->(v:AnnotationVariable {cdr3b: cdr3b})
-             WITH cdr3b, collect(p)[0] AS p, collect(d)[0] AS d, collect(v)[0] AS v
-             
-             MATCH (:Run {runID: $runID})-[:HAS_RESULT]->(t:GliphTCR {cdr3b: cdr3b})
-             SET t.projectID = p.projectID,
-                 t.projectName = p.name,
-                 t.datasetID = d.datasetID,
-                 t.datasetName = d.name,
-                 t.variableID = v.annotationVariableID,
-                 t.trav = v.trav,
-                 t.traj = v.traj,
-                 t.mhc = v.mhc,
-                 t.mhcClass = v.mhcClass,
-                 t.epitopeGene = v.epitopeGene,
-                 t.epitopeAAseq = v.epitopeAAseq,
-                 t.epitopeSpecies = v.epitopeSpecies,
-                 t.mutation = v.mutation,
-                 t.recognizesWTEpitope = v.recognizesWTEpitope,
-                 t.uniProt = v.uniProt,
-                 t.reference = v.reference",
-            { batchSize: 500, parallel: true, params: { runID: $runID } }
-          )
-        `;
-
-        await session.run(enrichmentQuery, { runID });
+        // console.log(`Enriching TCRs with Project/Dataset details for Run ${runID}`);
+        //
+        // const enrichmentQuery = `
+        //   CALL apoc.periodic.iterate(
+        //     "MATCH (:Run {runID: $runID})-[:HAS_RESULT]->(t:GliphTCR)
+        //      WHERE t.cdr3b IS NOT NULL
+        //      RETURN DISTINCT t.cdr3b AS cdr3b",
+        //
+        //     "MATCH (p:Project)-->(d:Dataset)-->(:CuratedAnnotation)-->(v:AnnotationVariable {cdr3b: cdr3b})
+        //      WITH cdr3b, collect(p)[0] AS p, collect(d)[0] AS d, collect(v)[0] AS v
+        //
+        //      MATCH (:Run {runID: $runID})-[:HAS_RESULT]->(t:GliphTCR {cdr3b: cdr3b})
+        //      SET t.projectID = p.projectID,
+        //          t.projectName = p.name,
+        //          t.datasetID = d.datasetID,
+        //          t.datasetName = d.name,
+        //          t.variableID = v.annotationVariableID,
+        //          t.trav = v.trav,
+        //          t.traj = v.traj,
+        //          t.mhc = v.mhc,
+        //          t.mhcClass = v.mhcClass,
+        //          t.epitopeGene = v.epitopeGene,
+        //          t.epitopeAAseq = v.epitopeAAseq,
+        //          t.epitopeSpecies = v.epitopeSpecies,
+        //          t.mutation = v.mutation,
+        //          t.recognizesWTEpitope = v.recognizesWTEpitope,
+        //          t.uniProt = v.uniProt,
+        //          t.reference = v.reference",
+        //     { batchSize: 5000, parallel: true, params: { runID: $runID } }
+        //   )
+        // `;
+        //
+        // await session.run(enrichmentQuery, { runID });
 
         // Check result summary if needed
         const summary = result.records[0].get(0);
