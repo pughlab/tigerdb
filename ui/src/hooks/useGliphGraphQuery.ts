@@ -30,6 +30,22 @@ export const GET_GLIPH_GRAPH = gql`
         hla_drb3
         hla_drb4
         hla_drb5
+        projectID
+        projectName
+        datasetID
+        datasetName
+        variableID
+        trav
+        traj
+        mhc
+        mhcClass
+        epitopeGene
+        epitopeAAseq
+        epitopeSpecies
+        mutation
+        recognizesWTEpitope
+        uniProt
+        reference
       }
       links {
         source
