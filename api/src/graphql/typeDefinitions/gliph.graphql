@@ -29,6 +29,7 @@ type GliphNode {
     value: String
     label: String
     v_gene: String
+    j_gene: String
     size: Int
     color: String
     source: String
@@ -43,6 +44,22 @@ type GliphNode {
     hla_drb3: String
     hla_drb4: String
     hla_drb5: String
+    projectID: String
+    projectName: String
+    datasetID: String
+    datasetName: String
+    variableID: String
+    trav: String
+    traj: String
+    mhc: String
+    mhcClass: String
+    epitopeGene: String
+    epitopeAAseq: String
+    epitopeSpecies: String
+    mutation: String
+    recognizesWTEpitope: String
+    uniProt: String
+    reference: String
 }
 
 type NodeDetails {

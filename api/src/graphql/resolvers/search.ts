@@ -239,7 +239,6 @@ export const resolvers = {
             datasetID: d.datasetID,
             datasetName: d.name,
             variableID: v.annotationVariableID,
-            reference: v.reference,
             cdr3b: v.cdr3b,
             trbv: v.trbv,
             trbj: v.trbj,

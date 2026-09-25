@@ -35,6 +35,7 @@ const keycloakhostandport = process.env.KEYCLOAK_SERVER_HOST_AND_PORT
 const keycloakrealm = process.env.KEYCLOAK_SERVER_REALM || 'pibu'
 const keycloakclient = process.env.KEYCLOAK_SERVER_CLIENT || 'pibu-app'
 const keycloakpublickey = process.env.KEYCLOAK_SERVER_PUBLIC_KEY || ''
+import compression from 'compression';
 
 console.log(graphqlPort, graphqlPath, graphqlHost)
 
@@ -43,6 +44,7 @@ export const createApolloServer = async () => {
 
   const { keycloak } = configureKeycloak(app)
 
+  app.use(compression({ level: 6 }))
   app.use(graphqlUploadExpress())
 
   app.use(voyagerPath, voyagerMiddleware({ endpointUrl: graphqlPath }));
