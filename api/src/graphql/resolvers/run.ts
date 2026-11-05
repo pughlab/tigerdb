@@ -251,7 +251,7 @@ export const resolvers = {
           }
           const session = driver.session()
           await session.run(`
-              MATCH (n:Run { runID: ${run[0].runID} })-[]-(p:RunParameters)
+              MATCH (n:Run { runID: "${run[0].runID}" })-[]-(p:RunParameters)
               OPTIONAL MATCH (n)-[:HAS_RESULT]-(t:GliphTCR)
               WHERE apoc.node.degree(t) = 1
               DETACH DELETE n, p, t
@@ -263,7 +263,7 @@ export const resolvers = {
           await session.run(`MATCH (u:KeycloakUser)<-[]-(x:Run)-[r]-(p:RunParameters)
             WHERE
               u.email = "public@tigerdb.ca"
-              AND x.runID = ${runID}
+              AND x.runID = "${runID}"
             OPTIONAL MATCH (x)-[:HAS_RESULT]-(t:GliphTCR)
             WHERE apoc.node.degree(t) = 1
             DETACH DELETE x, p, t`
@@ -604,7 +604,7 @@ export const resolvers = {
         session.close()
       }
     },
-    isOwner: async (run, _args, context) => {
+    isOwner: (run, _args, context) => {
       const { kauth } = context;
       const userID = kauth?.accessToken?.content?.sub || "";
       const { createdBy } = run;

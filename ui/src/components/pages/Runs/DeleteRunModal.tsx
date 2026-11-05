@@ -16,7 +16,7 @@ export function DeleteRunModal({ run, refetch }) {
 
   function removeRun(e, run) {
     e.stopPropagation();
-    deleteRun({ variables: { runID: run?.runID }})
+    void deleteRun({ variables: { runID: run?.runID }})
     setOpen(!open);
   }
 
